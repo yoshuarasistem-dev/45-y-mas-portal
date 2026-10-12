@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bóveda Pro | 45 y Más</title>
-    <!-- Librerías para Auto-Clasificación -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -16,34 +15,27 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(circle at center, rgba(56, 189, 248, 0.03) 0%, transparent 100%); }
         
-        /* LOGO OFICIAL ESTANDARIZADO */
-        .logo-oficial { display: flex; flex-direction: column; }
-        .logo-oficial .brand { font-weight: 900; font-size: 1.4rem; color: var(--brand-orange); letter-spacing: -1px; display: flex; align-items: center; gap: 8px; line-height: 1; margin-bottom: 2px;}
-        .logo-oficial .brand span { color: var(--text-main); }
+        .logo-oficial { display: flex; flex-direction: column; align-items: flex-start;}
+        .logo-oficial img { max-height: 45px; object-fit: contain; margin-bottom: 2px; }
         .logo-oficial .sub-brand { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
-        /* LOGIN SCREEN */
         #login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; z-index: 50; position: absolute; background: var(--bg-deep); }
         .login-box { background: var(--glass-bg); padding: 50px 40px; border-radius: 16px; border: 1px solid var(--border-glass); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .login-box h1 { font-size: 1.8rem; margin-bottom: 5px; color: var(--text-main); }
         .input-login, .select-login { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; }
         .input-login:focus, .select-login:focus { border-color: var(--brand-orange); }
         .btn-login { width: 100%; background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; padding: 15px; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: transform 0.2s; margin-top: 10px; }
         .btn-login:hover { transform: translateY(-2px); }
         
-        /* DASHBOARD SCREEN */
         #dashboard-screen { display: none; height: 100vh; flex-direction: column; }
         .topbar { background: rgba(15, 23, 42, 0.9); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
         .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s;}
         .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
         .main-content { display: flex; flex: 1; overflow: hidden; }
         
-        /* SIDEBAR */
         .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 20px 0; }
         .menu-item { padding: 15px 25px; color: var(--text-muted); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; border-left: 3px solid transparent; }
         .menu-item:hover, .menu-item.active { background: rgba(56, 189, 248, 0.1); color: var(--neon-blue); border-left-color: var(--neon-blue); }
         
-        /* ÁREA DE CARPETAS */
         .folder-area { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-deep); }
         .section-header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px;}
         .section-title { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0; }
@@ -62,7 +54,6 @@
         .carpeta-card .titulo { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 1rem;}
         .carpeta-card .subtitulo { font-size: 0.75rem; color: var(--text-muted); }
 
-        /* MASC CHECKLIST UI */
         .masc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-glass); flex-wrap: wrap; gap: 15px;}
         .masc-info h2 { color: var(--brand-orange); margin-bottom: 5px; font-size: 1.4rem; }
         .checklist-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -72,11 +63,9 @@
         .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brand-orange); }
         .check-item.checked { color: var(--text-muted); text-decoration: line-through; }
 
-        /* BREADCRUMB */
         .breadcrumb { display: flex; gap: 10px; color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
         .breadcrumb span:hover { color: var(--brand-orange); }
 
-        /* MODALES Y PANTALLA DE CARGA */
         .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
         .modal-content { background: var(--bg-panel); padding: 35px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid var(--border-glass); text-align: center; }
         .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
@@ -89,11 +78,10 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <div class="logo-oficial" style="align-items: center; margin-bottom: 25px;">
-                <div class="brand" style="font-size: 2rem;"><i class="fa-solid fa-scale-balanced"></i> 45<span>YMÁS</span></div>
+                <img src="logo.png" onerror="this.onerror=null; this.src='logo.jpg';" alt="45 Y MÁS" style="max-height: 70px;">
                 <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
             </div>
             <p style="color:var(--brand-orange); font-weight:bold; margin-bottom: 20px;">Bóveda Confidencial</p>
@@ -104,13 +92,11 @@
         </div>
     </div>
 
-    <!-- PANTALLA PRINCIPAL (DASHBOARD) -->
     <div id="dashboard-screen">
         <div class="topbar">
-            <!-- LOGO OFICIAL ESTANDARIZADO EN TOPBAR -->
-            <div class="logo-oficial">
-                <div class="brand"><i class="fa-solid fa-scale-balanced"></i> 45<span>YMÁS</span> <span style="font-size: 0.9rem; font-weight: 500; margin-left: 10px; color: var(--text-muted);">| Bóveda Pro</span></div>
-                <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
+            <div class="logo-oficial" style="flex-direction: row; align-items: center; gap:15px;">
+                <img src="logo.png" onerror="this.onerror=null; this.src='logo.jpg';" alt="45 Y MÁS" style="max-height: 40px;">
+                <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); border-left: 1px solid var(--border-glass); padding-left: 15px;">Portal Pro</span>
             </div>
             <button class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
         </div>
@@ -125,12 +111,10 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR DINÁMICO -->
             <div class="folder-area" id="area-trabajo"></div>
         </div>
     </div>
 
-    <!-- MODAL PARA CREAR NUEVO EXPEDIENTE/CONVENIO -->
     <div class="modal" id="modal-crear">
         <div class="modal-content">
             <h3 style="margin-bottom: 20px; color: var(--neon-blue);" id="modal-title">Nuevo Registro</h3>
@@ -151,7 +135,6 @@
         </div>
     </div>
 
-    <!-- MODAL RESULTADO IA -->
     <div class="modal" id="modal-resultado-ia">
         <div class="modal-content">
             <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
@@ -170,7 +153,6 @@
         </div>
     </div>
 
-    <!-- PANTALLA DE CARGA IA -->
     <div id="pantalla-progreso">
         <div class="progreso-card">
             <i class="fa-solid fa-microchip fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
@@ -180,19 +162,18 @@
         </div>
     </div>
 
-    <!-- Input Oculto para Auto Clasificar -->
     <input type="file" id="pdf-auto-upload" accept="application/pdf" style="display:none;" onchange="procesarPDF_IA(event)">
 
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        // ==== CATÁLOGO COMPLETO DE JUZGADOS JALISCO ====
+        // ==== CATÁLOGO COMPLETO Y AMPLIADO DE JUZGADOS ====
         const catJuzgados = {
             "Civil": [
                 "Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"
             ],
             "Familiar": [
-                "Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 11° Especializado de lo Familiar", "Juzgado Especializado en Niñas, Niños y Adolescentes", "Juzgado Especializado Violencia Mujeres Tlaquepaque"
+                "Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Juzgado 11° Especializado de lo Familiar", "Juzgado Especializado en Niñas, Niños y Adolescentes", "Juzgado Especializado Violencia Mujeres Tlaquepaque"
             ],
             "Mercantil": [
                 "Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil", "Juzgado 13° Mercantil", "Juzgado 14° Mercantil", "Juzgado 15° Mercantil", "Juzgado 16° Mercantil", "Juzgado 17° Mercantil", "Juzgado 18° Mercantil", "Juzgado 19° Mercantil"
@@ -206,7 +187,6 @@
         let pathSelection = { juzgado: '', anio: '', exp: '' };
         let datosIA_Temp = { juzgado: '', exp: '', anio: '' };
 
-        // ==== SISTEMA DE LOGIN ====
         function iniciarSesion() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
@@ -225,10 +205,7 @@
             renderizarVista();
         }
 
-        function cambiarMateria(mat) {
-            materiaActiva = mat;
-            renderizarVista();
-        }
+        function cambiarMateria(mat) { materiaActiva = mat; renderizarVista(); }
 
         function renderizarVista() {
             const area = document.getElementById('area-trabajo');
@@ -304,7 +281,6 @@
         function abrirModalCrear(tipo, valorPredeterminado = '') {
             document.getElementById('modal-title').innerText = tipo;
             document.getElementById('input-nuevo').value = valorPredeterminado;
-            
             if(tipo === 'Nuevo Convenio MASC') {
                 document.getElementById('campo-tipo-masc').style.display = 'block';
                 document.getElementById('lbl-nombre').innerText = "NOMBRE DEL SOLICITANTE:";
@@ -342,24 +318,10 @@
             window.location.href = 'visor-expediente.html';
         }
 
-        // =========================================================
-        // CHECKLISTS MASC EXACTOS
-        // =========================================================
         const checklistsData = {
-            "ARRENDAMIENTO": {
-                "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"],
-                "Documentos Generales": ["Identificaciones ()*", "Contrato de Arrendamiento ()*", "Contrato de Administracion ()*", "Escritura Publica ( )*", "Predial *", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
-            },
-            "ALIMENTOS": {
-                "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"],
-                "Documentos Generales": ["Identificaciones ()*", "Actas de Nacimiento Padres ()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte ()"],
-                "Documentos Menores": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
-            },
-            "DIVORCIO": {
-                "Contenido de la Carpeta": ["Solicitud Firmada Por Ambas Partes *", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final*", "Convenio Digital"],
-                "Documentos Gral Divorcio": ["Identificaciones (1)", "Actas de Nacimiento Conyuges()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte()", "Certificado No Embarazo (0)"],
-                "Documentos Divorcio Mutuo": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Facturas Bienes Muebles ()", "Escrituras de los Bienes Inmuebles", "Certificado Libertad de Gravamen()*", "Estado de Cuenta del Credito", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
-            }
+            "ARRENDAMIENTO": { "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"], "Documentos Generales": ["Identificaciones ()*", "Contrato de Arrendamiento ()*", "Contrato de Administracion ()*", "Escritura Publica ( )*", "Predial *", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] },
+            "ALIMENTOS": { "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"], "Documentos Generales": ["Identificaciones ()*", "Actas de Nacimiento Padres ()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte ()"], "Documentos Menores": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] },
+            "DIVORCIO": { "Contenido de la Carpeta": ["Solicitud Firmada Por Ambas Partes *", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final*", "Convenio Digital"], "Documentos Gral Divorcio": ["Identificaciones (1)", "Actas de Nacimiento Conyuges()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte()", "Certificado No Embarazo (0)"], "Documentos Divorcio Mutuo": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Facturas Bienes Muebles ()", "Escrituras de los Bienes Inmuebles", "Certificado Libertad de Gravamen()*", "Estado de Cuenta del Credito", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] }
         };
 
         function verChecklistMasc(index) {
@@ -374,12 +336,7 @@
                     let itemId = `${categoria}_${item}`;
                     let isChecked = m.checks[itemId] ? 'checked' : '';
                     let classCheck = m.checks[itemId] ? 'checked' : '';
-
-                    htmlChecks += `
-                    <label class="check-item ${classCheck}">
-                        <input type="checkbox" onchange="actualizarCheckMasc(${index}, '${itemId}', this.checked)" ${isChecked}> 
-                        ${item}
-                    </label>`;
+                    htmlChecks += `<label class="check-item ${classCheck}"><input type="checkbox" onchange="actualizarCheckMasc(${index}, '${itemId}', this.checked)" ${isChecked}> ${item}</label>`;
                 });
             }
 
@@ -389,24 +346,10 @@
             area.innerHTML = `
                 <div class="breadcrumb" onclick="renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Convenios Activos</div>
                 <div class="masc-header">
-                    <div class="masc-info">
-                        <h2>${m.numero}</h2>
-                        <p><strong style="color:var(--text-main);">Solicitante:</strong> ${m.nombre}</p>
-                        <p><strong style="color:var(--text-main);">Tipo:</strong> ${tipoVisual}</p>
-                        <p><strong style="color:var(--text-main);">Fecha:</strong> ${m.fecha}</p>
-                    </div>
-                    <div>
-                        <button class="btn-login" style="margin:0; padding: 10px 20px; font-size: 0.9rem;" onclick="abrirVisor('MASC_${m.numero.replace('/','-')}')">
-                            <i class="fa-solid fa-file-pdf"></i> Abrir Expediente Digital
-                        </button>
-                    </div>
+                    <div class="masc-info"><h2>${m.numero}</h2><p><strong style="color:var(--text-main);">Solicitante:</strong> ${m.nombre}</p><p><strong style="color:var(--text-main);">Tipo:</strong> ${tipoVisual}</p><p><strong style="color:var(--text-main);">Fecha:</strong> ${m.fecha}</p></div>
+                    <div><button class="btn-login" style="margin:0; padding: 10px 20px; font-size: 0.9rem;" onclick="abrirVisor('MASC_${m.numero.replace('/','-')}')"><i class="fa-solid fa-file-pdf"></i> Abrir Expediente Digital</button></div>
                 </div>
-                <div class="checklist-grid">
-                    <div class="checklist-container">
-                        <h3><i class="fa-solid fa-list-check"></i> Documentación Requerida</h3>
-                        ${htmlChecks}
-                    </div>
-                </div>
+                <div class="checklist-grid"><div class="checklist-container"><h3><i class="fa-solid fa-list-check"></i> Documentación Requerida</h3>${htmlChecks}</div></div>
             `;
         }
 
@@ -418,9 +361,9 @@
         }
 
         // =========================================================
-        // MOTOR DE IA: AUTO-CLASIFICACIÓN DE PDF
+        // MOTOR DE IA: AUTO-CLASIFICACIÓN AMPLIADA HASTA EL 19°
         // =========================================================
-        const numMap = { "PRIMERO": "1°", "SEGUNDO": "2°", "TERCERO": "3°", "CUARTO": "4°", "QUINTO": "5°", "SEXTO": "6°", "SEPTIMO": "7°", "OCTAVO": "8°", "NOVENO": "9°", "DECIMO": "10°", "DÉCIMO": "10°", "ONCEAVO": "11°", "DOCEAVO": "12°" };
+        const numMap = { "PRIMER": "1°", "PRIMERO": "1°", "SEGUNDO": "2°", "TERCER": "3°", "TERCERO": "3°", "CUARTO": "4°", "QUINTO": "5°", "SEXTO": "6°", "SEPTIMO": "7°", "SÉPTIMO": "7°", "OCTAVO": "8°", "NOVENO": "9°", "DECIMO": "10°", "DÉCIMO": "10°", "ONCEAVO": "11°", "DECIMO PRIMERO": "11°", "DOCEAVO": "12°", "DECIMO SEGUNDO": "12°", "TRECEAVO": "13°", "DECIMO TERCERO": "13°", "CATORCEAVO": "14°", "DECIMO CUARTO": "14°", "QUINCEAVO": "15°", "DECIMO QUINTO": "15°", "DIECISEISAVO": "16°", "DECIMO SEXTO": "16°", "DIECISIETEAVO": "17°", "DECIMO SEPTIMO": "17°", "DIECIOCHOAVO": "18°", "DECIMO OCTAVO": "18°", "DIECINUEVEAVO": "19°", "DECIMO NOVENO": "19°" };
 
         async function procesarPDF_IA(event) {
             const file = event.target.files[0];

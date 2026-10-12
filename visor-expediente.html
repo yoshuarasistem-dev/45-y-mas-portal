@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expediente Inteligente | 45 y Más</title>
-    <!-- Librerías Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -20,12 +19,9 @@
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
 
-        /* TOPBAR CON LOGO OFICIAL */
         .topbar { background: var(--bg-panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
-        
         .logo-oficial { display: flex; flex-direction: column; }
-        .logo-oficial .brand { font-weight: 900; font-size: 1.2rem; color: var(--brand-orange); letter-spacing: -1px; display: flex; align-items: center; gap: 8px; line-height: 1; margin-bottom: 2px;}
-        .logo-oficial .brand span { color: var(--text-main); }
+        .logo-oficial img { max-height: 40px; object-fit: contain; margin-bottom: 2px; }
         .logo-oficial .sub-brand { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
         
         .expediente-title { background: rgba(56, 189, 248, 0.1); padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; color: var(--neon-blue); font-weight: bold; border: 1px solid rgba(56, 189, 248, 0.3); }
@@ -34,10 +30,8 @@
         .btn-volver { background: transparent; color: var(--text-muted); border: none; } .btn-volver:hover { color: var(--brand-orange); }
         .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); } .btn-accion:hover { background: var(--neon-blue); color: #000; }
 
-        /* LAYOUT PRINCIPAL: 3 COLUMNAS */
         .workspace { display: flex; flex: 1; overflow: hidden; }
 
-        /* COLUMNA 1: FOJAS (Izquierda) */
         .sidebar-fojas { width: 220px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; }
         .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border-glass); text-align: center; }
         .btn-add-foja { width: 100%; background: transparent; border: 1px dashed var(--brand-orange); color: var(--brand-orange); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s; }
@@ -49,18 +43,16 @@
         .foja-canvas-container { height: 120px; background: #fff; margin-bottom: 8px; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .foja-canvas-container canvas { width: 100%; height: auto; display: block; }
         .foja-label { font-size: 0.8rem; font-weight: bold; color: var(--text-main); }
-        .foja-controls { display: flex; justify-content: center; gap: 5px; margin-top: 5px; }
-        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
+        .foja-controls { display: flex; justify-content: center; gap: 4px; margin-top: 5px; }
+        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; }
         .btn-mini:hover { background: var(--brand-orange); }
 
         .alerta-faltante { background: rgba(239, 68, 68, 0.1); border: 1px dashed var(--danger); color: var(--danger); padding: 10px; border-radius: 6px; font-size: 0.75rem; text-align: center; cursor: pointer; margin-bottom: 5px; font-weight: bold;}
 
-        /* COLUMNA 2: VISOR CENTRAL */
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
         #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; }
         .zoom-controls { position: fixed; bottom: 30px; left: 240px; background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; }
 
-        /* COLUMNA 3: PANEL DERECHO (Keywords y Notas) */
         .sidebar-herramientas { width: 320px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; }
         .tabs { display: flex; border-bottom: 1px solid var(--border-glass); }
         .tab { flex: 1; text-align: center; padding: 15px; cursor: pointer; font-weight: bold; font-size: 0.85rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: 0.3s; }
@@ -69,7 +61,6 @@
         .panel-content { flex: 1; overflow-y: auto; padding: 20px; display: none; }
         .panel-content.active { display: block; }
 
-        /* Contador de Palabras */
         .keyword-card { background: var(--bg-deep); border: 1px solid var(--border-glass); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
         .keyword-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .keyword-word { font-weight: 800; color: var(--text-main); font-size: 0.95rem; text-transform: uppercase; }
@@ -78,11 +69,9 @@
         .badge-foja { background: rgba(255, 255, 255, 0.1); padding: 3px 6px; border-radius: 4px; cursor: pointer; font-weight: 600;}
         .badge-foja:hover { background: var(--brand-orange); color: white; }
 
-        /* Bloc de Notas */
         .nota-area { width: 100%; height: 200px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 15px; border-radius: 8px; resize: none; font-size: 0.9rem; outline: none; margin-bottom: 15px; }
         .nota-area:focus { border-color: var(--brand-orange); }
 
-        /* PANTALLA DE CARGA */
         #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
         .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 12px; text-align: center; width: 350px; }
         .barra-fondo { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; margin: 20px 0; overflow: hidden; }
@@ -96,7 +85,7 @@
         
         <div style="display: flex; align-items: center; gap: 20px;">
             <div class="logo-oficial">
-                <div class="brand"><i class="fa-solid fa-scale-balanced"></i> 45<span>YMÁS</span></div>
+                <img src="logo.png" onerror="this.onerror=null; this.src='logo.jpg';" alt="45 Y MÁS">
                 <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
             </div>
             <span class="expediente-title" id="titulo-exp">EXP/000/00</span>
@@ -110,7 +99,6 @@
     </div>
 
     <div class="workspace">
-        <!-- COLUMNA 1: FOJAS (Izquierda) -->
         <div class="sidebar-fojas">
             <div class="sidebar-header">
                 <input type="file" id="add-foja-input" accept="application/pdf, image/*" style="display:none;" onchange="agregarFojaFaltante(event)">
@@ -121,7 +109,6 @@
             </div>
         </div>
 
-        <!-- COLUMNA 2: VISOR -->
         <div class="visor-central">
             <canvas id="canvas-principal" style="display:none;"></canvas>
             <div style="text-align:center; color:var(--text-muted); margin-top: 100px;" id="msg-vacio">
@@ -136,33 +123,27 @@
             </div>
         </div>
 
-        <!-- COLUMNA 3: HERRAMIENTAS -->
         <div class="sidebar-herramientas">
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('tab-palabras', this)"><i class="fa-solid fa-magnifying-glass"></i> Detección</div>
-                <div class="tab" onclick="switchTab('tab-notas', this)"><i class="fa-solid fa-pen-to-square"></i> Notas</div>
+                <div class="tab" onclick="switchTab('tab-notas', this)"><i class="fa-solid fa-pen-to-square"></i> Notas Foja</div>
             </div>
 
-            <!-- Panel Palabras Clave -->
             <div class="panel-content active" id="tab-palabras">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">El sistema buscará actuaciones clave. Presiona "Iniciar Auto-Lectura" en la barra superior.</p>
-                <div id="contenedor-keywords">
-                    <!-- Se llenará dinámicamente -->
-                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">El sistema buscará y subrayará actuaciones clave.</p>
+                <div id="contenedor-keywords"></div>
             </div>
 
-            <!-- Panel Notas del Abogado -->
             <div class="panel-content" id="tab-notas">
-                <h4 style="color: var(--neon-blue); margin-bottom: 10px; font-size: 0.9rem;">Apuntes del Expediente</h4>
-                <textarea class="nota-area" id="texto-notas" placeholder="Escribe observaciones, fechas para recordar o estrategias sobre este caso..."></textarea>
-                <button class="btn btn-accion" style="width: 100%; justify-content: center;" onclick="guardarNotas()"><i class="fa-solid fa-save"></i> Guardar Notas Localmente</button>
-                <p id="nota-guardada" style="color: var(--success); font-size: 0.75rem; text-align: center; margin-top: 10px; display: none;"><i class="fa-solid fa-check"></i> Guardado seguro.</p>
+                <h4 style="color: var(--neon-blue); margin-bottom: 5px; font-size: 0.9rem;" id="titulo-nota-foja">Apunte Foja Seleccionada</h4>
+                <p id="info-nota-fecha" style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px;"></p>
+                <textarea class="nota-area" id="texto-notas" placeholder="Escribe observaciones de esta foja en específico..."></textarea>
+                <button class="btn btn-accion" style="width: 100%; justify-content: center;" onclick="guardarNotas()"><i class="fa-solid fa-save"></i> Guardar a Foja</button>
+                <p id="nota-guardada" style="color: var(--success); font-size: 0.75rem; text-align: center; margin-top: 10px; display: none;"><i class="fa-solid fa-check"></i> Nota agregada a la foja.</p>
             </div>
         </div>
-
     </div>
 
-    <!-- CARGADOR -->
     <div id="pantalla-progreso">
         <div class="progreso-card">
             <i class="fa-solid fa-brain fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
@@ -173,26 +154,20 @@
     </div>
 
     <script>
-        // Inicializar
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         
         let nombreExpediente = localStorage.getItem('expediente_abierto') || 'EXP_NUEVO';
         document.getElementById('titulo-exp').innerText = nombreExpediente;
 
-        // Cargar notas guardadas previamente
-        document.getElementById('texto-notas').value = localStorage.getItem('notas_' + nombreExpediente) || '';
-
-        // Variables Globales del PDF
         let documentoActual = null;
         let arrayFojas = []; 
         let fojaSeleccionadaIndex = 0;
         let zoomGlobal = 1.2;
 
-        // PALABRAS CLAVE QUE PIDIÓ EL JEFE
         const PALABRAS_BUSCADAS = ["dicta", "sentencia", "resuelve", "previene", "admite", "desecha", "radica"];
         let resultadosKeywords = {};
+        window.mapaAlertasPorFoja = {}; // Aquí guardaremos las coordenadas para dibujar el rojo
 
-        // ==== CARGA DEL PDF ORIGINAL ====
         async function cargarPDFBase(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -204,6 +179,8 @@
             documentoActual = await pdfjsLib.getDocument(bytes).promise;
             
             arrayFojas = [];
+            window.mapaAlertasPorFoja = {}; // Limpiamos alertas anteriores
+            
             for (let i = 1; i <= documentoActual.numPages; i++) {
                 const page = await documentoActual.getPage(i);
                 const viewport = page.getViewport({ scale: 1.5 });
@@ -228,7 +205,6 @@
             if(arrayFojas.length > 0) seleccionarFoja(0);
         }
 
-        // ==== RENDERIZADO DE LA COLUMNA IZQUIERDA (FOJAS Y FALTANTES) ====
         function renderizarBarraLateralFojas() {
             const container = document.getElementById('lista-fojas-container');
             container.innerHTML = '';
@@ -236,7 +212,6 @@
             for (let i = 0; i < arrayFojas.length; i++) {
                 const f = arrayFojas[i];
                 
-                // LÓGICA DE FOJA FALTANTE: Si el numero logico da un salto (Ej. de 1 a 3)
                 if (i > 0 && f.numeroLogico > arrayFojas[i-1].numeroLogico + 1) {
                     const fojaPerdida = arrayFojas[i-1].numeroLogico + 1;
                     const alertaDiv = document.createElement('div');
@@ -256,19 +231,40 @@
                 const ctx = canvasMini.getContext('2d');
                 ctx.drawImage(f.canvasImage, 0, 0, canvasMini.width, canvasMini.height);
 
+                // Comprobar si hay notas para mostrar la alerta
+                let dataNota = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${f.numeroLogico}`));
+                let notaBadge = (dataNota && dataNota.texto) ? `<div style="color:var(--brand-orange); font-size:0.75rem; margin-top:6px; font-weight:bold;"><i class="fa-solid fa-pen-to-square"></i> Nota guardada</div><div style="color:var(--text-muted); font-size:0.6rem;">${dataNota.fecha}</div>` : '';
+
                 div.innerHTML = `
                     <div class="foja-label">FOJA ${f.numeroLogico}</div>
                     <div class="foja-canvas-container" id="cont-canvas-${i}"></div>
                     <div class="foja-controls">
+                        <button class="btn-mini" title="Subir" onclick="event.stopPropagation(); moverFoja(${i}, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="btn-mini" title="Bajar" onclick="event.stopPropagation(); moverFoja(${i}, 1)"><i class="fa-solid fa-arrow-down"></i></button>
                         <button class="btn-mini" title="Rotar" onclick="event.stopPropagation(); rotarFojaEnMemoria(${i})"><i class="fa-solid fa-rotate-right"></i></button>
                         <button class="btn-mini" title="Eliminar" onclick="event.stopPropagation(); eliminarFojaEnMemoria(${i})"><i class="fa-solid fa-trash"></i></button>
                     </div>
+                    ${notaBadge}
                 `;
                 container.appendChild(div);
                 document.getElementById('cont-canvas-'+i).appendChild(canvasMini);
                 
                 if(f.rotacion !== 0) canvasMini.style.transform = `rotate(${f.rotacion}deg)`;
             }
+        }
+
+        // ==========================================
+        // MOVIMIENTO MANUAL DE FOJAS
+        // ==========================================
+        function moverFoja(index, dir) {
+            if(index + dir < 0 || index + dir >= arrayFojas.length) return;
+            let temp = arrayFojas[index];
+            arrayFojas[index] = arrayFojas[index + dir];
+            arrayFojas[index + dir] = temp;
+            
+            renderizarBarraLateralFojas();
+            if(fojaSeleccionadaIndex === index) seleccionarFoja(index + dir);
+            else if(fojaSeleccionadaIndex === index + dir) seleccionarFoja(index);
         }
 
         function seleccionarFoja(index) {
@@ -281,9 +277,13 @@
             canvasP.style.display = 'block';
             document.getElementById('controles-zoom').style.display = 'flex';
 
+            cargarNotasDeFojaActual();
             renderizarVisorCentral();
         }
 
+        // ==========================================
+        // DIBUJO CON SUBRAYADO DE ALERTAS
+        // ==========================================
         function renderizarVisorCentral() {
             const foja = arrayFojas[fojaSeleccionadaIndex];
             const canvasP = document.getElementById('canvas-principal');
@@ -294,32 +294,33 @@
             
             ctx.drawImage(foja.canvasImage, 0, 0, canvasP.width, canvasP.height);
             canvasP.style.transform = `rotate(${foja.rotacion}deg)`;
+
+            // Recuperar coordenadas de las palabras encontradas en esta foja
+            const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
+            if (alertas && alertas.length > 0) {
+                alertas.forEach(a => {
+                    const b = a.bbox;
+                    ctx.fillStyle = a.colorFondo;
+                    ctx.fillRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
+                    ctx.strokeStyle = a.colorBorde;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
+                });
+            }
         }
 
-        function cambiarZoom(delta) {
-            zoomGlobal = Math.max(0.5, Math.min(3, zoomGlobal + delta));
-            renderizarVisorCentral();
-        }
-
-        function rotarFojaEnMemoria(index) {
-            arrayFojas[index].rotacion = (arrayFojas[index].rotacion + 90) % 360;
-            renderizarBarraLateralFojas();
-            if(fojaSeleccionadaIndex === index) renderizarVisorCentral();
-        }
-
+        function cambiarZoom(delta) { zoomGlobal = Math.max(0.5, Math.min(3, zoomGlobal + delta)); renderizarVisorCentral(); }
+        function rotarFojaEnMemoria(index) { arrayFojas[index].rotacion = (arrayFojas[index].rotacion + 90) % 360; renderizarBarraLateralFojas(); if(fojaSeleccionadaIndex === index) renderizarVisorCentral(); }
+        
         function eliminarFojaEnMemoria(index) {
             if(confirm("¿Eliminar esta foja del expediente?")) {
                 arrayFojas.splice(index, 1);
-                // Reajustar numeración lógica subsecuente
-                for(let i=index; i<arrayFojas.length; i++) arrayFojas[i].numeroLogico--;
-                
                 renderizarBarraLateralFojas();
                 if(arrayFojas.length > 0) seleccionarFoja(Math.max(0, index-1));
                 else { document.getElementById('canvas-principal').style.display = 'none'; document.getElementById('msg-vacio').style.display = 'block'; }
             }
         }
 
-        // ==== AGREGAR FOJA FALTANTE O VUELTA ====
         async function agregarFojaFaltante(event) {
             const file = event.target.files[0];
             if(!file) return;
@@ -332,11 +333,12 @@
                     canvas.width = img.width; canvas.height = img.height;
                     canvas.getContext('2d').drawImage(img, 0, 0);
 
-                    let numAsignado = prompt("¿Qué número de foja es esta? (Si es la vuelta, ingresa el mismo número de su frente. Ej: 233)", "Ej. 233");
+                    let numAsignado = prompt("¿Qué número de foja es esta? (Si es la vuelta, pon el mismo número. Ej: 233)", "Ej. 233");
                     numAsignado = parseInt(numAsignado) || arrayFojas.length + 1;
 
                     arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, canvasImage: canvas, rotacion: 0 });
                     
+                    // Ordenar por número, pero si tienen el mismo número, la vuelta (agregada después) queda detrás
                     arrayFojas.sort((a,b) => a.numeroLogico - b.numeroLogico);
                     renderizarBarraLateralFojas();
                 };
@@ -345,12 +347,15 @@
             reader.readAsDataURL(file);
         }
 
-        // ==== LECTURA OCR ESTRICTA (CONTADOR DE PALABRAS DEL JEFE) ====
+        // ==========================================
+        // ESCANEO CON IA (GUARDA COORDENADAS)
+        // ==========================================
         async function escanearPalabrasJudiciales() {
             if(arrayFojas.length === 0) return;
             document.getElementById('pantalla-progreso').style.display = 'flex';
             
             resultadosKeywords = {};
+            window.mapaAlertasPorFoja = {}; // Reiniciamos el mapa de dibujo
             PALABRAS_BUSCADAS.forEach(p => resultadosKeywords[p.toLowerCase()] = []);
 
             for (let i = 0; i < arrayFojas.length; i++) {
@@ -359,14 +364,23 @@
                 document.getElementById('texto-progreso').innerText = `Analizando Foja ${f.numeroLogico}...`;
                 document.getElementById('barra-llena').style.width = `${percent}%`;
 
+                if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
+
                 const { data } = await Tesseract.recognize(f.canvasImage, 'spa');
                 
                 data.words.forEach(palabra => {
                     let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
                     if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
+                        // Guardar la foja para la lista de la derecha
                         if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) {
                             resultadosKeywords[txtLimpio].push(f.numeroLogico);
                         }
+                        // Guardar coordenada (bbox) para subrayar de rojo en el canvas
+                        window.mapaAlertasPorFoja[f.numeroLogico].push({
+                            bbox: palabra.bbox,
+                            colorBorde: '#ef4444',
+                            colorFondo: 'rgba(239, 68, 68, 0.4)'
+                        });
                     }
                 });
             }
@@ -374,33 +388,26 @@
             document.getElementById('pantalla-progreso').style.display = 'none';
             switchTab('tab-palabras', document.querySelectorAll('.tab')[0]);
             mostrarResultadosKeywords();
+            renderizarVisorCentral(); // Refrescar canvas para que salgan los rojos
         }
 
         function mostrarResultadosKeywords() {
             const cont = document.getElementById('contenedor-keywords');
             cont.innerHTML = '';
-            
             let encontroAlgo = false;
             for(let key in resultadosKeywords) {
                 let fojasDondeAparece = resultadosKeywords[key];
                 if(fojasDondeAparece.length > 0) {
                     encontroAlgo = true;
                     let fojasBadgesHTML = fojasDondeAparece.map(num => `<span class="badge-foja" onclick="buscarFojaPorNumero(${num})">F-${num}</span>`).join('');
-                    
                     cont.innerHTML += `
                     <div class="keyword-card">
-                        <div class="keyword-header">
-                            <span class="keyword-word">${key}</span>
-                            <span class="keyword-count">${fojasDondeAparece.length} coincidencias</span>
-                        </div>
+                        <div class="keyword-header"><span class="keyword-word">${key}</span><span class="keyword-count">${fojasDondeAparece.length} coincidencias</span></div>
                         <div class="keyword-fojas">Encontrado en: ${fojasBadgesHTML}</div>
                     </div>`;
                 }
             }
-
-            if(!encontroAlgo) {
-                cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No se detectaron palabras clave de actuación judicial en este escaneo.</p>`;
-            }
+            if(!encontroAlgo) cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No se detectaron actuaciones clave.</p>`;
         }
 
         function buscarFojaPorNumero(num) {
@@ -408,7 +415,9 @@
             if(index !== -1) seleccionarFoja(index);
         }
 
-        // ==== PESTAÑAS DERECHAS Y NOTAS ====
+        // ==========================================
+        // NOTAS INDEPENDIENTES POR FOJA
+        // ==========================================
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
@@ -416,12 +425,35 @@
             document.getElementById(tabId).classList.add('active');
         }
 
+        function cargarNotasDeFojaActual() {
+            if(arrayFojas.length === 0) return;
+            let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico;
+            document.getElementById('titulo-nota-foja').innerText = `Apuntes - Foja ${num}`;
+            
+            let dataNota = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${num}`)) || {texto: '', fecha: ''};
+            document.getElementById('texto-notas').value = dataNota.texto;
+            document.getElementById('info-nota-fecha').innerText = dataNota.fecha ? `Última edición: ${dataNota.fecha}` : '';
+        }
+
         function guardarNotas() {
-            const texto = document.getElementById('texto-notas').value;
-            localStorage.setItem('notas_' + nombreExpediente, texto);
+            if(arrayFojas.length === 0) return;
+            let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico;
+            let texto = document.getElementById('texto-notas').value;
+            let fechaActual = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
+            
+            if(texto.trim() === '') {
+                localStorage.removeItem(`notas_${nombreExpediente}_f${num}`);
+            } else {
+                localStorage.setItem(`notas_${nombreExpediente}_f${num}`, JSON.stringify({ texto: texto, fecha: fechaActual }));
+            }
+            
+            document.getElementById('info-nota-fecha').innerText = `Última edición: ${fechaActual}`;
             const msg = document.getElementById('nota-guardada');
             msg.style.display = 'block';
             setTimeout(() => { msg.style.display = 'none'; }, 3000);
+
+            // Refrescar para que aparezca la alerta en la miniatura
+            renderizarBarraLateralFojas();
         }
     </script>
 </body>
