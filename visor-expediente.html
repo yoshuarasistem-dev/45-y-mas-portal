@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expediente Inteligente | 45 y Más</title>
+    <title>Visor Jurídico Privado | 45 y Más</title>
+    <!-- Solo librerías nativas para renderizar PDF y Word. SIN Inteligencia Artificial -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -35,6 +35,7 @@
 
         .workspace { display: flex; flex: 1; overflow: hidden; }
 
+        /* PANEL IZQUIERDO: FOJAS */
         .sidebar-fojas { width: 220px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; }
         .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border-glass); text-align: center; }
         .btn-add-foja { width: 100%; background: transparent; border: 1px dashed var(--brand-orange); color: var(--brand-orange); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s; margin-bottom: 8px;}
@@ -52,31 +53,20 @@
 
         .alerta-faltante { background: rgba(239, 68, 68, 0.1); border: 1px dashed var(--danger); color: var(--danger); padding: 10px; border-radius: 6px; font-size: 0.75rem; text-align: center; cursor: pointer; margin-bottom: 5px; font-weight: bold;}
 
+        /* VISOR CENTRAL */
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
         
         #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute;}
-        #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5;}
         
         #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 850px; min-height: 1100px; padding: 50px; font-family: 'Arial', sans-serif; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
         #html-visor p { margin-bottom: 10px; }
 
         .zoom-controls { position: fixed; bottom: 30px; left: 240px; background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 10;}
 
+        /* PANEL DERECHO: APUNTES MANUALES */
         .sidebar-herramientas { width: 340px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; }
-        .tabs { display: flex; border-bottom: 1px solid var(--border-glass); }
-        .tab { flex: 1; text-align: center; padding: 15px; cursor: pointer; font-weight: bold; font-size: 0.85rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: 0.3s; }
-        .tab.active { color: var(--neon-blue); border-bottom-color: var(--neon-blue); }
-        
-        .panel-content { flex: 1; overflow-y: auto; padding: 20px; display: none; flex-direction: column;}
-        .panel-content.active { display: flex; }
-
-        .keyword-card { background: var(--bg-deep); border: 1px solid var(--border-glass); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-        .keyword-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .keyword-word { font-weight: 800; color: var(--text-main); font-size: 0.95rem; text-transform: uppercase; }
-        .keyword-count { background: rgba(56, 189, 248, 0.2); color: var(--neon-blue); padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-        .keyword-fojas { font-size: 0.75rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 5px; }
-        .badge-foja { background: rgba(255, 255, 255, 0.1); padding: 3px 6px; border-radius: 4px; cursor: pointer; font-weight: 600;}
-        .badge-foja:hover { background: var(--brand-orange); color: white; }
+        .panel-header { background: rgba(0,0,0,0.2); padding: 15px; border-bottom: 1px solid var(--border-glass); text-align: center; font-weight: bold; color: var(--text-main); font-size: 0.95rem; }
+        .panel-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column;}
 
         .nota-area { width: 100%; flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 15px; border-radius: 8px; resize: none; font-size: 0.9rem; outline: none; margin-bottom: 10px; min-height: 150px;}
         .nota-area:focus { border-color: var(--brand-orange); }
@@ -85,8 +75,9 @@
         .nota-preview { background: rgba(255,255,255,0.03); border-left: 3px solid var(--brand-orange); padding: 10px; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;}
         .nota-preview:hover { background: rgba(255,255,255,0.08); }
 
+        /* PANTALLA DE CARGA SIMPLE (SIN IA) */
         #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
-        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 12px; text-align: center; width: 350px; }
+        .progreso-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 12px; text-align: center; width: 350px; }
         .barra-fondo { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; margin: 20px 0; overflow: hidden; }
         .barra-llena { width: 0%; height: 100%; background: var(--neon-blue); transition: 0.3s; }
     </style>
@@ -96,13 +87,13 @@
     <div class="topbar">
         <div style="display:flex; gap:10px;">
             <a href="index.html" class="btn btn-volver" style="border: 1px solid var(--border-glass);"><i class="fa-solid fa-house"></i> Inicio</a>
-            <a href="portal-pro.html" class="btn btn-volver" style="border: 1px solid var(--border-glass);"><i class="fa-solid fa-vault"></i> Bóveda</a>
+            <a href="portal-pro.html" class="btn btn-volver" style="border: 1px solid var(--border-glass);"><i class="fa-solid fa-vault"></i> Bóveda Jurídica</a>
         </div>
         
         <div style="display: flex; align-items: center; gap: 20px;">
             <div class="logo-oficial">
-                <img src="assets/LOGO.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
-                <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
+                <img src="./assets/LOGO.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
+                <div class="sub-brand">Gestor de Expedientes Estricto</div>
             </div>
             <span class="expediente-title" id="titulo-exp">EXP/000/00</span>
         </div>
@@ -110,11 +101,11 @@
         <div style="display:flex; gap: 10px;">
             <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumento(event)" multiple>
             <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar PDF / Word</button>
-            <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearPalabrasJudiciales()"><i class="fa-solid fa-radar"></i> Auto-Lectura MASC</button>
         </div>
     </div>
 
     <div class="workspace">
+        <!-- PANEL IZQUIERDO: FOJAS -->
         <div class="sidebar-fojas">
             <div class="sidebar-header">
                 <input type="file" id="add-foja-input" accept=".pdf, .doc, .docx, image/*" style="display:none;" onchange="agregarFojaFaltante(event)">
@@ -122,13 +113,13 @@
                 <button class="btn-add-foja" style="border-color:var(--neon-blue); color:var(--neon-blue);" onclick="autoOrdenarFojas()"><i class="fa-solid fa-arrow-down-1-9"></i> Auto-Ordenar Fojas</button>
             </div>
             <div class="fojas-list" id="lista-fojas-container">
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Sube un PDF o Word para ver las fojas aquí.</p>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Sube un PDF o Word para visualizar el expediente de forma segura.</p>
             </div>
         </div>
 
+        <!-- VISOR CENTRAL -->
         <div class="visor-central" id="contenedor-visor-zoom">
             <canvas id="canvas-principal" style="display:none;"></canvas>
-            <canvas id="canvas-dibujo" style="display:none;"></canvas>
             
             <div id="html-visor"></div>
             
@@ -144,19 +135,13 @@
             </div>
         </div>
 
+        <!-- PANEL DERECHO: APUNTES MANUALES (CERO IA) -->
         <div class="sidebar-herramientas">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('tab-palabras', this)"><i class="fa-solid fa-magnifying-glass"></i> Detección</div>
-                <div class="tab" onclick="switchTab('tab-notas', this)"><i class="fa-solid fa-pen-to-square"></i> Apuntes</div>
+            <div class="panel-header">
+                <i class="fa-solid fa-pen-to-square" style="color: var(--brand-orange);"></i> Libreta de Apuntes Manuales
             </div>
 
-            <div class="panel-content active" id="tab-palabras">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">Buscando alertas de la <strong>Ley de Justicia Alternativa</strong>.</p>
-                <div id="contenedor-keywords"></div>
-            </div>
-
-            <div class="panel-content" id="tab-notas">
-                
+            <div class="panel-content">
                 <div id="indice-notas-container">
                     <h5 style="color:var(--text-muted); margin-bottom:10px; font-size: 0.8rem; text-transform: uppercase;"><i class="fa-solid fa-list"></i> Índice de Anotaciones</h5>
                     <div id="lista-resumen-notas"></div>
@@ -164,23 +149,25 @@
 
                 <h4 style="color: var(--neon-blue); margin-bottom: 5px; font-size: 0.9rem;" id="titulo-nota-foja">Apunte Foja Seleccionada</h4>
                 <p id="info-nota-fecha" style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px;"></p>
-                <textarea class="nota-area" id="texto-notas" placeholder="Escribe observaciones específicas de esta foja..."></textarea>
+                <textarea class="nota-area" id="texto-notas" placeholder="Anota tus observaciones manuales para esta foja aquí..."></textarea>
                 <button class="btn btn-accion" style="width: 100%; justify-content: center;" onclick="guardarNotas()"><i class="fa-solid fa-save"></i> Guardar a Foja</button>
                 <p id="nota-guardada" style="color: var(--success); font-size: 0.75rem; text-align: center; margin-top: 10px; display: none;"><i class="fa-solid fa-check"></i> Nota guardada.</p>
             </div>
         </div>
     </div>
 
+    <!-- PANTALLA DE CARGA SIMPLE -->
     <div id="pantalla-progreso">
         <div class="progreso-card">
-            <i class="fa-solid fa-brain fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
-            <h3 style="color: white; margin-bottom: 5px;">IA Analizando Expediente</h3>
-            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Procesando documento...</p>
+            <i class="fa-solid fa-file-shield fa-beat" style="font-size: 3rem; color: var(--success); margin-bottom: 15px;"></i>
+            <h3 style="color: white; margin-bottom: 5px;">Cargando Documento</h3>
+            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Procesamiento seguro y local...</p>
             <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
         </div>
     </div>
 
     <script>
+        // Configuración de PDF.js (Nativo para leer PDFs localmente)
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         
         let nombreExpediente = localStorage.getItem('expediente_abierto') || 'EXP_NUEVO';
@@ -190,25 +177,20 @@
         let fojaSeleccionadaIndex = 0;
         let zoomGlobal = 1.2;
 
-        const PALABRAS_BUSCADAS = ["acuerdo", "convenio", "mediación", "conciliación", "confidencialidad", "ejecutoria", "sanción", "improcedencia"];
-        let resultadosKeywords = {};
-        window.mapaAlertasPorFoja = {}; 
-
         async function cargarDocumento(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             document.getElementById('pantalla-progreso').style.display = 'flex';
-            document.getElementById('texto-progreso').innerText = "Estructurando documento...";
+            document.getElementById('texto-progreso').innerText = "Renderizando páginas...";
+            document.getElementById('barra-llena').style.width = '0%';
             
             arrayFojas = [];
-            window.mapaAlertasPorFoja = {}; 
 
-            if(file.name.endsWith('.docx')) {
-                document.getElementById('texto-progreso').innerText = "Traduciendo Word a formato visual...";
+            if(file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
+                document.getElementById('texto-progreso').innerText = "Abriendo documento Word...";
                 const arrayBuffer = await file.arrayBuffer();
                 const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
-                const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
 
                 const canvasMini = document.createElement('canvas');
                 canvasMini.width = 150; canvasMini.height = 200;
@@ -218,8 +200,9 @@
                 ctx.fillText('WORD', 75, 100);
 
                 arrayFojas.push({ 
-                    id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, rawText: rawText.value, canvasImage: canvasMini, rotacion: 0 
+                    id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, canvasImage: canvasMini, rotacion: 0 
                 });
+                document.getElementById('barra-llena').style.width = '100%';
             } else {
                 const bytes = new Uint8Array(await file.arrayBuffer());
                 const documentoActual = await pdfjsLib.getDocument(bytes).promise;
@@ -233,15 +216,18 @@
                     await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
                     arrayFojas.push({ id: Date.now() + i, numeroLogico: i, isHtml: false, canvasImage: canvas, rotacion: 0 });
+                    
+                    let percent = Math.round((i / documentoActual.numPages) * 100);
+                    document.getElementById('barra-llena').style.width = `${percent}%`;
                 }
             }
 
-            document.getElementById('pantalla-progreso').style.display = 'none';
-            document.getElementById('btn-analizar').style.display = 'inline-flex';
-            
-            renderizarBarraLateralFojas();
-            renderizarIndiceNotas(); 
-            if(arrayFojas.length > 0) seleccionarFoja(0);
+            setTimeout(() => {
+                document.getElementById('pantalla-progreso').style.display = 'none';
+                renderizarBarraLateralFojas();
+                renderizarIndiceNotas(); 
+                if(arrayFojas.length > 0) seleccionarFoja(0);
+            }, 500);
         }
 
         function renderizarBarraLateralFojas() {
@@ -317,35 +303,21 @@
         function renderizarVisorCentral() {
             const foja = arrayFojas[fojaSeleccionadaIndex];
             const canvasP = document.getElementById('canvas-principal');
-            const canvasD = document.getElementById('canvas-dibujo');
             const divHtml = document.getElementById('html-visor');
 
             if(foja.isHtml) {
-                canvasP.style.display = 'none'; canvasD.style.display = 'none';
+                canvasP.style.display = 'none';
                 divHtml.style.display = 'block'; divHtml.innerHTML = foja.htmlContent;
                 divHtml.style.transform = `scale(${zoomGlobal - 0.2})`; divHtml.style.transformOrigin = "top center";
             } else {
-                divHtml.style.display = 'none'; canvasP.style.display = 'block'; canvasD.style.display = 'block';
+                divHtml.style.display = 'none'; canvasP.style.display = 'block';
 
-                const ctxP = canvasP.getContext('2d'); const ctxD = canvasD.getContext('2d');
+                const ctxP = canvasP.getContext('2d');
                 let w = foja.canvasImage.width * zoomGlobal; let h = foja.canvasImage.height * zoomGlobal;
                 
-                canvasP.width = w; canvasP.height = h; canvasD.width = w; canvasD.height = h;
+                canvasP.width = w; canvasP.height = h;
                 ctxP.drawImage(foja.canvasImage, 0, 0, w, h);
-                canvasP.style.transform = `rotate(${foja.rotacion}deg)`; canvasD.style.transform = `rotate(${foja.rotacion}deg)`; 
-
-                ctxD.clearRect(0, 0, w, h);
-                const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
-                if (alertas && alertas.length > 0) {
-                    alertas.forEach(a => {
-                        const b = a.bbox;
-                        ctxD.fillStyle = a.colorFondo;
-                        ctxD.fillRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
-                        ctxD.strokeStyle = a.colorBorde;
-                        ctxD.lineWidth = 2;
-                        ctxD.strokeRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
-                    });
-                }
+                canvasP.style.transform = `rotate(${foja.rotacion}deg)`; 
             }
         }
 
@@ -359,7 +331,6 @@
                 if(arrayFojas.length > 0) seleccionarFoja(Math.max(0, index-1));
                 else { 
                     document.getElementById('canvas-principal').style.display = 'none'; 
-                    document.getElementById('canvas-dibujo').style.display='none'; 
                     document.getElementById('html-visor').style.display='none';
                     document.getElementById('msg-vacio').style.display = 'block'; 
                 }
@@ -373,15 +344,14 @@
             let numAsignado = prompt("¿Qué número de foja es esta? (Si es la vuelta, pon el mismo número)", "Ej. 233");
             numAsignado = parseInt(numAsignado) || arrayFojas.length + 1;
 
-            if(file.name.endsWith('.docx')) {
+            if(file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
                 const arrayBuffer = await file.arrayBuffer();
                 const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
-                const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
                 
                 const canvasMini = document.createElement('canvas'); canvasMini.width = 150; canvasMini.height = 200;
                 const ctx = canvasMini.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,150,200); ctx.fillStyle = '#2563eb'; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center'; ctx.fillText('WORD', 75, 100);
 
-                arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, isHtml: true, htmlContent: result.value, rawText: rawText.value, canvasImage: canvasMini, rotacion: 0 });
+                arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, isHtml: true, htmlContent: result.value, canvasImage: canvasMini, rotacion: 0 });
                 arrayFojas.sort((a,b) => a.numeroLogico - b.numeroLogico);
                 renderizarBarraLateralFojas();
                 event.target.value = '';
@@ -406,71 +376,9 @@
             event.target.value = '';
         }
 
-        async function escanearPalabrasJudiciales() {
-            if(arrayFojas.length === 0) return;
-            document.getElementById('pantalla-progreso').style.display = 'flex';
-            
-            resultadosKeywords = {};
-            window.mapaAlertasPorFoja = {}; 
-            PALABRAS_BUSCADAS.forEach(p => resultadosKeywords[p.toLowerCase()] = []);
-
-            for (let i = 0; i < arrayFojas.length; i++) {
-                let f = arrayFojas[i];
-                let percent = Math.round(((i + 1) / arrayFojas.length) * 100);
-                document.getElementById('texto-progreso').innerText = `Analizando Foja ${f.numeroLogico}...`;
-                document.getElementById('barra-llena').style.width = `${percent}%`;
-
-                if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
-
-                if(f.isHtml) {
-                    let textoWord = f.rawText.toLowerCase();
-                    PALABRAS_BUSCADAS.forEach(p => {
-                        if(textoWord.includes(p)) {
-                            if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico);
-                        }
-                    });
-                } else {
-                    const { data } = await Tesseract.recognize(f.canvasImage, 'spa');
-                    data.words.forEach(palabra => {
-                        let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
-                        if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
-                            if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico);
-                            window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorBorde: '#ef4444', colorFondo: 'rgba(239, 68, 68, 0.4)' });
-                        }
-                    });
-                }
-            }
-            document.getElementById('pantalla-progreso').style.display = 'none';
-            switchTab('tab-palabras', document.querySelectorAll('.tab')[0]);
-            mostrarResultadosKeywords();
-            renderizarVisorCentral(); 
-        }
-
-        function mostrarResultadosKeywords() {
-            const cont = document.getElementById('contenedor-keywords');
-            cont.innerHTML = '';
-            let encontroAlgo = false;
-            for(let key in resultadosKeywords) {
-                let fojasDondeAparece = resultadosKeywords[key];
-                if(fojasDondeAparece.length > 0) {
-                    encontroAlgo = true;
-                    let fojasBadgesHTML = fojasDondeAparece.map(num => `<span class="badge-foja" onclick="buscarFojaPorNumero(${num})">F-${num}</span>`).join('');
-                    cont.innerHTML += `<div class="keyword-card"><div class="keyword-header"><span class="keyword-word">${key}</span><span class="keyword-count">${fojasDondeAparece.length}</span></div><div class="keyword-fojas">En: ${fojasBadgesHTML}</div></div>`;
-                }
-            }
-            if(!encontroAlgo) cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No se detectaron actuaciones clave.</p>`;
-        }
-
         function buscarFojaPorNumero(num) {
             let index = arrayFojas.findIndex(f => f.numeroLogico === parseInt(num));
             if(index !== -1) seleccionarFoja(index);
-        }
-
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            element.classList.add('active');
-            document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
         }
 
         function cargarNotasDeFojaActual() {
