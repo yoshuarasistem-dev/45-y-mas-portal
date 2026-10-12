@@ -27,7 +27,9 @@
         
         .panel-alertas { flex: 1.2; background: #1A365D; color: white; padding: 20px; overflow-y: auto; border-left: 5px solid #0f172a; min-width: 320px; max-width: 450px;}
         
-        /* ESTILO PARA LA TARJETA DE BLOQUEO DEMO */
+        /* AVISO DE DEMO LIMITADA GRANDE */
+        .banner-demo-limitado { background: linear-gradient(135deg, #b91c1c, #991b1b); color: white; padding: 12px; border-radius: 6px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
         .demo-lock-card { background: #2a4365; padding: 20px; border-radius: 8px; text-align: center; border: 2px dashed #E36414; margin-top: 20px; }
         .demo-lock-card h4 { color: #fb923c; margin-bottom: 10px; font-size: 1.1rem; }
         .demo-lock-card p { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 15px; line-height: 1.4; }
@@ -57,11 +59,11 @@
 
     <div class="controles-superior">
         <a href="index.html" class="btn btn-volver">← Portal</a>
-        <h2 style="margin: 0; margin-right: 15px; color: #1A365D; font-size: 1.2rem;">📡 IurisVisor Pro <span style="font-size:0.7rem; background:#E36414; color:white; padding:2px 6px; border-radius:4px;">DEMO GRATUITA</span></h2>
+        <h2 style="margin: 0; margin-right: 15px; color: #1A365D; font-size: 1.2rem;">📡 IurisVisor Pro</h2>
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
         <button class="btn-cargar" onclick="document.getElementById('pdf-upload').click()">📂 1. Cargar PDF</button>
         <button id="btn-analizar" class="btn-analizar" onclick="escanearAlertas()">🔍 2. Radar de Alertas</button>
-        <button id="btn-exportar" class="btn-exportar" onclick="verificarVIP()">💾 3. Guardar Ordenado (VIP)</button>
+        <button id="btn-exportar" class="btn-exportar" onclick="verificarVIP()">🔓 3. Desbloquear VIP</button>
         <div id="loading">Cargando...</div>
     </div>
 
@@ -79,6 +81,7 @@
         </div>
 
         <div class="panel-alertas" id="panel-alertas">
+            <div class="banner-demo-limitado">⚠️ VERSIÓN DE PRUEBA LIMITADA</div>
             <h3 style="color: #fb923c; border-bottom: 1px solid #334155; padding-bottom: 10px;">Radar Legal</h3>
             <div id="lista-alertas">
                 <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 15px;">Ejecuta el análisis para ver el reporte general del expediente.</p>
@@ -91,12 +94,12 @@
     <!-- MODAL DE SOLICITUD DE TOKEN VIP -->
     <div id="modalVIP">
         <div class="modal-card">
-            <h2>🔒 Activación Versión Pro</h2>
+            <h2>🔒 Desbloquear Versión VIP</h2>
             <p>Ingresa tu token de acceso oficial del Centro 45 y Más para desbloquear la visualización completa de alertas y exportación.</p>
             <input type="text" id="tokenInput" class="input-vip" placeholder="Ej. 45YMAS">
-            <button class="btn-validar" onclick="validarTokenVIP()">Activar Versión Pro</button>
+            <button class="btn-validar" onclick="validarTokenVIP()">Desbloquear VIP</button>
             <br>
-            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20adquirir%20mi%20token%20PRO%20para%20IurisVisor" target="_blank" style="display:block; margin-top:15px; color:#25D366; font-weight:bold; font-size:0.85rem; text-decoration:none;">💬 Contactar vía WhatsApp (SPEI)</a>
+            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20adquirir%20mi%20token%20VIP%20para%20IurisVisor" target="_blank" style="display:block; margin-top:15px; color:#25D366; font-weight:bold; font-size:0.85rem; text-decoration:none;">💬 Contactar vía WhatsApp (SPEI)</a>
             <button class="btn-cerrar-modal" onclick="cerrarModalVIP()">Cancelar</button>
         </div>
     </div>
@@ -107,7 +110,7 @@
         let pdfDocumento = null; 
         let nivelZoomActual = 1.3;
         let paginaCargadaActual = null;
-        let esProActivado = false; // Bandera de control Pro
+        let esProActivado = false;
 
         function verificarVIP() {
             document.getElementById('modalVIP').style.display = 'flex';
@@ -119,10 +122,10 @@
             const token = document.getElementById('tokenInput').value.trim();
             if(token === "45YMAS") {
                 esProActivado = true;
-                alert("¡Versión Pro activada correctamente!");
+                alert("¡Versión VIP activada correctamente!");
                 cerrarModalVIP();
-                document.querySelector('h2 span').innerText = "VERSIÓN PRO ACTIVA";
-                document.querySelector('h2 span').style.background = "#059669";
+                document.querySelector('.banner-demo-limitado').style.background = "#059669";
+                document.querySelector('.banner-demo-limitado').innerText = "✓ VERSIÓN VIP ACTIVA";
                 if(window.ultimasAlertasGlobales) {
                     mostrarPanelPro(window.ultimasAlertasGlobales);
                 }
@@ -270,7 +273,6 @@
             loading.innerText = "¡Escaneo completado!";
             setTimeout(() => loading.style.display = 'none', 2000);
 
-            // COMPORTAMIENTO COMERCIAL: DEMO vs PRO
             if (esProActivado) {
                 mostrarPanelPro(todasLasAlertasArray);
             } else {
@@ -286,16 +288,16 @@
                     Se detectaron un total de <span style="color:#fb923c; font-size:1.2rem; font-weight:bold;">${total} alertas jurídicas</span> en este expediente.
                 </div>
                 <div class="demo-lock-card">
-                    <h4>🔒 Funciones Pro Bloqueadas</h4>
-                    <p>La versión Demo oculta el desglose de fojas y el visor con marcatextos de plazos.</p>
-                    <button class="btn-desbloquear-pro" onclick="verificarVIP()">Activar Versión Pro (45YMAS)</button>
+                    <h4>🔒 Funciones VIP Bloqueadas</h4>
+                    <p>La versión de prueba está limitada. Desbloquea la plataforma para ver el desglose exacto y las fojas.</p>
+                    <button class="btn-desbloquear-pro" onclick="verificarVIP()">Desbloquear VIP (45YMAS)</button>
                 </div>
             `;
         }
 
         function mostrarPanelPro(alertas) {
             const panelAlertas = document.getElementById('lista-alertas');
-            panelAlertas.innerHTML = `<h4 style="color:#34d399; margin-bottom:15px;">✓ Versión Pro: ${alertas.length} Alertas Detectadas</h4>`;
+            panelAlertas.innerHTML = `<h4 style="color:#34d399; margin-bottom:15px;">✓ Versión VIP: ${alertas.length} Alertas Detectadas</h4>`;
             
             alertas.forEach(a => {
                 const alertaDiv = document.createElement('div');
