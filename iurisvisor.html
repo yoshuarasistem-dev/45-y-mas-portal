@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>IurisVisor: Versión Ejecutoriada - CNPCF</title>
+    <title>IurisVisor Pro: Versión Ejecutoriada - CNPCF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -26,9 +26,12 @@
         .btn-zoom { background: #34495e; padding: 5px 10px; font-size: 14px; }
         
         .panel-alertas { flex: 1.2; background: #1A365D; color: white; padding: 20px; overflow-y: auto; border-left: 5px solid #0f172a; min-width: 320px; max-width: 450px;}
-        .alerta-item { background: #2a4365; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 5px solid #E36414; cursor: pointer; transition: 0.2s; }
-        .alerta-item:hover { background: #334e68; }
-        .motivo-alerta { font-size: 13px; color: #cbd5e1; margin-top: 8px; font-style: italic; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 3px; }
+        
+        /* ESTILO PARA LA TARJETA DE BLOQUEO DEMO */
+        .demo-lock-card { background: #2a4365; padding: 20px; border-radius: 8px; text-align: center; border: 2px dashed #E36414; margin-top: 20px; }
+        .demo-lock-card h4 { color: #fb923c; margin-bottom: 10px; font-size: 1.1rem; }
+        .demo-lock-card p { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 15px; line-height: 1.4; }
+        .btn-desbloquear-pro { background: #E36414; color: white; padding: 10px 20px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; width: 100%; }
 
         .carrusel-inferior { height: 220px; background: #bdc3c7; border-top: 2px solid #7f8c8d; padding: 15px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 15px; align-items: center; }
         .foja-card { background: white; padding: 8px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-align: center; position: relative; min-width: 130px; cursor: pointer; border: 3px solid transparent;}
@@ -56,7 +59,7 @@
         <a href="index.html" class="btn btn-volver">← Portal</a>
         <h2 style="margin: 0; margin-right: 15px; color: #1A365D; font-size: 1.2rem;">📡 IurisVisor Pro <span style="font-size:0.7rem; background:#E36414; color:white; padding:2px 6px; border-radius:4px;">DEMO GRATUITA</span></h2>
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
-        <button class="btn-cargar" onclick="document.getElementById('pdf-upload').click()">📂 1. Cargar PDF (Demo)</button>
+        <button class="btn-cargar" onclick="document.getElementById('pdf-upload').click()">📂 1. Cargar PDF</button>
         <button id="btn-analizar" class="btn-analizar" onclick="escanearAlertas()">🔍 2. Radar de Alertas</button>
         <button id="btn-exportar" class="btn-exportar" onclick="verificarVIP()">💾 3. Guardar Ordenado (VIP)</button>
         <div id="loading">Cargando...</div>
@@ -65,7 +68,7 @@
     <div class="area-trabajo">
         <div class="visor-central-container" id="contenedor-visor-central">
             <div class="visor-mensaje-vacio" id="mensaje-vacio">
-                ℹ️ Estás usando la <strong>Versión de Prueba</strong> de IurisVisor.<br>Carga tu expediente PDF para explorar el análisis y el radar de plazos.
+                ℹ️ Carga un expediente y ejecuta el Radar para ver el análisis de la versión Demo.
             </div>
             <div class="controles-zoom" id="caja-zoom">
                 <button class="btn-zoom" onclick="cambiarZoom(0.2)">➕</button>
@@ -76,8 +79,10 @@
         </div>
 
         <div class="panel-alertas" id="panel-alertas">
-            <h3 style="color: #fb923c; border-bottom: 1px solid #334155; padding-bottom: 10px;">Radar Legal (Demo)</h3>
-            <div id="lista-alertas"></div>
+            <h3 style="color: #fb923c; border-bottom: 1px solid #334155; padding-bottom: 10px;">Radar Legal</h3>
+            <div id="lista-alertas">
+                <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 15px;">Ejecuta el análisis para ver el reporte general del expediente.</p>
+            </div>
         </div>
     </div>
 
@@ -86,12 +91,12 @@
     <!-- MODAL DE SOLICITUD DE TOKEN VIP -->
     <div id="modalVIP">
         <div class="modal-card">
-            <h2>🔒 Función Exclusiva VIP</h2>
-            <p>La exportación y limpieza definitiva de expedientes requiere membresía activa del Centro 45 y Más.<br>Ingresa tu token o solicítalo vía WhatsApp.</p>
+            <h2>🔒 Activación Versión Pro</h2>
+            <p>Ingresa tu token de acceso oficial del Centro 45 y Más para desbloquear la visualización completa de alertas y exportación.</p>
             <input type="text" id="tokenInput" class="input-vip" placeholder="Ej. 45YMAS">
-            <button class="btn-validar" onclick="validarTokenVIP()">Desbloquear Función Pro</button>
+            <button class="btn-validar" onclick="validarTokenVIP()">Activar Versión Pro</button>
             <br>
-            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20mi%20token%20VIP%20para%20exportar%20en%20IurisVisor" target="_blank" style="display:block; margin-top:15px; color:#25D366; font-weight:bold; font-size:0.85rem; text-decoration:none;">💬 Obtener Token por WhatsApp (SPEI)</a>
+            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20adquirir%20mi%20token%20PRO%20para%20IurisVisor" target="_blank" style="display:block; margin-top:15px; color:#25D366; font-weight:bold; font-size:0.85rem; text-decoration:none;">💬 Contactar vía WhatsApp (SPEI)</a>
             <button class="btn-cerrar-modal" onclick="cerrarModalVIP()">Cancelar</button>
         </div>
     </div>
@@ -102,7 +107,7 @@
         let pdfDocumento = null; 
         let nivelZoomActual = 1.3;
         let paginaCargadaActual = null;
-        let alertasPaginaCargada = []; 
+        let esProActivado = false; // Bandera de control Pro
 
         function verificarVIP() {
             document.getElementById('modalVIP').style.display = 'flex';
@@ -113,9 +118,14 @@
         function validarTokenVIP() {
             const token = document.getElementById('tokenInput').value.trim();
             if(token === "45YMAS") {
-                alert("¡Token validado con éxito! Iniciando exportación...");
+                esProActivado = true;
+                alert("¡Versión Pro activada correctamente!");
                 cerrarModalVIP();
-                exportarPDFReal();
+                document.querySelector('h2 span').innerText = "VERSIÓN PRO ACTIVA";
+                document.querySelector('h2 span').style.background = "#059669";
+                if(window.ultimasAlertasGlobales) {
+                    mostrarPanelPro(window.ultimasAlertasGlobales);
+                }
             } else {
                 alert("Token incorrecto. Solicita tu acceso oficial en el Centro 45 y Más.");
             }
@@ -132,7 +142,7 @@
             
             const carrusel = document.getElementById('grid-fojas');
             carrusel.innerHTML = '';
-            document.getElementById('lista-alertas').innerHTML = '';
+            document.getElementById('lista-alertas').innerHTML = '<p style="font-size: 0.9rem; color: #94a3b8; margin-top: 15px;">PDF cargado. Da clic en "Buscar Alertas".</p>';
             document.getElementById('canvas-visor-central').style.display = 'none';
             document.getElementById('mensaje-vacio').style.display = 'block';
             document.getElementById('caja-zoom').style.display = 'none';
@@ -147,7 +157,15 @@
                 card.dataset.numPaginaPdf = i; 
                 card.dataset.rotacion = 0; 
                 
-                card.onclick = (e) => { if(e.target.tagName !== 'BUTTON') { cargarEnVisorCentral(i, []); } };
+                card.onclick = (e) => { 
+                    if(e.target.tagName !== 'BUTTON') { 
+                        if(esProActivado) {
+                            cargarEnVisorCentral(i, window.mapaAlertasPorFoja[i] || []); 
+                        } else {
+                            verificarVIP();
+                        }
+                    } 
+                };
                 
                 const canvasContainer = document.createElement('div');
                 canvasContainer.className = 'foja-canvas-container';
@@ -206,8 +224,12 @@
                 { nombre: "Término / Auto", palabras: ['admite', 'término', 'días'], color: 'rgba(52, 152, 219, 0.4)', borde: '#3498db' }
             ];
 
+            let totalAlertasGlobales = 0;
+            window.mapaAlertasPorFoja = {};
+            let todasLasAlertasArray = [];
+
             for (let i = 0; i < cards.length; i++) {
-                loading.innerText = `Analizando foja ${i+1}...`;
+                loading.innerText = `Escaneando foja ${i+1}...`;
                 const numPaginaPdf = cards[i].dataset.numPaginaPdf;
                 const page = await pdfDocumento.getPage(parseInt(numPaginaPdf));
                 const viewportOCR = page.getViewport({ scale: 1.0 });
@@ -230,29 +252,63 @@
                                 textoExacto: palabra.text,
                                 bbox: palabra.bbox,
                                 colorFondo: cat.color,
-                                colorBorde: cat.borde
+                                colorBorde: cat.borde,
+                                numFoja: numPaginaPdf
                             });
                         }
                     }
                 });
 
                 if (alertasEnEstaFoja.length > 0) {
-                    const alertaDiv = document.createElement('div');
-                    alertaDiv.className = 'alerta-item';
-                    alertaDiv.style.borderLeftColor = alertasEnEstaFoja[0].colorBorde;
-                    let motivos = alertasEnEstaFoja.map(a => `"${a.textoExacto}"`).join(', ');
-                    alertaDiv.innerHTML = `<strong>📍 Foja ${i+1}</strong><br>Detectado: ${alertasEnEstaFoja[0].categoria}<div class="motivo-alerta">Palabras: ${motivos}</div>`;
-                    alertaDiv.onclick = () => cargarEnVisorCentral(numPaginaPdf, alertasEnEstaFoja);
-                    panelAlertas.appendChild(alertaDiv);
+                    window.mapaAlertasPorFoja[numPaginaPdf] = alertasEnEstaFoja;
+                    totalAlertasGlobales += alertasEnEstaFoja.length;
+                    todasLasAlertasArray.push(...alertasEnEstaFoja);
                 }
             }
-            loading.innerText = "¡Radar completado!";
-            setTimeout(() => loading.style.display = 'none', 3000);
+
+            window.ultimasAlertasGlobales = todasLasAlertasArray;
+            loading.innerText = "¡Escaneo completado!";
+            setTimeout(() => loading.style.display = 'none', 2000);
+
+            // COMPORTAMIENTO COMERCIAL: DEMO vs PRO
+            if (esProActivado) {
+                mostrarPanelPro(todasLasAlertasArray);
+            } else {
+                mostrarPanelDemo(totalAlertasGlobales);
+            }
+        }
+
+        function mostrarPanelDemo(total) {
+            const panelAlertas = document.getElementById('lista-alertas');
+            panelAlertas.innerHTML = `
+                <div style="background:#2a4365; padding:15px; border-radius:6px; margin-bottom:15px; border-left:4px solid #3498db;">
+                    <strong>📊 Reporte General (Demo)</strong><br>
+                    Se detectaron un total de <span style="color:#fb923c; font-size:1.2rem; font-weight:bold;">${total} alertas jurídicas</span> en este expediente.
+                </div>
+                <div class="demo-lock-card">
+                    <h4>🔒 Funciones Pro Bloqueadas</h4>
+                    <p>La versión Demo oculta el desglose de fojas y el visor con marcatextos de plazos.</p>
+                    <button class="btn-desbloquear-pro" onclick="verificarVIP()">Activar Versión Pro (45YMAS)</button>
+                </div>
+            `;
+        }
+
+        function mostrarPanelPro(alertas) {
+            const panelAlertas = document.getElementById('lista-alertas');
+            panelAlertas.innerHTML = `<h4 style="color:#34d399; margin-bottom:15px;">✓ Versión Pro: ${alertas.length} Alertas Detectadas</h4>`;
+            
+            alertas.forEach(a => {
+                const alertaDiv = document.createElement('div');
+                alertaDiv.className = 'alerta-item';
+                alertaDiv.style.borderLeftColor = a.colorBorde;
+                alertaDiv.innerHTML = `<strong>📍 Foja ${a.numFoja}</strong><br>Detectado: ${a.categoria}<div class="motivo-alerta">Palabra clave: "${a.textoExacto}"</div>`;
+                alertaDiv.onclick = () => cargarEnVisorCentral(a.numFoja, window.mapaAlertasPorFoja[a.numFoja]);
+                panelAlertas.appendChild(alertaDiv);
+            });
         }
 
         async function cargarEnVisorCentral(numPagina, alertas) {
             paginaCargadaActual = numPagina;
-            alertasPaginaCargada = alertas;
             nivelZoomActual = 1.3;
 
             document.querySelectorAll('.foja-card').forEach(c => c.classList.remove('activa'));
@@ -262,10 +318,10 @@
             document.getElementById('mensaje-vacio').style.display = 'none';
             document.getElementById('caja-zoom').style.display = 'flex';
             document.getElementById('canvas-visor-central').style.display = 'block';
-            renderizarCanvasCentral();
+            renderizarCanvasCentral(alertas);
         }
 
-        async function renderizarCanvasCentral() {
+        async function renderizarCanvasCentral(alertas) {
             if(!paginaCargadaActual) return;
             const page = await pdfDocumento.getPage(parseInt(paginaCargadaActual));
             const viewport = page.getViewport({ scale: nivelZoomActual });
@@ -275,8 +331,8 @@
             canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-            if (alertasPaginaCargada && alertasPaginaCargada.length > 0) {
-                alertasPaginaCargada.forEach(a => {
+            if (esProActivado && alertas && alertas.length > 0) {
+                alertas.forEach(a => {
                     const b = a.bbox;
                     ctx.fillStyle = a.colorFondo;
                     ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
@@ -287,8 +343,8 @@
             }
         }
 
-        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); renderizarCanvasCentral(); }
-        function resetZoom() { nivelZoomActual = 1.3; renderizarCanvasCentral(); }
+        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); renderizarCanvasCentral(window.mapaAlertasPorFoja[paginaCargadaActual]); }
+        function resetZoom() { nivelZoomActual = 1.3; renderizarCanvasCentral(window.mapaAlertasPorFoja[paginaCargadaActual]); }
 
         async function exportarPDFReal() {
             document.getElementById('loading').innerText = "Exportando...";
