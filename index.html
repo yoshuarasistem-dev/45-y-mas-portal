@@ -29,7 +29,6 @@
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        /* HERO SECTION CON LOGO PRINCIPAL CENTRADO */
         .hero { padding: 140px 20px 80px 20px; text-align: center; background-image: radial-gradient(circle at top center, rgba(255, 115, 21, 0.08) 0%, transparent 60%); min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;}
         
         .logo-principal-centro { max-width: 300px; width: 100%; height: auto; margin-bottom: 30px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); }
@@ -38,7 +37,6 @@
         .hero h1 span { background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; }
         
-        /* SECCIÓN DE SERVICIOS */
         .services-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
         .section-header { text-align: center; margin-bottom: 50px; }
         .section-header h2 { font-size: 2.5rem; color: var(--text-main); margin-bottom: 10px; font-weight: 900;}
@@ -54,13 +52,23 @@
         .service-list li { margin-bottom: 15px; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
         .service-list li i { color: var(--success); margin-top: 4px; font-size: 0.8rem; }
 
-        /* VIDEOS Y CÁPSULAS LEGALES REPARADOS */
-        .videos-section { padding: 80px 20px; text-align: center; max-width: 1000px; margin: 0 auto; }
-        .videos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
-        .video-card { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 16px; padding: 20px; transition: transform 0.3s; }
-        .video-card:hover { transform: translateY(-5px); border-color: var(--neon-blue); }
-        .video-container { width: 100%; height: 500px; background: #000; border-radius: 8px; margin-bottom: 15px; overflow: hidden; display: flex; justify-content: center; align-items: center;}
+        /* VIDEOS Y CÁPSULAS LEGALES EN HORIZONTAL */
+        .videos-section { padding: 80px 20px; text-align: center; max-width: 1200px; margin: 0 auto; }
+        .videos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-top: 40px; }
         
+        .video-card { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 16px; padding: 30px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center;}
+        .video-card:hover { transform: translateY(-5px); border-color: var(--neon-blue); }
+        .video-icon-wrapper { width: 80px; height: 80px; border-radius: 50%; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;}
+        .video-icon-wrapper i { font-size: 2.5rem; color: var(--neon-blue); }
+        .video-card h4 { color: var(--text-main); font-size: 1.3rem; margin-bottom: 10px; }
+        .video-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px;}
+        
+        .btn-social { padding: 12px 25px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-tiktok { background: #000; color: #fff; border: 1px solid #333; }
+        .btn-tiktok:hover { background: #ff0050; border-color: #ff0050; }
+        .btn-facebook { background: #1877F2; color: #fff; border: 1px solid #1877F2; }
+        .btn-facebook:hover { background: #0c5bce; border-color: #0c5bce; }
+
         /* ACREDITACIONES Y LOGO SECUNDARIO */
         .acreditaciones-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px;}
         .acreditaciones-text { flex: 1; min-width: 300px; max-width: 600px; text-align: left; }
@@ -104,7 +112,6 @@
 <body>
 
     <nav class="topbar">
-        <!-- TEXTO LIMPIO EN LA TOPBAR -->
         <div class="sub-brand-topbar">Acreditación 065 • IJA Jalisco</div>
         <div class="nav-links">
             <a href="#inicio">Inicio</a>
@@ -163,7 +170,7 @@
         </div>
     </section>
 
-    <!-- SECCIÓN VIDEOS / CÁPSULAS REPARADOS -->
+    <!-- SECCIÓN VIDEOS / CÁPSULAS EN HORIZONTAL -->
     <section class="videos-section" id="capsulas">
         <div class="section-header">
             <p>Asesoría en Redes</p>
@@ -171,35 +178,35 @@
         </div>
         <div class="videos-grid">
             
-            <!-- VIDEO TIKTOK REPARADO -->
             <div class="video-card">
-                <div class="video-container">
-                    <iframe src="https://www.tiktok.com/embed/v2/7410492651478142214" style="width: 100%; height: 100%; border: none;" allow="autoplay; encrypted-media"></iframe>
+                <div class="video-icon-wrapper">
+                    <i class="fa-brands fa-tiktok"></i>
                 </div>
-                <h4 style="color:var(--text-main); margin-bottom:5px;">El Abogato Mediador</h4>
-                <p style="color:var(--brand-orange); font-size:0.85rem; font-weight:bold;"><i class="fa-brands fa-tiktok"></i> @45ymas_oficial</p>
+                <h4>El Abogato Mediador</h4>
+                <p>Descubre nuestros consejos legales de forma rápida y entretenida a través de TikTok.</p>
+                <a href="https://www.tiktok.com/@45ymas_oficial" target="_blank" class="btn-social btn-tiktok">Ver en TikTok <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 5px;"></i></a>
             </div>
 
-            <!-- VIDEO FACEBOOK / SEGUNDO VIDEO -->
             <div class="video-card">
-                <div class="video-container">
-                    <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2F45ymasoficial%2Fvideos%2F886737526756857%2F&show_text=false&width=267&t=0" style="width: 100%; height: 100%; border:none; overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                <div class="video-icon-wrapper" style="background: rgba(24, 119, 242, 0.1);">
+                    <i class="fa-brands fa-facebook" style="color: #1877F2;"></i>
                 </div>
-                <h4 style="color:var(--text-main); margin-bottom:5px;">Contrato Preventivo de Arrendamiento</h4>
-                <p style="color:var(--brand-orange); font-size:0.85rem; font-weight:bold;"><i class="fa-brands fa-facebook"></i> 45 Y MÁS Oficial</p>
+                <h4>Contrato de Arrendamiento</h4>
+                <p>Cápsula informativa detallada sobre contratos preventivos y seguridad jurídica.</p>
+                <a href="https://www.facebook.com/45ymasoficial/videos/886737526756857/" target="_blank" class="btn-social btn-facebook">Ver en Facebook <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 5px;"></i></a>
             </div>
 
         </div>
     </section>
 
-    <!-- SECCIÓN NOSOTROS (CON EL LOGO DEL ROMPECABEZAS REPARADO) -->
+    <!-- SECCIÓN NOSOTROS (CON EL LOGO DEL ROMPECABEZAS REPARADO .jpeg) -->
     <section class="acreditaciones-section" id="nosotros">
         <div class="acreditaciones-text">
             <h2>Mediadores y Conciliadores Certificados</h2>
             <p>El <strong>Centro Privado 45 Y MÁS</strong> cuenta con la certificación oficial del Instituto de Justicia Alternativa del Estado de Jalisco. Garantizamos procedimientos apegados a la ley, con total imparcialidad y confidencialidad para proteger tu patrimonio y tranquilidad familiar.</p>
         </div>
-        <!-- RUTA REPARADA PARA logo45.png -->
-        <img src="assets/logo45.png" onerror="this.outerHTML='<h3 style=\\\'color:var(--brand-orange);\\\'>[LOGO ROMPECABEZAS NO ENCONTRADO EN ASSETS]</h3>';" alt="Logo Rompecabezas 45 y Más" class="puzzle-logo">
+        <!-- RUTA REPARADA PARA logo45.jpeg -->
+        <img src="assets/logo45.jpeg" onerror="this.outerHTML='<h3 style=\\\'color:var(--brand-orange);\\\'>[LOGO ROMPECABEZAS NO ENCONTRADO EN ASSETS]</h3>';" alt="Logo Rompecabezas 45 y Más" class="puzzle-logo">
     </section>
 
     <!-- CONTACTO Y MAPA DE GOOGLE OFICINA -->
