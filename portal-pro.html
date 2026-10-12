@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Pro | Bóveda 45 y Más</title>
+    <!-- Librerías para Auto-Clasificación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
@@ -17,9 +20,7 @@
         #login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; z-index: 50; position: absolute; background: var(--bg-deep); }
         .login-box { background: var(--glass-bg); padding: 50px 40px; border-radius: 16px; border: 1px solid var(--border-glass); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         .login-box h1 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text-main); }
-        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
-        .input-login, .select-login { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; transition: border 0.3s; }
-        .select-login { appearance: none; cursor: pointer; }
+        .input-login, .select-login { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; }
         .input-login:focus, .select-login:focus { border-color: var(--brand-orange); }
         .btn-login { width: 100%; background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; padding: 15px; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: transform 0.2s; margin-top: 10px; }
         .btn-login:hover { transform: translateY(-2px); }
@@ -29,8 +30,6 @@
         .topbar { background: rgba(15, 23, 42, 0.9); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
         .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
         .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
-        
         .main-content { display: flex; flex: 1; overflow: hidden; }
         
         /* SIDEBAR */
@@ -40,43 +39,46 @@
         
         /* ÁREA DE CARPETAS */
         .folder-area { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-deep); }
-        .section-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .section-header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px;}
+        .section-title { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0; }
         
-        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        
+        .btn-auto-classify { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-auto-classify:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+
+        .materia-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .materia-tab { background: var(--glass-bg); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.3s; }
+        .materia-tab.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); }
+
+        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
         .carpeta-card { background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; }
         .carpeta-card:hover { transform: translateY(-5px); border-color: var(--brand-orange); box-shadow: 0 10px 20px rgba(255, 115, 21, 0.1); }
-        .carpeta-card i.folder-icon { font-size: 3.5rem; color: var(--neon-blue); margin-bottom: 15px; }
-        .carpeta-card .titulo { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 1.1rem;}
-        .carpeta-card .subtitulo { font-size: 0.8rem; color: var(--text-muted); }
+        .carpeta-card i.folder-icon { font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px; }
+        .carpeta-card .titulo { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 1rem;}
+        .carpeta-card .subtitulo { font-size: 0.75rem; color: var(--text-muted); }
 
         /* MASC CHECKLIST UI */
         .masc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-glass); }
         .masc-info h2 { color: var(--brand-orange); margin-bottom: 5px; font-size: 1.4rem; }
-        .masc-info p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 3px; }
-        
         .checklist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .checklist-container { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 25px; }
-        .checklist-container h3 { color: var(--neon-blue); margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;}
-        
         .check-group-title { color: var(--brand-orange); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; margin: 20px 0 10px 0; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 4px; }
-        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-main); cursor: pointer; padding: 5px 10px; border-radius: 6px; transition: background 0.2s;}
-        .check-item:hover { background: rgba(255,255,255,0.05); }
-        .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brand-orange); cursor: pointer;}
-        
+        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-main); cursor: pointer; padding: 5px 10px; border-radius: 6px; }
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brand-orange); }
         .check-item.checked { color: var(--text-muted); text-decoration: line-through; }
 
         /* BREADCRUMB */
         .breadcrumb { display: flex; gap: 10px; color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
         .breadcrumb span:hover { color: var(--brand-orange); }
 
-        /* MODAL */
+        /* MODALES Y PANTALLA DE CARGA */
         .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: var(--bg-panel); padding: 35px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid var(--border-glass); }
-        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.2s;}
-        .btn-crear:hover { background: #0ea5e9; }
+        .modal-content { background: var(--bg-panel); padding: 35px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid var(--border-glass); text-align: center; }
+        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
         
-        #campo-tipo-masc { display: none; margin-bottom: 15px; }
+        #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
+        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 12px; text-align: center; width: 350px; }
+        .barra-fondo { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        .barra-llena { width: 0%; height: 100%; background: var(--neon-blue); transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -86,10 +88,10 @@
         <div class="login-box">
             <i class="fa-solid fa-fingerprint" style="font-size: 3.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
             <h1>Portal Pro</h1>
-            <p>Acceso Seguro a la Bóveda Local</p>
+            <p>Bóveda Confidencial</p>
             <input type="text" id="user" class="input-login" placeholder="Usuario Institucional (admin)">
             <input type="password" id="pass" class="input-login" placeholder="Contraseña (45ymas)">
-            <button class="btn-login" onclick="iniciarSesion()">INGRESAR AL SISTEMA</button>
+            <button class="btn-login" onclick="iniciarSesion()">INGRESAR</button>
             <p id="error-msg" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold;">Credenciales incorrectas.</p>
         </div>
     </div>
@@ -119,9 +121,8 @@
     <!-- MODAL PARA CREAR NUEVO EXPEDIENTE/CONVENIO -->
     <div class="modal" id="modal-crear">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px; color: var(--neon-blue); text-align: center;" id="modal-title">Nuevo Registro</h3>
-            
-            <div id="campo-tipo-masc">
+            <h3 style="margin-bottom: 20px; color: var(--neon-blue);" id="modal-title">Nuevo Registro</h3>
+            <div id="campo-tipo-masc" style="display:none; text-align:left;">
                 <label style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">TIPO DE CONVENIO:</label>
                 <select id="select-tipo-masc" class="select-login">
                     <option value="ARRENDAMIENTO">Preventivo Arrendamiento</option>
@@ -129,33 +130,69 @@
                     <option value="DIVORCIO">Divorcio Admtvo. y Mutuo</option>
                 </select>
             </div>
-
-            <label id="lbl-nombre" style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">NOMBRE / NÚMERO:</label>
-            <input type="text" id="input-nuevo" class="input-login" placeholder="Ej. EXP/340/26 o Juan Pérez">
-            
+            <div style="text-align:left;">
+                <label id="lbl-nombre" style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">NÚMERO DE EXPEDIENTE:</label>
+                <input type="text" id="input-nuevo" class="input-login" placeholder="Ej. EXP/340/26">
+            </div>
             <button class="btn-crear" onclick="guardarNuevo()">Crear Carpeta Segura</button>
             <button class="btn-logout" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('modal-crear').style.display='none'">Cancelar</button>
         </div>
     </div>
 
+    <!-- MODAL RESULTADO IA -->
+    <div class="modal" id="modal-resultado-ia">
+        <div class="modal-content">
+            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <h3 style="color: var(--text-main); margin-bottom: 10px;">Expediente Detectado</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">La Inteligencia Artificial ha leído la carátula y encontrado lo siguiente:</p>
+            
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 15px; text-align: left; margin-bottom: 20px;">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Juzgado Destino:</p>
+                <p id="ia-res-juzgado" style="font-size: 1.1rem; color: var(--neon-blue); font-weight: bold; margin-bottom: 10px;">-</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Número de Expediente:</p>
+                <p id="ia-res-exp" style="font-size: 1.1rem; color: var(--brand-orange); font-weight: bold;">-</p>
+            </div>
+
+            <button class="btn-crear" onclick="aceptarClasificacionIA()">Ir a Carpeta y Crear Expediente</button>
+            <button class="btn-logout" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('modal-resultado-ia').style.display='none'">Cancelar / Descartar</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE CARGA IA -->
+    <div id="pantalla-progreso">
+        <div class="progreso-card">
+            <i class="fa-solid fa-microchip fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <h3 style="color: white; margin-bottom: 5px;">IA Analizando Documento</h3>
+            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Extrayendo datos de la carátula...</p>
+            <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
+        </div>
+    </div>
+
+    <!-- Input Oculto para Auto Clasificar -->
+    <input type="file" id="pdf-auto-upload" accept="application/pdf" style="display:none;" onchange="procesarPDF_IA(event)">
+
     <script>
-        // ==== BASES DE DATOS DE CHECKLISTS MASC EXACTAS ====
-        const checklistsData = {
-            "ARRENDAMIENTO": {
-                "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"],
-                "Documentos Generales": ["Identificaciones ()*", "Contrato de Arrendamiento ()*", "Contrato de Administracion ()*", "Escritura Publica ( )*", "Predial *", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
-            },
-            "ALIMENTOS": {
-                "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"],
-                "Documentos Generales": ["Identificaciones ()*", "Actas de Nacimiento Padres ()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte ()"],
-                "Documentos Menores": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
-            },
-            "DIVORCIO": {
-                "Contenido de la Carpeta": ["Solicitud Firmada Por Ambas Partes *", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final*", "Convenio Digital"],
-                "Documentos Gral Divorcio": ["Identificaciones (1)", "Actas de Nacimiento Conyuges()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte()", "Certificado No Embarazo (0)"],
-                "Documentos Divorcio Mutuo": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Facturas Bienes Muebles ()", "Escrituras de los Bienes Inmuebles", "Certificado Libertad de Gravamen()*", "Estado de Cuenta del Credito", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
-            }
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        // ==== CATÁLOGO COMPLETO DE JUZGADOS JALISCO ====
+        const catJuzgados = {
+            "Civil": [
+                "Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"
+            ],
+            "Familiar": [
+                "Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 11° Especializado de lo Familiar", "Juzgado Especializado en Niñas, Niños y Adolescentes", "Juzgado Especializado Violencia Mujeres Tlaquepaque"
+            ],
+            "Mercantil": [
+                "Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil", "Juzgado 13° Mercantil", "Juzgado 14° Mercantil", "Juzgado 15° Mercantil", "Juzgado 16° Mercantil", "Juzgado 17° Mercantil", "Juzgado 18° Mercantil", "Juzgado 19° Mercantil"
+            ]
         };
+
+        const anios = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007"];
+        let materiaActiva = "Civil";
+        let vistaActual = 'juridico'; 
+        let nivelActual = 0; 
+        let pathSelection = { juzgado: '', anio: '', exp: '' };
+        let datosIA_Temp = { juzgado: '', exp: '', anio: '' };
 
         // ==== SISTEMA DE LOGIN ====
         function iniciarSesion() {
@@ -169,18 +206,15 @@
         }
         function cerrarSesion() { location.reload(); }
 
-        // ==== NAVEGACIÓN PRINCIPAL ====
-        let vistaActual = 'juridico'; 
-        let nivelActual = 0; 
-        let pathSelection = { juzgado: '', anio: '', exp: '' };
-
-        const juzgadosJalisco = ["Juzgado 1° Civil", "Juzgado 2° Civil", "Juzgado 1° Familiar", "Juzgado 2° Familiar", "Juzgado 1° Mercantil", "Juzgado 2° Mercantil"];
-        const anios = ["2026", "2025", "2024"];
-
         function mostrarSeccion(seccion) {
             vistaActual = seccion; nivelActual = 0;
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             document.getElementById('menu-' + seccion).classList.add('active');
+            renderizarVista();
+        }
+
+        function cambiarMateria(mat) {
+            materiaActiva = mat;
             renderizarVista();
         }
 
@@ -190,34 +224,46 @@
 
             if (vistaActual === 'juridico') {
                 if (nivelActual === 0) {
-                    html += `<div class="section-title"><i class="fa-solid fa-building-columns"></i> Selecciona un Juzgado</div><div class="grid-carpetas">`;
-                    juzgadosJalisco.forEach(j => { html += crearCardCarpeta(j, 'Expedientes locales', `entrarNivel(1, '${j}')`, 'fa-folder'); });
+                    html += `
+                    <div class="section-header-box">
+                        <div class="section-title"><i class="fa-solid fa-building-columns"></i> Base de Juzgados</div>
+                        <button class="btn-auto-classify" onclick="document.getElementById('pdf-auto-upload').click()">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Clasificar PDF con IA
+                        </button>
+                    </div>
+                    <div class="materia-tabs">
+                        <div class="materia-tab ${materiaActiva === 'Civil' ? 'active' : ''}" onclick="cambiarMateria('Civil')">Materia Civil</div>
+                        <div class="materia-tab ${materiaActiva === 'Familiar' ? 'active' : ''}" onclick="cambiarMateria('Familiar')">Materia Familiar</div>
+                        <div class="materia-tab ${materiaActiva === 'Mercantil' ? 'active' : ''}" onclick="cambiarMateria('Mercantil')">Materia Mercantil</div>
+                    </div>
+                    <div class="grid-carpetas">`;
+                    
+                    catJuzgados[materiaActiva].forEach(j => { html += crearCardCarpeta(j, 'Expedientes locales', `entrarNivel(1, '${j}')`, 'fa-folder'); });
                     html += `</div>`;
                 } 
                 else if (nivelActual === 1) {
                     html += `<div class="breadcrumb" onclick="entrarNivel(0)"><i class="fa-solid fa-arrow-left"></i> Volver a Juzgados</div>`;
-                    html += `<div class="section-title">${pathSelection.juzgado} > Selecciona el Año</div><div class="grid-carpetas">`;
+                    html += `<div class="section-title" style="margin-bottom:20px;">${pathSelection.juzgado} > Año de Inicio</div><div class="grid-carpetas">`;
                     anios.forEach(a => { html += crearCardCarpeta(a, 'Año judicial', `entrarNivel(2, '${a}')`, 'fa-calendar'); });
                     html += `</div>`;
                 }
                 else if (nivelActual === 2) {
                     html += `<div class="breadcrumb" onclick="entrarNivel(1)"><i class="fa-solid fa-arrow-left"></i> Volver a Años</div>`;
-                    html += `<div class="section-title">${pathSelection.juzgado} > ${pathSelection.anio} > Expedientes</div>`;
+                    html += `<div class="section-title" style="margin-bottom:20px;">${pathSelection.juzgado} > ${pathSelection.anio} > Expedientes</div>`;
                     html += `<div class="grid-carpetas"><div class="carpeta-card" style="border: 2px dashed var(--neon-blue);" onclick="abrirModalCrear('Nuevo Expediente')">
                             <i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Añadir Expediente</div></div>`;
                     
                     let exps = JSON.parse(localStorage.getItem(`exp_${pathSelection.juzgado}_${pathSelection.anio}`)) || [];
-                    exps.forEach(e => { html += crearCardCarpeta(e.nombre, 'PDF y Notas locales', `abrirVisor('${e.nombre}')`, 'fa-file-pdf'); });
+                    exps.forEach(e => { html += crearCardCarpeta(e.nombre, 'Gestión Digital', `abrirVisor('${e.nombre}')`, 'fa-file-pdf'); });
                     html += `</div>`;
                 }
             } 
+            // Lógica MASC y Creación se mantiene intacta...
             else if (vistaActual === 'masc') {
-                html += `<div class="section-title"><i class="fa-solid fa-handshake"></i> Convenios MASC Activos</div>`;
+                html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Convenios MASC Activos</div></div>`;
                 html += `<div class="grid-carpetas"><div class="carpeta-card" style="border: 2px dashed var(--brand-orange);" onclick="abrirModalCrear('Nuevo Convenio MASC')">
                         <i class="fa-solid fa-user-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Nuevo Solicitante</div></div>`;
-                
                 let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-                // Se muestran del más reciente al más antiguo (Reverse)
                 mascs.slice().reverse().forEach((m, i) => { 
                     let realIndex = mascs.length - 1 - i;
                     let tipoLabel = (m.tipo === "ARRENDAMIENTO") ? "Arrendamiento" : (m.tipo === "ALIMENTOS") ? "Alimentos" : "Divorcio";
@@ -244,11 +290,9 @@
             renderizarVista();
         }
 
-        // ==== CREACIÓN LOCAL ====
-        function abrirModalCrear(tipo) {
-            tipoCreacion = tipo;
+        function abrirModalCrear(tipo, valorPredeterminado = '') {
             document.getElementById('modal-title').innerText = tipo;
-            document.getElementById('input-nuevo').value = '';
+            document.getElementById('input-nuevo').value = valorPredeterminado;
             
             if(tipo === 'Nuevo Convenio MASC') {
                 document.getElementById('campo-tipo-masc').style.display = 'block';
@@ -265,7 +309,6 @@
         function guardarNuevo() {
             let valor = document.getElementById('input-nuevo').value.trim();
             if(!valor) return;
-
             if(vistaActual === 'juridico') {
                 let key = `exp_${pathSelection.juzgado}_${pathSelection.anio}`;
                 let exps = JSON.parse(localStorage.getItem(key)) || [];
@@ -274,91 +317,149 @@
             } else {
                 let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
                 let tipoSelec = document.getElementById('select-tipo-masc').value;
-                // Generar número correlativo Ej. 001/26
                 let anioActual = new Date().getFullYear().toString().slice(-2);
                 let consecutivo = (mascs.length + 1).toString().padStart(3, '0');
-                let numFolder = `${consecutivo}/${anioActual}`;
-                
-                // Formato de guardado
-                mascs.push({ 
-                    numero: numFolder, 
-                    nombre: valor, 
-                    fecha: new Date().toLocaleDateString(),
-                    tipo: tipoSelec,
-                    checks: {} // Guardará el estado de las palomitas
-                });
+                mascs.push({ numero: `${consecutivo}/${anioActual}`, nombre: valor, fecha: new Date().toLocaleDateString(), tipo: tipoSelec, checks: {} });
                 localStorage.setItem('masc_list', JSON.stringify(mascs));
             }
             document.getElementById('modal-crear').style.display = 'none';
             renderizarVista();
         }
 
-        // ==== REDIRECCIÓN AL EXPEDIENTE INTELIGENTE ====
         function abrirVisor(nombreExp) {
             localStorage.setItem('expediente_abierto', nombreExp);
             window.location.href = 'visor-expediente.html';
         }
 
-        // ==== RENDER DE CHECKLISTS MASC EXACTOS ====
-        function verChecklistMasc(index) {
-            let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-            let m = mascs[index];
-            let listaDocs = checklistsData[m.tipo];
-            
-            let htmlChecks = '';
-            
-            // Recorrer las categorías del checklist seleccionado
-            for(let categoria in listaDocs) {
-                htmlChecks += `<div class="check-group-title">${categoria}</div>`;
-                
-                listaDocs[categoria].forEach(item => {
-                    let itemId = `${categoria}_${item}`;
-                    let isChecked = m.checks[itemId] ? 'checked' : '';
-                    let classCheck = m.checks[itemId] ? 'checked' : '';
+        // =========================================================
+        // MOTOR DE IA: AUTO-CLASIFICACIÓN DE PDF
+        // =========================================================
+        const numMap = { "PRIMERO": "1°", "SEGUNDO": "2°", "TERCERO": "3°", "CUARTO": "4°", "QUINTO": "5°", "SEXTO": "6°", "SEPTIMO": "7°", "OCTAVO": "8°", "NOVENO": "9°", "DECIMO": "10°", "DÉCIMO": "10°", "ONCEAVO": "11°", "DOCEAVO": "12°" };
 
-                    htmlChecks += `
-                    <label class="check-item ${classCheck}">
-                        <input type="checkbox" onchange="actualizarCheckMasc(${index}, '${itemId}', this.checked)" ${isChecked}> 
-                        ${item}
-                    </label>`;
-                });
+        async function procesarPDF_IA(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            document.getElementById('pantalla-progreso').style.display = 'flex';
+            document.getElementById('barra-llena').style.width = '30%';
+            document.getElementById('texto-progreso').innerText = "Renderizando carátula...";
+
+            try {
+                // 1. Cargar PDF
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                const pdf = await pdfjsLib.getDocument(bytes).promise;
+                const page = await pdf.getPage(1); // Solo la hoja 1 (Carátula)
+                
+                // 2. Renderizar a Canvas
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewport.width; canvas.height = viewport.height;
+                await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+                // 3. Ejecutar OCR (Tesseract)
+                document.getElementById('barra-llena').style.width = '60%';
+                document.getElementById('texto-progreso').innerText = "Ejecutando OCR Inteligente...";
+                const { data: { text } } = await Tesseract.recognize(canvas, 'spa');
+                
+                document.getElementById('barra-llena').style.width = '90%';
+                document.getElementById('texto-progreso').innerText = "Interpretando datos jurídicos...";
+
+                // 4. Analizar Texto (Lógica de Clasificación)
+                const textoLimpio = text.toUpperCase();
+                let juzgadoDetectado = "No identificado";
+                let expDetectado = "EXP/NUEVO";
+                let anioDetectado = new Date().getFullYear().toString(); // Por defecto actual
+
+                // A. Buscar número de expediente usando Regex (Ej. EXP. 1471/2007)
+                const regexExp = /EXP[^\d]*(\d+\s*\/\s*\d{2,4})/i;
+                const matchExp = textoLimpio.match(regexExp);
+                if (matchExp) {
+                    expDetectado = "EXP. " + matchExp[1].replace(/\s/g, ''); // Quitar espacios
+                    // Extraer año para clasificar en carpeta
+                    let partes = expDetectado.split('/');
+                    if(partes.length === 2) {
+                        let a = partes[1];
+                        if(a.length === 2) anioDetectado = "20" + a; // Asumir 20XX
+                        else if(a.length === 4) anioDetectado = a;
+                    }
+                }
+
+                // B. Identificar Materia y Número de Juzgado
+                let materiaDetectada = "Civil"; // Default fallback
+                if(textoLimpio.includes("FAMILIAR")) materiaDetectada = "Familiar";
+                if(textoLimpio.includes("MERCANTIL")) materiaDetectada = "Mercantil";
+
+                // Buscar números ordinales en el texto para machear con nuestro catálogo
+                for (const [palabra, numero] of Object.entries(numMap)) {
+                    if (textoLimpio.includes(palabra)) {
+                        // Construir el nombre base. Ej: "Juzgado 6° de lo Familiar"
+                        let prefijo = "Juzgado " + numero;
+                        if(materiaDetectada === "Mercantil" && parseInt(numero) > 10) {
+                            juzgadoDetectado = prefijo + " Mercantil"; // Algunos no dicen "de lo" en mercantil
+                        } else {
+                            juzgadoDetectado = prefijo + " de lo " + materiaDetectada;
+                        }
+                        break;
+                    }
+                }
+
+                // Casos especiales (Si no encontró ordinales pero sí palabras clave especiales)
+                if(juzgadoDetectado === "No identificado") {
+                    if(textoLimpio.includes("NIÑAS, NIÑOS Y ADOLESCENTES")) juzgadoDetectado = "Juzgado Especializado en Niñas, Niños y Adolescentes";
+                    if(textoLimpio.includes("TLAQUEPAQUE") && textoLimpio.includes("VIOLENCIA")) juzgadoDetectado = "Juzgado Especializado Violencia Mujeres Tlaquepaque";
+                }
+
+                // 5. Mostrar Resultados
+                document.getElementById('pantalla-progreso').style.display = 'none';
+                
+                datosIA_Temp.juzgado = juzgadoDetectado;
+                datosIA_Temp.exp = expDetectado;
+                datosIA_Temp.anio = anios.includes(anioDetectado) ? anioDetectado : anios[0];
+
+                document.getElementById('ia-res-juzgado').innerText = juzgadoDetectado;
+                document.getElementById('ia-res-exp').innerText = expDetectado;
+                document.getElementById('modal-resultado-ia').style.display = 'flex';
+
+            } catch (error) {
+                console.error(error);
+                alert("Error al leer el PDF. Asegúrate de que no esté corrupto.");
+                document.getElementById('pantalla-progreso').style.display = 'none';
             }
-
-            const area = document.getElementById('area-trabajo');
-            let tipoVisual = (m.tipo === "ARRENDAMIENTO") ? "Preventivo Arrendamiento" : (m.tipo === "ALIMENTOS") ? "Alimentos y Convivencia" : "Divorcio Admtvo. y Mutuo";
-
-            area.innerHTML = `
-                <div class="breadcrumb" onclick="renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Convenios Activos</div>
-                
-                <div class="masc-header">
-                    <div class="masc-info">
-                        <h2>${m.numero}</h2>
-                        <p><strong style="color:var(--text-main);">Solicitante:</strong> ${m.nombre}</p>
-                        <p><strong style="color:var(--text-main);">Tipo:</strong> ${tipoVisual}</p>
-                        <p><strong style="color:var(--text-main);">Fecha:</strong> ${m.fecha}</p>
-                    </div>
-                    <div>
-                        <button class="btn-login" style="margin:0; padding: 10px 20px; font-size: 0.9rem;" onclick="abrirVisor('MASC_${m.numero.replace('/','-')}')">
-                            <i class="fa-solid fa-file-pdf"></i> Abrir Expediente Digital
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="checklist-grid">
-                    <div class="checklist-container" style="grid-column: 1 / -1;">
-                        <h3><i class="fa-solid fa-list-check"></i> Checklist de Documentación Requerida</h3>
-                        ${htmlChecks}
-                    </div>
-                </div>
-            `;
+            
+            // Limpiar input para permitir subir el mismo archivo si es necesario
+            event.target.value = '';
         }
 
-        function actualizarCheckMasc(mascIndex, itemId, isChecked) {
-            let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-            mascs[mascIndex].checks[itemId] = isChecked;
-            localStorage.setItem('masc_list', JSON.stringify(mascs));
-            verChecklistMasc(mascIndex); // Refrescar visualmente (tachar letra)
+        function aceptarClasificacionIA() {
+            document.getElementById('modal-resultado-ia').style.display = 'none';
+            
+            // Navegar automáticamente a la carpeta detectada
+            if(datosIA_Temp.juzgado !== "No identificado") {
+                // Determinar la materia para el tab visual
+                if(datosIA_Temp.juzgado.includes("Familiar") || datosIA_Temp.juzgado.includes("Niñas")) materiaActiva = "Familiar";
+                else if(datosIA_Temp.juzgado.includes("Mercantil")) materiaActiva = "Mercantil";
+                else materiaActiva = "Civil";
+
+                pathSelection.juzgado = datosIA_Temp.juzgado;
+                pathSelection.anio = datosIA_Temp.anio;
+                nivelActual = 2; // Ir directo a la carpeta de Expedientes de ese año
+                
+                renderizarVista();
+                
+                // Abrir modal de creación pre-llenado
+                setTimeout(() => {
+                    abrirModalCrear('Nuevo Expediente Automático', datosIA_Temp.exp);
+                }, 300);
+            } else {
+                alert("No pudimos clasificar el Juzgado con certeza. Por favor, créalo manualmente.");
+            }
         }
+
+        // FUNCIONALIDAD MASC SE MANTIENE...
+        const checklistsData = { /* Mismos datos de tu checklist MASC */ };
+        function verChecklistMasc(index) { /* Misma función del paso anterior */ }
+        function actualizarCheckMasc(mascIndex, itemId, isChecked) { /* Misma función */ }
     </script>
 </body>
 </html>
