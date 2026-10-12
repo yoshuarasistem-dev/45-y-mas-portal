@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IurisVisor Pro | Centro 45 y Más</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; }
+        header { background-color: #1A365D; color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 1.4rem; }
+        header a { color: #E36414; text-decoration: none; font-weight: bold; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        
+        /* MURO DE BLOQUEO VIP (SOFT-GATE) */
+        #muroMembresia { background: linear-gradient(135deg, #0f172a, #1A365D); color: white; padding: 50px; border-radius: 15px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        #muroMembresia h2 { color: #E36414; margin-bottom: 15px; font-size: 1.8rem; }
+        #muroMembresia p { color: #94a3b8; margin-bottom: 25px; font-size: 1.05rem; }
+        .input-token { padding: 12px; width: 280px; border-radius: 8px; border: none; font-size: 1rem; text-align: center; margin-right: 10px; }
+        .btn-desbloquear { background-color: #E36414; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-desbloquear:hover { background-color: #c9550c; }
+        .btn-wsp-token { display: inline-block; margin-top: 20px; color: #25D366; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+
+        /* CONTENIDO VIP (OCULTO HASTA VALIDAR) */
+        #contenidoVIP { display: none; }
+        .grid-visor { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        @media(max-width: 900px) { .grid-visor { grid-template-columns: 1fr; } }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .card h2 { color: #1A365D; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid #E36414; padding-bottom: 8px; }
+        
+        .upload-box { border: 2px dashed #cbd5e1; padding: 25px; text-align: center; border-radius: 8px; background: #fafafa; cursor: pointer; margin-bottom: 15px; }
+        .upload-box:hover { background: #f1f5f9; }
+        #pdfViewer { width: 100%; height: 500px; border: 1px solid #cbd5e1; border-radius: 8px; display: none; background: #e2e8f0; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
+        .btn-calcular { background-color: #E36414; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-calcular:hover { background-color: #c9550c; }
+        .alerta-resultado { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; display: none; }
+        .semaforo-verde { background-color: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+        .semaforo-amarillo { background-color: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+        .semaforo-rojo { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📡 IurisVisor Pro <span style="font-size: 0.8rem; background: #E36414; padding: 3px 8px; border-radius: 4px;">Acreditación 065</span></h1>
+        <a href="index.html">← Volver al Portal Principal</a>
+    </header>
+
+    <div class="container">
+        
+        <!-- MURO DE MEMBRESÍA (SOFT-GATE) -->
+        <div id="muroMembresia">
+            <h2>🔒 Acceso Exclusivo IurisVisor Pro</h2>
+            <p>Esta herramienta avanzada requiere membresía activa del Centro Privado 45 y Más.<br>Ingresa tu token de acceso mensual o solicita tu validación vía WhatsApp.</p>
+            <div>
+                <input type="text" id="tokenInput" class="input-token" placeholder="Ingresa tu Token VIP (ej: 45YMAS)">
+                <button class="btn-desbloquear" onclick="validarToken()">Desbloquear Herramienta</button>
+            </div>
+            <br>
+            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20realizar%20mi%20pago%20SPEI%20para%20obtener%20mi%20token%20de%20IurisVisor%20Pro" target="_blank" class="btn-wsp-token">💬 ¿No tienes token? Solicítalo aquí por WhatsApp (SPEI)</a>
+        </div>
+
+        <!-- CONTENIDO VIP PROTEGIDO -->
+        <div id="contenidoVIP">
+            <div class="grid-visor">
+                <div>
+                    <div class="card">
+                        <h2>📁 Visor de Expediente Judicial (PDF)</h2>
+                        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                            <p id="textoCarga">📄 <strong>Haga clic aquí para seleccionar su archivo PDF</strong></p>
+                            <input type="file" id="fileInput" style="display: none;" accept=".pdf" onchange="cargarPDF(event)">
+                        </div>
+                        <iframe id="pdfViewer"></iframe>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <h2>⏱️ Semáforo y Control de Plazos</h2>
+                        <div class="form-group">
+                            <label>Fecha de Notificación:</label>
+                            <input type="date" id="fechaNotificacion">
+                        </div>
+                        <div class="form-group">
+                            <label>Días hábiles fatales:</label>
+                            <input type="number" id="diasPlazo" value="3" min="1" max="30">
+                        </div>
+                        <button class="btn-calcular" onclick="calcularPlazo()">Calcular Vencimiento</button>
+                        <div id="resultadoAlerta" class="alerta-resultado"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // CONTRASEÑA VIP DE PRUEBA (Mañana ante el jefe puedes usar: 45YMAS)
+        const TOKEN_CORRECTO = "45YMAS";
+
+        function validarToken() {
+            const tokenUser = document.getElementById('tokenInput').value.trim();
+            if(tokenUser === TOKEN_CORRECTO) {
+                document.getElementById('muroMembresia').style.display = 'none';
+                document.getElementById('contenidoVIP').style.display = 'block';
+            } else {
+                alert('Token incorrecto o membresía vencida. Solicita tu acceso por WhatsApp.');
+            }
+        }
+
+        function cargarPDF(event) {
+            const archivo = event.target.files[0];
+            if (archivo) {
+                const lectorURL = URL.createObjectURL(archivo);
+                const visor = document.getElementById('pdfViewer');
+                const textoCarga = document.getElementById('textoCarga');
+                
+                visor.style.display = 'block';
+                visor.src = lectorURL;
+                textoCarga.innerHTML = `✅ Archivo cargado correctamente: <strong>${archivo.name}</strong>`;
+            }
+        }
+
+        function calcularPlazo() {
+            const fechaInput = document.getElementById('fechaNotificacion').value;
+            const dias = parseInt(document.getElementById('diasPlazo').value);
+            const resultadoDiv = document.getElementById('resultadoAlerta');
+
+            if (!fechaInput) {
+                alert('Seleccione una fecha válida.');
+                return;
+            }
+
+            let fechaNotif = new Date(fechaInput);
+            let fechaVencimiento = new Date(fechaNotif);
+            let diasAgregados = 0;
+            
+            while(diasAgregados < dias) {
+                fechaVencimiento.setDate(fechaVencimiento.getDate() + 1);
+                let diaSemana = fechaVencimiento.getDay();
+                if(diaSemana !== 0 && diaSemana !== 6) {
+                    diasAgregados++;
+                }
+            }
+
+            let hoy = new Date();
+            let diferenciaDias = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
+
+            resultadoDiv.style.display = 'block';
+            resultadoDiv.className = 'alerta-resultado';
+
+            if (diferenciaDias > 3) {
+                resultadoDiv.classList.add('semaforo-verde');
+                resultadoDiv.innerHTML = `🟢 Plazo Seguro<br>Vence el: ${fechaVencimiento.toLocaleDateString()}<br><small>Quedan ${diferenciaDias} días hábiles.</small>`;
+            } else if (diferenciaDias >= 1 && diferenciaDias <= 3) {
+                resultadoDiv.classList.add('semaforo-amarillo');
+                resultadoDiv.innerHTML = `🟡 ¡Atención Próxima!<br>Vence el: ${fechaVencimiento.toLocaleDateString()}<br><small>Quedan ${diferenciaDias} días hábiles.</small>`;
+            } else {
+                resultadoDiv.classList.add('semaforo-rojo');
+                resultadoDiv.innerHTML = `🔴 ¡URGENTE / VENCIDO!<br>Fecha límite: ${fechaVencimiento.toLocaleDateString()}<br><small>Revisar prevención de inmediato.</small>`;
+            }
+        }
+    </script>
+</body>
+</html>
