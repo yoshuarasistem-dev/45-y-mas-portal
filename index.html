@@ -12,15 +12,15 @@
         body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.8); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
         body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
         body.light-mode .feature-card, body.light-mode .service-category { background: #ffffff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        body.light-mode .contact-card { background: #ffffff; border-color: #cbd5e1; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         body { background: var(--bg-deep); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         
         .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); position: fixed; width: 100%; top: 0; z-index: 1000; }
         
         .logo-oficial { display: flex; flex-direction: column; align-items: flex-start; }
-        /* Imagen Forzada */
-        .logo-oficial img { max-height: 60px; object-fit: contain; margin-bottom: 4px; display: block; }
+        .logo-oficial img { max-height: 55px; object-fit: contain; margin-bottom: 4px; display: block; }
         .logo-oficial .sub-brand { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
         
         .nav-links { display: flex; gap: 25px; align-items: center; }
@@ -32,19 +32,19 @@
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        .hero { padding: 160px 20px 80px 20px; text-align: center; background-image: radial-gradient(circle at top center, rgba(255, 115, 21, 0.08) 0%, transparent 60%); }
-        .hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
+        .hero { padding: 160px 20px 80px 20px; text-align: center; background-image: radial-gradient(circle at top center, rgba(255, 115, 21, 0.08) 0%, transparent 60%); min-height: 80vh; display: flex; flex-direction: column; justify-content: center;}
+        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
         .hero h1 span { background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; }
         
-        .services-section { padding: 60px 20px 100px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
+        .services-section { padding: 80px 20px 100px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
         .section-header { text-align: center; margin-bottom: 50px; }
-        .section-header h2 { font-size: 2.2rem; color: var(--text-main); margin-bottom: 10px; }
+        .section-header h2 { font-size: 2.5rem; color: var(--text-main); margin-bottom: 10px; font-weight: 900;}
         .section-header p { color: var(--brand-orange); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;}
 
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
         .service-category { background: var(--bg-deep); padding: 35px; border-radius: 16px; border: 1px solid var(--border-glass); transition: transform 0.3s; }
-        .service-category:hover { transform: translateY(-5px); border-color: var(--brand-orange); }
+        .service-category:hover { transform: translateY(-5px); border-color: var(--brand-orange); box-shadow: 0 10px 25px rgba(255, 115, 21, 0.1);}
         .service-category h3 { color: var(--brand-orange); margin-bottom: 20px; font-size: 1.3rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; display: flex; align-items: center; gap: 10px;}
         .service-category h3 i { color: var(--neon-blue); font-size: 1.5rem; }
         
@@ -52,7 +52,23 @@
         .service-list li { margin-bottom: 15px; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
         .service-list li i { color: var(--success); margin-top: 4px; font-size: 0.8rem; }
 
-        .legaltech-banner { padding: 80px 20px; text-align: center; background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(15, 23, 42, 0.8) 100%); }
+        /* SECCIÓN ACREDITACIONES Y LOGO SECUNDARIO */
+        .acreditaciones-section { padding: 80px 20px; text-align: center; max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px;}
+        .acreditaciones-text { flex: 1; min-width: 300px; text-align: left; }
+        .acreditaciones-text h2 { font-size: 2.2rem; margin-bottom: 15px; color: var(--text-main); }
+        .acreditaciones-text p { color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;}
+        .puzzle-logo { width: 250px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); }
+
+        /* SECCIÓN CONTACTO */
+        .contact-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+        .contact-card { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; }
+        .contact-card:hover { border-color: var(--neon-blue); transform: translateY(-5px);}
+        .contact-card i { font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 15px; }
+        .contact-card h4 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 10px; }
+        .contact-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
+
+        .legaltech-banner { padding: 80px 20px; text-align: center; background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(15, 23, 42, 0.8) 100%); border-top: 1px solid var(--border-glass);}
         .legaltech-banner h2 { font-size: 2.5rem; margin-bottom: 20px; }
         .btn-ingresar { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); color: white; padding: 18px 40px; border-radius: 30px; font-size: 1.1rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(255, 115, 21, 0.3); transition: all 0.3s; border: none; cursor: pointer; margin-top: 20px;}
         .btn-ingresar:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(255, 115, 21, 0.5); }
@@ -65,6 +81,7 @@
             .nav-links { display: none; } 
             .hero h1 { font-size: 2.3rem; }
             .topbar { padding: 15px 20px; }
+            .acreditaciones-text { text-align: center; }
         }
     </style>
 </head>
@@ -72,25 +89,27 @@
 
     <nav class="topbar">
         <div class="logo-oficial">
-            <!-- FALLBACK INCORPORADO SI LA IMAGEN NO CARGA -->
             <img src="logo.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.6rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
             <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
         </div>
         <div class="nav-links">
+            <a href="#inicio">Inicio</a>
             <a href="#servicios">Servicios</a>
-            <a href="#legaltech">LegalTech</a>
+            <a href="#nosotros">Nosotros</a>
+            <a href="#contacto">Contacto</a>
             <a href="portal-pro.html" class="btn-pro"><i class="fa-solid fa-lock"></i> Portal Pro</a>
             <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
-                <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
+                <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Claro</span>
             </button>
         </div>
     </nav>
 
-    <section class="hero">
+    <section class="hero" id="inicio">
         <h1>Centro Privado de <br><span>Mediación y Conciliación</span></h1>
         <p>Expertos en métodos alternativos para la solución de controversias. Justicia rápida, pacífica y con la misma validez que una sentencia judicial.</p>
     </section>
 
+    <!-- SECCIÓN DE SERVICIOS -->
     <section class="services-section" id="servicios">
         <div class="section-header">
             <p>Portafolio Institucional</p>
@@ -134,17 +153,54 @@
         </div>
     </section>
 
+    <!-- SECCIÓN NOSOTROS Y LOGO SECUNDARIO -->
+    <section class="acreditaciones-section" id="nosotros">
+        <div class="acreditaciones-text">
+            <h2>Mediadores y Conciliadores Certificados</h2>
+            <p>El <strong>Centro Privado 45 Y MÁS</strong> cuenta con la certificación oficial del Instituto de Justicia Alternativa del Estado de Jalisco. Garantizamos procedimientos apegados a la ley, con total imparcialidad y confidencialidad para proteger tu patrimonio y tranquilidad familiar.</p>
+        </div>
+        <!-- AQUÍ SE MUESTRA TU LOGO DEL ROMPECABEZAS -->
+        <img src="assets/logo45.png" onerror="this.onerror=null; this.src='assets/logo45.jpg';" alt="Logo Rompecabezas 45 y Más" class="puzzle-logo">
+    </section>
+
+    <!-- NUEVA SECCIÓN DE CONTACTO -->
+    <section class="contact-section" id="contacto">
+        <div class="section-header" style="margin-bottom: 40px;">
+            <p>Atención Personalizada</p>
+            <h2>Contacto y Ubicación</h2>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <h4>Ubicación</h4>
+                <p>Hilarión Romero Gil #935<br>Col. Alcalde Barranquitas<br>Guadalajara, Jal. 44270, México</p>
+            </div>
+            <div class="contact-card">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                <h4>Comunicación</h4>
+                <p><strong>Email:</strong><br>mov45ymas@gmail.com</p>
+                <p style="margin-top: 10px;"><strong>Teléfonos:</strong><br>Cel. (33) 2187-0711<br>Oficina (33) 3330-5471</p>
+            </div>
+            <div class="contact-card">
+                <i class="fa-brands fa-tiktok" style="color: var(--text-main);"></i>
+                <h4>Redes Sociales</h4>
+                <p>Síguenos para consejos legales y novedades del centro.</p>
+                <a href="https://www.tiktok.com/@45ymas_oficial" target="_blank" style="display:inline-block; margin-top:10px; color:var(--neon-blue); font-weight:bold; text-decoration:none;">@45ymas_oficial</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANNER LEGALTECH -->
     <section class="legaltech-banner" id="legaltech">
-        <h2>¿Eres parte de la red de <span>45 Y MÁS</span>?</h2>
-        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;">Accede a nuestra Bóveda Digital Privada. Gestiona expedientes con IA, visualiza alertas judiciales y controla tus checklists MASC desde un entorno 100% confidencial.</p>
+        <h2>Bóveda Digital <span>PRO</span></h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;">Gestiona expedientes con IA, visualiza alertas judiciales y controla tus checklists MASC desde un entorno 100% confidencial.</p>
         <a href="portal-pro.html" class="btn-ingresar">
-            Ingresar al Portal Pro <i class="fa-solid fa-arrow-right"></i>
+            Acceso a la Bóveda <i class="fa-solid fa-lock"></i>
         </a>
     </section>
 
     <footer class="footer">
         <p class="contact-info">Lic. Yoshua Salvador Ramos | Mediador y Conciliador Certificado</p>
-        <p style="margin-bottom: 15px;">Cel. (33) 2187-0711 | Tel. (33) 3330-5471 | mov45ymas@gmail.com</p>
         <p>© 2026 Centro Privado en Mediación y Conciliación 45 y Más. Acreditación 065 IJA.</p>
     </footer>
 
@@ -152,7 +208,7 @@
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('text-theme').innerText = isLight ? "Modo Oscuro" : "Modo Claro";
+            document.getElementById('text-theme').innerText = isLight ? "Oscuro" : "Claro";
             document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
             localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }

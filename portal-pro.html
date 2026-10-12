@@ -16,7 +16,7 @@
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(circle at center, rgba(56, 189, 248, 0.03) 0%, transparent 100%); }
         
         .logo-oficial { display: flex; flex-direction: column; align-items: flex-start;}
-        .logo-oficial img { max-height: 50px; object-fit: contain; margin-bottom: 2px; display:block;}
+        .logo-oficial img { max-height: 45px; object-fit: contain; margin-bottom: 2px; }
         .logo-oficial .sub-brand { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
         #login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; z-index: 50; position: absolute; background: var(--bg-deep); }
@@ -28,15 +28,18 @@
         
         #dashboard-screen { display: none; height: 100vh; flex-direction: column; }
         .topbar { background: rgba(15, 23, 42, 0.9); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
-        .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s;}
+        .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
         .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
+        .btn-home { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; text-decoration: none; display: flex; align-items: center; gap: 8px;}
+        .btn-home:hover { background: rgba(56, 189, 248, 0.1); }
+
         .main-content { display: flex; flex: 1; overflow: hidden; }
         
         .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 20px 0; }
         .menu-item { padding: 15px 25px; color: var(--text-muted); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; border-left: 3px solid transparent; }
         .menu-item:hover, .menu-item.active { background: rgba(56, 189, 248, 0.1); color: var(--neon-blue); border-left-color: var(--neon-blue); }
         
-        .folder-area { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-deep); }
+        .folder-area { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-deep); display: flex; flex-direction: column;}
         .section-header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px;}
         .section-title { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0; }
         
@@ -47,13 +50,28 @@
         .materia-tab { background: var(--glass-bg); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.3s; }
         .materia-tab.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); }
 
-        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .carpeta-card { background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px;}
+        .carpeta-card { background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative;}
         .carpeta-card:hover { transform: translateY(-5px); border-color: var(--brand-orange); box-shadow: 0 10px 20px rgba(255, 115, 21, 0.1); }
         .carpeta-card i.folder-icon { font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px; }
+        .carpeta-card img.center-logo { height: 50px; margin-bottom: 10px; object-fit: contain; border-radius: 4px; }
         .carpeta-card .titulo { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 1rem;}
         .carpeta-card .subtitulo { font-size: 0.75rem; color: var(--text-muted); }
+        
+        .btn-edit-logo { background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--border-glass); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-top: 10px; cursor: pointer; transition: 0.2s;}
+        .btn-edit-logo:hover { background: var(--brand-orange); border-color: var(--brand-orange);}
 
+        /* ACTIVIDAD RECIENTE */
+        .actividad-container { margin-top: auto; background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; }
+        .actividad-header { font-size: 1rem; font-weight: bold; color: var(--brand-orange); margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;}
+        .actividad-list { display: flex; flex-direction: column; gap: 10px; }
+        .actividad-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); padding: 10px 15px; border-radius: 8px; border-left: 3px solid var(--neon-blue); font-size: 0.85rem;}
+        .actividad-item i { color: var(--text-muted); font-size: 1.2rem; width: 25px; text-align: center;}
+        .actividad-item .detalles { flex: 1; }
+        .actividad-item .titulo-act { color: var(--text-main); font-weight: 600; }
+        .actividad-item .fecha-act { color: var(--text-muted); font-size: 0.75rem; }
+
+        /* CHECKLIST MASC UI */
         .masc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-glass); flex-wrap: wrap; gap: 15px;}
         .masc-info h2 { color: var(--brand-orange); margin-bottom: 5px; font-size: 1.4rem; }
         .checklist-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -98,7 +116,10 @@
                 <img src="logo.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS" style="max-height: 40px;">
                 <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); border-left: 1px solid var(--border-glass); padding-left: 15px;">Portal Pro</span>
             </div>
-            <button class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+            <div style="display:flex; gap: 15px;">
+                <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i> Volver a Inicio</a>
+                <button class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+            </div>
         </div>
         
         <div class="main-content">
@@ -136,40 +157,92 @@
     </div>
 
     <div class="modal" id="modal-resultado-ia">
-        <!-- Contenido Modal IA Mantenido... -->
+        <div class="modal-content">
+            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <h3 style="color: var(--text-main); margin-bottom: 10px;">Expediente Detectado</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;" id="ia-desc-text">La Inteligencia Artificial ha analizado el documento:</p>
+            
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 15px; text-align: left; margin-bottom: 20px;">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Juzgado Destino:</p>
+                <p id="ia-res-juzgado" style="font-size: 1.1rem; color: var(--neon-blue); font-weight: bold; margin-bottom: 10px;">-</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Número de Expediente:</p>
+                <p id="ia-res-exp" style="font-size: 1.1rem; color: var(--brand-orange); font-weight: bold;">-</p>
+            </div>
+
+            <button class="btn-crear" id="btn-ia-action" onclick="aceptarClasificacionIA()">Ir a Carpeta y Crear Expediente</button>
+            <button class="btn-logout" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('modal-resultado-ia').style.display='none'">Cerrar</button>
+        </div>
     </div>
+
     <div id="pantalla-progreso">
-        <!-- Pantalla Progreso Mantenido... -->
+        <div class="progreso-card">
+            <i class="fa-solid fa-microchip fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <h3 style="color: white; margin-bottom: 5px;">Sistema Procesando</h3>
+            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Analizando documento...</p>
+            <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
+        </div>
     </div>
-    <input type="file" id="pdf-auto-upload" accept="application/pdf" style="display:none;" onchange="procesarPDF_IA(event)">
+
+    <!-- Inputs ocultos para carga de archivos -->
+    <input type="file" id="pdf-auto-upload" accept=".pdf, .doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="procesarPDF_IA(event)">
+    <input type="file" id="logo-upload" accept="image/*" style="display:none;" onchange="guardarLogoCentro(event)">
 
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        // ==== CATÁLOGOS JURÍDICOS ====
+        // ==== CATÁLOGOS JURÍDICOS Y MASC ====
         const catJuzgados = {
             "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
             "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Juzgado 11° Especializado de lo Familiar", "Juzgado Especializado en Niñas, Niños y Adolescentes", "Juzgado Especializado Violencia Mujeres Tlaquepaque"],
             "Mercantil": ["Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil", "Juzgado 13° Mercantil", "Juzgado 14° Mercantil", "Juzgado 15° Mercantil", "Juzgado 16° Mercantil", "Juzgado 17° Mercantil", "Juzgado 18° Mercantil", "Juzgado 19° Mercantil"]
         };
-        const anios = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007"];
+        const anios = ["2026", "2025", "2024", "2023", "2022", "2021", "2020"];
         
         let materiaActiva = "Civil";
         let vistaActual = 'juridico'; 
         let nivelActual = 0; 
         let pathSelection = { juzgado: '', anio: '', exp: '' };
         
-        // ==== CATÁLOGOS MASC ====
         let pathMasc = { centro: '', anio: '', tipo: '' };
         const tiposMascObj = { "ARRENDAMIENTO": "Preventivo Arrendamiento", "ALIMENTOS": "Alimentos y Convivencia", "DIVORCIO": "Divorcio Admtvo. y Mutuo" };
 
+        let centroEditando = "";
+
+        // ==== FUNCIONES DE ACTIVIDAD RECIENTE ====
+        function registrarActividad(accion, detalle, icono) {
+            let act = JSON.parse(localStorage.getItem('actividad_reciente')) || [];
+            let fecha = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
+            act.unshift({ accion: accion, detalle: detalle, fecha: fecha, icon: icono });
+            if(act.length > 5) act.pop(); // Mantener solo las últimas 5
+            localStorage.setItem('actividad_reciente', JSON.stringify(act));
+        }
+
+        function generarHTMLActividad() {
+            let act = JSON.parse(localStorage.getItem('actividad_reciente')) || [];
+            if(act.length === 0) return '';
+            
+            let htmlList = act.map(a => `
+                <div class="actividad-item">
+                    <i class="fa-solid ${a.icon}"></i>
+                    <div class="detalles">
+                        <div class="titulo-act">${a.accion}</div>
+                        <div class="fecha-act">${a.detalle} - ${a.fecha}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+            <div class="actividad-container">
+                <div class="actividad-header"><i class="fa-solid fa-clock-rotate-left"></i> Actividad Reciente</div>
+                <div class="actividad-list">${htmlList}</div>
+            </div>`;
+        }
+
+        // ==== NAVEGACIÓN Y RENDER ====
         function iniciarSesion() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
+            const u = document.getElementById('user').value; const p = document.getElementById('pass').value;
             if(u === 'admin' && p === '45ymas') {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('dashboard-screen').style.display = 'flex';
-                mostrarSeccion('juridico');
+                document.getElementById('login-screen').style.display = 'none'; document.getElementById('dashboard-screen').style.display = 'flex'; mostrarSeccion('juridico');
             } else { document.getElementById('error-msg').style.display = 'block'; }
         }
         function cerrarSesion() { location.reload(); }
@@ -190,7 +263,9 @@
             if (vistaActual === 'juridico') {
                 if (nivelActual === 0) {
                     html += `
-                    <div class="section-header-box"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Base de Juzgados</div></div>
+                    <div class="section-header-box"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Base de Juzgados</div>
+                        <button class="btn-auto-classify" onclick="document.getElementById('pdf-auto-upload').click()"><i class="fa-solid fa-wand-magic-sparkles"></i> Clasificar Documento IA</button>
+                    </div>
                     <div class="materia-tabs">
                         <div class="materia-tab ${materiaActiva === 'Civil' ? 'active' : ''}" onclick="cambiarMateria('Civil')">Materia Civil</div>
                         <div class="materia-tab ${materiaActiva === 'Familiar' ? 'active' : ''}" onclick="cambiarMateria('Familiar')">Materia Familiar</div>
@@ -199,6 +274,7 @@
                     <div class="grid-carpetas">`;
                     catJuzgados[materiaActiva].forEach(j => { html += crearCardCarpeta(j, 'Expedientes locales', `entrarNivel(1, '${j}')`, 'fa-folder'); });
                     html += `</div>`;
+                    html += generarHTMLActividad();
                 } 
                 else if (nivelActual === 1) {
                     html += `<div class="breadcrumb" onclick="entrarNivel(0)"><i class="fa-solid fa-arrow-left"></i> Volver a Juzgados</div>`;
@@ -217,16 +293,26 @@
             } 
             else if (vistaActual === 'masc') {
                 if (nivelActual === 0) {
-                    // NIVEL CENTROS
-                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Centros de Mediación</div></div>`;
+                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Centros de Mediación MASC</div></div>`;
                     html += `<div class="grid-carpetas">`;
                     let centros = JSON.parse(localStorage.getItem('lista_centros_masc')) || ["Centro 065", "Centro 353"];
-                    centros.forEach(c => { html += crearCardCarpeta(c, 'Sedes Activas', `entrarNivelMasc(1, '${c}')`, 'fa-building', 'var(--brand-orange)'); });
-                    html += `<div class="carpeta-card" style="border: 2px dashed var(--brand-orange);" onclick="abrirModalCrear('Nuevo Centro de Mediación')"><i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Añadir Centro</div></div>`;
+                    centros.forEach(c => { 
+                        // Verificar si tiene logo personalizado
+                        let customLogo = localStorage.getItem('logo_' + c);
+                        let visualIcon = customLogo ? `<img src="${customLogo}" class="center-logo">` : `<i class="fa-solid fa-building folder-icon" style="color:var(--brand-orange);"></i>`;
+                        html += `
+                        <div class="carpeta-card" onclick="entrarNivelMasc(1, '${c}')">
+                            ${visualIcon}
+                            <div class="titulo">${c}</div>
+                            <div class="subtitulo">Sedes Activas</div>
+                            <button class="btn-edit-logo" onclick="event.stopPropagation(); triggerUploadLogo('${c}')"><i class="fa-solid fa-camera"></i> Subir Logo</button>
+                        </div>`;
+                    });
+                    html += `<div class="carpeta-card" style="border: 2px dashed var(--brand-orange); justify-content:center;" onclick="abrirModalCrear('Nuevo Centro de Mediación')"><i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Añadir Centro</div></div>`;
                     html += `</div>`;
+                    html += generarHTMLActividad();
                 }
                 else if (nivelActual === 1) {
-                    // NIVEL AÑOS MASC (2026 a 2020)
                     let aniosMasc = ["2026", "2025", "2024", "2023", "2022", "2021", "2020"];
                     html += `<div class="breadcrumb" onclick="entrarNivelMasc(0)"><i class="fa-solid fa-arrow-left"></i> Volver a Centros</div>`;
                     html += `<div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > Años</div><div class="grid-carpetas">`;
@@ -234,20 +320,16 @@
                     html += `</div>`;
                 }
                 else if (nivelActual === 2) {
-                    // NIVEL TIPO DE CONVENIO
                     html += `<div class="breadcrumb" onclick="entrarNivelMasc(1)"><i class="fa-solid fa-arrow-left"></i> Volver a Años</div>`;
                     html += `<div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > ${pathMasc.anio} > Tipo de Convenio</div><div class="grid-carpetas">`;
-                    for(let key in tiposMascObj) { html += crearCardCarpeta(tiposMascObj[key], 'Categoría', `entrarNivelMasc(3, '${key}')`, 'fa-folder-open', 'var(--brand-orange)'); }
+                    for(let key in tiposMascObj) { html += crearCardCarpeta(tiposMascObj[key], 'Categoría MASC', `entrarNivelMasc(3, '${key}')`, 'fa-folder-open', 'var(--brand-orange)'); }
                     html += `</div>`;
                 }
                 else if (nivelActual === 3) {
-                    // NIVEL EXPEDIENTES MASC
                     html += `<div class="breadcrumb" onclick="entrarNivelMasc(2)"><i class="fa-solid fa-arrow-left"></i> Volver a Tipos</div>`;
                     html += `<div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > ${pathMasc.anio} > ${tiposMascObj[pathMasc.tipo]}</div>`;
                     html += `<div class="grid-carpetas"><div class="carpeta-card" style="border: 2px dashed var(--brand-orange);" onclick="abrirModalCrear('Nuevo Solicitante MASC')"><i class="fa-solid fa-user-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Nuevo Convenio</div></div>`;
-                    
                     let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-                    // Filtrar por ruta
                     mascs.forEach((m, i) => { 
                         if(m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.tipo === pathMasc.tipo) {
                             html += crearCardCarpeta(`${m.numero} | ${m.nombre}`, `Fecha: ${m.fecha}`, `verChecklistMasc(${i})`, 'fa-handshake', 'var(--brand-orange)'); 
@@ -266,6 +348,24 @@
         function entrarNivel(nivel, valor='') { nivelActual = nivel; if(nivel === 1) pathSelection.juzgado = valor; if(nivel === 2) pathSelection.anio = valor; renderizarVista(); }
         function entrarNivelMasc(nivel, valor='') { nivelActual = nivel; if(nivel === 1) pathMasc.centro = valor; if(nivel === 2) pathMasc.anio = valor; if(nivel === 3) pathMasc.tipo = valor; renderizarVista(); }
 
+        // ==== CARGA DE LOGO PERSONALIZADO ====
+        function triggerUploadLogo(centroNombre) {
+            centroEditando = centroNombre;
+            document.getElementById('logo-upload').click();
+        }
+        function guardarLogoCentro(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('logo_' + centroEditando, e.target.result);
+                    registrarActividad("Logo Actualizado", `Se cambió el logo de ${centroEditando}`, "fa-image");
+                    renderizarVista();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function abrirModalCrear(tipo, valorPredeterminado = '') {
             document.getElementById('modal-title').innerText = tipo;
             document.getElementById('input-nuevo').value = valorPredeterminado;
@@ -282,6 +382,7 @@
                 document.getElementById('input-nuevo').placeholder = "Ej. EXP/340/26";
             }
             document.getElementById('modal-crear').style.display = 'flex';
+            document.getElementById('input-nuevo').focus();
         }
 
         function guardarNuevo() {
@@ -294,28 +395,34 @@
                 let exps = JSON.parse(localStorage.getItem(key)) || [];
                 exps.push({ nombre: valor });
                 localStorage.setItem(key, JSON.stringify(exps));
+                registrarActividad("Expediente Creado", `Se creó ${valor} en ${pathSelection.juzgado}`, "fa-folder-plus");
             } else {
                 if(tipo === 'Nuevo Centro de Mediación') {
                     let centros = JSON.parse(localStorage.getItem('lista_centros_masc')) || ["Centro 065", "Centro 353"];
                     centros.push(valor);
                     localStorage.setItem('lista_centros_masc', JSON.stringify(centros));
+                    registrarActividad("Centro Creado", `Se agregó el Centro MASC: ${valor}`, "fa-building");
                 } else if(tipo === 'Nuevo Solicitante MASC') {
                     let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-                    // Filtrar para el consecutivo de ese centro y año
                     let filtrados = mascs.filter(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio);
                     let anioCorto = pathMasc.anio.slice(-2);
                     let consecutivo = (filtrados.length + 1).toString().padStart(3, '0');
-                    mascs.push({ numero: `${consecutivo}/${anioCorto}`, nombre: valor, fecha: new Date().toLocaleDateString(), tipo: pathMasc.tipo, centro: pathMasc.centro, anio: pathMasc.anio, checks: {} });
+                    let numFinal = `${consecutivo}/${anioCorto}`;
+                    mascs.push({ numero: numFinal, nombre: valor, fecha: new Date().toLocaleDateString(), tipo: pathMasc.tipo, centro: pathMasc.centro, anio: pathMasc.anio, checks: {} });
                     localStorage.setItem('masc_list', JSON.stringify(mascs));
+                    registrarActividad("MASC Creado", `Se aperturó convenio ${numFinal} para ${valor}`, "fa-handshake");
                 }
             }
             document.getElementById('modal-crear').style.display = 'none';
             renderizarVista();
         }
 
-        function abrirVisor(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); window.location.href = 'visor-expediente.html'; }
+        function abrirVisor(nombreExp) { 
+            localStorage.setItem('expediente_abierto', nombreExp); 
+            registrarActividad("Lectura de Expediente", `Se abrió ${nombreExp} en el visor inteligente`, "fa-eye");
+            window.location.href = 'visor-expediente.html'; 
+        }
 
-        // ==== CHECKLISTS MASC ====
         const checklistsData = {
             "ARRENDAMIENTO": { "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"], "Documentos Generales": ["Identificaciones ()*", "Contrato de Arrendamiento ()*", "Contrato de Administracion ()*", "Escritura Publica ( )*", "Predial *", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] },
             "ALIMENTOS": { "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"], "Documentos Generales": ["Identificaciones ()*", "Actas de Nacimiento Padres ()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte ()"], "Documentos Menores": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] },
@@ -325,34 +432,127 @@
         function verChecklistMasc(index) {
             let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
             let m = mascs[index];
-            let listaDocs = checklistsData[m.tipo];
-            
             let htmlChecks = '';
-            for(let categoria in listaDocs) {
+            for(let categoria in checklistsData[m.tipo]) {
                 htmlChecks += `<div class="check-group-title">${categoria}</div>`;
-                listaDocs[categoria].forEach(item => {
+                checklistsData[m.tipo][categoria].forEach(item => {
                     let itemId = `${categoria}_${item}`;
                     let isChecked = m.checks[itemId] ? 'checked' : '';
-                    let classCheck = m.checks[itemId] ? 'checked' : '';
-                    htmlChecks += `<label class="check-item ${classCheck}"><input type="checkbox" onchange="actualizarCheckMasc(${index}, '${itemId}', this.checked)" ${isChecked}> ${item}</label>`;
+                    htmlChecks += `<label class="check-item ${isChecked}"><input type="checkbox" onchange="actualizarCheckMasc(${index}, '${itemId}', this.checked)" ${isChecked}> ${item}</label>`;
                 });
             }
 
             document.getElementById('area-trabajo').innerHTML = `
                 <div class="breadcrumb" onclick="renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Expedientes</div>
                 <div class="masc-header">
-                    <div class="masc-info"><h2>${m.numero}</h2><p><strong style="color:var(--text-main);">Solicitante:</strong> ${m.nombre}</p><p><strong style="color:var(--text-main);">Centro:</strong> ${m.centro}</p><p><strong style="color:var(--text-main);">Fecha:</strong> ${m.fecha}</p></div>
-                    <div><button class="btn-login" style="margin:0; padding: 10px 20px; font-size: 0.9rem;" onclick="abrirVisor('MASC_${m.centro}_${m.numero.replace('/','-')}')"><i class="fa-solid fa-file-pdf"></i> Abrir Expediente Digital</button></div>
+                    <div class="masc-info"><h2>${m.numero}</h2><p><strong>Solicitante:</strong> ${m.nombre}</p><p><strong>Centro:</strong> ${m.centro}</p></div>
+                    <div><button class="btn-login" style="margin:0; padding: 10px 20px;" onclick="abrirVisor('MASC_${m.centro}_${m.numero.replace('/','-')}')"><i class="fa-solid fa-folder-open"></i> Abrir Expediente Digital</button></div>
                 </div>
                 <div class="checklist-grid"><div class="checklist-container"><h3><i class="fa-solid fa-list-check"></i> Documentación Requerida</h3>${htmlChecks}</div></div>
             `;
+            registrarActividad("Revisión MASC", `Se consultó el checklist del convenio ${m.numero}`, "fa-list-check");
         }
 
         function actualizarCheckMasc(mascIndex, itemId, isChecked) {
-            let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
+            let mascs = JSON.parse(localStorage.getItem('masc_list'));
             mascs[mascIndex].checks[itemId] = isChecked;
             localStorage.setItem('masc_list', JSON.stringify(mascs));
             verChecklistMasc(mascIndex); 
+        }
+
+        // ==== MOTOR OCR Y MANEJO DE WORD (.doc, .docx) ====
+        let datosIA_Temp = { juzgado: '', exp: '', anio: '' };
+        const numMap = { "PRIMER": "1°", "PRIMERO": "1°", "SEGUNDO": "2°", "TERCER": "3°", "TERCERO": "3°", "CUARTO": "4°", "QUINTO": "5°", "SEXTO": "6°", "SEPTIMO": "7°", "SÉPTIMO": "7°", "OCTAVO": "8°", "NOVENO": "9°", "DECIMO": "10°", "DÉCIMO": "10°", "ONCEAVO": "11°", "DECIMO PRIMERO": "11°", "DOCEAVO": "12°", "DECIMO SEGUNDO": "12°", "TRECEAVO": "13°", "DECIMO TERCERO": "13°", "CATORCEAVO": "14°", "DECIMO CUARTO": "14°", "QUINCEAVO": "15°", "DECIMO QUINTO": "15°", "DIECISEISAVO": "16°", "DECIMO SEXTO": "16°", "DIECISIETEAVO": "17°", "DECIMO SEPTIMO": "17°", "DIECIOCHOAVO": "18°", "DECIMO OCTAVO": "18°", "DIECINUEVEAVO": "19°", "DECIMO NOVENO": "19°", "VIGESIMO": "20°", "VIGÉSIMO": "20°" };
+
+        async function procesarPDF_IA(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Soporte informativo para Word
+            if(file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                document.getElementById('modal-resultado-ia').style.display = 'flex';
+                document.getElementById('ia-desc-text').innerHTML = `Has subido un documento Word (<strong>${file.name}</strong>).<br><br><span style="color:var(--brand-orange);">La Inteligencia Artificial OCR requiere formato PDF para leer la carátula automáticamente.</span> Sin embargo, puedes crear la carpeta manualmente y guardarlo en la Bóveda.`;
+                document.getElementById('ia-res-juzgado').innerText = "Requiere Clasificación Manual";
+                document.getElementById('ia-res-exp').innerText = "Formato Word (.docx)";
+                document.getElementById('btn-ia-action').style.display = 'none';
+                event.target.value = '';
+                return;
+            }
+            
+            document.getElementById('pantalla-progreso').style.display = 'flex';
+            document.getElementById('btn-ia-action').style.display = 'inline-block';
+            document.getElementById('ia-desc-text').innerText = "La Inteligencia Artificial ha leído la carátula y encontrado lo siguiente:";
+            document.getElementById('barra-llena').style.width = '30%';
+
+            try {
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                const pdf = await pdfjsLib.getDocument(bytes).promise;
+                const page = await pdf.getPage(1); 
+                
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewport.width; canvas.height = viewport.height;
+                await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+                document.getElementById('barra-llena').style.width = '60%';
+                const { data: { text } } = await Tesseract.recognize(canvas, 'spa');
+                
+                document.getElementById('barra-llena').style.width = '90%';
+                const textoLimpio = text.toUpperCase();
+                let juzgadoDetectado = "No identificado"; let expDetectado = "EXP/NUEVO"; let anioDetectado = new Date().getFullYear().toString(); 
+
+                const regexExp = /EXP[^\d]*(\d+\s*\/\s*\d{2,4})/i;
+                const matchExp = textoLimpio.match(regexExp);
+                if (matchExp) {
+                    expDetectado = "EXP. " + matchExp[1].replace(/\s/g, ''); 
+                    let partes = expDetectado.split('/');
+                    if(partes.length === 2) {
+                        let a = partes[1];
+                        if(a.length === 2) anioDetectado = "20" + a; 
+                        else if(a.length === 4) anioDetectado = a;
+                    }
+                }
+
+                let materiaDetectada = "Civil"; 
+                if(textoLimpio.includes("FAMILIAR")) materiaDetectada = "Familiar";
+                if(textoLimpio.includes("MERCANTIL")) materiaDetectada = "Mercantil";
+
+                for (const [palabra, numero] of Object.entries(numMap)) {
+                    if (textoLimpio.includes(palabra)) {
+                        let prefijo = "Juzgado " + numero;
+                        if(materiaDetectada === "Mercantil" && parseInt(numero.replace('°','')) > 10) juzgadoDetectado = prefijo + " Mercantil"; 
+                        else juzgadoDetectado = prefijo + " de lo " + materiaDetectada;
+                        break;
+                    }
+                }
+
+                if(juzgadoDetectado === "No identificado") {
+                    if(textoLimpio.includes("NIÑAS, NIÑOS Y ADOLESCENTES")) juzgadoDetectado = "Juzgado Especializado en Niñas, Niños y Adolescentes";
+                    if(textoLimpio.includes("TLAQUEPAQUE") && textoLimpio.includes("VIOLENCIA")) juzgadoDetectado = "Juzgado Especializado Violencia Mujeres Tlaquepaque";
+                }
+
+                document.getElementById('pantalla-progreso').style.display = 'none';
+                datosIA_Temp.juzgado = juzgadoDetectado; datosIA_Temp.exp = expDetectado; datosIA_Temp.anio = anios.includes(anioDetectado) ? anioDetectado : anios[0];
+                document.getElementById('ia-res-juzgado').innerText = juzgadoDetectado; document.getElementById('ia-res-exp').innerText = expDetectado;
+                document.getElementById('modal-resultado-ia').style.display = 'flex';
+
+            } catch (error) {
+                alert("Error al leer el PDF. Asegúrate de que no esté corrupto.");
+                document.getElementById('pantalla-progreso').style.display = 'none';
+            }
+            event.target.value = '';
+        }
+
+        function aceptarClasificacionIA() {
+            document.getElementById('modal-resultado-ia').style.display = 'none';
+            if(datosIA_Temp.juzgado !== "No identificado") {
+                if(datosIA_Temp.juzgado.includes("Familiar") || datosIA_Temp.juzgado.includes("Niñas")) materiaActiva = "Familiar";
+                else if(datosIA_Temp.juzgado.includes("Mercantil")) materiaActiva = "Mercantil";
+                else materiaActiva = "Civil";
+                pathSelection.juzgado = datosIA_Temp.juzgado; pathSelection.anio = datosIA_Temp.anio; nivelActual = 2; renderizarVista();
+                setTimeout(() => { abrirModalCrear('Nuevo Expediente Automático', datosIA_Temp.exp); }, 300);
+            } else { alert("No pudimos clasificar el Juzgado con certeza. Por favor, créalo manualmente."); }
         }
     </script>
 </body>
