@@ -10,21 +10,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* VARIABLES DARK (Por defecto) */
+        /* VARIABLES DARK Y LIGHT */
         :root {
             --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.7);
             --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc; --text-muted: #94a3b8;
-            --color-familiar: #ec4899; /* Rosa/Magenta para el modo familiar */
+            --color-familiar: #ec4899; /* Magenta para el modo familiar */
         }
-
-        /* VARIABLES MODO CLARO (CAMALEÓN) */
         body.light-mode {
             --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9);
             --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569;
         }
         body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
-        body.light-mode .logo-visor { color: #0f172a; }
         body.light-mode .node-card { background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
@@ -43,7 +40,6 @@
         .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); }
         .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
         
-        /* Botón Camaleón */
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; margin-left: 10px; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
@@ -52,12 +48,12 @@
 
         /* WORKSPACE Y ÁRBOL CSS */
         .workspace { flex: 1; overflow: auto; padding: 50px; display: flex; justify-content: center; align-items: flex-start; position: relative; }
-        .tree-container { margin-top: 20px; padding: 20px; transition: transform 0.3s; }
+        .tree-container { margin-top: 20px; padding: 40px; transition: transform 0.3s; }
         
         .tree ul { padding-top: 30px; position: relative; transition: all 0.5s; display: flex; justify-content: center; }
         .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 30px 10px 0 10px; transition: all 0.5s; }
         
-        /* Líneas conectoras BASE (Sucesorio) */
+        /* Conectores BASE (Sucesorio) */
         .tree li::before, .tree li::after { content: ''; position: absolute; top: 0; right: 50%; border-top: 2px solid var(--neon-blue); width: 50%; height: 30px; transition: border-color 0.4s; }
         .tree li::after { right: auto; left: 50%; border-left: 2px solid var(--neon-blue); }
         .tree li:only-child::after, .tree li:only-child::before { display: none; }
@@ -68,53 +64,40 @@
         .tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid var(--neon-blue); width: 0; height: 30px; transition: border-color 0.4s; }
         
         /* Tarjetas de Nodos BASE (Sucesorio) */
-        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 20px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 160px; cursor: pointer; transition: all 0.4s; position: relative; }
-        .node-card:hover { border-color: var(--brand-orange); transform: translateY(-5px); }
-        .node-card i.main-icon { font-size: 2rem; color: var(--neon-blue); margin-bottom: 10px; transition: color 0.4s; }
+        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 20px 30px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 180px; transition: all 0.3s; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .node-card:hover { border-color: var(--brand-orange); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255, 115, 21, 0.15); }
+        .node-card i.main-icon { font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 12px; transition: color 0.4s; }
         .node-card .nombre { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; }
         .node-card .rol { font-size: 0.8rem; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         
-        /* =========================================
-           DISEÑO "MODO FAMILIAR" (EL CAMBIO DE CARA)
-           ========================================= */
+        /* DISEÑO "MODO FAMILIAR" */
         .tree.modo-familiar li::before, .tree.modo-familiar li::after, .tree.modo-familiar ul ul::before,
-        .tree.modo-familiar li:last-child::before, .tree.modo-familiar li:first-child::after {
-            border-color: var(--color-familiar);
-        }
-        .tree.modo-familiar .node-card {
-            border-radius: 50px; /* Estilo píldora/circular */
-            padding: 15px 30px;
-            border-color: rgba(236, 72, 153, 0.3);
-        }
-        .tree.modo-familiar .node-card:hover {
-            border-color: var(--color-familiar);
-            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2);
-        }
-        .tree.modo-familiar .node-card i.main-icon {
-            color: var(--color-familiar);
-        }
-        .tree.modo-familiar .node-card .rol {
-            color: var(--text-muted); /* Más suave en familiar */
-        }
+        .tree.modo-familiar li:last-child::before, .tree.modo-familiar li:first-child::after { border-color: var(--color-familiar); }
+        .tree.modo-familiar .node-card { border-radius: 50px; border-color: rgba(236, 72, 153, 0.3); }
+        .tree.modo-familiar .node-card:hover { border-color: var(--color-familiar); box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2); }
+        .tree.modo-familiar .node-card i.main-icon { color: var(--color-familiar); }
 
-        /* Botones de acción flotantes en el nodo */
+        /* Botones Flotantes en Nodo */
         .node-actions { position: absolute; top: -15px; right: -15px; display: none; gap: 5px; }
         .node-card:hover .node-actions { display: flex; }
-        .btn-node { background: var(--brand-orange); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
+        .btn-node { background: var(--brand-orange); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
         .btn-node.add { background: #10b981; }
         .btn-node.delete { background: #ef4444; }
         .btn-node:hover { transform: scale(1.15); }
 
-        /* MODAL VIP */
-        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 420px; position: relative; }
-        .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; outline: none; }
-        .input-vip:focus { border-color: var(--brand-orange); }
+        /* MODALES (DISEÑO ELEGANTE PARA AÑADIR NODOS Y VIP) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        
+        .input-form { background: rgba(0,0,0,0.1); border: 1px solid #1e293b; color: var(--text-main); padding: 12px 15px; width: 100%; border-radius: 8px; font-size: 1rem; margin-bottom: 15px; outline: none; transition: border 0.3s; }
+        body.light-mode .input-form { background: #f8fafc; border-color: #cbd5e1; }
+        .input-form:focus { border-color: var(--neon-blue); }
+        .form-label { display: block; text-align: left; font-size: 0.85rem; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
 
         /* HERRAMIENTAS LATERALES */
         .floating-tools { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; }
         .tool-btn { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .tool-btn:hover { background: rgba(125,125,125,0.2); color: var(--brand-orange); transform: scale(1.1); }
+        .tool-btn:hover { color: var(--brand-orange); transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -127,42 +110,59 @@
             <span class="status-badge status-demo" id="status-badge">VERSIÓN DEMO</span>
         </div>
         
-        <!-- INTERRUPTOR SUCESORIO / FAMILIAR -->
         <button id="btn-modo-arbol" class="btn btn-accion" onclick="toggleModoArbol()" style="border-color: #ec4899; color: #ec4899;">
             <i class="fa-solid fa-users"></i> Cambiar a Modo Familiar
         </button>
 
         <button id="btn-exportar" class="btn btn-vip" onclick="intentarExportar()"><i class="fa-solid fa-lock"></i> Exportar VIP</button>
 
-        <!-- Botón Camaleón -->
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
             <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
         </button>
     </div>
 
-    <!-- WORKSPACE (LIENZO DEL ÁRBOL) -->
-    <div class="workspace" id="lienzo-arbol">
-        <!-- El contenedor tiene la clase base "modo-sucesorio" por defecto -->
+    <!-- WORKSPACE (LIENZO) -->
+    <div class="workspace" id="lienzo-exportar">
         <div class="tree-container tree modo-sucesorio" id="tree-root">
-            <!-- El árbol se generará aquí por JavaScript -->
+            <!-- El árbol se dibuja aquí -->
         </div>
     </div>
 
-    <!-- HERRAMIENTAS FLOTANTES (ZOOM) -->
+    <!-- CONTROLES FLOTANTES -->
     <div class="floating-tools">
-        <button class="tool-btn" onclick="zoomTree(0.1)" title="Acercar"><i class="fa-solid fa-plus"></i></button>
-        <button class="tool-btn" onclick="zoomTree(-0.1)" title="Alejar"><i class="fa-solid fa-minus"></i></button>
-        <button class="tool-btn" onclick="resetZoom()" title="Restaurar"><i class="fa-solid fa-expand"></i></button>
+        <button class="tool-btn" onclick="zoomTree(0.1)"><i class="fa-solid fa-plus"></i></button>
+        <button class="tool-btn" onclick="zoomTree(-0.1)"><i class="fa-solid fa-minus"></i></button>
+        <button class="tool-btn" onclick="resetZoom()"><i class="fa-solid fa-expand"></i></button>
+    </div>
+
+    <!-- MODAL ELEGANTE PARA AGREGAR FAMILIAR -->
+    <div class="modal-overlay" id="modalAgregar">
+        <div class="modal-card">
+            <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange));"></div>
+            <h2 style="color: var(--text-main); margin-bottom: 20px; font-size: 1.3rem;"><i class="fa-solid fa-user-plus" style="color: var(--neon-blue);"></i> Agregar Familiar</h2>
+            
+            <label class="form-label">Nombre Completo</label>
+            <input type="text" id="inputNombre" class="input-form" placeholder="Ej. Juan Pérez">
+            
+            <label class="form-label">Parentesco o Rol</label>
+            <input type="text" id="inputRol" class="input-form" placeholder="Ej. Hijo, Cónyuge, Hermano">
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-volver" style="flex: 1; justify-content: center; background: rgba(0,0,0,0.1);" onclick="cerrarModalAgregar()">Cancelar</button>
+                <button class="btn btn-vip" style="flex: 1; justify-content: center;" onclick="confirmarAgregar()">Guardar</button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL VIP -->
-    <div id="modalVIP">
+    <div class="modal-overlay" id="modalVIP">
         <div class="modal-card">
-            <h2><i class="fa-solid fa-gem" style="color: var(--brand-orange);"></i> Límite de la Demo</h2>
-            <p style="color: var(--text-muted);">La versión de prueba permite un máximo de 3 familiares. Ingresa tu token institucional para agregar ramas ilimitadas y habilitar la exportación en Alta Resolución.</p>
-            <input type="text" id="tokenInput" class="input-vip" placeholder="EJ: 45YMAS" autocomplete="off">
-            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 15px;" onclick="validarTokenVIP()">DESBLOQUEAR ILIMITADO</button>
-            <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer;" onclick="cerrarModalVIP()">Cancelar</button>
+            <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, #facc15, var(--brand-orange));"></div>
+            <h2 style="color: var(--text-main); margin-bottom: 15px;"><i class="fa-solid fa-gem" style="color: var(--brand-orange);"></i> Funciones Pro</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">La versión de prueba permite un máximo de 3 nodos. Ingresa tu token para agregar nodos ilimitados y exportar en alta resolución.</p>
+            <input type="text" id="tokenInput" class="input-form" style="text-transform: uppercase; text-align: center; font-weight: bold; font-size: 1.2rem;" placeholder="TOKEN VIP" autocomplete="off">
+            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px;" onclick="validarTokenVIP()">DESBLOQUEAR ILIMITADO</button>
+            <button class="btn btn-volver" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="cerrarModalVIP()">Cancelar</button>
         </div>
     </div>
 
@@ -171,57 +171,52 @@
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
-            const btnSpan = document.getElementById('text-theme');
-            const btnIcon = document.querySelector('#btnTheme i');
-            
-            if(isLight) {
-                btnSpan.innerText = "Modo Oscuro"; btnIcon.className = "fa-solid fa-moon"; localStorage.setItem('tema', 'light');
-            } else {
-                btnSpan.innerText = "Modo Claro"; btnIcon.className = "fa-solid fa-circle-half-stroke"; localStorage.setItem('tema', 'dark');
-            }
+            document.getElementById('text-theme').innerText = isLight ? "Modo Oscuro" : "Modo Claro";
+            document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
+            localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
         window.onload = () => { if(localStorage.getItem('tema') === 'light') toggleTheme(); renderTree(); };
 
-        /* CAMBIO DE CARA: SUCESORIO VS FAMILIAR */
+        /* BASES DE DATOS SEPARADAS */
+        let treeSucesorio = { id: 1, nombre: "Autor de la Sucesión", rol: "De Cujus", icon: "fa-user-tie", children: [] };
+        let treeFamiliar = { id: 2, nombre: "Raíz Familiar", rol: "Abuelos / Origen", icon: "fa-house-chimney", children: [] };
+        
+        let nodeCountSucesorio = 1;
+        let nodeCountFamiliar = 1;
         let esModoFamiliar = false;
+        let esProActivado = false;
+        let scale = 1;
+
+        /* CAMBIAR ENTRE BASES DE DATOS */
         function toggleModoArbol() {
             esModoFamiliar = !esModoFamiliar;
             const treeRoot = document.getElementById('tree-root');
             const btnModo = document.getElementById('btn-modo-arbol');
-            const titulo = document.getElementById('titulo-herramienta');
-            const icono = document.getElementById('logo-icono');
-
+            
             if(esModoFamiliar) {
-                treeRoot.classList.remove('modo-sucesorio');
-                treeRoot.classList.add('modo-familiar');
+                treeRoot.classList.replace('modo-sucesorio', 'modo-familiar');
                 btnModo.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> Cambiar a Sucesorio';
                 btnModo.style.borderColor = "var(--neon-blue)"; btnModo.style.color = "var(--neon-blue)";
-                titulo.innerText = "Árbol Genealógico";
-                icono.className = "fa-solid fa-people-group"; icono.style.color = "var(--color-familiar)";
+                document.getElementById('titulo-herramienta').innerText = "Árbol Genealógico";
+                document.getElementById('logo-icono').className = "fa-solid fa-people-group"; document.getElementById('logo-icono').style.color = "var(--color-familiar)";
             } else {
-                treeRoot.classList.remove('modo-familiar');
-                treeRoot.classList.add('modo-sucesorio');
+                treeRoot.classList.replace('modo-familiar', 'modo-sucesorio');
                 btnModo.innerHTML = '<i class="fa-solid fa-users"></i> Cambiar a Modo Familiar';
                 btnModo.style.borderColor = "#ec4899"; btnModo.style.color = "#ec4899";
-                titulo.innerText = "Árbol Sucesorio";
-                icono.className = "fa-solid fa-network-wired"; icono.style.color = "#22c55e";
+                document.getElementById('titulo-herramienta').innerText = "Árbol Sucesorio";
+                document.getElementById('logo-icono').className = "fa-solid fa-network-wired"; document.getElementById('logo-icono').style.color = "#22c55e";
             }
+            renderTree(); // Vuelve a dibujar leyendo la base de datos correspondiente
         }
 
-        /* LÓGICA DEL ÁRBOL */
-        let esProActivado = false;
-        let nodeCount = 1;
-        let scale = 1;
-
-        let treeData = {
-            id: 1, nombre: "Autor de la Sucesión", rol: "Raíz", icon: "fa-user-tie", children: []
-        };
-
+        /* RENDERIZADO DEL ÁRBOL */
         function renderTree() {
             const rootContainer = document.getElementById('tree-root');
             rootContainer.innerHTML = '';
             const ul = document.createElement('ul');
-            ul.appendChild(createNodeElement(treeData));
+            // Decide qué base de datos leer
+            const currentData = esModoFamiliar ? treeFamiliar : treeSucesorio;
+            ul.appendChild(createNodeElement(currentData));
             rootContainer.appendChild(ul);
         }
 
@@ -231,8 +226,8 @@
             card.className = 'node-card';
             card.innerHTML = `
                 <div class="node-actions">
-                    <button class="btn-node add" title="Agregar Familiar" onclick="intentarAgregarHijo(${nodeData.id}, event)"><i class="fa-solid fa-plus"></i></button>
-                    ${nodeData.id !== 1 ? `<button class="btn-node delete" title="Eliminar" onclick="eliminarNodo(${nodeData.id}, event)"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    <button class="btn-node add" title="Agregar Familiar" onclick="abrirModalAgregar(${nodeData.id}, event)"><i class="fa-solid fa-plus"></i></button>
+                    ${(nodeData.id !== 1 && nodeData.id !== 2) ? `<button class="btn-node delete" title="Eliminar Rama" onclick="eliminarNodo(${nodeData.id}, event)"><i class="fa-solid fa-trash"></i></button>` : ''}
                 </div>
                 <i class="fa-solid ${nodeData.icon} main-icon"></i>
                 <div class="nombre">${nodeData.nombre}</div>
@@ -248,17 +243,44 @@
             return li;
         }
 
-        function intentarAgregarHijo(parentId, event) {
+        /* LÓGICA DE FORMULARIO ELEGANTE (Sin Prompts) */
+        let parentIdTemp = null;
+        function abrirModalAgregar(parentId, event) {
             event.stopPropagation();
-            if (!esProActivado && nodeCount >= 3) { verificarVIP(); return; }
+            const currentCount = esModoFamiliar ? nodeCountFamiliar : nodeCountSucesorio;
+            
+            if (!esProActivado && currentCount >= 3) { 
+                verificarVIP(); return; 
+            }
+            
+            parentIdTemp = parentId;
+            document.getElementById('inputNombre').value = '';
+            document.getElementById('inputRol').value = '';
+            document.getElementById('modalAgregar').style.display = 'flex';
+            document.getElementById('inputNombre').focus();
+        }
 
-            const nombre = prompt("Nombre del familiar:", "Nombre Completo"); if (!nombre) return;
-            const rol = prompt("Parentesco (Ej. Hijo, Cónyuge, Sobrino):", "Heredero / Familiar"); if (!rol) return;
-            const icon = rol.toLowerCase().includes('cónyuge') ? "fa-rings-wedding" : "fa-user";
+        function cerrarModalAgregar() {
+            document.getElementById('modalAgregar').style.display = 'none';
+            parentIdTemp = null;
+        }
 
+        function confirmarAgregar() {
+            const nombre = document.getElementById('inputNombre').value.trim();
+            const rol = document.getElementById('inputRol').value.trim();
+            
+            if(!nombre || !rol) { alert("Completa ambos campos para añadir al familiar."); return; }
+            
+            const icon = rol.toLowerCase().includes('cónyuge') || rol.toLowerCase().includes('espos') ? "fa-rings-wedding" : "fa-user";
             const newNode = { id: Date.now(), nombre: nombre, rol: rol, icon: icon, children: [] };
-            addChildToNode(treeData, parentId, newNode);
-            nodeCount++; renderTree();
+            
+            const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
+            addChildToNode(currentTree, parentIdTemp, newNode);
+            
+            if(esModoFamiliar) nodeCountFamiliar++; else nodeCountSucesorio++;
+            
+            cerrarModalAgregar();
+            renderTree();
         }
 
         function addChildToNode(currentNode, parentId, newNode) {
@@ -269,7 +291,12 @@
 
         function eliminarNodo(nodeId, event) {
             event.stopPropagation();
-            if(confirm("¿Seguro que deseas eliminar esta rama familiar?")) { removeChild(treeData, nodeId); nodeCount--; renderTree(); }
+            if(confirm("¿Seguro que deseas eliminar esta rama familiar?")) { 
+                const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
+                removeChild(currentTree, nodeId); 
+                if(esModoFamiliar) nodeCountFamiliar--; else nodeCountSucesorio--;
+                renderTree(); 
+            }
         }
 
         function removeChild(currentNode, idToRemove) {
@@ -281,6 +308,7 @@
             return false;
         }
 
+        /* ZOOM */
         function zoomTree(delta) { scale = Math.max(0.5, Math.min(2, scale + delta)); document.getElementById('tree-root').style.transform = `scale(${scale})`; document.getElementById('tree-root').style.transformOrigin = "top center"; }
         function resetZoom() { scale = 1; document.getElementById('tree-root').style.transform = `scale(1)`; }
 
@@ -293,16 +321,23 @@
                 esProActivado = true; cerrarModalVIP();
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA (ILIMITADO)';
-                const btnExp = document.getElementById('btn-exportar');
-                btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Imagen Legal';
+                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Guardar Imagen Legal';
             } else { alert("Acceso Denegado. Token inválido."); }
         }
 
         function intentarExportar() {
             if(!esProActivado) { verificarVIP(); return; }
+            window.scrollTo(0,0); // Evitar recortes
             const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
-            html2canvas(document.getElementById('tree-root'), { backgroundColor: themeBg, scale: 2 }).then(canvas => {
-                const link = document.createElement('a'); link.download = 'Arbol_45yMas.png'; link.href = canvas.toDataURL(); link.click();
+            
+            html2canvas(document.getElementById('lienzo-exportar'), { 
+                backgroundColor: themeBg, 
+                scale: 2 
+            }).then(canvas => {
+                const link = document.createElement('a'); 
+                link.download = esModoFamiliar ? 'Arbol_Genealogico_45yMas.png' : 'Mapeo_Sucesorio_45yMas.png'; 
+                link.href = canvas.toDataURL("image/png"); 
+                link.click();
             });
         }
     </script>
