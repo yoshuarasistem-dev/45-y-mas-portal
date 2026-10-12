@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expediente Inteligente IA | 45 y Más</title>
-    <!-- LIBRERÍAS RESTAURADAS: PDF.js, Tesseract (IA Visión) y Mammoth (Word) -->
+    
+    <!-- LIBRERÍAS (Versiones estables) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <!-- Usamos Tesseract v4 que es más estable para navegadores -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -58,14 +60,14 @@
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
         
         #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute;}
-        #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5;} /* Capa para dibujar las detecciones de la IA */
+        #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5;} /* Capa IA */
         
         #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 850px; min-height: 1100px; padding: 50px; font-family: 'Arial', sans-serif; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
         #html-visor p { margin-bottom: 10px; }
 
         .zoom-controls { position: fixed; bottom: 30px; left: 240px; background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 10;}
 
-        /* PANEL DERECHO: HERRAMIENTAS (IA Y APUNTES) */
+        /* PANEL DERECHO */
         .sidebar-herramientas { width: 340px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; }
         .tabs { display: flex; border-bottom: 1px solid var(--border-glass); }
         .tab { flex: 1; text-align: center; padding: 15px; cursor: pointer; font-weight: bold; font-size: 0.85rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: 0.3s; }
@@ -122,7 +124,6 @@
     </div>
 
     <div class="workspace">
-        <!-- PANEL IZQUIERDO: FOJAS -->
         <div class="sidebar-fojas">
             <div class="sidebar-header">
                 <input type="file" id="add-foja-input" accept=".pdf, .doc, .docx, image/*" style="display:none;" onchange="agregarFojaFaltante(event)">
@@ -134,10 +135,9 @@
             </div>
         </div>
 
-        <!-- VISOR CENTRAL -->
         <div class="visor-central" id="contenedor-visor-zoom">
             <canvas id="canvas-principal" style="display:none;"></canvas>
-            <canvas id="canvas-dibujo" style="display:none;"></canvas> <!-- Capa donde dibuja Tesseract -->
+            <canvas id="canvas-dibujo" style="display:none;"></canvas>
             
             <div id="html-visor"></div>
             
@@ -153,20 +153,17 @@
             </div>
         </div>
 
-        <!-- PANEL DERECHO: HERRAMIENTAS (IA Y APUNTES) -->
         <div class="sidebar-herramientas">
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('tab-palabras', this)"><i class="fa-solid fa-radar"></i> Alertas IA</div>
                 <div class="tab" onclick="switchTab('tab-notas', this)"><i class="fa-solid fa-pen-to-square"></i> Apuntes</div>
             </div>
 
-            <!-- PESTAÑA DETECCIÓN IA -->
             <div class="panel-content active" id="tab-palabras">
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">La IA buscará alertas de la <strong>Ley de Justicia Alternativa</strong> automáticamente.</p>
                 <div id="contenedor-keywords"></div>
             </div>
 
-            <!-- PESTAÑA APUNTES -->
             <div class="panel-content" id="tab-notas">
                 <div id="indice-notas-container">
                     <h5 style="color:var(--text-muted); margin-bottom:10px; font-size: 0.8rem; text-transform: uppercase;"><i class="fa-solid fa-list"></i> Índice de Anotaciones</h5>
@@ -182,13 +179,15 @@
         </div>
     </div>
 
-    <!-- PANTALLA DE PROGRESO (CARGA E IA) -->
+    <!-- PANTALLA DE PROGRESO -->
     <div id="pantalla-progreso">
         <div class="progreso-card">
             <i class="fa-solid fa-brain fa-fade" id="icono-progreso" style="font-size: 3.5rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
             <h3 style="color: white; margin-bottom: 5px;" id="titulo-progreso">Procesando Documento</h3>
             <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Preparando visualización...</p>
+            <p id="texto-subprogreso" style="color: var(--brand-orange); font-size: 0.7rem; margin-top: 5px;"></p>
             <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
+            <button class="btn btn-accion" style="margin-top: 15px; font-size: 0.7rem; padding: 5px 10px;" onclick="cancelarIA()">Cancelar Análisis</button>
         </div>
     </div>
 
@@ -201,8 +200,8 @@
         let arrayFojas = []; 
         let fojaSeleccionadaIndex = 0;
         let zoomGlobal = 1.2;
+        let cancelarProceso = false;
 
-        // DICCIONARIO DE IA (Justicia Alternativa)
         const PALABRAS_BUSCADAS = ["acuerdo", "convenio", "mediación", "conciliación", "confidencialidad", "ejecutoria", "sanción", "improcedencia"];
         let resultadosKeywords = {};
         window.mapaAlertasPorFoja = {}; 
@@ -211,7 +210,9 @@
             const file = event.target.files[0];
             if (!file) return;
 
+            cancelarProceso = false;
             mostrarProgreso("fa-file-shield", "Cargando Documento", "Renderizando páginas locales...");
+            document.getElementById('texto-subprogreso').innerText = "";
             
             arrayFojas = [];
             window.mapaAlertasPorFoja = {}; 
@@ -220,7 +221,7 @@
                 document.getElementById('texto-progreso').innerText = "Traduciendo Word a formato visual...";
                 const arrayBuffer = await file.arrayBuffer();
                 const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
-                const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer}); // Guardamos el texto puro para la IA
+                const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
 
                 const canvasMini = document.createElement('canvas');
                 canvasMini.width = 150; canvasMini.height = 200;
@@ -235,6 +236,7 @@
                 const documentoActual = await pdfjsLib.getDocument(bytes).promise;
                 
                 for (let i = 1; i <= documentoActual.numPages; i++) {
+                    if(cancelarProceso) break;
                     const page = await documentoActual.getPage(i);
                     const viewport = page.getViewport({ scale: 1.5 });
                     const canvas = document.createElement('canvas');
@@ -249,52 +251,86 @@
 
             setTimeout(() => {
                 ocultarProgreso();
-                document.getElementById('btn-analizar').style.display = 'inline-flex';
-                renderizarBarraLateralFojas();
-                renderizarIndiceNotas(); 
-                if(arrayFojas.length > 0) seleccionarFoja(0);
+                if(!cancelarProceso) {
+                    document.getElementById('btn-analizar').style.display = 'inline-flex';
+                    renderizarBarraLateralFojas();
+                    renderizarIndiceNotas(); 
+                    if(arrayFojas.length > 0) seleccionarFoja(0);
+                }
             }, 500);
         }
 
-        // MOTOR DE INTELIGENCIA ARTIFICIAL (TESSERACT)
+        // MOTOR DE INTELIGENCIA ARTIFICIAL (TESSERACT V4 OPTIMIZADO)
         async function escanearPalabrasJudiciales() {
             if(arrayFojas.length === 0) return;
-            mostrarProgreso("fa-brain", "IA Analizando Expediente", "Buscando alertas de Ley de Justicia Alternativa...");
+            cancelarProceso = false;
+            mostrarProgreso("fa-brain", "IA Analizando Expediente", "Iniciando Motor de Visión Artificial...");
             
             resultadosKeywords = {};
             window.mapaAlertasPorFoja = {}; 
             PALABRAS_BUSCADAS.forEach(p => resultadosKeywords[p] = []);
 
-            for (let i = 0; i < arrayFojas.length; i++) {
-                let f = arrayFojas[i];
-                actualizarBarra(Math.round(((i + 1) / arrayFojas.length) * 100));
-                document.getElementById('texto-progreso').innerText = `Procesando Foja ${f.numeroLogico}...`;
-
-                if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
-
-                if(f.isHtml) {
-                    let textoWord = f.rawText.toLowerCase();
-                    PALABRAS_BUSCADAS.forEach(p => {
-                        if(textoWord.includes(p)) {
-                            if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico);
-                        }
-                    });
-                } else {
-                    const { data } = await Tesseract.recognize(f.canvasImage, 'spa');
-                    data.words.forEach(palabra => {
-                        let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
-                        if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
-                            if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico);
-                            // Guardamos las coordenadas para dibujar el cuadro rojo después
-                            window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorBorde: '#ef4444', colorFondo: 'rgba(239, 68, 68, 0.4)' });
-                        }
-                    });
+            // Crear el Worker explícitamente para controlar la carga del idioma
+            const worker = Tesseract.createWorker({
+                logger: m => {
+                    if(m.status === 'recognizing text') {
+                        let pct = Math.round(m.progress * 100);
+                        document.getElementById('texto-subprogreso').innerText = `Leyendo texto: ${pct}%`;
+                    } else {
+                        document.getElementById('texto-subprogreso').innerText = m.status;
+                    }
                 }
+            });
+
+            try {
+                await worker.load();
+                await worker.loadLanguage('spa');
+                await worker.initialize('spa');
+
+                for (let i = 0; i < arrayFojas.length; i++) {
+                    if(cancelarProceso) break;
+                    let f = arrayFojas[i];
+                    actualizarBarra(Math.round(((i) / arrayFojas.length) * 100));
+                    document.getElementById('texto-progreso').innerText = `Procesando Foja ${f.numeroLogico} de ${arrayFojas.length}...`;
+
+                    if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
+
+                    if(f.isHtml) {
+                        let textoWord = f.rawText.toLowerCase();
+                        PALABRAS_BUSCADAS.forEach(p => {
+                            if(textoWord.includes(p)) {
+                                if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico);
+                            }
+                        });
+                    } else {
+                        // Tesseract lee la imagen del Canvas
+                        const { data } = await worker.recognize(f.canvasImage);
+                        data.words.forEach(palabra => {
+                            let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
+                            if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
+                                if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico);
+                                window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorBorde: '#ef4444', colorFondo: 'rgba(239, 68, 68, 0.4)' });
+                            }
+                        });
+                    }
+                }
+                await worker.terminate();
+            } catch (error) {
+                console.error("Error en la IA Tesseract: ", error);
+                alert("Ocurrió un error al procesar el archivo. Es posible que el PDF sea muy pesado o la conexión falló.");
             }
+
             ocultarProgreso();
-            switchTab('tab-palabras', document.querySelectorAll('.tab')[0]);
-            mostrarResultadosKeywords();
-            renderizarVisorCentral(); // Obliga a re-dibujar los canvas para mostrar las alertas
+            if(!cancelarProceso) {
+                switchTab('tab-palabras', document.querySelectorAll('.tab')[0]);
+                mostrarResultadosKeywords();
+                renderizarVisorCentral(); 
+            }
+        }
+
+        function cancelarIA() {
+            cancelarProceso = true;
+            ocultarProgreso();
         }
 
         function mostrarResultadosKeywords() {
@@ -312,7 +348,6 @@
             if(!encontroAlgo) cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No se detectaron actuaciones clave.</p>`;
         }
 
-        // FUNCIONES DE RENDERIZADO VISUAL
         function renderizarBarraLateralFojas() {
             const container = document.getElementById('lista-fojas-container');
             container.innerHTML = '';
@@ -363,7 +398,7 @@
         function renderizarVisorCentral() {
             const foja = arrayFojas[fojaSeleccionadaIndex];
             const canvasP = document.getElementById('canvas-principal');
-            const canvasD = document.getElementById('canvas-dibujo'); // CANVA DE IA
+            const canvasD = document.getElementById('canvas-dibujo'); 
             const divHtml = document.getElementById('html-visor');
 
             if(foja.isHtml) {
@@ -380,7 +415,6 @@
                 ctxP.drawImage(foja.canvasImage, 0, 0, w, h);
                 canvasP.style.transform = `rotate(${foja.rotacion}deg)`; canvasD.style.transform = `rotate(${foja.rotacion}deg)`; 
 
-                // AQUI LA IA DIBUJA LOS CUADROS ROJOS SOBRE LAS PALABRAS
                 ctxD.clearRect(0, 0, w, h);
                 const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
                 if (alertas && alertas.length > 0) {
@@ -445,7 +479,6 @@
             if(!hayNotas) list.innerHTML = `<p style="font-size:0.75rem; color:var(--text-muted); text-align:center;">No hay notas guardadas.</p>`;
         }
 
-        // CONTROL PANTALLA PROGRESO
         function mostrarProgreso(icono, titulo, texto) { document.getElementById('icono-progreso').className = `fa-solid ${icono} fa-fade`; document.getElementById('titulo-progreso').innerText = titulo; document.getElementById('texto-progreso').innerText = texto; document.getElementById('barra-llena').style.width = '0%'; document.getElementById('pantalla-progreso').style.display = 'flex'; }
         function actualizarBarra(porcentaje) { document.getElementById('barra-llena').style.width = `${porcentaje}%`; }
         function ocultarProgreso() { document.getElementById('pantalla-progreso').style.display = 'none'; }

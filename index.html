@@ -16,6 +16,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         body { background: var(--bg-deep); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         
+        /* TOPBAR (Barra de Navegación Fija) */
         .topbar { background: rgba(5, 8, 16, 0.9); backdrop-filter: blur(15px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); position: fixed; width: 100%; top: 0; z-index: 1000; }
         .sub-brand-topbar { font-size: 0.8rem; color: var(--text-muted); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         
@@ -28,21 +29,22 @@
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        /* HERO CON CARRUSEL DIRECTO EN CSS */
-        .hero { position: relative; padding: 160px 20px 100px 20px; text-align: center; min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; background-color: #0b1329; }
+        /* NUEVA PORTADA (Diseño Moderno sin Carrusel) */
+        .hero { position: relative; padding: 180px 20px 120px 20px; text-align: center; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle at top, #0f1c3f 0%, var(--bg-deep) 70%); overflow: hidden; }
         
-        .hero-bg-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
-        .hero-slide.active { opacity: 0.5; }
-        
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(5,8,16,0.3) 0%, rgba(5,8,16,0.95) 100%); z-index: 2; }
-        
-        .hero-content { position: relative; z-index: 3; max-width: 800px; }
-        .logo-principal-centro { max-width: 260px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6)); }
-        
-        .hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
-        .hero h1 span { background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: 1.15rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; }
+        /* Animación de entrada para los elementos de la portada */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-element { animation: fadeUp 1s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.3s; }
+        .delay-2 { animation-delay: 0.6s; }
+
+        /* Contenedor del Logo (Efecto Glassmorphism) */
+        .logo-container { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 50%; display: inline-block; margin-bottom: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .logo-principal-centro { width: 180px; height: 180px; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4)); }
+
+        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; }
+        .hero h1 span { color: var(--brand-orange); }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; }
         
         /* SECCIÓN DE SERVICIOS */
         .services-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
@@ -60,7 +62,7 @@
         .service-list li { margin-bottom: 15px; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
         .service-list li i { color: var(--success); margin-top: 4px; font-size: 0.8rem; }
 
-        /* REDES SOCIALES HORIZONTALES CON EMBEDS ORIGINALES */
+        /* REDES SOCIALES (CON NUEVO LINK DE FACEBOOK) */
         .videos-section { padding: 80px 20px; text-align: center; max-width: 1200px; margin: 0 auto; }
         .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; align-items: start; }
         @media(max-width: 900px) { .videos-grid { grid-template-columns: 1fr; } }
@@ -72,7 +74,7 @@
         .embed-container iframe { width: 100%; border: none; }
 
         .video-card h4 { color: var(--text-main); font-size: 1.1rem; margin-bottom: 8px; margin-top: auto;}
-        .video-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px;}
+        .video-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px; flex-grow: 1;}
         
         .btn-social { padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; font-size: 0.85rem; width: 100%; justify-content: center; }
         .btn-tiktok { background: #000; color: #fff; border: 1px solid #333; }
@@ -112,6 +114,14 @@
 
         .footer { background: var(--bg-panel); padding: 40px 20px; text-align: center; border-top: 1px solid var(--border-glass); margin-top: auto; }
         .footer p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;}
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; } 
+            .hero h1 { font-size: 2.3rem; }
+            .topbar { padding: 15px 20px; }
+            .acreditaciones-section { flex-direction: column; text-align: center; }
+            .acreditaciones-text { text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -131,20 +141,14 @@
         </div>
     </nav>
 
-    <!-- HERO CON CARRUSEL DE FONDO FORZADO DESDE HTML -->
+    <!-- NUEVO HERO (DISEÑO CLEAN, SIN CARRUSEL) -->
     <section class="hero" id="inicio">
-        <div class="hero-bg-slider">
-            <div class="hero-slide active" style="background-image: url('assets/portada1.jpeg');"></div>
-            <div class="hero-slide" style="background-image: url('assets/portada2.jpeg');"></div>
-        </div>
-        <div class="hero-overlay"></div>
-
-        <div class="hero-content">
+        <div class="logo-container fade-in-element">
             <img src="assets/LOGO.png" alt="45 Y MÁS Oficial" class="logo-principal-centro" onerror="this.outerHTML='<h1 style=\\\'color:var(--brand-orange); font-size:3.5rem; margin-bottom:20px;\\\'>45 Y MÁS</h1>'">
-            
-            <h1>Centro Privado de <br><span>Mediación y Conciliación</span></h1>
-            <p>Expertos en métodos alternativos para la solución de controversias. Justicia rápida, pacífica y con la misma validez que una sentencia judicial.</p>
         </div>
+        
+        <h1 class="fade-in-element delay-1">Centro Privado de <br><span>Mediación y Conciliación</span></h1>
+        <p class="fade-in-element delay-2">Expertos en métodos alternativos para la solución de controversias. Justicia rápida, pacífica y con la misma validez que una sentencia judicial.</p>
     </section>
 
     <!-- SECCIÓN DE SERVICIOS -->
@@ -183,7 +187,7 @@
         </div>
     </section>
 
-    <!-- REDES SOCIALES HORIZONTALES CON REPRODUCTORES REALES NATIVOS -->
+    <!-- REDES SOCIALES HORIZONTALES CON EMBEDS ORIGINALES Y NUEVO LINK DE FACEBOOK -->
     <section class="videos-section" id="capsulas">
         <div class="section-header">
             <p>Asesoría en Redes</p>
@@ -201,7 +205,7 @@
                 </div>
                 <h4>El Abogato Mediador</h4>
                 <p>Consejos de mediación explicados de forma sencilla y directa.</p>
-                <a href="https://www.tiktok.com/@45ymas_oficial" target="_blank" class="btn-social btn-tiktok"><i class="fa-brands fa-tiktok"></i> Ir al Perfil</a>
+                <a href="https://www.tiktok.com/@45ymas_oficial" target="_blank" class="btn-social btn-tiktok"><i class="fa-brands fa-tiktok"></i> Ir al Perfil TikTok</a>
             </div>
 
             <!-- INSTAGRAM -->
@@ -211,13 +215,14 @@
                 </div>
                 <h4>Reel Informativo</h4>
                 <p>Conoce los beneficios de la justicia alternativa y nuestros casos.</p>
-                <a href="https://www.instagram.com/m.45ymas/" target="_blank" class="btn-social btn-instagram"><i class="fa-brands fa-instagram"></i> Ir al Perfil</a>
+                <a href="https://www.instagram.com/m.45ymas/" target="_blank" class="btn-social btn-instagram"><i class="fa-brands fa-instagram"></i> Ir al Perfil Instagram</a>
             </div>
 
-            <!-- FACEBOOK -->
+            <!-- FACEBOOK (NUEVO LINK SOLICITADO) -->
             <div class="video-card">
                 <div class="embed-container" style="background: transparent;">
-                    <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2F45ymasoficial%2Fvideos%2F886737526756857%2F&show_text=false&width=267&t=0" width="100%" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                    <!-- Se actualizó el href al nuevo reel -->
+                    <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F2021656845458517&show_text=false&width=267&t=0" width="100%" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
                 </div>
                 <h4>Cápsula Preventiva</h4>
                 <p>Análisis a fondo sobre convenios de arrendamiento seguros.</p>
@@ -283,17 +288,6 @@
     </footer>
 
     <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.hero-slide');
-        function nextSlide() {
-            if(slides.length > 0) {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide + 1) % slides.length;
-                slides[currentSlide].classList.add('active');
-            }
-        }
-        setInterval(nextSlide, 5000);
-
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
