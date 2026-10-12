@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Árbol Legal Avanzado | 45 y Más Pro</title>
+    <title>Súper Árbol Legal Multidireccional | 45 y Más Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -30,13 +30,13 @@
         .status-badge { background: rgba(250, 204, 21, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
         .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
 
-        .workspace { flex: 1; overflow: auto; padding: 40px; display: flex; justify-content: center; align-items: flex-start; position: relative; width: 100%; }
+        .workspace { flex: 1; overflow: auto; padding: 40px; display: flex; justify-content: center; align-items: flex-start; position: relative; width: 100%; cursor: grab; }
+        .workspace:active { cursor: grabbing; }
         
-        /* Contenedor Aislado para Exportación Segura */
         .export-wrapper { padding: 40px; border-radius: 12px; transition: background 0.3s; display: inline-block; min-width: 100%; text-align: center; }
-        .tree-container { transition: transform 0.3s; transform-origin: top center; display: inline-block; }
+        .tree-container { transition: transform 0.3s; transform-origin: center center; display: inline-block; }
         
-        /* MAGIA CSS DEL ÁRBOL */
+        /* MAGIA CSS DEL ÁRBOL MULTIDIRECCIONAL */
         .tree ul { padding-top: 30px; position: relative; transition: all 0.5s; display: flex; justify-content: center; }
         .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 30px 10px 0 10px; transition: all 0.5s; }
         .tree li::before, .tree li::after { content: ''; position: absolute; top: 0; right: 50%; border-top: 2px solid var(--neon-blue); width: 50%; height: 30px; transition: border-color 0.4s; }
@@ -48,23 +48,38 @@
         .tree li:first-child::after { border-radius: 8px 0 0 0; }
         .tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid var(--neon-blue); width: 0; height: 30px; transition: border-color 0.4s; }
 
-        .node-group { display: flex; justify-content: center; align-items: center; gap: 20px; position: relative; }
-        .node-group .node-card { position: relative; z-index: 2; }
-        .node-group::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--neon-blue); z-index: 1; transition: background 0.4s; }
+        /* Contenedores para direcciones */
+        .node-container { display: flex; flex-direction: column; align-items: center; position: relative; }
+        .parents-group { display: flex; justify-content: center; margin-bottom: 20px; position: relative; }
+        .parents-group::after { content: ''; position: absolute; bottom: -20px; left: 50%; border-left: 2px solid var(--neon-blue); height: 20px; }
+        .parents-group:empty::after { display: none; }
+        
+        .horizontal-group { display: flex; justify-content: center; align-items: center; gap: 30px; position: relative; }
+        .horizontal-group::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--neon-blue); z-index: 1; transition: background 0.4s; }
 
-        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 20px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 200px; transition: all 0.3s; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
+        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 15px 20px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 180px; transition: all 0.3s; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; z-index: 2; }
         .node-card:hover { border-color: var(--brand-orange); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255, 115, 21, 0.15); z-index: 10; }
-        .node-card i.main-icon { font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 12px; transition: color 0.4s; }
-        .node-card .nombre { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; }
-        .node-card .rol { font-size: 0.8rem; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 8px; }
-        .node-card .fecha { font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
+        
+        .node-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .node-photo { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-glass); overflow: hidden;}
+        .node-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .node-photo i { font-size: 1.5rem; color: var(--neon-blue); }
+        .gender-icon { font-size: 1rem; color: var(--text-muted); }
+        .gender-m { color: #3b82f6; }
+        .gender-f { color: #ec4899; }
+        
+        .node-card .nombre { font-weight: 800; font-size: 1rem; margin-bottom: 5px; }
+        .node-card .rol { font-size: 0.75rem; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 5px; }
+        .node-card .info-extra { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 5px; display: flex; gap: 5px; align-items: center;}
+        .node-card .fecha { font-size: 0.7rem; color: var(--text-main); background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 5px; margin-top: 5px;}
 
+        /* MODO FAMILIAR */
         .tree.modo-familiar li::before, .tree.modo-familiar li::after, .tree.modo-familiar ul ul::before,
-        .tree.modo-familiar li:last-child::before, .tree.modo-familiar li:first-child::after { border-color: var(--color-familiar); }
-        .tree.modo-familiar .node-group::before { background: var(--color-familiar); }
-        .tree.modo-familiar .node-card { border-radius: 50px; border-color: rgba(236, 72, 153, 0.3); }
+        .tree.modo-familiar li:last-child::before, .tree.modo-familiar li:first-child::after, .tree.modo-familiar .parents-group::after { border-color: var(--color-familiar); }
+        .tree.modo-familiar .horizontal-group::before { background: var(--color-familiar); }
+        .tree.modo-familiar .node-card { border-radius: 30px; border-color: rgba(236, 72, 153, 0.3); }
         .tree.modo-familiar .node-card:hover { border-color: var(--color-familiar); box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2); }
-        .tree.modo-familiar .node-card i.main-icon { color: var(--color-familiar); }
+        .tree.modo-familiar .node-photo i { color: var(--color-familiar); }
 
         .node-actions { position: absolute; top: -15px; right: -15px; display: none; gap: 5px; z-index: 15; }
         .node-card:hover .node-actions { display: flex; }
@@ -72,20 +87,30 @@
         .btn-node.add { background: #10b981; } .btn-node.delete { background: #ef4444; }
         .btn-node:hover { transform: scale(1.15); }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; width: 90%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        /* MODALES */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; overflow-y: auto;}
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; margin: 20px 0;}
         
-        .input-form { background: rgba(0,0,0,0.1); border: 1px solid #1e293b; color: var(--text-main); padding: 12px 15px; width: 100%; border-radius: 8px; font-size: 0.95rem; margin-bottom: 15px; outline: none; transition: border 0.3s; }
-        body.light-mode .input-form { background: #f8fafc; border-color: #cbd5e1; }
-        .input-form:focus { border-color: var(--neon-blue); }
-        .form-label { display: block; text-align: left; font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
+        .input-form, .select-form { background: rgba(0,0,0,0.1); border: 1px solid #1e293b; color: var(--text-main); padding: 12px 15px; width: 100%; border-radius: 8px; font-size: 0.9rem; margin-bottom: 15px; outline: none; transition: border 0.3s; }
+        .select-form { appearance: none; cursor: pointer; }
+        body.light-mode .input-form, body.light-mode .select-form { background: #f8fafc; border-color: #cbd5e1; }
+        .input-form:focus, .select-form:focus { border-color: var(--neon-blue); }
+        .form-label { display: block; text-align: left; font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
 
-        .radio-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .radio-btn { flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid #1e293b; border-radius: 8px; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-size: 0.85rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 120px; }
+        .radio-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .radio-btn { flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid #1e293b; border-radius: 8px; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-size: 0.75rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 80px; text-align: center;}
         .radio-btn i { font-size: 1.2rem; }
         .radio-btn.active { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); color: var(--neon-blue); }
         body.light-mode .radio-btn { background: #f1f5f9; border-color: #cbd5e1; }
         body.light-mode .radio-btn.active { background: #e0f2fe; border-color: var(--neon-blue); }
+
+        .row-inputs { display: flex; gap: 15px; }
+        .row-inputs > div { flex: 1; }
+
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-bottom: 15px;}
+        .upload-btn-wrapper .btn-upload { border: 1px dashed var(--neon-blue); color: var(--neon-blue); background-color: transparent; padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s;}
+        .upload-btn-wrapper:hover .btn-upload { background-color: rgba(56, 189, 248, 0.1); }
+        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%;}
 
         .floating-tools { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 100;}
         .tool-btn { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
@@ -93,9 +118,8 @@
 
         @media (max-width: 768px) {
             .topbar { justify-content: center; }
-            .node-card { min-width: 150px; padding: 15px; }
-            .node-card i.main-icon { font-size: 2rem; }
-            .node-card .nombre { font-size: 0.9rem; }
+            .node-card { min-width: 140px; padding: 10px; }
+            .row-inputs { flex-direction: column; gap: 0;}
         }
     </style>
 </head>
@@ -118,55 +142,92 @@
     </div>
 
     <!-- WRAPPER DE EXPORTACIÓN (Para evitar fondo negro) -->
-    <div class="workspace">
+    <div class="workspace" id="workspace-area">
         <div class="export-wrapper" id="lienzo-exportar">
             <div class="tree-container tree modo-sucesorio" id="tree-root">
-                <!-- El árbol dinámico con ramificaciones (Lado/Abajo) va aquí -->
+                <!-- El árbol dinámico se genera aquí -->
             </div>
         </div>
     </div>
 
     <div class="floating-tools">
-        <button class="tool-btn" onclick="zoomTree(0.1)"><i class="fa-solid fa-plus"></i></button>
-        <button class="tool-btn" onclick="zoomTree(-0.1)"><i class="fa-solid fa-minus"></i></button>
-        <button class="tool-btn" onclick="resetZoom()"><i class="fa-solid fa-expand"></i></button>
+        <button class="tool-btn" onclick="zoomTree(0.1)" title="Acercar"><i class="fa-solid fa-plus"></i></button>
+        <button class="tool-btn" onclick="zoomTree(-0.1)" title="Alejar"><i class="fa-solid fa-minus"></i></button>
+        <button class="tool-btn" onclick="resetZoom()" title="Restaurar Vista"><i class="fa-solid fa-expand"></i></button>
     </div>
 
-    <!-- SÚPER MODAL PARA AGREGAR FAMILIARES -->
+    <!-- SÚPER MODAL PARA AGREGAR FAMILIARES (Con 4 Direcciones y Detalles) -->
     <div class="modal-overlay" id="modalAgregar">
         <div class="modal-card">
             <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange));"></div>
-            <h2 style="color: var(--text-main); margin-bottom: 20px; font-size: 1.3rem;"><i class="fa-solid fa-user-plus" style="color: var(--neon-blue);"></i> Añadir al Árbol</h2>
+            <h2 style="color: var(--text-main); margin-bottom: 20px; font-size: 1.3rem; text-align: center;"><i class="fa-solid fa-user-plus" style="color: var(--neon-blue);"></i> Añadir al Árbol</h2>
+            
+            <div class="upload-btn-wrapper">
+                <button class="btn-upload"><i class="fa-solid fa-camera"></i> Subir Foto (Opcional)</button>
+                <input type="file" name="myfile" accept="image/*" id="inputFoto" onchange="previewFoto(event)"/>
+            </div>
             
             <label class="form-label">Nombre Completo</label>
             <input type="text" id="inputNombre" class="input-form" placeholder="Ej. Juan Pérez">
             
-            <label class="form-label">Parentesco o Rol Legal</label>
-            <input type="text" id="inputRol" class="input-form" placeholder="Ej. Heredero, Cónyuge Supérstite">
-
-            <label class="form-label">Fechas (Nacimiento / Defunción)</label>
-            <input type="text" id="inputFecha" class="input-form" placeholder="Ej. Nac: 1980 - Def: 2024 (Opcional)">
-
-            <label class="form-label">Dirección de la Rama</label>
-            <div class="radio-group">
-                <div class="radio-btn active" id="btnDireccionAbajo" onclick="seleccionarDireccion('abajo')">
-                    <i class="fa-solid fa-arrow-down"></i> Descendiente
+            <div class="row-inputs">
+                <div>
+                    <label class="form-label">Parentesco / Rol Legal</label>
+                    <input type="text" id="inputRol" class="input-form" placeholder="Ej. Heredero, Cónyuge">
                 </div>
-                <div class="radio-btn" id="btnDireccionLado" onclick="seleccionarDireccion('lado')">
-                    <i class="fa-solid fa-arrow-right"></i> Pareja / Lado
+                <div>
+                    <label class="form-label">Estado Civil</label>
+                    <select id="inputEstadoCivil" class="select-form">
+                        <option value="Soltero(a)">Soltero(a)</option>
+                        <option value="Casado(a)">Casado(a)</option>
+                        <option value="Divorciado(a)">Divorciado(a)</option>
+                        <option value="Viudo(a)">Viudo(a)</option>
+                        <option value="Concubinato">Concubinato</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row-inputs">
+                <div>
+                    <label class="form-label">Fechas (Nac / Def)</label>
+                    <input type="text" id="inputFecha" class="input-form" placeholder="Ej. 1980 - 2024">
+                </div>
+                <div>
+                    <label class="form-label">Género</label>
+                    <select id="inputGenero" class="select-form">
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <label class="form-label" style="text-align: center; margin-top: 10px;">Dirección de la Rama (Dónde Ubicarlo)</label>
+            <div class="radio-group">
+                <div class="radio-btn" id="btnDirArriba" onclick="seleccionarDireccion('arriba')">
+                    <i class="fa-solid fa-arrow-up"></i> Ascendiente (Padre/Madre)
+                </div>
+                <div class="radio-btn active" id="btnDirAbajo" onclick="seleccionarDireccion('abajo')">
+                    <i class="fa-solid fa-arrow-down"></i> Descendiente (Hijo/Hija)
+                </div>
+                <div class="radio-btn" id="btnDirIzq" onclick="seleccionarDireccion('izq')">
+                    <i class="fa-solid fa-arrow-left"></i> Lado Izq (Hermano/a)
+                </div>
+                <div class="radio-btn" id="btnDirDer" onclick="seleccionarDireccion('der')">
+                    <i class="fa-solid fa-arrow-right"></i> Lado Der (Cónyuge)
                 </div>
             </div>
 
             <div style="display: flex; gap: 10px;">
                 <button class="btn btn-volver" style="flex: 1; justify-content: center; background: rgba(0,0,0,0.1);" onclick="cerrarModalAgregar()">Cancelar</button>
-                <button class="btn btn-vip" style="flex: 1; justify-content: center;" onclick="confirmarAgregar()">Dibujar</button>
+                <button class="btn btn-vip" style="flex: 1; justify-content: center;" onclick="confirmarAgregar()">Dibujar Rama</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL VIP -->
     <div class="modal-overlay" id="modalVIP">
-        <div class="modal-card">
+        <div class="modal-card" style="text-align: center;">
             <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, #facc15, var(--brand-orange));"></div>
             <h2 style="color: var(--text-main); margin-bottom: 15px;"><i class="fa-solid fa-gem" style="color: var(--brand-orange);"></i> Funciones Pro</h2>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">La versión Demo solo permite 3 nodos en total. Ingresa tu token institucional para añadir ramas ilimitadas y habilitar la exportación completa.</p>
@@ -185,22 +246,22 @@
             localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
 
-        let treeSucesorio = { id: 1, nombre: "Expediente / Caso", rol: "Raíz Principal", fecha: "", icon: "fa-folder-open", spouses: [], children: [] };
-        let treeFamiliar = { id: 2, nombre: "Raíz Familiar", rol: "Origen", fecha: "", icon: "fa-house-chimney", spouses: [], children: [] };
+        // Estructura de Nodo Multidireccional: parents (arriba), spousesIzq (lado izq), spousesDer (lado der), children (abajo)
+        let treeSucesorio = { id: 1, nombre: "Expediente / Caso", rol: "Raíz Principal", fecha: "", genero: "M", estadoCivil: "N/A", icon: "fa-folder-open", fotoUrl: null, parents: [], spousesIzq: [], spousesDer: [], children: [] };
+        let treeFamiliar = { id: 2, nombre: "Raíz Familiar", rol: "Origen", fecha: "", genero: "O", estadoCivil: "N/A", icon: "fa-house-chimney", fotoUrl: null, parents: [], spousesIzq: [], spousesDer: [], children: [] };
         
         let esModoFamiliar = false;
         let esProActivado = localStorage.getItem('pro_activo') === 'true'; 
         let scale = 1;
         let direccionSeleccionada = 'abajo';
+        let fotoTemporalUrl = null;
 
         window.onload = () => { 
             if(localStorage.getItem('tema') === 'light') toggleTheme(); 
-            
             if(esProActivado) {
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
             }
-
             const datosArbolIA = localStorage.getItem('datos_arbol_45ymas');
             if(datosArbolIA) {
                 const infoExtraida = JSON.parse(datosArbolIA);
@@ -209,7 +270,6 @@
                 treeSucesorio.fecha = infoExtraida.fecha;
             }
             renderTree(); 
-            
             if(window.history.length <= 1) {
                 document.getElementById('btnCerrar').innerHTML = '<i class="fa-solid fa-times"></i> Cerrar Pestaña';
             } else {
@@ -238,6 +298,7 @@
             renderTree(); 
         }
 
+        // ====== RENDERIZADO DEL SÚPER ÁRBOL ======
         function renderTree() {
             const rootContainer = document.getElementById('tree-root');
             rootContainer.innerHTML = '';
@@ -249,18 +310,44 @@
 
         function createNodeElement(node) {
             const li = document.createElement('li');
-            const group = document.createElement('div');
-            group.className = 'node-group';
+            const nodeContainer = document.createElement('div');
+            nodeContainer.className = 'node-container';
             
-            group.appendChild(crearTarjetaHTML(node, false));
+            // 1. DIBUJAR PADRES (Arriba)
+            if(node.parents && node.parents.length > 0) {
+                const parentsGroup = document.createElement('div');
+                parentsGroup.className = 'parents-group horizontal-group';
+                node.parents.forEach(parent => {
+                    parentsGroup.appendChild(crearTarjetaHTML(parent, 'arriba', node.id));
+                });
+                nodeContainer.appendChild(parentsGroup);
+            }
 
-            if(node.spouses && node.spouses.length > 0) {
-                node.spouses.forEach(spouse => {
-                    group.appendChild(crearTarjetaHTML(spouse, true, node.id));
+            // 2. DIBUJAR EL GRUPO HORIZONTAL (Lado Izq + Nodo Central + Lado Der)
+            const horizontalGroup = document.createElement('div');
+            horizontalGroup.className = 'horizontal-group';
+            
+            // Hermanos / Parejas Izquierda
+            if(node.spousesIzq && node.spousesIzq.length > 0) {
+                node.spousesIzq.forEach(spouse => {
+                    horizontalGroup.appendChild(crearTarjetaHTML(spouse, 'izq', node.id));
                 });
             }
-            li.appendChild(group);
 
+            // Nodo Central
+            horizontalGroup.appendChild(crearTarjetaHTML(node, 'central'));
+
+            // Parejas Derecha
+            if(node.spousesDer && node.spousesDer.length > 0) {
+                node.spousesDer.forEach(spouse => {
+                    horizontalGroup.appendChild(crearTarjetaHTML(spouse, 'der', node.id));
+                });
+            }
+            
+            nodeContainer.appendChild(horizontalGroup);
+            li.appendChild(nodeContainer);
+
+            // 3. DIBUJAR DESCENDIENTES (Abajo)
             if (node.children && node.children.length > 0) {
                 const ul = document.createElement('ul');
                 node.children.forEach(child => ul.appendChild(createNodeElement(child)) );
@@ -269,38 +356,61 @@
             return li;
         }
 
-        function crearTarjetaHTML(data, esPareja, parentIdOriginal = null) {
+        function crearTarjetaHTML(data, tipoRelacion, parentIdOriginal = null) {
             const card = document.createElement('div');
             card.className = 'node-card';
             
-            let btnAgregarHTML = !esPareja ? `<button class="btn-node add" title="Agregar Rama" onclick="abrirModalAgregar(${data.id}, event)"><i class="fa-solid fa-plus"></i></button>` : '';
-            let btnEliminarHTML = (data.id !== 1 && data.id !== 2) ? `<button class="btn-node delete" title="Eliminar" onclick="eliminarNodo(${data.id}, ${esPareja}, ${parentIdOriginal}, event)"><i class="fa-solid fa-trash"></i></button>` : '';
+            // Botones
+            let btnAgregarHTML = (tipoRelacion === 'central') ? `<button class="btn-node add" title="Agregar Rama" onclick="abrirModalAgregar(${data.id}, event)"><i class="fa-solid fa-plus"></i></button>` : '';
+            let btnEliminarHTML = (data.id !== 1 && data.id !== 2) ? `<button class="btn-node delete" title="Eliminar" onclick="eliminarNodo(${data.id}, '${tipoRelacion}', ${parentIdOriginal}, event)"><i class="fa-solid fa-trash"></i></button>` : '';
+
+            // Icono de Género
+            let genderClass = 'fa-genderless';
+            let genderColorClass = '';
+            if(data.genero === 'M') { genderClass = 'fa-mars'; genderColorClass = 'gender-m'; }
+            if(data.genero === 'F') { genderClass = 'fa-venus'; genderColorClass = 'gender-f'; }
+
+            // Foto o Icono
+            let visualHTML = data.fotoUrl 
+                ? `<div class="node-photo"><img src="${data.fotoUrl}" alt="foto"></div>`
+                : `<div class="node-photo"><i class="fa-solid ${data.icon}"></i></div>`;
 
             let fechaHTML = data.fecha ? `<div class="fecha"><i class="fa-regular fa-calendar"></i> ${data.fecha}</div>` : '';
 
             card.innerHTML = `
                 <div class="node-actions">${btnAgregarHTML}${btnEliminarHTML}</div>
-                <i class="fa-solid ${data.icon} main-icon"></i>
+                <div class="node-header">
+                    ${visualHTML}
+                    <i class="fa-solid ${genderClass} gender-icon ${genderColorClass}" title="Género"></i>
+                </div>
                 <div class="nombre">${data.nombre}</div>
                 <div class="rol">${data.rol}</div>
+                <div class="info-extra"><i class="fa-solid fa-ring"></i> ${data.estadoCivil}</div>
                 ${fechaHTML}
             `;
             return card;
         }
 
-        let parentIdTemp = null;
-        
+        // ====== LÓGICA DEL FORMULARIO ======
         function seleccionarDireccion(dir) {
             direccionSeleccionada = dir;
-            document.getElementById('btnDireccionAbajo').classList.remove('active');
-            document.getElementById('btnDireccionLado').classList.remove('active');
-            if(dir === 'abajo') document.getElementById('btnDireccionAbajo').classList.add('active');
-            else document.getElementById('btnDireccionLado').classList.add('active');
+            document.querySelectorAll('.radio-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btnDir${dir.charAt(0).toUpperCase() + dir.slice(1)}`).classList.add('active');
+        }
+
+        function previewFoto(event) {
+            const file = event.target.files[0];
+            if(file) {
+                fotoTemporalUrl = URL.createObjectURL(file);
+                document.querySelector('.btn-upload').innerHTML = '<i class="fa-solid fa-check"></i> Foto Lista';
+            }
         }
 
         function contarNodos(tree) {
             let count = 1; 
-            if(tree.spouses) count += tree.spouses.length;
+            if(tree.spousesIzq) count += tree.spousesIzq.length;
+            if(tree.spousesDer) count += tree.spousesDer.length;
+            if(tree.parents) count += tree.parents.length;
             if(tree.children) { tree.children.forEach(c => count += contarNodos(c)); }
             return count;
         }
@@ -309,14 +419,18 @@
             event.stopPropagation();
             const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
             
-            if (!esProActivado && contarNodos(currentTree) >= 3) { 
-                verificarVIP(); return; 
-            }
+            if (!esProActivado && contarNodos(currentTree) >= 3) { verificarVIP(); return; }
             
             parentIdTemp = parentId;
             document.getElementById('inputNombre').value = '';
             document.getElementById('inputRol').value = '';
             document.getElementById('inputFecha').value = '';
+            document.getElementById('inputEstadoCivil').value = 'Soltero(a)';
+            document.getElementById('inputGenero').value = 'M';
+            document.querySelector('.btn-upload').innerHTML = '<i class="fa-solid fa-camera"></i> Subir Foto (Opcional)';
+            document.getElementById('inputFoto').value = '';
+            fotoTemporalUrl = null;
+            
             seleccionarDireccion('abajo'); 
             document.getElementById('modalAgregar').style.display = 'flex';
             document.getElementById('inputNombre').focus();
@@ -328,6 +442,8 @@
             const nombre = document.getElementById('inputNombre').value.trim();
             const rol = document.getElementById('inputRol').value.trim();
             const fecha = document.getElementById('inputFecha').value.trim();
+            const civil = document.getElementById('inputEstadoCivil').value;
+            const genero = document.getElementById('inputGenero').value;
             
             if(!nombre || !rol) { alert("Nombre y Rol son obligatorios."); return; }
             
@@ -335,11 +451,17 @@
             if(rol.toLowerCase().includes('cónyuge') || rol.toLowerCase().includes('espos')) icon = "fa-rings-wedding";
             if(rol.toLowerCase().includes('hijo') || rol.toLowerCase().includes('niet')) icon = "fa-child";
             
-            const newNode = { id: Date.now(), nombre: nombre, rol: rol, fecha: fecha, icon: icon, spouses: [], children: [] };
+            const newNode = { 
+                id: Date.now(), nombre: nombre, rol: rol, fecha: fecha, genero: genero, estadoCivil: civil, 
+                icon: icon, fotoUrl: fotoTemporalUrl, parents: [], spousesIzq: [], spousesDer: [], children: [] 
+            };
+            
             const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
             
-            if(direccionSeleccionada === 'lado') agregarPareja(currentTree, parentIdTemp, newNode);
-            else addChildToNode(currentTree, parentIdTemp, newNode);
+            if(direccionSeleccionada === 'abajo') addChildToNode(currentTree, parentIdTemp, newNode);
+            else if(direccionSeleccionada === 'arriba') agregarLateral(currentTree, parentIdTemp, newNode, 'parents');
+            else if(direccionSeleccionada === 'izq') agregarLateral(currentTree, parentIdTemp, newNode, 'spousesIzq');
+            else if(direccionSeleccionada === 'der') agregarLateral(currentTree, parentIdTemp, newNode, 'spousesDer');
             
             cerrarModalAgregar();
             renderTree();
@@ -351,21 +473,21 @@
             return false;
         }
 
-        function agregarPareja(currentNode, parentId, newNode) {
+        function agregarLateral(currentNode, parentId, newNode, arrayName) {
             if (currentNode.id === parentId) { 
-                if(!currentNode.spouses) currentNode.spouses = [];
-                currentNode.spouses.push(newNode); return true; 
+                if(!currentNode[arrayName]) currentNode[arrayName] = [];
+                currentNode[arrayName].push(newNode); return true; 
             }
-            if (currentNode.children) { for (let child of currentNode.children) { if (agregarPareja(child, parentId, newNode)) return true; } }
+            if (currentNode.children) { for (let child of currentNode.children) { if (agregarLateral(child, parentId, newNode, arrayName)) return true; } }
             return false;
         }
 
-        function eliminarNodo(nodeId, esPareja, parentIdOriginal, event) {
+        function eliminarNodo(nodeId, tipoRelacion, parentIdOriginal, event) {
             event.stopPropagation();
             if(confirm("¿Eliminar este registro y su descendencia?")) { 
                 const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
-                if(esPareja) eliminarPareja(currentTree, parentIdOriginal, nodeId);
-                else removeChild(currentTree, nodeId); 
+                if(tipoRelacion === 'central') removeChild(currentTree, nodeId);
+                else eliminarLateral(currentTree, parentIdOriginal, nodeId, tipoRelacion); 
                 renderTree(); 
             }
         }
@@ -379,32 +501,37 @@
             return false;
         }
 
-        function eliminarPareja(currentNode, parentId, idToRemove) {
-            if (currentNode.id === parentId && currentNode.spouses) {
-                const index = currentNode.spouses.findIndex(s => s.id === idToRemove);
-                if(index > -1) { currentNode.spouses.splice(index, 1); return true; }
+        function eliminarLateral(currentNode, parentId, idToRemove, arrayName) {
+            // Mapeamos el tipoRelacion al nombre del array en el objeto
+            let propName = arrayName;
+            if(arrayName === 'arriba') propName = 'parents';
+            if(arrayName === 'izq') propName = 'spousesIzq';
+            if(arrayName === 'der') propName = 'spousesDer';
+
+            if (currentNode.id === parentId && currentNode[propName]) {
+                const index = currentNode[propName].findIndex(s => s.id === idToRemove);
+                if(index > -1) { currentNode[propName].splice(index, 1); return true; }
             }
-            if (currentNode.children) { for (let child of currentNode.children) { if (eliminarPareja(child, parentId, idToRemove)) return true; } }
+            if (currentNode.children) { for (let child of currentNode.children) { if (eliminarLateral(child, parentId, idToRemove, propName)) return true; } }
             return false;
         }
 
-        function zoomTree(delta) { scale = Math.max(0.5, Math.min(2, scale + delta)); document.getElementById('tree-root').style.transform = `scale(${scale})`; }
+        // ====== ZOOM Y ARRASTRE ======
+        function zoomTree(delta) { scale = Math.max(0.3, Math.min(2.5, scale + delta)); document.getElementById('tree-root').style.transform = `scale(${scale})`; }
         function resetZoom() { scale = 1; document.getElementById('tree-root').style.transform = `scale(1)`; }
 
+        // ====== VIP Y EXPORTACIÓN ULTRA RESISTENTE ======
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
         function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
         
         function validarTokenVIP() {
             if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
-                esProActivado = true; 
-                localStorage.setItem('pro_activo', 'true'); 
-                cerrarModalVIP();
+                esProActivado = true; localStorage.setItem('pro_activo', 'true'); cerrarModalVIP();
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
             } else { alert("Acceso Denegado. Token inválido."); }
         }
 
-        // MOTOR DE EXPORTACIÓN BLINDADO CONTRA FONDOS NEGROS
         function intentarExportar() {
             if(!esProActivado) { verificarVIP(); return; }
             const btnExp = document.getElementById('btn-exportar');
@@ -412,35 +539,39 @@
             
             window.scrollTo(0,0); 
             const zoomOriginal = scale;
-            resetZoom(); // Resetear zoom para que no salga mal escalado
+            resetZoom(); 
 
             const wrapper = document.getElementById('lienzo-exportar');
+            const treeRoot = document.getElementById('tree-root');
             const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
             
-            // Forzamos el fondo sólido en el contenedor antes de fotografiar
             wrapper.style.background = themeBg;
+            wrapper.style.width = 'max-content'; // Forzar que abarque ramas grandes horizontales
 
             setTimeout(() => {
                 html2canvas(wrapper, { 
                     backgroundColor: themeBg, 
-                    scale: 2,
+                    scale: 2, 
                     useCORS: true,
-                    logging: false
+                    logging: false,
+                    windowWidth: wrapper.scrollWidth,
+                    windowHeight: wrapper.scrollHeight
                 }).then(canvas => {
                     const link = document.createElement('a'); 
                     link.download = esModoFamiliar ? 'Arbol_Familiar_45yMas.png' : 'Arbol_Sucesorio_45yMas.png'; 
                     link.href = canvas.toDataURL("image/png"); 
                     link.click();
                     
-                    wrapper.style.background = 'transparent'; // Devolver a la normalidad
+                    wrapper.style.background = 'transparent'; 
+                    wrapper.style.width = '100%';
                     btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
-                    if(zoomOriginal !== 1) zoomTree(zoomOriginal - 1); // Restaurar zoom
+                    if(zoomOriginal !== 1) zoomTree(zoomOriginal - 1); 
                 }).catch(err => {
-                    wrapper.style.background = 'transparent';
+                    wrapper.style.background = 'transparent'; wrapper.style.width = '100%';
                     btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
                     alert("Error en la captura de pantalla.");
                 });
-            }, 300);
+            }, 500);
         }
     </script>
 </body>

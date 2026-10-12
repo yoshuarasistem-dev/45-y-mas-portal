@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cronología y Calendario Legal | 45 y Más Pro</title>
+    <title>Cronología Organizada | 45 y Más Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -40,7 +40,6 @@
 
         .workspace { flex: 1; overflow: auto; padding: 40px 20px; display: flex; justify-content: center; position: relative; }
         
-        /* Contenedor de Exportación Aislado */
         .export-wrapper { max-width: 800px; width: 100%; padding: 20px; border-radius: 12px; transition: background 0.3s; }
         .timeline-container { width: 100%; position: relative; padding-left: 40px; padding-bottom: 20px; }
         .timeline-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 14px; width: 3px; background: linear-gradient(to bottom, var(--neon-blue), var(--brand-orange)); border-radius: 3px; }
@@ -72,14 +71,12 @@
         .tipo-vencimiento .timeline-foja { border-color: var(--danger); color: var(--danger); }
         .tipo-vencimiento .timeline-foja:hover { background: var(--danger); color: #fff; }
 
-        /* MODO DEMO - DIFUMINADO */
         .blurred-section { position: relative; }
         .blurred-content { filter: blur(8px); opacity: 0.4; pointer-events: none; user-select: none; transition: filter 0.5s, opacity 0.5s; }
         .unlock-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 5; width: 90%; max-width: 400px; background: rgba(10, 15, 29, 0.85); backdrop-filter: blur(8px); padding: 30px; border-radius: 16px; border: 1px solid var(--brand-orange); box-shadow: 0 20px 40px rgba(0,0,0,0.5); transition: background 0.3s; }
         .unlock-overlay h3 { color: var(--text-main); margin: 15px 0 10px 0; }
         .unlock-overlay p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
 
-        /* MODAL VIP */
         #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); z-index: 2000; justify-content: center; align-items: center; }
         .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 420px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
         .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; outline: none; }
@@ -88,7 +85,6 @@
         #toast-noti { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--brand-orange); color: white; padding: 15px 25px; border-radius: 8px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; display: flex; align-items: center; gap: 10px; }
         #toast-noti.show { bottom: 30px; }
 
-        /* RESPONSIVIDAD CELULARES */
         @media (max-width: 768px) {
             .topbar { justify-content: center; }
             .timeline-container { padding-left: 20px; }
@@ -109,7 +105,7 @@
             <span class="status-badge status-demo" id="status-badge">VERSIÓN DEMO</span>
         </div>
         
-        <button id="btn-sync" class="btn btn-accion" onclick="sincronizarDatos()"><i class="fa-solid fa-rotate"></i> Forzar Lectura</button>
+        <button id="btn-sync" class="btn btn-accion" onclick="sincronizarDatos()"><i class="fa-solid fa-rotate"></i> Organizar Fechas</button>
         <button id="btn-exportar" class="btn btn-vip" onclick="intentarExportar()"><i class="fa-solid fa-download"></i> Guardar Calendario</button>
 
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
@@ -118,7 +114,6 @@
     </div>
 
     <div class="workspace">
-        <!-- Wrapper aislado para una exportación perfecta -->
         <div class="export-wrapper" id="lienzo-exportar">
             <div class="timeline-container" id="timeline-container">
                 <!-- SE GENERA DINÁMICAMENTE POR JS -->
@@ -126,17 +121,15 @@
         </div>
     </div>
 
-    <!-- NOTIFICACIÓN TOAST -->
     <div id="toast-noti">
-        <i class="fa-solid fa-link"></i> <span>Abriendo foja en IurisVisor...</span>
+        <i class="fa-solid fa-link"></i> <span>Consultando expediente...</span>
     </div>
 
-    <!-- MODAL VIP -->
     <div id="modalVIP">
         <div class="modal-card">
             <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, #facc15, var(--brand-orange));"></div>
             <h2><i class="fa-solid fa-key" style="color: var(--brand-orange); margin-bottom:10px;"></i> Activar Inteligencia VIP</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Ingresa tu token para eliminar el desenfoque, visualizar los plazos fatales y habilitar la exportación del calendario.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Ingresa tu token para ver todos los plazos, ordenarlos automáticamente y habilitar la exportación del calendario.</p>
             <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN 45YMAS" autocomplete="off">
             <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 15px;" onclick="validarTokenVIP()">VALIDAR Y DESBLOQUEAR</button>
             <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer;" onclick="cerrarModalVIP()">Cancelar</button>
@@ -144,7 +137,6 @@
     </div>
 
     <script>
-        // TEMA
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
@@ -154,10 +146,8 @@
             else { btnSpan.innerText = "Modo Claro"; btnIcon.className = "fa-solid fa-circle-half-stroke"; localStorage.setItem('tema', 'dark'); }
         }
 
-        // VARIABLE GLOBAL DE TOKEN
         let esProActivado = localStorage.getItem('pro_activo') === 'true';
 
-        // CARGA INTELIGENTE AL INICIAR
         window.onload = () => { 
             if(localStorage.getItem('tema') === 'light') toggleTheme(); 
             
@@ -176,7 +166,12 @@
             }
         };
 
-        // ====== DIBUJO DINÁMICO DEL CALENDARIO ======
+        // Función para extraer números de la fecha/foja para poder ordenarlos
+        function extraerNumeroParaOrdenar(texto) {
+            const numeros = texto.match(/\d+/g);
+            return numeros ? parseInt(numeros.join('')) : 9999; 
+        }
+
         function renderizarLineaDeTiempo() {
             const container = document.getElementById('timeline-container');
             const datosGuardados = localStorage.getItem('datos_timeline_45ymas');
@@ -186,13 +181,21 @@
                     <div style="text-align:center; padding: 60px 20px; color: var(--text-muted);">
                         <i class="fa-solid fa-calendar-xmark" style="font-size: 4.5rem; margin-bottom: 20px; opacity: 0.5;"></i>
                         <h2 style="color: var(--text-main); margin-bottom: 10px;">Esperando Expediente</h2>
-                        <p style="font-size: 0.95rem; line-height:1.5;">Por favor, ve al <a href="iurisvisor.html" style="color: var(--neon-blue);">IurisVisor Pro</a>, carga un expediente PDF e inicia el Radar para que el sistema extraiga las fechas clave y arme tu calendario de plazos.</p>
+                        <p style="font-size: 0.95rem; line-height:1.5;">Ve al <a href="iurisvisor.html" style="color: var(--neon-blue);">IurisVisor Pro</a>, escanea un documento y esta cronología se armará sola.</p>
                     </div>
                 `;
                 return;
             }
 
-            const plazos = JSON.parse(datosGuardados);
+            let plazos = JSON.parse(datosGuardados);
+            
+            // ORDENAMIENTO CRONOLÓGICO INTELIGENTE
+            plazos.sort((a, b) => {
+                let numA = extraerNumeroParaOrdenar(a.fecha.toString());
+                let numB = extraerNumeroParaOrdenar(b.fecha.toString());
+                return numA - numB; // De menor a mayor
+            });
+
             let html = '';
 
             for(let i = 0; i < Math.min(2, plazos.length); i++) {
@@ -210,8 +213,8 @@
                         <div class="unlock-overlay" id="overlay-vip">
                             <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--brand-orange); margin-bottom: 15px;"></i>
                             <h3>Calendario Protegido</h3>
-                            <p>Los términos fatales, vencimientos y sentencias están ocultos en la versión de prueba.</p>
-                            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px;" onclick="verificarVIP()">DESBLOQUEAR VIP (45YMAS)</button>
+                            <p>El resto de las fechas del expediente están ocultas en la versión de prueba.</p>
+                            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px;" onclick="verificarVIP()">DESBLOQUEAR VIP</button>
                         </div>
                         <div class="blurred-content" id="contenido-oculto">
                     `;
@@ -225,16 +228,17 @@
         }
 
         function crearItemHTML(item, index) {
-            const delay = (index * 0.15); // Efecto cascada rápido
-            const esFatal = item.foja === 'Fatal';
-            const fojaIcon = esFatal ? '<i class="fa-solid fa-triangle-exclamation"></i> Alerta Crítica' : `<i class="fa-solid fa-magnifying-glass"></i> Foja Asociada: ${item.foja}`;
-            const claseColor = esFatal ? 'color: var(--danger)' : '';
+            const delay = (index * 0.15); 
+            // Determinar si es crítico por el tipo
+            const esCrítico = item.tipo === 'tipo-vencimiento';
+            const fojaIcon = esCrítico ? '<i class="fa-solid fa-triangle-exclamation"></i> Alerta Crítica' : `<i class="fa-solid fa-magnifying-glass"></i> Foja Asociada: ${item.foja}`;
+            const claseColor = esCrítico ? 'color: var(--danger)' : '';
             
             return `
             <div class="timeline-item ${item.tipo}" style="animation-delay: ${delay}s">
                 <div class="timeline-dot"></div>
                 <div class="timeline-card">
-                    <div class="timeline-date"><i class="fa-regular fa-calendar-days"></i> ${item.fecha} (Fecha Clave)</div>
+                    <div class="timeline-date"><i class="fa-regular fa-calendar-check"></i> ${item.fecha}</div>
                     <div class="timeline-title" style="${claseColor}">${item.titulo}</div>
                     <div class="timeline-desc">${item.desc}</div>
                     <div class="timeline-foja" onclick="abrirFojaSimulada('${item.foja}')">${fojaIcon}</div>
@@ -245,11 +249,11 @@
 
         function sincronizarDatos() {
             const btn = document.getElementById('btn-sync');
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Leyendo...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Organizando...';
             btn.style.pointerEvents = 'none';
             setTimeout(() => {
                 renderizarLineaDeTiempo();
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Actualizado';
+                btn.innerHTML = '<i class="fa-solid fa-arrow-down-short-wide"></i> Fechas Ordenadas';
                 btn.style.borderColor = "var(--success)"; btn.style.color = "var(--success)";
                 btn.style.pointerEvents = 'auto';
             }, 800);
@@ -257,12 +261,11 @@
 
         function abrirFojaSimulada(foja) {
             const toast = document.getElementById('toast-noti');
-            toast.querySelector('span').innerText = foja === 'Fatal' ? 'Redirigiendo a alerta crítica en IurisVisor...' : `Consultando Foja ${foja} en el visor...`;
+            toast.querySelector('span').innerText = `Consultando documento en visor principal...`;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // ====== LÓGICA VIP ======
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
         function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
         
@@ -277,35 +280,33 @@
             } else { alert("Acceso Denegado. Token inválido."); }
         }
 
-        // ====== MOTOR DE EXPORTACIÓN ROBUSTO ======
         function intentarExportar() {
             if(!esProActivado) { verificarVIP(); return; }
             const btnExp = document.getElementById('btn-exportar');
             btnExp.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
             
+            window.scrollTo(0,0);
+            
             const wrapper = document.getElementById('lienzo-exportar');
             const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
             
-            // Forzar fondo sólido al contenedor solo para la foto
             wrapper.style.background = themeBg;
             
             html2canvas(wrapper, { 
                 backgroundColor: themeBg, 
-                scale: 2, // Alta Resolución
+                scale: 2, 
                 useCORS: true,
                 logging: false
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'Calendario_Plazos_45yMas.png'; 
+                link.download = 'Calendario_Ordenado_45yMas.png'; 
                 link.href = canvas.toDataURL("image/png"); 
                 link.click();
                 
-                // Restaurar botones y fondo
                 wrapper.style.background = 'transparent';
                 btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Calendario';
             }).catch(err => {
                 alert("Hubo un error al generar la imagen.");
-                console.error(err);
                 wrapper.style.background = 'transparent';
                 btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Calendario';
             });
