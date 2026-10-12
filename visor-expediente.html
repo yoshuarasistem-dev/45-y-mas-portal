@@ -8,8 +8,12 @@
     <!-- Librerías Optimizadas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
-    <!-- Tesseract v5 desde CDN seguro -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js@5/dist/tesseract.min.js"></script>
+    
+    <!-- LIBRERÍAS NUEVAS PARA GUARDADO HÍBRIDO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -20,7 +24,6 @@
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg-deep); } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         
-        /* HEADER */
         .topbar { background: var(--bg-panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
         .logo-oficial { display: flex; flex-direction: column; align-items: flex-start; }
         .logo-oficial img { max-height: 40px; object-fit: contain; margin-bottom: 2px; }
@@ -31,7 +34,6 @@
         .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); } .btn-accion:hover { background: var(--neon-blue); color: #000; }
         .workspace { display: flex; flex: 1; overflow: hidden; }
 
-        /* PANEL IZQUIERDO: FOJAS */
         .sidebar-fojas { width: 240px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; }
         .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border-glass); text-align: center; }
         .btn-add-foja { width: 100%; background: transparent; border: 1px dashed var(--brand-orange); color: var(--brand-orange); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s; margin-bottom: 8px;}
@@ -46,14 +48,12 @@
         .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; }
         .btn-mini:hover { background: var(--brand-orange); }
 
-        /* VISOR CENTRAL */
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
         #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute;}
         #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5;} 
         #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 850px; min-height: 1100px; padding: 50px; font-family: 'Arial', sans-serif; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
         .zoom-controls { position: fixed; bottom: 30px; left: 260px; background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 10;}
 
-        /* PANEL DERECHO: HERRAMIENTAS */
         .sidebar-herramientas { width: 340px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; }
         .tabs { display: flex; border-bottom: 1px solid var(--border-glass); }
         .tab { flex: 1; text-align: center; padding: 15px; cursor: pointer; font-weight: bold; font-size: 0.85rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: 0.3s; }
@@ -61,7 +61,6 @@
         .panel-content { flex: 1; overflow-y: auto; padding: 20px; display: none; flex-direction: column;}
         .panel-content.active { display: flex; }
 
-        /* Estilos IA */
         .keyword-card { background: var(--bg-deep); border: 1px solid var(--border-glass); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
         .keyword-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .keyword-word { font-weight: 800; color: var(--text-main); font-size: 0.95rem; text-transform: uppercase; }
@@ -70,14 +69,13 @@
         .badge-foja { background: rgba(255, 255, 255, 0.1); padding: 3px 6px; border-radius: 4px; cursor: pointer; font-weight: 600;}
         .badge-foja:hover { background: var(--brand-orange); color: white; }
 
-        /* Estilos Apuntes */
         .nota-area { width: 100%; flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 15px; border-radius: 8px; resize: none; font-size: 0.9rem; outline: none; margin-bottom: 10px; min-height: 150px;}
         .nota-area:focus { border-color: var(--brand-orange); }
         #indice-notas-container { max-height: 250px; overflow-y: auto; border-bottom: 1px solid var(--border-glass); margin-bottom: 15px; padding-bottom: 10px; }
         .nota-preview { background: rgba(255,255,255,0.03); border-left: 3px solid var(--brand-orange); padding: 10px; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;}
         .nota-preview:hover { background: rgba(255,255,255,0.08); }
 
-        /* PANTALLAS DE CARGA */
+        /* PANTALLA DE PROGRESO (Optimizada) */
         #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
         .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 12px; text-align: center; width: 400px; box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);}
         .barra-fondo { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; margin: 20px 0; overflow: hidden; }
@@ -95,13 +93,13 @@
         <div style="display: flex; align-items: center; gap: 20px;">
             <div class="logo-oficial">
                 <img src="./assets/LOGO.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
-                <div class="sub-brand">Gestor de Expedientes IA</div>
+                <div class="sub-brand" id="etiqueta-almacenamiento">Bóveda Local Activa</div>
             </div>
             <span class="expediente-title" id="titulo-exp">EXP/000/00</span>
         </div>
 
         <div style="display:flex; gap: 10px;">
-            <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumento(event)">
+            <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumentoManual(event)">
             <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar Archivo</button>
             <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearTodoElExpediente()"><i class="fa-solid fa-brain"></i> Auto-Lectura IA</button>
         </div>
@@ -115,7 +113,7 @@
                 <button class="btn-add-foja" style="border-color:var(--neon-blue); color:var(--neon-blue);" onclick="autoOrdenarFojas()"><i class="fa-solid fa-arrow-down-1-9"></i> Auto-Ordenar</button>
             </div>
             <div class="fojas-list" id="lista-fojas-container">
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Sube un PDF para visualizar.</p>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Sube un archivo para comenzar la lectura.</p>
             </div>
         </div>
 
@@ -128,7 +126,7 @@
             <div style="text-align:center; color:var(--text-muted); margin-top: 100px;" id="msg-vacio">
                 <i class="fa-solid fa-folder-open" style="font-size: 4rem; opacity: 0.3; margin-bottom: 15px;"></i>
                 <h3>Visor Inactivo</h3>
-                <p>Selecciona una foja a la izquierda o carga un documento.</p>
+                <p>El expediente no contiene archivos guardados.</p>
             </div>
 
             <div class="zoom-controls" id="controles-zoom" style="display: none;">
@@ -166,12 +164,12 @@
     <!-- PANTALLA DE PROGRESO -->
     <div id="pantalla-progreso">
         <div class="progreso-card">
-            <i class="fa-solid fa-brain fa-fade" id="icono-progreso" style="font-size: 3.5rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
-            <h3 style="color: white; margin-bottom: 5px;" id="titulo-progreso">Procesando Documento</h3>
-            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Preparando visualización...</p>
+            <i class="fa-solid fa-hdd fa-fade" id="icono-progreso" style="font-size: 3.5rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <h3 style="color: white; margin-bottom: 5px;" id="titulo-progreso">Procesando Bóveda</h3>
+            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Verificando archivos guardados...</p>
             <p id="texto-subprogreso" style="color: var(--brand-orange); font-size: 0.75rem; margin-top: 8px; font-weight: bold;"></p>
             <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
-            <button class="btn btn-accion" style="margin-top: 15px; font-size: 0.75rem; padding: 8px 15px;" onclick="cancelarProcesos()">Detener</button>
+            <button class="btn btn-accion" id="btn-cancelar-ia" style="margin-top: 15px; font-size: 0.75rem; padding: 8px 15px; display:none;" onclick="cancelarProcesos()">Detener</button>
         </div>
     </div>
 
@@ -186,33 +184,115 @@
         let zoomGlobal = 1.2;
         let detenerEjecucion = false;
         let pdfGlobal = null; 
-
+        
         const PALABRAS_BUSCADAS = ["acuerdo", "convenio", "mediación", "conciliación", "confidencialidad", "ejecutoria", "sanción", "improcedencia", "alimentos", "divorcio"];
         let resultadosKeywords = {};
         window.mapaAlertasPorFoja = {}; 
 
-        // 1. CARGA DE PDF EN MODO "LAZY" (No revienta la memoria)
-        async function cargarDocumento(event) {
+        // CONFIGURACIÓN FIREBASE STORAGE (Para el Admin)
+        const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
+        let storageRef = null;
+        let esAdmin = localStorage.getItem('usuario_admin') === 'true';
+
+        try {
+            if(firebaseConfig.apiKey !== "TU_API_KEY") {
+                firebase.initializeApp(firebaseConfig);
+                storageRef = firebase.storage().ref();
+            }
+        } catch(e) { console.log("Firebase Storage Inactivo."); }
+
+        if (esAdmin && storageRef) {
+            document.getElementById('etiqueta-almacenamiento').innerText = "Bóveda Híbrida Activa (Local + Nube)";
+            document.getElementById('etiqueta-almacenamiento').style.color = "var(--neon-blue)";
+        }
+
+        // ==========================================
+        // 1. SISTEMA DE GUARDADO PERSISTENTE (IndexedDB)
+        // ==========================================
+        window.onload = async () => {
+            mostrarProgreso("fa-hdd", "Buscando en Bóveda", "Revisando disco duro local...");
+            
+            try {
+                // 1. INTENTA BUSCAR EL PDF EN LA BÓVEDA LOCAL DE LA PC (IndexedDB)
+                let archivoBlob = await localforage.getItem('archivo_' + nombreExpediente);
+                
+                if (archivoBlob) {
+                    // Si ya estaba guardado en tu compu, lo abre
+                    await procesarArchivoInterno(archivoBlob);
+                } 
+                else if (esAdmin && storageRef) {
+                    // 2. SI NO ESTÁ LOCAL, Y ERES ADMIN, LO BUSCA EN LA NUBE
+                    document.getElementById('texto-progreso').innerText = "Descargando desde la Nube...";
+                    try {
+                        let url = await storageRef.child(`expedientes_pdfs/${nombreExpediente}.pdf`).getDownloadURL();
+                        let response = await fetch(url);
+                        let cloudBlob = await response.blob();
+                        
+                        // Lo guarda en tu PC para la próxima vez no gastar internet
+                        await localforage.setItem('archivo_' + nombreExpediente, cloudBlob);
+                        await procesarArchivoInterno(cloudBlob);
+                    } catch (e) {
+                        // No estaba ni local ni en la nube.
+                        ocultarProgreso();
+                    }
+                } else {
+                    // No hay archivo guardado.
+                    ocultarProgreso();
+                }
+            } catch (error) {
+                console.error("Error al cargar de la bóveda:", error);
+                ocultarProgreso();
+            }
+        };
+
+        // CUANDO SUBES UN ARCHIVO MANUALMENTE DESDE EL BOTÓN
+        async function cargarDocumentoManual(event) {
             const file = event.target.files[0];
             if (!file) return;
 
+            mostrarProgreso("fa-save", "Guardando Documento", "Asegurando archivo en la bóveda profunda...");
+            
+            // 1. GUARDA EL ARCHIVO LOCALMENTE PARA SIEMPRE (IndexedDB)
+            await localforage.setItem('archivo_' + nombreExpediente, file);
+
+            // 2. SI ERES ADMIN, SUBE UNA COPIA A LA NUBE (En segundo plano)
+            if (esAdmin && storageRef) {
+                storageRef.child(`expedientes_pdfs/${nombreExpediente}.pdf`).put(file)
+                .then(() => console.log("Archivo respaldado en la nube exitosamente."))
+                .catch(e => console.log("Error al subir a la nube", e));
+            }
+
+            // 3. LO MUESTRA EN PANTALLA
+            await procesarArchivoInterno(file);
+        }
+
+        // ==========================================
+        // 2. EL MOTOR DE LECTURA DE PDF (Optimizado)
+        // ==========================================
+        async function procesarArchivoInterno(archivoBlob) {
             detenerEjecucion = false;
-            mostrarProgreso("fa-file-shield", "Cargando Estructura", "Generando índice de fojas...");
+            document.getElementById('texto-progreso').innerText = "Generando índice de fojas...";
+            document.getElementById('texto-subprogreso').innerText = "";
+            document.getElementById('btn-cancelar-ia').style.display = 'none';
+            
             arrayFojas = [];
             window.mapaAlertasPorFoja = {}; 
             PALABRAS_BUSCADAS.forEach(p => resultadosKeywords[p] = []);
             
-            if(file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
-                const arrayBuffer = await file.arrayBuffer();
+            // Si el archivo es un File (y tiene nombre) verificamos extensión. Si es Blob de internet, asumimos PDF.
+            let isWord = archivoBlob.name ? (archivoBlob.name.endsWith('.docx') || archivoBlob.name.endsWith('.doc')) : false;
+
+            if(isWord) {
+                const arrayBuffer = await archivoBlob.arrayBuffer();
                 const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
                 const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
                 arrayFojas.push({ id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, rawText: rawText.value, rotacion: 0 });
                 actualizarBarra(100);
             } else {
-                const bytes = new Uint8Array(await file.arrayBuffer());
+                const bytes = new Uint8Array(await archivoBlob.arrayBuffer());
                 pdfGlobal = await pdfjsLib.getDocument(bytes).promise;
                 
-                // Solo creamos la estructura lógica, NO extraemos las imágenes aún (Ahorra 99% de RAM)
+                // Carga ultrarrápida: Solo el índice, nada de imágenes aún
                 for (let i = 1; i <= pdfGlobal.numPages; i++) {
                     arrayFojas.push({ id: Date.now() + i, numeroLogico: i, isHtml: false, numPaginaPdf: i, rotacion: 0 });
                 }
@@ -228,7 +308,6 @@
             }, 500);
         }
 
-        // 2. EXTRAE EL CANVAS SOLO CUANDO SE NECESITA
         async function obtenerCanvasFoja(fojaInfo, scale = 1.0) {
             if(fojaInfo.isHtml) return null;
             const page = await pdfGlobal.getPage(fojaInfo.numPaginaPdf);
@@ -240,13 +319,15 @@
             return canvas;
         }
 
-        // 3. MOTOR DE IA (PROCESA HOJA POR HOJA EN SERIE Y LIMPIA MEMORIA)
+        // ==========================================
+        // 3. LA INTELIGENCIA ARTIFICIAL (Tesseract V5 Estable)
+        // ==========================================
         async function escanearTodoElExpediente() {
             if(arrayFojas.length === 0) return;
             detenerEjecucion = false;
             mostrarProgreso("fa-brain", "IA Analizando Expediente", "Iniciando Motor de Lectura...");
+            document.getElementById('btn-cancelar-ia').style.display = 'inline-block';
             
-            // Usamos Tesseract estable
             const worker = await Tesseract.createWorker('spa', 1, {
                 logger: m => {
                     if(m.status === 'recognizing text') {
@@ -276,7 +357,6 @@
                         });
                     } else {
                         try {
-                            // Extrae la imagen en baja escala para OCR (mucho más rápido)
                             const canvasTemporalOCR = await obtenerCanvasFoja(f, 1.0); 
                             const { data } = await worker.recognize(canvasTemporalOCR);
                             
@@ -287,12 +367,9 @@
                                     window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorBorde: '#ef4444', colorFondo: 'rgba(239, 68, 68, 0.4)' });
                                 }
                             });
-
-                            // Destruye el canvas temporal para liberar RAM inmediatamente
-                            canvasTemporalOCR.width = 0; canvasTemporalOCR.height = 0;
+                            canvasTemporalOCR.width = 0; canvasTemporalOCR.height = 0; // Libera memoria al instante
                         } catch (e) {
                             console.warn("Error leyendo foja " + f.numeroLogico, e);
-                            // Si una foja falla, simplemente la salta y continúa
                         }
                     }
                 }
@@ -311,6 +388,9 @@
 
         function cancelarProcesos() { detenerEjecucion = true; ocultarProgreso(); }
 
+        // ==========================================
+        // 4. FUNCIONES DE INTERFAZ Y RENDERIZADO
+        // ==========================================
         function mostrarResultadosKeywords() {
             const cont = document.getElementById('contenedor-keywords'); cont.innerHTML = ''; let encontroAlgo = false;
             for(let key in resultadosKeywords) {
@@ -338,11 +418,10 @@
                 div.innerHTML = `<div class="foja-label">FOJA ${f.numeroLogico}</div><div class="foja-canvas-container" id="cont-canvas-${i}">Cargando...</div><div class="foja-controls"><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, -1)"><i class="fa-solid fa-arrow-up"></i></button><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, 1)"><i class="fa-solid fa-arrow-down"></i></button><button class="btn-mini" onclick="event.stopPropagation(); eliminarFojaEnMemoria(${i})"><i class="fa-solid fa-trash"></i></button></div>${badge}`;
                 container.appendChild(div);
 
-                // Renderiza la miniatura (Solo 0.3 de escala para no pesar)
                 if(!f.isHtml && pdfGlobal) {
                     obtenerCanvasFoja(f, 0.3).then(canvasMini => {
                         const contCanvas = document.getElementById('cont-canvas-'+i);
-                        contCanvas.innerHTML = ''; contCanvas.appendChild(canvasMini);
+                        if(contCanvas) { contCanvas.innerHTML = ''; contCanvas.appendChild(canvasMini); }
                     });
                 }
             }
@@ -361,16 +440,13 @@
             } else {
                 divHtml.style.display = 'none'; canvasP.style.display = 'block'; canvasD.style.display = 'block';
 
-                // Genera el canvas principal en alta resolución
                 const canvasAltaRes = await obtenerCanvasFoja(foja, zoomGlobal);
-                
                 const ctxP = canvasP.getContext('2d'); const ctxD = canvasD.getContext('2d');
                 canvasP.width = canvasAltaRes.width; canvasP.height = canvasAltaRes.height;
                 canvasD.width = canvasAltaRes.width; canvasD.height = canvasAltaRes.height;
                 
                 ctxP.drawImage(canvasAltaRes, 0, 0);
 
-                // Dibuja las alertas si existen
                 ctxD.clearRect(0, 0, canvasD.width, canvasD.height);
                 const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
                 if (alertas && alertas.length > 0) {
@@ -383,17 +459,9 @@
             }
         }
 
-        function seleccionarFoja(index) {
-            fojaSeleccionadaIndex = index;
-            document.querySelectorAll('.foja-item').forEach(el => el.classList.remove('activa'));
-            document.getElementById('thumb-' + index).classList.add('activa');
-            document.getElementById('msg-vacio').style.display = 'none';
-            document.getElementById('controles-zoom').style.display = 'flex';
-            cargarNotasDeFojaActual(); renderizarVisorCentral();
-        }
-
+        function seleccionarFoja(index) { fojaSeleccionadaIndex = index; document.querySelectorAll('.foja-item').forEach(el => el.classList.remove('activa')); document.getElementById('thumb-' + index).classList.add('activa'); document.getElementById('msg-vacio').style.display = 'none'; document.getElementById('controles-zoom').style.display = 'flex'; cargarNotasDeFojaActual(); renderizarVisorCentral(); }
         function cambiarZoom(delta) { zoomGlobal = Math.max(0.5, Math.min(3, zoomGlobal + delta)); renderizarVisorCentral(); }
-        function eliminarFojaEnMemoria(index) { if(confirm("¿Eliminar foja?")) { arrayFojas.splice(index, 1); for(let i=index; i<arrayFojas.length; i++) arrayFojas[i].numeroLogico--; renderizarBarraLateralFojas(); if(arrayFojas.length > 0) seleccionarFoja(Math.max(0, index-1)); else { document.getElementById('canvas-principal').style.display='none'; document.getElementById('canvas-dibujo').style.display='none'; document.getElementById('msg-vacio').style.display='block'; } } }
+        async function eliminarFojaEnMemoria(index) { if(confirm("¿Eliminar foja?")) { arrayFojas.splice(index, 1); for(let i=index; i<arrayFojas.length; i++) arrayFojas[i].numeroLogico--; renderizarBarraLateralFojas(); if(arrayFojas.length > 0) seleccionarFoja(Math.max(0, index-1)); else { document.getElementById('canvas-principal').style.display='none'; document.getElementById('canvas-dibujo').style.display='none'; document.getElementById('msg-vacio').style.display='block'; await localforage.removeItem('archivo_' + nombreExpediente); } } }
         function moverFoja(index, dir) { if(index + dir < 0 || index + dir >= arrayFojas.length) return; let temp = arrayFojas[index]; arrayFojas[index] = arrayFojas[index + dir]; arrayFojas[index + dir] = temp; renderizarBarraLateralFojas(); if(fojaSeleccionadaIndex === index) seleccionarFoja(index + dir); else if(fojaSeleccionadaIndex === index + dir) seleccionarFoja(index); }
         function buscarFojaPorNumero(num) { let index = arrayFojas.findIndex(f => f.numeroLogico === parseInt(num)); if(index !== -1) seleccionarFoja(index); }
         function switchTab(tabId, element) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); element.classList.add('active'); document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active')); document.getElementById(tabId).classList.add('active'); }
@@ -403,8 +471,7 @@
         function guardarNotas() { if(arrayFojas.length === 0) return; let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico; let texto = document.getElementById('texto-notas').value; let fechaActual = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }); if(texto.trim() === '') localStorage.removeItem(`notas_${nombreExpediente}_f${num}`); else localStorage.setItem(`notas_${nombreExpediente}_f${num}`, JSON.stringify({ texto: texto, fecha: fechaActual })); document.getElementById('info-nota-fecha').innerText = `Última edición: ${fechaActual}`; const msg = document.getElementById('nota-guardada'); msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 3000); renderizarBarraLateralFojas(); renderizarIndiceNotas(); }
         function renderizarIndiceNotas() { const list = document.getElementById('lista-resumen-notas'); list.innerHTML = ''; let hayNotas = false; let notasArray = []; for(let i=0; i<localStorage.length; i++) { let key = localStorage.key(i); if(key.startsWith(`notas_${nombreExpediente}_f`)) { let numFoja = parseInt(key.split('_f')[1]); let dataNota = JSON.parse(localStorage.getItem(key)); notasArray.push({ foja: numFoja, texto: dataNota.texto }); } } notasArray.sort((a,b) => a.foja - b.foja); notasArray.forEach(nota => { hayNotas = true; let extracto = nota.texto.substring(0, 45) + (nota.texto.length > 45 ? '...' : ''); list.innerHTML += `<div class="nota-preview" onclick="buscarFojaPorNumero(${nota.foja})"><strong style="color:var(--neon-blue); font-size:0.8rem;">Foja ${nota.foja}</strong><p style="font-size:0.75rem; color:var(--text-main); margin:3px 0;">"${extracto}"</p></div>`; }); if(!hayNotas) list.innerHTML = `<p style="font-size:0.75rem; color:var(--text-muted); text-align:center;">No hay notas guardadas.</p>`; }
 
-        // Interfaz
-        function mostrarProgreso(icono, titulo, texto) { document.getElementById('icono-progreso').className = `fa-solid ${icono} fa-fade`; document.getElementById('titulo-progreso').innerText = titulo; document.getElementById('texto-progreso').innerText = texto; document.getElementById('barra-llena').style.width = '0%'; document.getElementById('pantalla-progreso').style.display = 'flex'; }
+        function mostrarProgreso(icono, titulo, texto) { document.getElementById('icono-progreso').className = `fa-solid ${icono} fa-fade`; document.getElementById('titulo-progreso').innerText = titulo; document.getElementById('texto-progreso').innerText = texto; document.getElementById('barra-llena').style.width = '0%'; document.getElementById('btn-cancelar-ia').style.display = 'none'; document.getElementById('pantalla-progreso').style.display = 'flex'; }
         function actualizarBarra(porcentaje) { document.getElementById('barra-llena').style.width = `${porcentaje}%`; }
         function ocultarProgreso() { document.getElementById('pantalla-progreso').style.display = 'none'; }
     </script>
