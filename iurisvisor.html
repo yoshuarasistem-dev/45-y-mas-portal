@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; }
+        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.7); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; }
         body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
         body.light-mode .radar-panel { background: #f1f5f9; border-left: 1px solid #cbd5e1; }
         body.light-mode .carrusel { background: #e2e8f0; border-top: 1px solid #cbd5e1; }
@@ -26,68 +26,68 @@
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--brand-orange); }
 
-        .topbar { background: rgba(5, 8, 16, 0.8); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; transition: background 0.3s; }
-        .logo-visor { font-weight: 800; font-size: 1.2rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; flex-wrap: wrap; }
+        .logo-visor { font-weight: 800; font-size: 1.1rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 8px; }
         .logo-visor i { color: var(--brand-orange); }
         
-        .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
         .btn-volver { background: transparent; color: var(--text-muted); border: none; }
         .btn-volver:hover { color: var(--brand-orange); }
         .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); }
-        .btn-accion:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); }
-        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); }
-        .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
-        
-        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; margin-left: 10px; }
-        .btn-camaleon:hover { background: var(--brand-orange); color: white; }
+        .btn-accion:hover { background: rgba(56, 189, 248, 0.1); }
+        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 4px 12px rgba(255, 115, 21, 0.3); }
+        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.75rem; }
 
         #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; color: white; }
-        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 0 40px rgba(56, 189, 248, 0.2); }
+        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 30px; border-radius: 16px; text-align: center; width: 90%; max-width: 400px; }
         .barra-fondo { width: 100%; height: 10px; background: #1e293b; border-radius: 5px; margin: 20px 0; overflow: hidden; }
         .barra-llena { width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); transition: width 0.3s ease; }
 
-        .workspace { display: flex; flex: 1; overflow: hidden; background: transparent; }
-        .visor-container { flex: 2.5; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 40px; }
-        .visor-empty { position: absolute; top: 40%; text-align: center; color: var(--text-muted); }
-        .visor-empty i { font-size: 4rem; margin-bottom: 15px; display: block; opacity: 0.5; }
-        #canvas-visor-central { background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border-radius: 4px; transition: transform 0.2s; }
+        .workspace { display: flex; flex: 1; overflow: hidden; flex-direction: row; }
+        @media(max-width: 900px) { .workspace { flex-direction: column; } }
         
-        .zoom-controls { position: fixed; bottom: 250px; left: 30px; background: var(--glass-bg); backdrop-filter: blur(10px); padding: 10px; border-radius: 12px; border: 1px solid var(--border-glass); display: none; flex-direction: column; gap: 8px; z-index: 5; }
-        .btn-zoom { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 35px; height: 35px; border-radius: 6px; transition: background 0.2s; }
+        .visor-container { flex: 2.5; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; }
+        .visor-empty { position: absolute; top: 40%; text-align: center; color: var(--text-muted); padding: 0 20px; }
+        .visor-empty i { font-size: 3.5rem; margin-bottom: 15px; display: block; opacity: 0.5; }
+        #canvas-visor-central { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-radius: 4px; max-width: 100%; height: auto !important; }
+        
+        .zoom-controls { position: fixed; bottom: 230px; left: 20px; background: var(--glass-bg); backdrop-filter: blur(10px); padding: 8px; border-radius: 12px; border: 1px solid var(--border-glass); display: none; flex-direction: column; gap: 6px; z-index: 5; }
+        .btn-zoom { background: transparent; border: none; color: var(--text-main); font-size: 1rem; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; }
         .btn-zoom:hover { background: rgba(125,125,125,0.2); color: var(--brand-orange); }
 
-        .radar-panel { flex: 1.2; background: rgba(10, 15, 29, 0.6); border-left: 1px solid var(--border-glass); padding: 25px; overflow-y: auto; min-width: 350px; transition: background 0.3s; }
-        .radar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; margin-bottom: 20px; }
-        .radar-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
+        .radar-panel { flex: 1.2; background: rgba(10, 15, 29, 0.7); border-left: 1px solid var(--border-glass); padding: 20px; overflow-y: auto; min-width: 320px; }
+        .radar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px; margin-bottom: 15px; }
+        .radar-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         
-        .demo-lock-card { background: rgba(255, 115, 21, 0.05); border: 1px dashed var(--brand-orange); padding: 25px; border-radius: 12px; text-align: center; margin-top: 20px; }
-        .demo-lock-card h4 { color: var(--text-main); margin: 10px 0; font-size: 1.1rem; }
-        .demo-lock-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .demo-lock-card { background: rgba(255, 115, 21, 0.05); border: 1px dashed var(--brand-orange); padding: 20px; border-radius: 12px; text-align: center; margin-top: 15px; }
+        .demo-lock-card h4 { color: var(--text-main); margin: 8px 0; font-size: 1rem; }
+        .demo-lock-card p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; }
         
-        .alerta-item { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--brand-orange); cursor: pointer; transition: transform 0.2s; }
-        .alerta-item:hover { transform: translateX(-5px); border-color: var(--neon-blue); }
-        .motivo-alerta { font-size: 0.8rem; color: var(--brand-orange); margin-top: 8px; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 4px; font-weight: 600; }
+        .alerta-item { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--brand-orange); cursor: pointer; }
+        .motivo-alerta { font-size: 0.75rem; color: var(--brand-orange); margin-top: 6px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 4px; font-weight: 600; }
 
-        /* MÓDULOS CONECTADOS (BOTONES EXPORTACIÓN) */
-        .modulos-conectados { background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); padding: 20px; border-radius: 12px; margin-top: 20px; text-align: center; }
-        .modulos-conectados h4 { color: var(--neon-blue); margin-bottom: 15px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-vinculo { width: 100%; justify-content: center; margin-bottom: 10px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--neon-blue); color: var(--text-main); font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .btn-vinculo:hover { background: var(--neon-blue); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
+        /* MÓDULOS CONECTADOS */
+        .modulos-conectados { background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; }
+        .modulos-conectados h4 { color: var(--neon-blue); margin-bottom: 10px; font-size: 0.85rem; text-transform: uppercase; }
+        .btn-vinculo { width: 100%; justify-content: center; margin-bottom: 8px; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--neon-blue); color: var(--text-main); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-decoration: none; }
+        .btn-vinculo:hover { background: var(--neon-blue); color: white; }
 
-        .carrusel { height: 200px; background: #03050a; padding: 15px 25px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 20px; align-items: center; transition: background 0.3s; }
-        .foja-card { background: #0f172a; padding: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: center; min-width: 120px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
+        /* CARRUSEL CON BOTONES DE ROTAR Y ELIMINAR RESTAURADOS */
+        .carrusel { height: 190px; background: #03050a; padding: 12px 20px; overflow-x: auto; display: flex; gap: 15px; align-items: center; }
+        .foja-card { background: #0f172a; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center; min-width: 110px; cursor: pointer; border: 2px solid transparent; position: relative; }
         .foja-card.activa { border-color: var(--neon-blue); }
-        .foja-canvas-container { overflow: hidden; border-radius: 4px; margin-bottom: 8px; height: 110px; background: #fff; display: flex; justify-content: center; align-items: center; pointer-events: none; }
+        .foja-canvas-container { overflow: hidden; border-radius: 4px; margin-bottom: 6px; height: 95px; background: #fff; display: flex; justify-content: center; align-items: center; }
         .foja-card canvas { height: 100%; width: auto; display: block; }
-        .foja-etiqueta { font-weight: 600; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; pointer-events: none; }
+        .foja-etiqueta { font-weight: 600; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; }
+        .foja-controles-mini { display: flex; justify-content: space-around; gap: 5px; }
+        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; }
+        .btn-mini:hover { background: var(--brand-orange); }
 
-        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
-        .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; outline: none; }
-        .input-vip:focus { border-color: var(--brand-orange); }
-        .status-badge { background: rgba(250, 204, 21, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; max-width: 380px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 12px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; outline: none; }
+        .status-badge { background: rgba(250, 204, 21, 0.2); padding: 3px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
         .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
     </style>
 </head>
@@ -97,16 +97,16 @@
         <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
         <div class="logo-visor">
             <i class="fa-solid fa-microchip"></i> IurisVisor Pro
-            <span class="status-badge" id="status-badge">VERSIÓN DEMO</span>
+            <span class="status-badge" id="status-badge">DEMO</span>
         </div>
         
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
-        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar Expediente</button>
-        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Iniciar Radar OCR</button>
-        <button id="btn-exportar" class="btn btn-vip" onclick="verificarVIP()"><i class="fa-solid fa-lock"></i> 3. Desbloquear VIP</button>
+        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar PDF</button>
+        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Radar OCR</button>
+        <button id="btn-exportar" class="btn btn-vip" onclick="verificarVIP()"><i class="fa-solid fa-lock"></i> 3. Desbloquear Pro</button>
         
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
-            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
+            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Claro</span>
         </button>
     </div>
 
@@ -131,7 +131,7 @@
                 <h3><i class="fa-solid fa-satellite-dish" style="color:var(--neon-blue);"></i> Radar de Plazos</h3>
             </div>
             <div id="lista-alertas">
-                <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">Esperando documento...</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-top: 20px;">Esperando documento...</p>
             </div>
         </div>
     </div>
@@ -140,23 +140,23 @@
 
     <div id="pantalla-progreso">
         <div class="progreso-card">
-            <i class="fa-solid fa-microchip fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
-            <h3 style="color: white; margin-bottom: 10px;">Motor OCR IurisVisor</h3>
-            <p id="texto-progreso" style="color: #cbd5e1; font-size: 0.9rem;">Preparando escaneo...</p>
+            <i class="fa-solid fa-microchip fa-fade" style="font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <h3 style="color: white; margin-bottom: 8px; font-size: 1.1rem;">Motor OCR IurisVisor</h3>
+            <p id="texto-progreso" style="color: #cbd5e1; font-size: 0.85rem;">Preparando escaneo...</p>
             <div class="barra-fondo">
                 <div class="barra-llena" id="barra-llena"></div>
             </div>
-            <p id="porcentaje-progreso" style="font-weight: bold; color: var(--brand-orange);">0%</p>
+            <p id="porcentaje-progreso" style="font-weight: bold; color: var(--brand-orange); font-size: 0.9rem;">0%</p>
         </div>
     </div>
 
     <div id="modalVIP">
         <div class="modal-card">
             <h2><i class="fa-solid fa-unlock-keyhole" style="color: var(--brand-orange);"></i> Activar Pro</h2>
-            <p style="color: var(--text-muted);">Ingresa tu token para revelar fojas, marcatextos y habilitar exportación.</p>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Ingresa tu token institucional (45YMAS) para liberar todas las funciones y pestañas conectadas.</p>
             <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN 45YMAS" autocomplete="off">
-            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 15px; font-size: 1rem;" onclick="validarTokenVIP()">VALIDAR ACCESO</button>
-            <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer;" onclick="cerrarModalVIP()">Cancelar</button>
+            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px; font-size: 0.9rem;" onclick="validarTokenVIP()">VALIDAR ACCESO</button>
+            <button style="background:none; border:none; color: var(--text-muted); margin-top: 12px; cursor:pointer; font-size: 0.8rem;" onclick="cerrarModalVIP()">Cancelar</button>
         </div>
     </div>
 
@@ -164,28 +164,38 @@
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
-            const btnSpan = document.getElementById('text-theme');
-            const btnIcon = document.querySelector('#btnTheme i');
-            if(isLight) { btnSpan.innerText = "Modo Oscuro"; btnIcon.className = "fa-solid fa-moon"; localStorage.setItem('tema', 'light'); } 
-            else { btnSpan.innerText = "Modo Claro"; btnIcon.className = "fa-solid fa-circle-half-stroke"; localStorage.setItem('tema', 'dark'); }
+            document.getElementById('text-theme').innerText = isLight ? "Oscuro" : "Claro";
+            document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
+            localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
         window.onload = () => { if(localStorage.getItem('tema') === 'light') toggleTheme(); };
 
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         let bytesOriginales = null, pdfDocumento = null; 
         let nivelZoomActual = 1.3, paginaCargadaActual = null;
-        let esProActivado = false; 
+        let esProActivado = localStorage.getItem('pro_activo') === 'true';
+
+        if(esProActivado) {
+            document.getElementById('status-badge').className = 'status-badge status-pro';
+            document.getElementById('status-badge').innerText = 'PRO ACTIVA';
+            document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Exportar';
+        }
 
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
         function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
+        
         function validarTokenVIP() {
             if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
-                esProActivado = true; cerrarModalVIP();
+                esProActivado = true; 
+                localStorage.setItem('pro_activo', 'true');
+                cerrarModalVIP();
+                
                 const badge = document.getElementById('status-badge');
-                badge.className = 'status-badge status-pro'; badge.innerText = 'VERSIÓN PRO ACTIVA';
-                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> 3. Exportar Limpio';
+                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
+                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Exportar';
+                
                 if(window.ultimasAlertasGlobales) mostrarPanelPro(window.ultimasAlertasGlobales);
-                if(paginaCargadaActual) cargarEnVisorCentral(paginaCargadaActual, window.mapaAlertasPorFoja[paginaCargadaActual]);
+                alert("¡Token Validado! Las pestañas conectadas de Línea de Tiempo y Árbol ya están en Modo Pro.");
             } else { alert("Acceso Denegado. Token inválido."); }
         }
 
@@ -205,23 +215,51 @@
             document.getElementById('mensaje-vacio').style.display = 'block';
 
             for (let i = 1; i <= pdfDocumento.numPages; i++) {
-                const page = await pdfDocumento.getPage(i);
-                const viewportMiniatura = page.getViewport({ scale: 0.3 }); 
-                const card = document.createElement('div');
-                card.className = 'foja-card'; card.id = `tarjeta-foja-${i}`;
-                card.dataset.numPaginaPdf = i; card.dataset.rotacion = 0; 
-                card.onclick = () => { const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : []; cargarEnVisorCentral(i, alertas); };
-                const canvasContainer = document.createElement('div'); canvasContainer.className = 'foja-canvas-container';
-                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-                canvas.width = viewportMiniatura.width; canvas.height = viewportMiniatura.height;
-                await page.render({ canvasContext: ctx, viewport: viewportMiniatura }).promise;
-                canvasContainer.appendChild(canvas);
-                const etiqueta = document.createElement('div'); etiqueta.className = 'foja-etiqueta'; etiqueta.innerText = `FOJA ${i}`;
-                card.append(etiqueta, canvasContainer);
-                carrusel.appendChild(card);
+                renderizarFojaMiniatura(i);
             }
             document.getElementById('btn-analizar').style.display = 'inline-flex';
             document.getElementById('pantalla-progreso').style.display = 'none';
+        }
+
+        async function renderizarFojaMiniatura(i) {
+            const page = await pdfDocumento.getPage(i);
+            const viewportMiniatura = page.getViewport({ scale: 0.3 }); 
+            const carrusel = document.getElementById('grid-fojas');
+
+            const card = document.createElement('div');
+            card.className = 'foja-card'; card.id = `tarjeta-foja-${i}`;
+            card.dataset.numPaginaPdf = i; card.dataset.rotacion = 0; 
+            card.onclick = () => { const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : []; cargarEnVisorCentral(i, alertas); };
+            
+            const canvasContainer = document.createElement('div'); canvasContainer.className = 'foja-canvas-container';
+            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+            canvas.width = viewportMiniatura.width; canvas.height = viewportMiniatura.height;
+            await page.render({ canvasContext: ctx, viewport: viewportMiniatura }).promise;
+            canvasContainer.appendChild(canvas);
+
+            const etiqueta = document.createElement('div'); etiqueta.className = 'foja-etiqueta'; etiqueta.innerText = `FOJA ${i}`;
+            
+            // Botones de rotar y eliminar restaurados
+            const controlesMini = document.createElement('div'); controlesMini.className = 'foja-controles-mini';
+            controlesMini.innerHTML = `
+                <button class="btn-mini" title="Rotar" onclick="event.stopPropagation(); rotarFoja(${i})"><i class="fa-solid fa-rotate-right"></i></button>
+                <button class="btn-mini" title="Eliminar" onclick="event.stopPropagation(); eliminarFoja(${i})"><i class="fa-solid fa-trash"></i></button>
+            `;
+
+            card.append(etiqueta, canvasContainer, controlesMini);
+            carrusel.appendChild(card);
+        }
+
+        function rotarFoja(num) {
+            const card = document.getElementById(`tarjeta-foja-${num}`);
+            let rot = parseInt(card.dataset.rotacion || 0) + 90;
+            card.dataset.rotacion = rot;
+            card.querySelector('canvas').style.transform = `rotate(${rot}deg)`;
+        }
+
+        function eliminarFoja(num) {
+            const card = document.getElementById(`tarjeta-foja-${num}`);
+            if(card) card.remove();
         }
 
         async function escanearAlertas() {
@@ -270,53 +308,47 @@
             window.ultimasAlertasGlobales = todasLasAlertasArray;
             document.getElementById('pantalla-progreso').style.display = 'none';
 
-            // MAGIA DE INTEGRACIÓN: Guardar datos extraídos para las otras Apps
             simularExportacionIA();
 
             if (esProActivado) mostrarPanelPro(todasLasAlertasArray);
             else mostrarPanelDemo(totalAlertas);
         }
 
-        // ====== LÓGICA DE INTEGRACIÓN IA ======
+        // EXPORTACIÓN A OTRAS APPS EN NUEVA PESTAÑA
         function simularExportacionIA() {
-            // Se asume que la IA detectó estas fechas y nombres en el PDF
             const timelineIA = [
                 { fecha: "10 de Octubre, 2026", titulo: "Notificación Inicial", desc: "Admisión de la demanda por vía electrónica.", tipo: "tipo-notificacion", foja: "3" },
                 { fecha: "12 de Octubre, 2026", titulo: "Auto de Prevención", desc: "Aclarar domicilio del demandado.", tipo: "tipo-prevencion", foja: "15" },
                 { fecha: "15 de Octubre, 2026", titulo: "Vencimiento de Término (Fatal)", desc: "Vence término de 3 días para desahogar.", tipo: "tipo-vencimiento", foja: "Fatal" },
                 { fecha: "25 de Noviembre, 2026", titulo: "Audiencia Preliminar", desc: "Citación presencial.", tipo: "tipo-audiencia", foja: "42" }
             ];
-            const treeIA = { 
-                id: 1, nombre: "Extraído del Expediente", rol: "De Cujus / Raíz", icon: "fa-user-tie", children: [] 
-            };
+            const treeIA = { id: 1, nombre: "Juicio Principal Extraído", rol: "De Cujus / Raíz", fecha: "Nac: 1975 - Def: 2026", icon: "fa-user-tie", spouses: [], children: [] };
 
-            // Guardamos en la memoria del navegador
             localStorage.setItem('datos_timeline_45ymas', JSON.stringify(timelineIA));
             localStorage.setItem('datos_arbol_45ymas', JSON.stringify(treeIA));
-            localStorage.setItem('documento_escaneado', 'true');
         }
 
-        function irALineaTiempo() { window.location.href = 'linea-tiempo-alertas.html'; }
-        function irAArbol() { window.location.href = 'arbol-genealogico.html'; }
-        // =======================================
+        // Abre en nueva pestaña con el estado pro transferido automáticamente
+        function abrirEnNuevaPestaña(url) {
+            window.open(url, '_blank');
+        }
 
         function mostrarPanelDemo(total) {
             document.getElementById('lista-alertas').innerHTML = `
-                <div style="background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid var(--neon-blue); margin-bottom: 20px;">
-                    <strong style="color: var(--text-main); font-size: 1.2rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas.</strong>
+                <div style="background: rgba(56, 189, 248, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid var(--neon-blue); margin-bottom: 15px;">
+                    <strong style="color: var(--text-main); font-size: 1rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas.</strong>
                 </div>
                 
-                <!-- BOTONES DE EXPORTACIÓN A OTRAS APPS -->
                 <div class="modulos-conectados">
-                    <h4><i class="fa-solid fa-link"></i> Exportación de Datos</h4>
-                    <button onclick="irALineaTiempo()" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Ver Cronología del Caso</button>
-                    <button onclick="irAArbol()" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Mapear Árbol del Caso</button>
+                    <h4><i class="fa-solid fa-link"></i> Módulos del Caso (Demo)</h4>
+                    <button onclick="abrirEnNuevaPestaña('linea-tiempo-alertas.html')" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Abrir Cronología / Calendario</button>
+                    <button onclick="abrirEnNuevaPestaña('arbol-genealogico.html')" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Abrir Árbol Sucesorio/Familiar</button>
                 </div>
 
                 <div class="demo-lock-card">
-                    <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--brand-orange);"></i>
+                    <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--brand-orange);"></i>
                     <h4>Protege tu Procedimiento</h4>
-                    <p>¡Activa Pro para liberar la ubicación exacta en las fojas!</p>
+                    <p>¡Activa Pro para desbloquear exportaciones y reportes ilimitados!</p>
                     <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR AHORA</button>
                 </div>
             `;
@@ -325,16 +357,16 @@
         function mostrarPanelPro(alertas) {
             const panel = document.getElementById('lista-alertas');
             panel.innerHTML = `
-                <div class="modulos-conectados" style="margin-bottom: 20px;">
-                    <h4><i class="fa-solid fa-link"></i> Exportación de Datos</h4>
-                    <button onclick="irALineaTiempo()" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Ver Cronología del Caso</button>
-                    <button onclick="irAArbol()" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Mapear Árbol del Caso</button>
+                <div class="modulos-conectados" style="margin-bottom: 15px;">
+                    <h4><i class="fa-solid fa-link"></i> Módulos Pro Conectados</h4>
+                    <button onclick="abrirEnNuevaPestaña('linea-tiempo-alertas.html')" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Abrir Cronología / Calendario (Pro)</button>
+                    <button onclick="abrirEnNuevaPestaña('arbol-genealogico.html')" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Abrir Árbol Sucesorio/Familiar (Pro)</button>
                 </div>
-                <div style="color: #10b981; font-size: 0.9rem; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas</div>
+                <div style="color: #10b981; font-size: 0.85rem; font-weight: bold; margin-bottom: 12px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas detalladas</div>
             `;
             alertas.forEach(a => {
                 const div = document.createElement('div'); div.className = 'alerta-item'; div.style.borderLeftColor = a.colorBorde;
-                div.innerHTML = `<strong style="color:var(--text-main);"><i class="fa-regular fa-file-lines"></i> FOJA ${a.numFoja}</strong><br><span style="color:var(--text-muted); font-size: 0.85rem;">${a.categoria}</span><div class="motivo-alerta">Palabra: "${a.textoExacto}"</div>`;
+                div.innerHTML = `<strong style="color:var(--text-main); font-size: 0.85rem;"><i class="fa-regular fa-file-lines"></i> FOJA ${a.numFoja}</strong><br><span style="color:var(--text-muted); font-size: 0.75rem;">${a.categoria}</span><div class="motivo-alerta">Palabra: "${a.textoExacto}"</div>`;
                 div.onclick = () => cargarEnVisorCentral(a.numFoja, window.mapaAlertasPorFoja[a.numFoja]);
                 panel.appendChild(div);
             });

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cronología Legal | 45 y Más Pro</title>
-    <!-- Librería para Exportar a Imagen -->
+    <title>Cronología y Calendario Legal | 45 y Más Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -15,142 +14,122 @@
         body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
         body.light-mode .logo-visor { color: #0f172a; }
         body.light-mode .timeline-card { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        body.light-mode .timeline-dot { background: #ffffff; }
         body.light-mode .unlock-overlay { background: rgba(255,255,255,0.85); border-color: var(--brand-orange); }
-        body.light-mode .unlock-overlay h3 { color: #0f172a; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
-        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05) 0%, transparent 100%); transition: background 0.3s, color 0.3s; }
-        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: var(--bg-deep); } ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
-
-        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; transition: background 0.3s; }
-        .logo-visor { font-weight: 800; font-size: 1.2rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        
+        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; flex-wrap: wrap; }
+        .logo-visor { font-weight: 800; font-size: 1.1rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 8px; }
         .logo-visor i { color: var(--neon-blue); }
         
-        .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
         .btn-volver { background: transparent; color: var(--text-muted); border: none; } .btn-volver:hover { color: var(--brand-orange); }
-        .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); } .btn-accion:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); }
-        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); } .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
-        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; margin-left: 10px; } .btn-camaleon:hover { background: var(--brand-orange); color: white; }
-        
-        .status-badge { background: rgba(250, 204, 21, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); }
+        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 4px 12px rgba(255, 115, 21, 0.3); }
+        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.75rem; }
+
+        .status-badge { background: rgba(250, 204, 21, 0.2); padding: 3px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
         .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
 
         .workspace { flex: 1; overflow: auto; padding: 40px 20px; display: flex; justify-content: center; position: relative; }
         .timeline-container { max-width: 800px; width: 100%; position: relative; padding-left: 40px; padding-bottom: 50px; }
         .timeline-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 14px; width: 3px; background: linear-gradient(to bottom, var(--neon-blue), var(--brand-orange)); border-radius: 3px; }
 
-        .timeline-item { position: relative; margin-bottom: 40px; opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s forwards; }
+        .timeline-item { position: relative; margin-bottom: 35px; opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s forwards; }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
         
-        .timeline-dot { position: absolute; left: -34px; top: 20px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg-deep); border: 4px solid var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); z-index: 2; transition: background 0.3s; }
-        .tipo-notificacion .timeline-dot { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
-        .tipo-prevencion .timeline-dot { border-color: var(--warning); box-shadow: 0 0 10px var(--warning); }
-        .tipo-vencimiento .timeline-dot { border-color: var(--danger); box-shadow: 0 0 10px var(--danger); }
-        .tipo-audiencia .timeline-dot { border-color: var(--success); box-shadow: 0 0 10px var(--success); }
+        .timeline-dot { position: absolute; left: -34px; top: 20px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg-deep); border: 4px solid var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); z-index: 2; }
+        .tipo-notificacion .timeline-dot { border-color: var(--neon-blue); }
+        .tipo-prevencion .timeline-dot { border-color: var(--warning); }
+        .tipo-vencimiento .timeline-dot { border-color: var(--danger); }
+        .tipo-audiencia .timeline-dot { border-color: var(--success); }
 
-        .timeline-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 25px; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
-        .timeline-card:hover { transform: translateX(10px); border-color: rgba(255, 255, 255, 0.2); }
+        .timeline-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
         .timeline-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: var(--neon-blue); }
         .tipo-prevencion .timeline-card::before { background: var(--warning); }
         .tipo-vencimiento .timeline-card::before { background: var(--danger); }
         .tipo-audiencia .timeline-card::before { background: var(--success); }
 
-        .timeline-date { color: var(--text-muted); font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-        .timeline-title { color: var(--text-main); font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; transition: color 0.3s; }
-        .timeline-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+        .timeline-date { color: var(--text-muted); font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+        .timeline-title { color: var(--text-main); font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
+        .timeline-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; }
         
-        .timeline-foja { display: inline-flex; align-items: center; gap: 5px; margin-top: 15px; background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-main); border: 1px solid var(--border-glass); cursor: pointer; transition: all 0.2s; }
-        .timeline-foja:hover { background: var(--neon-blue); color: #fff; border-color: var(--neon-blue); transform: translateY(-2px); }
-        .tipo-vencimiento .timeline-foja:hover { background: var(--danger); border-color: var(--danger); }
+        .timeline-foja { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; background: rgba(0,0,0,0.2); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: var(--text-main); border: 1px solid var(--border-glass); }
 
-        /* MODO DEMO - DIFUMINADO */
+        /* BLOQUEO DEMO */
         .blurred-section { position: relative; }
-        .blurred-content { filter: blur(8px); opacity: 0.5; pointer-events: none; user-select: none; transition: filter 0.5s, opacity 0.5s; }
-        .unlock-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 5; width: 90%; max-width: 400px; background: rgba(10, 15, 29, 0.8); backdrop-filter: blur(5px); padding: 30px; border-radius: 16px; border: 1px solid var(--brand-orange); box-shadow: 0 20px 40px rgba(0,0,0,0.5); transition: background 0.3s; }
-        .unlock-overlay h3 { color: var(--text-main); margin: 15px 0 10px 0; }
-        .unlock-overlay p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .blurred-content { filter: blur(6px); opacity: 0.4; pointer-events: none; }
+        .unlock-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 5; width: 90%; max-width: 380px; background: rgba(10, 15, 29, 0.85); backdrop-filter: blur(8px); padding: 25px; border-radius: 14px; border: 1px solid var(--brand-orange); }
 
-        /* MODAL VIP */
-        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
-        .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; outline: none; }
-        .input-vip:focus { border-color: var(--brand-orange); }
-
-        #toast-noti { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--brand-orange); color: white; padding: 15px 25px; border-radius: 8px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; display: flex; align-items: center; gap: 10px; }
-        #toast-noti.show { bottom: 30px; }
+        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; max-width: 380px; width: 90%; }
+        .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 12px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; outline: none; }
     </style>
 </head>
 <body>
 
     <div class="topbar">
-        <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
+        <a href="iurisvisor.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Visor Pro</a>
         <div class="logo-visor">
-            <i class="fa-solid fa-timeline"></i> Cronología Legal Pro
-            <span class="status-badge status-demo" id="status-badge">VERSIÓN DEMO</span>
+            <i class="fa-solid fa-timeline"></i> Cronología & Calendario
+            <span class="status-badge" id="status-badge">DEMO</span>
         </div>
         
-        <button id="btn-sync" class="btn btn-accion" onclick="sincronizarManual()"><i class="fa-solid fa-rotate"></i> Actualizar Fechas</button>
-        <button id="btn-exportar" class="btn btn-vip" onclick="intentarExportar()"><i class="fa-solid fa-download"></i> Guardar Reporte PDF</button>
+        <button id="btn-sync" class="btn btn-accion" onclick="renderizarLineaDeTiempo()"><i class="fa-solid fa-rotate"></i> Actualizar</button>
+        <button id="btn-exportar" class="btn btn-vip" onclick="intentarExportar()"><i class="fa-solid fa-download"></i> Guardar PDF</button>
 
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
-            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
+            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Claro</span>
         </button>
     </div>
 
-    <!-- EL ÁREA QUE SE VA A EXPORTAR -->
     <div class="workspace" id="lienzo-exportar">
         <div class="timeline-container" id="timeline-container">
-            <!-- SE GENERA DINÁMICAMENTE POR JS -->
+            <!-- Se carga dinámicamente -->
         </div>
     </div>
 
-    <!-- NOTIFICACIÓN TOAST -->
-    <div id="toast-noti">
-        <i class="fa-solid fa-link"></i> <span>Abriendo foja en IurisVisor...</span>
-    </div>
-
-    <!-- MODAL VIP -->
     <div id="modalVIP">
         <div class="modal-card">
-            <h2><i class="fa-solid fa-key" style="color: var(--brand-orange);"></i> Activar Inteligencia VIP</h2>
-            <p style="color: var(--text-muted);">Ingresa tu token para eliminar el desenfoque, visualizar los plazos fatales y habilitar la exportación real.</p>
+            <h2><i class="fa-solid fa-key" style="color: var(--brand-orange);"></i> Activar Pro</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Ingresa tu token (45YMAS) para ver todos los plazos críticos y exportar el calendario.</p>
             <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN 45YMAS" autocomplete="off">
-            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 15px;" onclick="validarTokenVIP()">VALIDAR Y DESBLOQUEAR</button>
-            <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer;" onclick="cerrarModalVIP()">Cancelar</button>
+            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px;" onclick="validarTokenVIP()">VALIDAR Y DESBLOQUEAR</button>
+            <button style="background:none; border:none; color: var(--text-muted); margin-top: 12px; cursor:pointer; font-size: 0.8rem;" onclick="cerrarModalVIP()">Cancelar</button>
         </div>
     </div>
 
     <script>
-        // TEMA
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
-            const btnSpan = document.getElementById('text-theme');
-            const btnIcon = document.querySelector('#btnTheme i');
-            if(isLight) { btnSpan.innerText = "Modo Oscuro"; btnIcon.className = "fa-solid fa-moon"; localStorage.setItem('tema', 'light'); } 
-            else { btnSpan.innerText = "Modo Claro"; btnIcon.className = "fa-solid fa-circle-half-stroke"; localStorage.setItem('tema', 'dark'); }
+            document.getElementById('text-theme').innerText = isLight ? "Oscuro" : "Claro";
+            document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
+            localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
         
-        let esProActivado = false;
+        let esProActivado = localStorage.getItem('pro_activo') === 'true';
 
         window.onload = () => { 
             if(localStorage.getItem('tema') === 'light') toggleTheme(); 
-            renderizarLineaDeTiempo(); // Llama a la base de datos simulada
+            if(esProActivado) {
+                document.getElementById('status-badge').className = 'status-badge status-pro';
+                document.getElementById('status-badge').innerText = 'PRO ACTIVA';
+            }
+            renderizarLineaDeTiempo(); 
         };
 
-        // ====== LECTURA INTELIGENTE DE DATOS ======
         function renderizarLineaDeTiempo() {
             const container = document.getElementById('timeline-container');
             const datosGuardados = localStorage.getItem('datos_timeline_45ymas');
 
             if (!datosGuardados) {
-                // Si no hay datos escaneados aún
                 container.innerHTML = `
-                    <div style="text-align:center; padding: 60px 20px; color: var(--text-muted);">
-                        <i class="fa-solid fa-file-circle-question" style="font-size: 4rem; margin-bottom: 20px; opacity: 0.5;"></i>
-                        <h2 style="color: var(--text-main); margin-bottom: 10px;">Esperando Expediente</h2>
-                        <p>Por favor, ve al <a href="iurisvisor.html" style="color: var(--neon-blue);">IurisVisor Pro</a>, carga un expediente PDF e inicia el Radar para que el sistema extraiga las fechas automáticamente.</p>
+                    <div style="text-align:center; padding: 50px 20px; color: var(--text-muted);">
+                        <i class="fa-solid fa-calendar-days" style="font-size: 3.5rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <h3 style="color: var(--text-main); margin-bottom: 8px;">Sin expediente cargado</h3>
+                        <p style="font-size: 0.85rem;">Carga un PDF en el <a href="iurisvisor.html" style="color: var(--neon-blue);">IurisVisor Pro</a> y ejecuta el Radar para poblar el calendario.</p>
                     </div>
                 `;
                 return;
@@ -159,12 +138,10 @@
             const plazos = JSON.parse(datosGuardados);
             let html = '';
 
-            // 1. Mostrar solo los primeros 2 plazos gratis (Demo)
             for(let i = 0; i < Math.min(2, plazos.length); i++) {
                 html += crearItemHTML(plazos[i], i);
             }
 
-            // 2. Si hay más de 2 plazos, aplicar lógica VIP
             if(plazos.length > 2) {
                 if(esProActivado) {
                     for(let i = 2; i < plazos.length; i++) {
@@ -172,14 +149,14 @@
                     }
                 } else {
                     html += `
-                    <div class="blurred-section" id="seccion-bloqueada">
-                        <div class="unlock-overlay" id="overlay-vip">
-                            <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--brand-orange);"></i>
-                            <h3>Cronología Protegida</h3>
-                            <p>Los términos fatales, vencimientos y sentencias están ocultos en la versión de prueba.</p>
-                            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px;" onclick="verificarVIP()">DESBLOQUEAR VIP (45YMAS)</button>
+                    <div class="blurred-section">
+                        <div class="unlock-overlay">
+                            <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 10px;"></i>
+                            <h3 style="color:var(--text-main); font-size:1.1rem; margin-bottom:8px;">Cronología Protegida</h3>
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Los plazos fatales y fechas de entrega están ocultos en la demo.</p>
+                            <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR PRO</button>
                         </div>
-                        <div class="blurred-content" id="contenido-oculto">
+                        <div class="blurred-content">
                     `;
                     for(let i = 2; i < plazos.length; i++) {
                         html += crearItemHTML(plazos[i], i);
@@ -191,79 +168,49 @@
         }
 
         function crearItemHTML(item, index) {
-            const delay = (index * 0.2) + 0.1; // Efecto cascada
-            const fojaIcon = item.foja === 'Fatal' ? '<i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i> Alerta Crítica' : `<i class="fa-solid fa-magnifying-glass"></i> Ver Foja ${item.foja}`;
-            
+            const delay = (index * 0.15);
             return `
             <div class="timeline-item ${item.tipo}" style="animation-delay: ${delay}s">
                 <div class="timeline-dot"></div>
                 <div class="timeline-card">
-                    <div class="timeline-date"><i class="fa-regular fa-calendar"></i> ${item.fecha}</div>
+                    <div class="timeline-date"><i class="fa-regular fa-calendar-days"></i> ${item.fecha} (Fecha de Entrega/Vencimiento)</div>
                     <div class="timeline-title">${item.titulo}</div>
                     <div class="timeline-desc">${item.desc}</div>
-                    <div class="timeline-foja" onclick="abrirFojaSimulada('${item.foja}')">${fojaIcon}</div>
+                    <div class="timeline-foja"><i class="fa-solid fa-file-lines"></i> Foja Asociada: ${item.foja}</div>
                 </div>
             </div>
             `;
         }
 
-        function sincronizarManual() {
-            const btn = document.getElementById('btn-sync');
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizando...';
-            btn.style.pointerEvents = 'none';
-            setTimeout(() => {
-                renderizarLineaDeTiempo();
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Sincronizado';
-                btn.style.borderColor = "var(--success)"; btn.style.color = "var(--success)";
-                btn.style.pointerEvents = 'auto';
-            }, 1000);
-        }
-
-        function abrirFojaSimulada(foja) {
-            const toast = document.getElementById('toast-noti');
-            toast.querySelector('span').innerText = foja === 'Fatal' ? 'Redirigiendo a alerta crítica en IurisVisor...' : `Abriendo Foja ${foja} en el visor principal...`;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
-        }
-
-        // ====== LÓGICA VIP Y EXPORTACIÓN ======
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
         function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
         
         function validarTokenVIP() {
             if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
-                esProActivado = true; cerrarModalVIP();
-                const badge = document.getElementById('status-badge');
-                badge.className = 'status-badge status-pro'; badge.innerText = 'VERSIÓN PRO ACTIVA';
-                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Guardar Reporte PDF';
+                esProActivado = true; 
+                localStorage.setItem('pro_activo', 'true');
+                cerrarModalVIP();
                 
-                // Re-renderizamos para quitar el blur y mostrar todo limpio
+                const badge = document.getElementById('status-badge');
+                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
                 renderizarLineaDeTiempo();
-            } else { alert("Acceso Denegado. Token inválido."); }
+                alert("¡Desbloqueado con éxito!");
+            } else { alert("Token inválido."); }
         }
 
         function intentarExportar() {
             if(!esProActivado) { verificarVIP(); return; }
-            
-            // Subir el scroll hasta arriba asegura que el html2canvas tome toda la foto
             window.scrollTo(0,0);
             
-            const btnExp = document.getElementById('btn-exportar');
-            btnExp.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generando...';
-            
-            const container = document.getElementById('lienzo-exportar');
-            const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
-            
-            html2canvas(container, { 
-                backgroundColor: themeBg, 
-                scale: 2, // Alta resolución
+            html2canvas(document.getElementById('lienzo-exportar'), { 
+                backgroundColor: document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810", 
+                scale: 2,
                 useCORS: true
             }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'Reporte_Plazos_45yMas.png'; 
+                const link = document.createElement('a'); 
+                link.download = 'Calendario_Plazos_45yMas.png'; 
                 link.href = canvas.toDataURL("image/png"); 
                 link.click();
-                btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Reporte PDF';
             });
         }
     </script>
