@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expediente Inteligente | 45 y Más</title>
+    <!-- Librerías: PDF.js, Tesseract.js y Mammoth.js (Para Word) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
@@ -20,7 +23,8 @@
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
 
         .topbar { background: var(--bg-panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
-        .logo-oficial { display: flex; flex-direction: column; }
+        
+        .logo-oficial { display: flex; flex-direction: column; align-items: flex-start; }
         .logo-oficial img { max-height: 40px; object-fit: contain; margin-bottom: 2px; }
         .logo-oficial .sub-brand { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
         
@@ -40,7 +44,7 @@
         .fojas-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
         .foja-item { background: var(--bg-deep); border: 1px solid var(--border-glass); border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; position: relative;}
         .foja-item.activa { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-        .foja-canvas-container { height: 120px; background: #fff; margin-bottom: 8px; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;}
+        .foja-canvas-container { height: 120px; background: #fff; margin-bottom: 8px; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; color: #000;}
         .foja-canvas-container canvas { width: 100%; height: auto; display: block; }
         .foja-label { font-size: 0.8rem; font-weight: bold; color: var(--text-main); }
         .foja-controls { display: flex; justify-content: center; gap: 4px; margin-top: 5px; }
@@ -50,8 +54,14 @@
         .alerta-faltante { background: rgba(239, 68, 68, 0.1); border: 1px dashed var(--danger); color: var(--danger); padding: 10px; border-radius: 6px; font-size: 0.75rem; text-align: center; cursor: pointer; margin-bottom: 5px; font-weight: bold;}
 
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
+        
+        /* Contenedores para el Documento */
         #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute;}
         #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5;}
+        
+        #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 850px; min-height: 1100px; padding: 50px; font-family: 'Arial', sans-serif; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
+        #html-visor p { margin-bottom: 10px; }
+
         .zoom-controls { position: fixed; bottom: 30px; left: 240px; background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 10;}
 
         .sidebar-herramientas { width: 340px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; }
@@ -93,15 +103,15 @@
         
         <div style="display: flex; align-items: center; gap: 20px;">
             <div class="logo-oficial">
-                <img src="logo.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
+                <img src="assets/LOGO.png" onerror="this.onerror=null; this.src='assets/LOGO.jpg';" alt="45 Y MÁS">
                 <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
             </div>
             <span class="expediente-title" id="titulo-exp">EXP/000/00</span>
         </div>
 
         <div style="display:flex; gap: 10px;">
-            <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="cargarPDFBase(event)" multiple>
-            <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar Escaneo / Word</button>
+            <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumento(event)" multiple>
+            <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar PDF / Word</button>
             <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearPalabrasJudiciales()"><i class="fa-solid fa-radar"></i> Auto-Lectura IA</button>
         </div>
     </div>
@@ -121,6 +131,9 @@
         <div class="visor-central" id="contenedor-visor-zoom">
             <canvas id="canvas-principal" style="display:none;"></canvas>
             <canvas id="canvas-dibujo" style="display:none;"></canvas>
+            
+            <!-- Visor Especial para Word (.docx) -->
+            <div id="html-visor"></div>
             
             <div style="text-align:center; color:var(--text-muted); margin-top: 100px;" id="msg-vacio">
                 <i class="fa-solid fa-folder-open" style="font-size: 4rem; opacity: 0.3; margin-bottom: 15px;"></i>
@@ -176,46 +189,69 @@
         let nombreExpediente = localStorage.getItem('expediente_abierto') || 'EXP_NUEVO';
         document.getElementById('titulo-exp').innerText = nombreExpediente;
 
-        let documentoActual = null;
         let arrayFojas = []; 
         let fojaSeleccionadaIndex = 0;
         let zoomGlobal = 1.2;
 
-        // PALABRAS CLAVE: LEY DE JUSTICIA ADMINISTRATIVA Y PROCEDIMIENTOS MASC
         const PALABRAS_BUSCADAS = ["dicta", "sentencia", "resuelve", "previene", "admite", "desecha", "radica", "nulidad", "sobreseimiento", "improcedente", "incompetencia", "suspensión", "apercibimiento", "multa", "arresto"];
         let resultadosKeywords = {};
         window.mapaAlertasPorFoja = {}; 
 
-        async function cargarPDFBase(event) {
+        // ==== CARGA PRINCIPAL (PDF o WORD) ====
+        async function cargarDocumento(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
-            // SOPORTE PARA ARCHIVOS WORD (Muestra un Canvas Virtual para poder guardarlo y agregarle notas)
-            if(file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
-                crearFojaVirtualWord(file.name);
-                event.target.value = '';
-                return;
-            }
 
             document.getElementById('pantalla-progreso').style.display = 'flex';
             document.getElementById('texto-progreso').innerText = "Estructurando documento...";
             
-            const bytes = new Uint8Array(await file.arrayBuffer());
-            documentoActual = await pdfjsLib.getDocument(bytes).promise;
-            
             arrayFojas = [];
             window.mapaAlertasPorFoja = {}; 
-            
-            for (let i = 1; i <= documentoActual.numPages; i++) {
-                const page = await documentoActual.getPage(i);
-                const viewport = page.getViewport({ scale: 1.5 });
-                
-                const canvas = document.createElement('canvas');
-                canvas.width = viewport.width; canvas.height = viewport.height;
-                const ctx = canvas.getContext('2d');
-                await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-                arrayFojas.push({ id: Date.now() + i, numeroLogico: i, canvasImage: canvas, rotacion: 0, isWord: false });
+            // LOGICA PARA ARCHIVOS WORD (.docx)
+            if(file.name.endsWith('.docx')) {
+                document.getElementById('texto-progreso').innerText = "Traduciendo Word a formato visual...";
+                const arrayBuffer = await file.arrayBuffer();
+                
+                // Extraer HTML para el visor nativo
+                const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
+                // Extraer texto plano para la búsqueda de IA
+                const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+
+                // Crear miniatura para Word
+                const canvasMini = document.createElement('canvas');
+                canvasMini.width = 150; canvasMini.height = 200;
+                const ctx = canvasMini.getContext('2d');
+                ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,150,200);
+                ctx.fillStyle = '#2563eb'; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center';
+                ctx.fillText('WORD', 75, 100);
+
+                arrayFojas.push({ 
+                    id: Date.now(), 
+                    numeroLogico: 1, 
+                    isHtml: true, 
+                    htmlContent: result.value,
+                    rawText: rawText.value,
+                    canvasImage: canvasMini, // Solo para la miniatura
+                    rotacion: 0 
+                });
+
+            } 
+            // LÓGICA PARA PDF ORIGINAL
+            else {
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                const documentoActual = await pdfjsLib.getDocument(bytes).promise;
+                
+                for (let i = 1; i <= documentoActual.numPages; i++) {
+                    const page = await documentoActual.getPage(i);
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = viewport.width; canvas.height = viewport.height;
+                    const ctx = canvas.getContext('2d');
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+                    arrayFojas.push({ id: Date.now() + i, numeroLogico: i, isHtml: false, canvasImage: canvas, rotacion: 0 });
+                }
             }
 
             document.getElementById('pantalla-progreso').style.display = 'none';
@@ -226,43 +262,7 @@
             if(arrayFojas.length > 0) seleccionarFoja(0);
         }
 
-        // FUNCIÓN PARA CREAR UNA FOJA FAKE PARA WORD
-        function crearFojaVirtualWord(nombreArchivo, numManual = null) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 800; canvas.height = 1000;
-            const ctx = canvas.getContext('2d');
-            
-            // Fondo blanco
-            ctx.fillStyle = '#ffffff'; 
-            ctx.fillRect(0, 0, 800, 1000);
-            
-            // Textos y adornos
-            ctx.fillStyle = '#2563eb'; // Azul Word
-            ctx.font = 'bold 50px Montserrat'; 
-            ctx.textAlign = 'center';
-            ctx.fillText('📄 Documento Word', 400, 450);
-            
-            ctx.fillStyle = '#475569'; 
-            ctx.font = '25px Montserrat';
-            ctx.fillText(nombreArchivo, 400, 520);
-            
-            ctx.fillStyle = '#94a3b8'; 
-            ctx.font = 'italic 18px Montserrat';
-            ctx.fillText('(El contenido nativo no es renderizable, pero la foja ha sido guardada)', 400, 580);
-
-            let numAsignado = numManual || arrayFojas.length + 1;
-
-            arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, canvasImage: canvas, rotacion: 0, isWord: true });
-            arrayFojas.sort((a,b) => a.numeroLogico - b.numeroLogico);
-            
-            renderizarBarraLateralFojas();
-            renderizarIndiceNotas();
-            seleccionarFoja(arrayFojas.findIndex(f => f.id === arrayFojas[arrayFojas.length-1].id));
-        }
-
-        // ==========================================
-        // RENDER FOJAS Y NOTAS ALARMA
-        // ==========================================
+        // ==== RENDER FOJAS Y NOTAS ALARMA ====
         function renderizarBarraLateralFojas() {
             const container = document.getElementById('lista-fojas-container');
             container.innerHTML = '';
@@ -292,7 +292,7 @@
                 let notaBadge = (dataNota && dataNota.texto) ? `<div style="color:var(--brand-orange); font-size:0.75rem; margin-top:6px; font-weight:bold;"><i class="fa-solid fa-pen-to-square"></i> Nota guardada</div>` : '';
 
                 div.innerHTML = `
-                    <div class="foja-label">FOJA ${f.numeroLogico}</div>
+                    <div class="foja-label">FOJA ${f.numeroLogico} ${f.isHtml ? '(Word)' : ''}</div>
                     <div class="foja-canvas-container" id="cont-canvas-${i}"></div>
                     <div class="foja-controls">
                         <button class="btn-mini" title="Subir" onclick="event.stopPropagation(); moverFoja(${i}, -1)"><i class="fa-solid fa-arrow-up"></i></button>
@@ -304,7 +304,7 @@
                 `;
                 container.appendChild(div);
                 document.getElementById('cont-canvas-'+i).appendChild(canvasMini);
-                if(f.rotacion !== 0) canvasMini.style.transform = `rotate(${f.rotacion}deg)`;
+                if(f.rotacion !== 0 && !f.isHtml) canvasMini.style.transform = `rotate(${f.rotacion}deg)`;
             }
         }
 
@@ -322,17 +322,12 @@
             seleccionarFoja(0);
         }
 
-        // ==========================================
-        // DIBUJO CON SUBRAYADO ROJO
-        // ==========================================
+        // ==== VISOR CENTRAL (MANEJA HTML Y CANVAS) ====
         function seleccionarFoja(index) {
             fojaSeleccionadaIndex = index;
             document.querySelectorAll('.foja-item').forEach(el => el.classList.remove('activa'));
             document.getElementById('thumb-' + index).classList.add('activa');
-            
             document.getElementById('msg-vacio').style.display = 'none';
-            document.getElementById('canvas-principal').style.display = 'block';
-            document.getElementById('canvas-dibujo').style.display = 'block';
             document.getElementById('controles-zoom').style.display = 'flex';
 
             cargarNotasDeFojaActual();
@@ -343,30 +338,47 @@
             const foja = arrayFojas[fojaSeleccionadaIndex];
             const canvasP = document.getElementById('canvas-principal');
             const canvasD = document.getElementById('canvas-dibujo');
-            const ctxP = canvasP.getContext('2d');
-            const ctxD = canvasD.getContext('2d');
+            const divHtml = document.getElementById('html-visor');
 
-            let w = foja.canvasImage.width * zoomGlobal;
-            let h = foja.canvasImage.height * zoomGlobal;
-            
-            canvasP.width = w; canvasP.height = h;
-            canvasD.width = w; canvasD.height = h;
-            
-            ctxP.drawImage(foja.canvasImage, 0, 0, w, h);
-            canvasP.style.transform = `rotate(${foja.rotacion}deg)`;
-            canvasD.style.transform = `rotate(${foja.rotacion}deg)`; 
+            if(foja.isHtml) {
+                // Es un archivo WORD
+                canvasP.style.display = 'none';
+                canvasD.style.display = 'none';
+                divHtml.style.display = 'block';
+                divHtml.innerHTML = foja.htmlContent;
+                divHtml.style.transform = `scale(${zoomGlobal - 0.2})`;
+                divHtml.style.transformOrigin = "top center";
+            } else {
+                // Es un PDF / Imagen
+                divHtml.style.display = 'none';
+                canvasP.style.display = 'block';
+                canvasD.style.display = 'block';
 
-            ctxD.clearRect(0, 0, w, h);
-            const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
-            if (alertas && alertas.length > 0) {
-                alertas.forEach(a => {
-                    const b = a.bbox;
-                    ctxD.fillStyle = a.colorFondo;
-                    ctxD.fillRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
-                    ctxD.strokeStyle = a.colorBorde;
-                    ctxD.lineWidth = 2;
-                    ctxD.strokeRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
-                });
+                const ctxP = canvasP.getContext('2d');
+                const ctxD = canvasD.getContext('2d');
+
+                let w = foja.canvasImage.width * zoomGlobal;
+                let h = foja.canvasImage.height * zoomGlobal;
+                
+                canvasP.width = w; canvasP.height = h;
+                canvasD.width = w; canvasD.height = h;
+                
+                ctxP.drawImage(foja.canvasImage, 0, 0, w, h);
+                canvasP.style.transform = `rotate(${foja.rotacion}deg)`;
+                canvasD.style.transform = `rotate(${foja.rotacion}deg)`; 
+
+                ctxD.clearRect(0, 0, w, h);
+                const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
+                if (alertas && alertas.length > 0) {
+                    alertas.forEach(a => {
+                        const b = a.bbox;
+                        ctxD.fillStyle = a.colorFondo;
+                        ctxD.fillRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
+                        ctxD.strokeStyle = a.colorBorde;
+                        ctxD.lineWidth = 2;
+                        ctxD.strokeRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
+                    });
+                }
             }
         }
 
@@ -378,7 +390,12 @@
                 for(let i=index; i<arrayFojas.length; i++) arrayFojas[i].numeroLogico--;
                 renderizarBarraLateralFojas();
                 if(arrayFojas.length > 0) seleccionarFoja(Math.max(0, index-1));
-                else { document.getElementById('canvas-principal').style.display = 'none'; document.getElementById('canvas-dibujo').style.display='none'; document.getElementById('msg-vacio').style.display = 'block'; }
+                else { 
+                    document.getElementById('canvas-principal').style.display = 'none'; 
+                    document.getElementById('canvas-dibujo').style.display='none'; 
+                    document.getElementById('html-visor').style.display='none';
+                    document.getElementById('msg-vacio').style.display = 'block'; 
+                }
             }
         }
 
@@ -389,8 +406,18 @@
             let numAsignado = prompt("¿Qué número de foja es esta? (Si es la vuelta, pon el mismo número)", "Ej. 233");
             numAsignado = parseInt(numAsignado) || arrayFojas.length + 1;
 
-            if(file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
-                crearFojaVirtualWord(file.name, numAsignado);
+            // Soporte para incrustar un Word como foja extra
+            if(file.name.endsWith('.docx')) {
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
+                const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                
+                const canvasMini = document.createElement('canvas'); canvasMini.width = 150; canvasMini.height = 200;
+                const ctx = canvasMini.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,150,200); ctx.fillStyle = '#2563eb'; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center'; ctx.fillText('WORD', 75, 100);
+
+                arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, isHtml: true, htmlContent: result.value, rawText: rawText.value, canvasImage: canvasMini, rotacion: 0 });
+                arrayFojas.sort((a,b) => a.numeroLogico - b.numeroLogico);
+                renderizarBarraLateralFojas();
                 event.target.value = '';
                 return;
             }
@@ -403,18 +430,17 @@
                     canvas.width = img.width; canvas.height = img.height;
                     canvas.getContext('2d').drawImage(img, 0, 0);
 
-                    arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, canvasImage: canvas, rotacion: 0, isWord: false });
+                    arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, isHtml: false, canvasImage: canvas, rotacion: 0 });
                     arrayFojas.sort((a,b) => a.numeroLogico - b.numeroLogico);
                     renderizarBarraLateralFojas();
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+            event.target.value = '';
         }
 
-        // ==========================================
-        // ESCANEO OCR CON BBOX
-        // ==========================================
+        // ==== ESCANEO OCR E INTELIGENCIA DE TEXTO ====
         async function escanearPalabrasJudiciales() {
             if(arrayFojas.length === 0) return;
             document.getElementById('pantalla-progreso').style.display = 'flex';
@@ -425,22 +451,31 @@
 
             for (let i = 0; i < arrayFojas.length; i++) {
                 let f = arrayFojas[i];
-                if(f.isWord) continue; // Si es la foja virtual azul de Word, la saltamos del OCR
-
                 let percent = Math.round(((i + 1) / arrayFojas.length) * 100);
                 document.getElementById('texto-progreso').innerText = `Analizando Foja ${f.numeroLogico}...`;
                 document.getElementById('barra-llena').style.width = `${percent}%`;
 
                 if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
-                const { data } = await Tesseract.recognize(f.canvasImage, 'spa');
-                
-                data.words.forEach(palabra => {
-                    let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
-                    if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
-                        if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico);
-                        window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorBorde: '#ef4444', colorFondo: 'rgba(239, 68, 68, 0.4)' });
-                    }
-                });
+
+                if(f.isHtml) {
+                    // Buscar en el texto plano del Word
+                    let textoWord = f.rawText.toLowerCase();
+                    PALABRAS_BUSCADAS.forEach(p => {
+                        if(textoWord.includes(p)) {
+                            if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico);
+                        }
+                    });
+                } else {
+                    // Escaneo OCR en Imagen/PDF
+                    const { data } = await Tesseract.recognize(f.canvasImage, 'spa');
+                    data.words.forEach(palabra => {
+                        let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
+                        if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
+                            if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico);
+                            window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorBorde: '#ef4444', colorFondo: 'rgba(239, 68, 68, 0.4)' });
+                        }
+                    });
+                }
             }
             document.getElementById('pantalla-progreso').style.display = 'none';
             switchTab('tab-palabras', document.querySelectorAll('.tab')[0]);
@@ -468,9 +503,7 @@
             if(index !== -1) seleccionarFoja(index);
         }
 
-        // ==========================================
-        // NOTAS E ÍNDICE
-        // ==========================================
+        // ==== NOTAS E ÍNDICE ====
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
@@ -508,8 +541,6 @@
             const list = document.getElementById('lista-resumen-notas');
             list.innerHTML = '';
             let hayNotas = false;
-            
-            // Recopilar y ordenar notas por número de foja
             let notasArray = [];
             for(let i=0; i<localStorage.length; i++) {
                 let key = localStorage.key(i);
@@ -519,19 +550,12 @@
                     notasArray.push({ foja: numFoja, texto: dataNota.texto });
                 }
             }
-            
             notasArray.sort((a,b) => a.foja - b.foja);
-
             notasArray.forEach(nota => {
                 hayNotas = true;
                 let extracto = nota.texto.substring(0, 45) + (nota.texto.length > 45 ? '...' : '');
-                list.innerHTML += `
-                <div class="nota-preview" onclick="buscarFojaPorNumero(${nota.foja})">
-                    <strong style="color:var(--neon-blue); font-size:0.8rem;">Foja ${nota.foja}</strong>
-                    <p style="font-size:0.75rem; color:var(--text-main); margin:3px 0;">"${extracto}"</p>
-                </div>`;
+                list.innerHTML += `<div class="nota-preview" onclick="buscarFojaPorNumero(${nota.foja})"><strong style="color:var(--neon-blue); font-size:0.8rem;">Foja ${nota.foja}</strong><p style="font-size:0.75rem; color:var(--text-main); margin:3px 0;">"${extracto}"</p></div>`;
             });
-
             if(!hayNotas) list.innerHTML = `<p style="font-size:0.75rem; color:var(--text-muted); text-align:center;">No hay notas guardadas.</p>`;
         }
     </script>

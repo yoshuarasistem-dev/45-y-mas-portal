@@ -11,8 +11,7 @@
         :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; --success: #10b981; }
         body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.8); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
         body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
-        body.light-mode .feature-card, body.light-mode .service-category { background: #ffffff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        body.light-mode .contact-card { background: #ffffff; border-color: #cbd5e1; }
+        body.light-mode .feature-card, body.light-mode .service-category, body.light-mode .video-card, body.light-mode .contact-card { background: #ffffff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         body { background: var(--bg-deep); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
@@ -23,8 +22,8 @@
         .logo-oficial img { max-height: 55px; object-fit: contain; margin-bottom: 4px; display: block; }
         .logo-oficial .sub-brand { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
         
-        .nav-links { display: flex; gap: 25px; align-items: center; }
-        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: color 0.3s; }
         .nav-links a:hover { color: var(--brand-orange); }
         
         .btn-pro { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue) !important; padding: 10px 20px; border-radius: 8px; font-weight: 800 !important; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
@@ -32,12 +31,12 @@
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        .hero { padding: 160px 20px 80px 20px; text-align: center; background-image: radial-gradient(circle at top center, rgba(255, 115, 21, 0.08) 0%, transparent 60%); min-height: 80vh; display: flex; flex-direction: column; justify-content: center;}
+        .hero { padding: 160px 20px 80px 20px; text-align: center; background-image: radial-gradient(circle at top center, rgba(255, 115, 21, 0.08) 0%, transparent 60%); }
         .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
         .hero h1 span { background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; }
         
-        .services-section { padding: 80px 20px 100px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
+        .services-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
         .section-header { text-align: center; margin-bottom: 50px; }
         .section-header h2 { font-size: 2.5rem; color: var(--text-main); margin-bottom: 10px; font-weight: 900;}
         .section-header p { color: var(--brand-orange); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;}
@@ -47,26 +46,39 @@
         .service-category:hover { transform: translateY(-5px); border-color: var(--brand-orange); box-shadow: 0 10px 25px rgba(255, 115, 21, 0.1);}
         .service-category h3 { color: var(--brand-orange); margin-bottom: 20px; font-size: 1.3rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; display: flex; align-items: center; gap: 10px;}
         .service-category h3 i { color: var(--neon-blue); font-size: 1.5rem; }
-        
         .service-list { list-style: none; }
         .service-list li { margin-bottom: 15px; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
         .service-list li i { color: var(--success); margin-top: 4px; font-size: 0.8rem; }
 
-        /* SECCIÓN ACREDITACIONES Y LOGO SECUNDARIO */
-        .acreditaciones-section { padding: 80px 20px; text-align: center; max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px;}
-        .acreditaciones-text { flex: 1; min-width: 300px; text-align: left; }
+        /* VIDEOS Y CÁPSULAS LEGALES */
+        .videos-section { padding: 80px 20px; text-align: center; max-width: 1200px; margin: 0 auto; }
+        .videos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
+        .video-card { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 16px; padding: 20px; transition: transform 0.3s; }
+        .video-card:hover { transform: translateY(-5px); border-color: var(--neon-blue); }
+        .video-placeholder { width: 100%; height: 450px; background: #000; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); overflow: hidden; }
+
+        /* ACREDITACIONES Y LOGO SECUNDARIO */
+        .acreditaciones-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px;}
+        .acreditaciones-text { flex: 1; min-width: 300px; max-width: 600px; text-align: left; }
         .acreditaciones-text h2 { font-size: 2.2rem; margin-bottom: 15px; color: var(--text-main); }
         .acreditaciones-text p { color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;}
         .puzzle-logo { width: 250px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); }
 
-        /* SECCIÓN CONTACTO */
-        .contact-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); }
-        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
-        .contact-card { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; }
-        .contact-card:hover { border-color: var(--neon-blue); transform: translateY(-5px);}
-        .contact-card i { font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 15px; }
-        .contact-card h4 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 10px; }
+        /* CONTACTO Y MAPA */
+        .contact-section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media(max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+        
+        .contact-info-cards { display: flex; flex-direction: column; gap: 20px; }
+        .contact-card { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 30px; border-radius: 12px; display: flex; align-items: center; gap: 20px; transition: 0.3s;}
+        .contact-card:hover { border-color: var(--brand-orange); transform: translateX(10px); }
+        .contact-card i { font-size: 2.5rem; color: var(--neon-blue); }
+        .contact-card h4 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 5px; }
         .contact-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
+        
+        .map-container { background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 15px; height: 100%; min-height: 300px; display: flex; flex-direction: column;}
+        .map-container h4 { color: var(--text-main); margin-bottom: 15px; text-align: center; font-size: 1.2rem;}
+        .map-frame { flex: 1; width: 100%; border-radius: 8px; border: none; }
 
         .legaltech-banner { padding: 80px 20px; text-align: center; background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(15, 23, 42, 0.8) 100%); border-top: 1px solid var(--border-glass);}
         .legaltech-banner h2 { font-size: 2.5rem; margin-bottom: 20px; }
@@ -75,12 +87,12 @@
 
         .footer { background: var(--bg-panel); padding: 40px 20px; text-align: center; border-top: 1px solid var(--border-glass); margin-top: auto; }
         .footer p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;}
-        .footer .contact-info { color: var(--text-main); font-weight: bold; font-size: 0.9rem; }
 
         @media (max-width: 900px) {
             .nav-links { display: none; } 
             .hero h1 { font-size: 2.3rem; }
             .topbar { padding: 15px 20px; }
+            .acreditaciones-section { flex-direction: column; text-align: center; }
             .acreditaciones-text { text-align: center; }
         }
     </style>
@@ -89,12 +101,14 @@
 
     <nav class="topbar">
         <div class="logo-oficial">
-            <img src="logo.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.6rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
+            <!-- LOGO PRINCIPAL (Apunta a la carpeta assets) -->
+            <img src="assets/LOGO.png" onerror="this.onerror=null; this.src='assets/LOGO.jpg';" alt="45 Y MÁS">
             <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
         </div>
         <div class="nav-links">
             <a href="#inicio">Inicio</a>
             <a href="#servicios">Servicios</a>
+            <a href="#capsulas">Cápsulas Legales</a>
             <a href="#nosotros">Nosotros</a>
             <a href="#contacto">Contacto</a>
             <a href="portal-pro.html" class="btn-pro"><i class="fa-solid fa-lock"></i> Portal Pro</a>
@@ -115,83 +129,99 @@
             <p>Portafolio Institucional</p>
             <h2>Servicios que se Prestan</h2>
         </div>
-        
         <div class="services-grid">
             <div class="service-category">
                 <h3><i class="fa-solid fa-hands-holding-circle"></i> Métodos Alternos</h3>
                 <ul class="service-list">
                     <li><i class="fa-solid fa-check"></i> Proceso Tradicional en Juzgados</li>
-                    <li><i class="fa-solid fa-check"></i> Mediación</li>
-                    <li><i class="fa-solid fa-check"></i> Conciliación</li>
+                    <li><i class="fa-solid fa-check"></i> Mediación y Conciliación</li>
                     <li><i class="fa-solid fa-check"></i> Juntas Restaurativas</li>
                     <li><i class="fa-solid fa-check"></i> Derecho Colaborativo</li>
                 </ul>
             </div>
-
             <div class="service-category">
                 <h3><i class="fa-solid fa-children"></i> Convenios Familiares</h3>
                 <ul class="service-list">
                     <li><i class="fa-solid fa-check"></i> Alimentos, Custodia y Convivencia</li>
-                    <li><i class="fa-solid fa-check"></i> Alimentos entre cónyuges / Pensión Compensatoria</li>
-                    <li><i class="fa-solid fa-check"></i> Alimentos para hijos mayores de edad</li>
-                    <li><i class="fa-solid fa-check"></i> Alimentos de hijos a padres</li>
-                    <li><i class="fa-solid fa-check"></i> Compensación Económica</li>
-                    <li><i class="fa-solid fa-check"></i> Divorcio Administrativo / Mutuo Consentimiento</li>
+                    <li><i class="fa-solid fa-check"></i> Pensión Compensatoria</li>
+                    <li><i class="fa-solid fa-check"></i> Alimentos para hijos mayores / a padres</li>
+                    <li><i class="fa-solid fa-check"></i> Divorcio Administrativo / Mutuo</li>
                 </ul>
             </div>
-
             <div class="service-category">
                 <h3><i class="fa-solid fa-file-contract"></i> Convenios Civiles</h3>
                 <ul class="service-list">
-                    <li><i class="fa-solid fa-check"></i> Contrato Preventivo de Arrendamiento Puro</li>
-                    <li><i class="fa-solid fa-check"></i> Contrato Preventivo de Arrendamiento</li>
-                    <li><i class="fa-solid fa-check"></i> Contratos de mutuo con interés y garantía prendaria</li>
-                    <li><i class="fa-solid fa-check"></i> Contratos de Comodato</li>
-                    <li><i class="fa-solid fa-check"></i> Contratos de Prestación de Servicios Profesionales</li>
+                    <li><i class="fa-solid fa-check"></i> Arrendamiento Puro y Preventivo</li>
+                    <li><i class="fa-solid fa-check"></i> Contratos de Mutuo y Comodato</li>
+                    <li><i class="fa-solid fa-check"></i> Prestación de Servicios Profesionales</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <!-- SECCIÓN NOSOTROS Y LOGO SECUNDARIO -->
+    <!-- SECCIÓN VIDEOS / CÁPSULAS -->
+    <section class="videos-section" id="capsulas">
+        <div class="section-header">
+            <p>Asesoría en Redes</p>
+            <h2>Cápsulas Legales</h2>
+        </div>
+        <div class="videos-grid">
+            <div class="video-card">
+                <div class="video-placeholder">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@45ymas_oficial" data-unique-id="45ymas_oficial" data-embed-type="creator" style="max-width: 100%; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@45ymas_oficial">@45ymas_oficial</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+                </div>
+                <h4 style="color:var(--text-main);">Visita nuestro TikTok</h4>
+                <p style="color:var(--brand-orange); font-size:0.85rem; font-weight:bold; margin-top:5px;">@45ymas_oficial</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN NOSOTROS (CON EL LOGO DEL ROMPECABEZAS) -->
     <section class="acreditaciones-section" id="nosotros">
         <div class="acreditaciones-text">
             <h2>Mediadores y Conciliadores Certificados</h2>
             <p>El <strong>Centro Privado 45 Y MÁS</strong> cuenta con la certificación oficial del Instituto de Justicia Alternativa del Estado de Jalisco. Garantizamos procedimientos apegados a la ley, con total imparcialidad y confidencialidad para proteger tu patrimonio y tranquilidad familiar.</p>
         </div>
-        <!-- AQUÍ SE MUESTRA TU LOGO DEL ROMPECABEZAS -->
+        <!-- AQUÍ SE MUESTRA TU LOGO DEL ROMPECABEZAS DESDE ASSETS -->
         <img src="assets/logo45.png" onerror="this.onerror=null; this.src='assets/logo45.jpg';" alt="Logo Rompecabezas 45 y Más" class="puzzle-logo">
     </section>
 
-    <!-- NUEVA SECCIÓN DE CONTACTO -->
+    <!-- CONTACTO Y MAPA DE GOOGLE -->
     <section class="contact-section" id="contacto">
         <div class="section-header" style="margin-bottom: 40px;">
             <p>Atención Personalizada</p>
             <h2>Contacto y Ubicación</h2>
         </div>
         <div class="contact-grid">
-            <div class="contact-card">
-                <i class="fa-solid fa-map-location-dot"></i>
-                <h4>Ubicación</h4>
-                <p>Hilarión Romero Gil #935<br>Col. Alcalde Barranquitas<br>Guadalajara, Jal. 44270, México</p>
+            <div class="contact-info-cards">
+                <div class="contact-card">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <div>
+                        <h4>Oficina Principal</h4>
+                        <p>Hilarión Romero Gil #935<br>Col. Alcalde Barranquitas<br>Guadalajara, Jal. 44270</p>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <div>
+                        <h4>Comunicación Directa</h4>
+                        <p><strong>Email:</strong> mov45ymas@gmail.com</p>
+                        <p><strong>Cel:</strong> (33) 2187-0711</p>
+                        <p><strong>Oficina:</strong> (33) 3330-5471</p>
+                    </div>
+                </div>
             </div>
-            <div class="contact-card">
-                <i class="fa-solid fa-envelope-open-text"></i>
-                <h4>Comunicación</h4>
-                <p><strong>Email:</strong><br>mov45ymas@gmail.com</p>
-                <p style="margin-top: 10px;"><strong>Teléfonos:</strong><br>Cel. (33) 2187-0711<br>Oficina (33) 3330-5471</p>
-            </div>
-            <div class="contact-card">
-                <i class="fa-brands fa-tiktok" style="color: var(--text-main);"></i>
-                <h4>Redes Sociales</h4>
-                <p>Síguenos para consejos legales y novedades del centro.</p>
-                <a href="https://www.tiktok.com/@45ymas_oficial" target="_blank" style="display:inline-block; margin-top:10px; color:var(--neon-blue); font-weight:bold; text-decoration:none;">@45ymas_oficial</a>
+            
+            <!-- GOOGLE MAPS IFRAME -->
+            <div class="map-container">
+                <h4><i class="fa-solid fa-location-dot" style="color:var(--brand-orange);"></i> Cómo llegar</h4>
+                <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3732.6105315849896!2d-103.3518172!3d20.6853755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428b1eec5b90fbb%3A0x67a3ed1469beabcb!2sC.%20Hilari%C3%B3n%20Romero%20Gil%20935%2C%20Alcalde%20Barranquitas%2C%2044270%20Guadalajara%2C%20Jal.!5e0!3m2!1ses-419!2smx!4v1700000000000!5m2!1ses-419!2smx" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </section>
 
     <!-- BANNER LEGALTECH -->
-    <section class="legaltech-banner" id="legaltech">
+    <section class="legaltech-banner">
         <h2>Bóveda Digital <span>PRO</span></h2>
         <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;">Gestiona expedientes con IA, visualiza alertas judiciales y controla tus checklists MASC desde un entorno 100% confidencial.</p>
         <a href="portal-pro.html" class="btn-ingresar">
@@ -200,7 +230,7 @@
     </section>
 
     <footer class="footer">
-        <p class="contact-info">Lic. Yoshua Salvador Ramos | Mediador y Conciliador Certificado</p>
+        <p style="color: var(--text-main); font-weight: bold; margin-bottom: 5px;">Lic. Yoshua Salvador Ramos | Mediador y Conciliador Certificado</p>
         <p>© 2026 Centro Privado en Mediación y Conciliación 45 y Más. Acreditación 065 IJA.</p>
     </footer>
 

@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bóveda Pro | 45 y Más</title>
+    <!-- Librerías para Auto-Clasificación de PDF y WORD -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
@@ -16,7 +19,7 @@
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(circle at center, rgba(56, 189, 248, 0.03) 0%, transparent 100%); }
         
         .logo-oficial { display: flex; flex-direction: column; align-items: flex-start;}
-        .logo-oficial img { max-height: 45px; object-fit: contain; margin-bottom: 2px; }
+        .logo-oficial img { max-height: 45px; object-fit: contain; margin-bottom: 2px; display:block;}
         .logo-oficial .sub-brand { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
         #login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; z-index: 50; position: absolute; background: var(--bg-deep); }
@@ -61,7 +64,6 @@
         .btn-edit-logo { background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--border-glass); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-top: 10px; cursor: pointer; transition: 0.2s;}
         .btn-edit-logo:hover { background: var(--brand-orange); border-color: var(--brand-orange);}
 
-        /* ACTIVIDAD RECIENTE */
         .actividad-container { margin-top: auto; background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; }
         .actividad-header { font-size: 1rem; font-weight: bold; color: var(--brand-orange); margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;}
         .actividad-list { display: flex; flex-direction: column; gap: 10px; }
@@ -71,19 +73,7 @@
         .actividad-item .titulo-act { color: var(--text-main); font-weight: 600; }
         .actividad-item .fecha-act { color: var(--text-muted); font-size: 0.75rem; }
 
-        /* CHECKLIST MASC UI */
-        .masc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-glass); flex-wrap: wrap; gap: 15px;}
-        .masc-info h2 { color: var(--brand-orange); margin-bottom: 5px; font-size: 1.4rem; }
-        .checklist-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .checklist-container { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 25px; }
-        .check-group-title { color: var(--brand-orange); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; margin: 20px 0 10px 0; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 4px; }
-        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-main); cursor: pointer; padding: 5px 10px; border-radius: 6px; }
-        .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brand-orange); }
-        .check-item.checked { color: var(--text-muted); text-decoration: line-through; }
-
-        .breadcrumb { display: flex; gap: 10px; color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
-        .breadcrumb span:hover { color: var(--brand-orange); }
-
+        /* MODALES */
         .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
         .modal-content { background: var(--bg-panel); padding: 35px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid var(--border-glass); text-align: center; }
         .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
@@ -99,7 +89,7 @@
     <div id="login-screen">
         <div class="login-box">
             <div class="logo-oficial" style="align-items: center; margin-bottom: 25px;">
-                <img src="logo.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
+                <img src="assets/LOGO.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
                 <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
             </div>
             <p style="color:var(--brand-orange); font-weight:bold; margin-bottom: 20px;">Bóveda Confidencial</p>
@@ -113,7 +103,7 @@
     <div id="dashboard-screen">
         <div class="topbar">
             <div class="logo-oficial" style="flex-direction: row; align-items: center; gap:15px;">
-                <img src="logo.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS" style="max-height: 40px;">
+                <img src="assets/LOGO.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS" style="max-height: 40px;">
                 <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); border-left: 1px solid var(--border-glass); padding-left: 15px;">Portal Pro</span>
             </div>
             <div style="display:flex; gap: 15px;">
@@ -124,14 +114,9 @@
         
         <div class="main-content">
             <div class="sidebar">
-                <div class="menu-item active" id="menu-juridico" onclick="mostrarSeccion('juridico')">
-                    <i class="fa-solid fa-gavel"></i> Expedientes Jurídicos
-                </div>
-                <div class="menu-item" id="menu-masc" onclick="mostrarSeccion('masc')">
-                    <i class="fa-solid fa-handshake"></i> Convenios MASC
-                </div>
+                <div class="menu-item active" id="menu-juridico" onclick="mostrarSeccion('juridico')"><i class="fa-solid fa-gavel"></i> Expedientes Jurídicos</div>
+                <div class="menu-item" id="menu-masc" onclick="mostrarSeccion('masc')"><i class="fa-solid fa-handshake"></i> Convenios MASC</div>
             </div>
-
             <div class="folder-area" id="area-trabajo"></div>
         </div>
     </div>
@@ -183,14 +168,12 @@
         </div>
     </div>
 
-    <!-- Inputs ocultos para carga de archivos -->
     <input type="file" id="pdf-auto-upload" accept=".pdf, .doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="procesarPDF_IA(event)">
     <input type="file" id="logo-upload" accept="image/*" style="display:none;" onchange="guardarLogoCentro(event)">
 
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        // ==== CATÁLOGOS JURÍDICOS Y MASC ====
         const catJuzgados = {
             "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
             "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Juzgado 11° Especializado de lo Familiar", "Juzgado Especializado en Niñas, Niños y Adolescentes", "Juzgado Especializado Violencia Mujeres Tlaquepaque"],
@@ -202,43 +185,28 @@
         let vistaActual = 'juridico'; 
         let nivelActual = 0; 
         let pathSelection = { juzgado: '', anio: '', exp: '' };
-        
         let pathMasc = { centro: '', anio: '', tipo: '' };
         const tiposMascObj = { "ARRENDAMIENTO": "Preventivo Arrendamiento", "ALIMENTOS": "Alimentos y Convivencia", "DIVORCIO": "Divorcio Admtvo. y Mutuo" };
 
         let centroEditando = "";
 
-        // ==== FUNCIONES DE ACTIVIDAD RECIENTE ====
         function registrarActividad(accion, detalle, icono) {
             let act = JSON.parse(localStorage.getItem('actividad_reciente')) || [];
             let fecha = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
             act.unshift({ accion: accion, detalle: detalle, fecha: fecha, icon: icono });
-            if(act.length > 5) act.pop(); // Mantener solo las últimas 5
+            if(act.length > 5) act.pop(); 
             localStorage.setItem('actividad_reciente', JSON.stringify(act));
         }
 
         function generarHTMLActividad() {
             let act = JSON.parse(localStorage.getItem('actividad_reciente')) || [];
             if(act.length === 0) return '';
-            
             let htmlList = act.map(a => `
-                <div class="actividad-item">
-                    <i class="fa-solid ${a.icon}"></i>
-                    <div class="detalles">
-                        <div class="titulo-act">${a.accion}</div>
-                        <div class="fecha-act">${a.detalle} - ${a.fecha}</div>
-                    </div>
-                </div>
+                <div class="actividad-item"><i class="fa-solid ${a.icon}"></i><div class="detalles"><div class="titulo-act">${a.accion}</div><div class="fecha-act">${a.detalle} - ${a.fecha}</div></div></div>
             `).join('');
-
-            return `
-            <div class="actividad-container">
-                <div class="actividad-header"><i class="fa-solid fa-clock-rotate-left"></i> Actividad Reciente</div>
-                <div class="actividad-list">${htmlList}</div>
-            </div>`;
+            return `<div class="actividad-container"><div class="actividad-header"><i class="fa-solid fa-clock-rotate-left"></i> Actividad Reciente</div><div class="actividad-list">${htmlList}</div></div>`;
         }
 
-        // ==== NAVEGACIÓN Y RENDER ====
         function iniciarSesion() {
             const u = document.getElementById('user').value; const p = document.getElementById('pass').value;
             if(u === 'admin' && p === '45ymas') {
@@ -264,7 +232,7 @@
                 if (nivelActual === 0) {
                     html += `
                     <div class="section-header-box"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Base de Juzgados</div>
-                        <button class="btn-auto-classify" onclick="document.getElementById('pdf-auto-upload').click()"><i class="fa-solid fa-wand-magic-sparkles"></i> Clasificar Documento IA</button>
+                        <button class="btn-auto-classify" onclick="document.getElementById('pdf-auto-upload').click()"><i class="fa-solid fa-wand-magic-sparkles"></i> Clasificar Documento</button>
                     </div>
                     <div class="materia-tabs">
                         <div class="materia-tab ${materiaActiva === 'Civil' ? 'active' : ''}" onclick="cambiarMateria('Civil')">Materia Civil</div>
@@ -273,8 +241,7 @@
                     </div>
                     <div class="grid-carpetas">`;
                     catJuzgados[materiaActiva].forEach(j => { html += crearCardCarpeta(j, 'Expedientes locales', `entrarNivel(1, '${j}')`, 'fa-folder'); });
-                    html += `</div>`;
-                    html += generarHTMLActividad();
+                    html += `</div>${generarHTMLActividad()}`;
                 } 
                 else if (nivelActual === 1) {
                     html += `<div class="breadcrumb" onclick="entrarNivel(0)"><i class="fa-solid fa-arrow-left"></i> Volver a Juzgados</div>`;
@@ -293,30 +260,24 @@
             } 
             else if (vistaActual === 'masc') {
                 if (nivelActual === 0) {
-                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Centros de Mediación MASC</div></div>`;
-                    html += `<div class="grid-carpetas">`;
+                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Centros de Mediación MASC</div></div><div class="grid-carpetas">`;
                     let centros = JSON.parse(localStorage.getItem('lista_centros_masc')) || ["Centro 065", "Centro 353"];
                     centros.forEach(c => { 
-                        // Verificar si tiene logo personalizado
                         let customLogo = localStorage.getItem('logo_' + c);
                         let visualIcon = customLogo ? `<img src="${customLogo}" class="center-logo">` : `<i class="fa-solid fa-building folder-icon" style="color:var(--brand-orange);"></i>`;
                         html += `
                         <div class="carpeta-card" onclick="entrarNivelMasc(1, '${c}')">
                             ${visualIcon}
-                            <div class="titulo">${c}</div>
-                            <div class="subtitulo">Sedes Activas</div>
+                            <div class="titulo">${c}</div><div class="subtitulo">Sedes Activas</div>
                             <button class="btn-edit-logo" onclick="event.stopPropagation(); triggerUploadLogo('${c}')"><i class="fa-solid fa-camera"></i> Subir Logo</button>
                         </div>`;
                     });
-                    html += `<div class="carpeta-card" style="border: 2px dashed var(--brand-orange); justify-content:center;" onclick="abrirModalCrear('Nuevo Centro de Mediación')"><i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Añadir Centro</div></div>`;
-                    html += `</div>`;
-                    html += generarHTMLActividad();
+                    html += `<div class="carpeta-card" style="border: 2px dashed var(--brand-orange); justify-content:center;" onclick="abrirModalCrear('Nuevo Centro de Mediación')"><i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Añadir Centro</div></div></div>${generarHTMLActividad()}`;
                 }
                 else if (nivelActual === 1) {
-                    let aniosMasc = ["2026", "2025", "2024", "2023", "2022", "2021", "2020"];
                     html += `<div class="breadcrumb" onclick="entrarNivelMasc(0)"><i class="fa-solid fa-arrow-left"></i> Volver a Centros</div>`;
                     html += `<div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > Años</div><div class="grid-carpetas">`;
-                    aniosMasc.forEach(a => { html += crearCardCarpeta(a, 'Registros', `entrarNivelMasc(2, '${a}')`, 'fa-calendar', 'var(--brand-orange)'); });
+                    ["2026", "2025", "2024", "2023", "2022", "2021", "2020"].forEach(a => { html += crearCardCarpeta(a, 'Registros', `entrarNivelMasc(2, '${a}')`, 'fa-calendar', 'var(--brand-orange)'); });
                     html += `</div>`;
                 }
                 else if (nivelActual === 2) {
@@ -348,11 +309,7 @@
         function entrarNivel(nivel, valor='') { nivelActual = nivel; if(nivel === 1) pathSelection.juzgado = valor; if(nivel === 2) pathSelection.anio = valor; renderizarVista(); }
         function entrarNivelMasc(nivel, valor='') { nivelActual = nivel; if(nivel === 1) pathMasc.centro = valor; if(nivel === 2) pathMasc.anio = valor; if(nivel === 3) pathMasc.tipo = valor; renderizarVista(); }
 
-        // ==== CARGA DE LOGO PERSONALIZADO ====
-        function triggerUploadLogo(centroNombre) {
-            centroEditando = centroNombre;
-            document.getElementById('logo-upload').click();
-        }
+        function triggerUploadLogo(centroNombre) { centroEditando = centroNombre; document.getElementById('logo-upload').click(); }
         function guardarLogoCentro(event) {
             const file = event.target.files[0];
             if(file) {
@@ -423,83 +380,42 @@
             window.location.href = 'visor-expediente.html'; 
         }
 
-        const checklistsData = {
-            "ARRENDAMIENTO": { "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"], "Documentos Generales": ["Identificaciones ()*", "Contrato de Arrendamiento ()*", "Contrato de Administracion ()*", "Escritura Publica ( )*", "Predial *", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] },
-            "ALIMENTOS": { "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"], "Documentos Generales": ["Identificaciones ()*", "Actas de Nacimiento Padres ()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte ()"], "Documentos Menores": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] },
-            "DIVORCIO": { "Contenido de la Carpeta": ["Solicitud Firmada Por Ambas Partes *", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final*", "Convenio Digital"], "Documentos Gral Divorcio": ["Identificaciones (1)", "Actas de Nacimiento Conyuges()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte()", "Certificado No Embarazo (0)"], "Documentos Divorcio Mutuo": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Facturas Bienes Muebles ()", "Escrituras de los Bienes Inmuebles", "Certificado Libertad de Gravamen()*", "Estado de Cuenta del Credito", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"] }
-        };
-
-        function verChecklistMasc(index) {
-            let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-            let m = mascs[index];
-            let htmlChecks = '';
-            for(let categoria in checklistsData[m.tipo]) {
-                htmlChecks += `<div class="check-group-title">${categoria}</div>`;
-                checklistsData[m.tipo][categoria].forEach(item => {
-                    let itemId = `${categoria}_${item}`;
-                    let isChecked = m.checks[itemId] ? 'checked' : '';
-                    htmlChecks += `<label class="check-item ${isChecked}"><input type="checkbox" onchange="actualizarCheckMasc(${index}, '${itemId}', this.checked)" ${isChecked}> ${item}</label>`;
-                });
-            }
-
-            document.getElementById('area-trabajo').innerHTML = `
-                <div class="breadcrumb" onclick="renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Expedientes</div>
-                <div class="masc-header">
-                    <div class="masc-info"><h2>${m.numero}</h2><p><strong>Solicitante:</strong> ${m.nombre}</p><p><strong>Centro:</strong> ${m.centro}</p></div>
-                    <div><button class="btn-login" style="margin:0; padding: 10px 20px;" onclick="abrirVisor('MASC_${m.centro}_${m.numero.replace('/','-')}')"><i class="fa-solid fa-folder-open"></i> Abrir Expediente Digital</button></div>
-                </div>
-                <div class="checklist-grid"><div class="checklist-container"><h3><i class="fa-solid fa-list-check"></i> Documentación Requerida</h3>${htmlChecks}</div></div>
-            `;
-            registrarActividad("Revisión MASC", `Se consultó el checklist del convenio ${m.numero}`, "fa-list-check");
-        }
-
-        function actualizarCheckMasc(mascIndex, itemId, isChecked) {
-            let mascs = JSON.parse(localStorage.getItem('masc_list'));
-            mascs[mascIndex].checks[itemId] = isChecked;
-            localStorage.setItem('masc_list', JSON.stringify(mascs));
-            verChecklistMasc(mascIndex); 
-        }
-
-        // ==== MOTOR OCR Y MANEJO DE WORD (.doc, .docx) ====
-        let datosIA_Temp = { juzgado: '', exp: '', anio: '' };
+        // ==========================================
+        // MANEJO DE WORD (MAMMOTH) Y OCR (TESSERACT)
+        // ==========================================
         const numMap = { "PRIMER": "1°", "PRIMERO": "1°", "SEGUNDO": "2°", "TERCER": "3°", "TERCERO": "3°", "CUARTO": "4°", "QUINTO": "5°", "SEXTO": "6°", "SEPTIMO": "7°", "SÉPTIMO": "7°", "OCTAVO": "8°", "NOVENO": "9°", "DECIMO": "10°", "DÉCIMO": "10°", "ONCEAVO": "11°", "DECIMO PRIMERO": "11°", "DOCEAVO": "12°", "DECIMO SEGUNDO": "12°", "TRECEAVO": "13°", "DECIMO TERCERO": "13°", "CATORCEAVO": "14°", "DECIMO CUARTO": "14°", "QUINCEAVO": "15°", "DECIMO QUINTO": "15°", "DIECISEISAVO": "16°", "DECIMO SEXTO": "16°", "DIECISIETEAVO": "17°", "DECIMO SEPTIMO": "17°", "DIECIOCHOAVO": "18°", "DECIMO OCTAVO": "18°", "DIECINUEVEAVO": "19°", "DECIMO NOVENO": "19°", "VIGESIMO": "20°", "VIGÉSIMO": "20°" };
 
         async function procesarPDF_IA(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            // Soporte informativo para Word
-            if(file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
-                document.getElementById('modal-resultado-ia').style.display = 'flex';
-                document.getElementById('ia-desc-text').innerHTML = `Has subido un documento Word (<strong>${file.name}</strong>).<br><br><span style="color:var(--brand-orange);">La Inteligencia Artificial OCR requiere formato PDF para leer la carátula automáticamente.</span> Sin embargo, puedes crear la carpeta manualmente y guardarlo en la Bóveda.`;
-                document.getElementById('ia-res-juzgado').innerText = "Requiere Clasificación Manual";
-                document.getElementById('ia-res-exp').innerText = "Formato Word (.docx)";
-                document.getElementById('btn-ia-action').style.display = 'none';
-                event.target.value = '';
-                return;
-            }
-            
             document.getElementById('pantalla-progreso').style.display = 'flex';
-            document.getElementById('btn-ia-action').style.display = 'inline-block';
-            document.getElementById('ia-desc-text').innerText = "La Inteligencia Artificial ha leído la carátula y encontrado lo siguiente:";
-            document.getElementById('barra-llena').style.width = '30%';
+            let textoLimpio = "";
 
             try {
-                const bytes = new Uint8Array(await file.arrayBuffer());
-                const pdf = await pdfjsLib.getDocument(bytes).promise;
-                const page = await pdf.getPage(1); 
-                
-                const viewport = page.getViewport({ scale: 1.5 });
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = viewport.width; canvas.height = viewport.height;
-                await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                if(file.name.endsWith('.docx')) {
+                    document.getElementById('texto-progreso').innerText = "Extrayendo texto del archivo Word (.docx)...";
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                    textoLimpio = result.value.toUpperCase();
+                } else {
+                    document.getElementById('texto-progreso').innerText = "Renderizando carátula PDF...";
+                    const bytes = new Uint8Array(await file.arrayBuffer());
+                    const pdf = await pdfjsLib.getDocument(bytes).promise;
+                    const page = await pdf.getPage(1); 
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = viewport.width; canvas.height = viewport.height;
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-                document.getElementById('barra-llena').style.width = '60%';
-                const { data: { text } } = await Tesseract.recognize(canvas, 'spa');
-                
-                document.getElementById('barra-llena').style.width = '90%';
-                const textoLimpio = text.toUpperCase();
+                    document.getElementById('texto-progreso').innerText = "Ejecutando OCR Inteligente...";
+                    const { data: { text } } = await Tesseract.recognize(canvas, 'spa');
+                    textoLimpio = text.toUpperCase();
+                }
+
+                document.getElementById('texto-progreso').innerText = "Interpretando datos jurídicos...";
+
                 let juzgadoDetectado = "No identificado"; let expDetectado = "EXP/NUEVO"; let anioDetectado = new Date().getFullYear().toString(); 
 
                 const regexExp = /EXP[^\d]*(\d+\s*\/\s*\d{2,4})/i;
@@ -535,10 +451,16 @@
                 document.getElementById('pantalla-progreso').style.display = 'none';
                 datosIA_Temp.juzgado = juzgadoDetectado; datosIA_Temp.exp = expDetectado; datosIA_Temp.anio = anios.includes(anioDetectado) ? anioDetectado : anios[0];
                 document.getElementById('ia-res-juzgado').innerText = juzgadoDetectado; document.getElementById('ia-res-exp').innerText = expDetectado;
+                
+                document.getElementById('ia-desc-text').innerText = (file.name.endsWith('.docx')) 
+                    ? "La IA ha extraído y analizado el texto del archivo Word exitosamente:" 
+                    : "La Inteligencia Artificial ha leído la carátula y encontrado lo siguiente:";
+                
                 document.getElementById('modal-resultado-ia').style.display = 'flex';
 
             } catch (error) {
-                alert("Error al leer el PDF. Asegúrate de que no esté corrupto.");
+                console.error(error);
+                alert("Error al leer el archivo. Si es Word, asegúrate de que sea formato .docx");
                 document.getElementById('pantalla-progreso').style.display = 'none';
             }
             event.target.value = '';
