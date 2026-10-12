@@ -2,150 +2,205 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>IurisVisor Pro: Versión Ejecutoriada - CNPCF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IurisVisor Pro | Dashboard de Alertas</title>
+    <!-- Librerías Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Estilos y Fuentes -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Montserrat', sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; color: #333; overflow: hidden; }
-        .controles-superior { background: white; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 10px; align-items: center; z-index: 10; }
-        button { padding: 8px 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; font-size: 13px; }
-        .btn-cargar { background: #1A365D; } .btn-cargar:hover { background: #0f172a; }
-        .btn-analizar { background: #6f42c1; display: none; } 
-        .btn-exportar { background: #E36414; display: none; } 
-        .btn-volver { background: #64748b; text-decoration: none; display: inline-flex; align-items: center; }
-        #loading { display: none; font-weight: bold; color: #E36414; margin-left: 10px; }
+        /* BASE OSCURA NUEVA ERA */
+        :root {
+            --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6);
+            --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc; --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        .area-trabajo { display: flex; flex: 1; overflow: hidden; }
-        .visor-central-container { flex: 2.5; background: #dcdde1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
-        .visor-mensaje-vacio { position: absolute; top: 40%; color: #7f8c8d; font-size: 18px; text-align: center; }
-        #canvas-visor-central { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-radius: 4px; transition: transform 0.2s; transform-origin: top center; }
-        
-        .controles-zoom { position: fixed; top: 90px; left: 20px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 5px; display: none; gap: 5px; z-index: 5; flex-direction: column;}
-        .btn-zoom { background: #34495e; padding: 5px 10px; font-size: 14px; }
-        
-        .panel-alertas { flex: 1.2; background: #1A365D; color: white; padding: 20px; overflow-y: auto; border-left: 5px solid #0f172a; min-width: 320px; max-width: 450px;}
-        
-        /* AVISO DE DEMO LIMITADA GRANDE */
-        .banner-demo-limitado { background: linear-gradient(135deg, #b91c1c, #991b1b); color: white; padding: 12px; border-radius: 6px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        
-        .demo-lock-card { background: #2a4365; padding: 20px; border-radius: 8px; text-align: center; border: 2px dashed #E36414; margin-top: 20px; }
-        .demo-lock-card h4 { color: #fb923c; margin-bottom: 10px; font-size: 1.1rem; }
-        .demo-lock-card p { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 15px; line-height: 1.4; }
-        .btn-desbloquear-pro { background: #E36414; color: white; padding: 10px 20px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; width: 100%; }
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand-orange); }
 
-        .carrusel-inferior { height: 220px; background: #bdc3c7; border-top: 2px solid #7f8c8d; padding: 15px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 15px; align-items: center; }
-        .foja-card { background: white; padding: 8px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-align: center; position: relative; min-width: 130px; cursor: pointer; border: 3px solid transparent;}
-        .foja-card.activa { border-color: #1A365D; background: #e8f4f8; }
-        .foja-canvas-container { overflow: hidden; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 5px; height: 130px; display: flex; justify-content: center; align-items: center; background: #f9f9f9;}
+        /* TOPBAR CONTROLES */
+        .topbar { background: rgba(5, 8, 16, 0.8); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
+        .logo-visor { font-weight: 800; font-size: 1.2rem; color: #fff; margin-right: auto; display: flex; align-items: center; gap: 10px; }
+        .logo-visor i { color: var(--brand-orange); }
+        
+        .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: white; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-volver { background: transparent; color: var(--text-muted); }
+        .btn-volver:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); }
+        .btn-accion:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); }
+        .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
+        
+        #loading { display: none; font-size: 0.85rem; color: var(--brand-orange); font-weight: bold; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        /* ÁREA DE TRABAJO PRINCIPAL */
+        .workspace { display: flex; flex: 1; overflow: hidden; background: radial-gradient(circle at center, #0f172a 0%, var(--bg-deep) 100%); }
+        
+        /* VISOR CENTRAL */
+        .visor-container { flex: 2.5; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 40px; }
+        .visor-empty { position: absolute; top: 40%; text-align: center; color: var(--text-muted); }
+        .visor-empty i { font-size: 4rem; color: #1e293b; margin-bottom: 15px; display: block; }
+        #canvas-visor-central { background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border-radius: 4px; transition: transform 0.2s; }
+        
+        .zoom-controls { position: fixed; bottom: 250px; left: 30px; background: var(--glass-bg); backdrop-filter: blur(10px); padding: 10px; border-radius: 12px; border: 1px solid var(--border-glass); display: none; flex-direction: column; gap: 8px; z-index: 5; }
+        .btn-zoom { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 35px; height: 35px; border-radius: 6px; transition: background 0.2s; }
+        .btn-zoom:hover { background: rgba(255,255,255,0.1); color: var(--neon-blue); }
+
+        /* PANEL RADAR (DASHBOARD) */
+        .radar-panel { flex: 1.2; background: rgba(10, 15, 29, 0.95); border-left: 1px solid var(--border-glass); padding: 25px; overflow-y: auto; min-width: 350px; display: flex; flex-direction: column; }
+        .radar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
+        .radar-header h3 { color: var(--text-main); font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .radar-header h3 i { color: var(--neon-blue); }
+        
+        /* TARJETA DEMO LOCK */
+        .demo-lock-card { background: rgba(255, 115, 21, 0.05); border: 1px dashed var(--brand-orange); padding: 25px; border-radius: 12px; text-align: center; margin-top: 20px; }
+        .demo-lock-card i { font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 15px; }
+        .demo-lock-card h4 { color: #fff; margin-bottom: 10px; font-size: 1.1rem; }
+        .demo-lock-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        
+        /* ITEM ALERTA PRO */
+        .alerta-item { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--brand-orange); cursor: pointer; transition: all 0.2s; }
+        .alerta-item:hover { background: rgba(255,255,255,0.05); transform: translateX(-5px); }
+        .motivo-alerta { font-size: 0.8rem; color: var(--neon-blue); margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; font-family: monospace; }
+
+        /* CARRUSEL INFERIOR */
+        .carrusel { height: 200px; background: #03050a; border-top: 1px solid #1e293b; padding: 15px 25px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 20px; align-items: center; }
+        .foja-card { background: #0f172a; padding: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; min-width: 120px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
+        .foja-card.activa { border-color: var(--neon-blue); background: rgba(56, 189, 248, 0.1); }
+        .foja-canvas-container { overflow: hidden; border-radius: 4px; margin-bottom: 8px; height: 110px; background: #fff; display: flex; justify-content: center; align-items: center; }
         .foja-card canvas { height: 100%; width: auto; display: block; }
-        .foja-etiqueta { font-weight: bold; font-size: 12px; margin-bottom: 5px; }
-        .foja-acciones { display: flex; justify-content: space-between; margin-top: 5px; }
-        .btn-mini { background: #bdc3c7; color: #333; padding: 3px 6px; font-size: 11px; }
-        .btn-mini.eliminar { background: #e74c3c; color: white; }
+        .foja-etiqueta { font-weight: 600; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+        .foja-acciones { display: flex; justify-content: space-between; }
+        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; transition: background 0.2s; }
+        .btn-mini:hover { background: rgba(255,255,255,0.2); }
+        .btn-mini.eliminar:hover { background: #ef4444; }
 
-        /* MODAL DE VIP / TOKEN */
-        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11, 15, 25, 0.85); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-card { background: white; padding: 40px; border-radius: 16px; text-align: center; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-top: 5px solid #E36414; }
-        .modal-card h2 { color: #1A365D; margin-bottom: 10px; font-size: 1.5rem; }
-        .modal-card p { color: #64748b; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
-        .input-vip { padding: 12px; width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 1.1rem; margin-bottom: 15px; font-weight: bold; }
-        .btn-validar { background: #E36414; color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; }
-        .btn-cerrar-modal { background: none; border: none; color: #94a3b8; margin-top: 15px; cursor: pointer; font-size: 0.85rem; }
+        /* GLASS MODAL VIP */
+        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+        .modal-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); }
+        .modal-card h2 { color: #fff; margin-bottom: 15px; font-size: 1.5rem; }
+        .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px; }
+        .input-vip { background: rgba(0,0,0,0.3); border: 1px solid #1e293b; color: #fff; padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; outline: none; }
+        .input-vip:focus { border-color: var(--brand-orange); box-shadow: 0 0 15px rgba(255, 115, 21, 0.2); }
+        
+        /* UTILIDADES ESTADO */
+        .status-badge { background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; letter-spacing: 1px; }
+        .status-demo { color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .status-pro { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
     </style>
 </head>
 <body>
 
-    <div class="controles-superior">
-        <a href="index.html" class="btn btn-volver">← Portal</a>
-        <h2 style="margin: 0; margin-right: 15px; color: #1A365D; font-size: 1.2rem;">📡 IurisVisor Pro</h2>
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
+        <div class="logo-visor">
+            <i class="fa-solid fa-microchip"></i> IurisVisor Pro
+            <span class="status-badge status-demo" id="status-badge">VERSIÓN DEMO</span>
+        </div>
+        
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
-        <button class="btn-cargar" onclick="document.getElementById('pdf-upload').click()">📂 1. Cargar PDF</button>
-        <button id="btn-analizar" class="btn-analizar" onclick="escanearAlertas()">🔍 2. Radar de Alertas</button>
-        <button id="btn-exportar" class="btn-exportar" onclick="verificarVIP()">🔓 3. Desbloquear VIP</button>
-        <div id="loading">Cargando...</div>
+        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar PDF</button>
+        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Iniciar Radar</button>
+        <button id="btn-exportar" class="btn btn-vip" onclick="verificarVIP()"><i class="fa-solid fa-lock"></i> 3. Desbloquear VIP</button>
+        <div id="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...</div>
     </div>
 
-    <div class="area-trabajo">
-        <div class="visor-central-container" id="contenedor-visor-central">
-            <div class="visor-mensaje-vacio" id="mensaje-vacio">
-                ℹ️ Carga un expediente y ejecuta el Radar para ver el análisis de la versión Demo.
+    <!-- WORKSPACE -->
+    <div class="workspace">
+        
+        <!-- VISOR CENTRAL -->
+        <div class="visor-container" id="contenedor-visor-central">
+            <div class="visor-empty" id="mensaje-vacio">
+                <i class="fa-solid fa-file-shield"></i>
+                <h2>Dashboard Inactivo</h2>
+                <p>Carga un expediente PDF para iniciar el análisis inteligente.</p>
             </div>
-            <div class="controles-zoom" id="caja-zoom">
-                <button class="btn-zoom" onclick="cambiarZoom(0.2)">➕</button>
-                <button class="btn-zoom" onclick="cambiarZoom(-0.2)">➖</button>
-                <button class="btn-zoom" onclick="resetZoom()">⟲</button>
+            
+            <div class="zoom-controls" id="caja-zoom">
+                <button class="btn-zoom" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                <button class="btn-zoom" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                <button class="btn-zoom" onclick="resetZoom()"><i class="fa-solid fa-expand"></i></button>
             </div>
             <canvas id="canvas-visor-central" style="display:none;"></canvas>
         </div>
 
-        <div class="panel-alertas" id="panel-alertas">
-            <div class="banner-demo-limitado">⚠️ VERSIÓN DE PRUEBA LIMITADA</div>
-            <h3 style="color: #fb923c; border-bottom: 1px solid #334155; padding-bottom: 10px;">Radar Legal</h3>
+        <!-- PANEL DE ALERTAS (RADAR) -->
+        <div class="radar-panel" id="panel-alertas">
+            <div class="radar-header">
+                <h3><i class="fa-solid fa-satellite-dish"></i> Radar de Plazos</h3>
+            </div>
             <div id="lista-alertas">
-                <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 15px;">Ejecuta el análisis para ver el reporte general del expediente.</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">Esperando carga de documento...</p>
             </div>
         </div>
     </div>
 
-    <div class="carrusel-inferior" id="grid-fojas"></div>
+    <!-- CARRUSEL INFERIOR -->
+    <div class="carrusel" id="grid-fojas"></div>
 
-    <!-- MODAL DE SOLICITUD DE TOKEN VIP -->
+    <!-- GLASS MODAL VIP -->
     <div id="modalVIP">
         <div class="modal-card">
-            <h2>🔒 Desbloquear Versión VIP</h2>
-            <p>Ingresa tu token de acceso oficial del Centro 45 y Más para desbloquear la visualización completa de alertas y exportación.</p>
-            <input type="text" id="tokenInput" class="input-vip" placeholder="Ej. 45YMAS">
-            <button class="btn-validar" onclick="validarTokenVIP()">Desbloquear VIP</button>
-            <br>
-            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20adquirir%20mi%20token%20VIP%20para%20IurisVisor" target="_blank" style="display:block; margin-top:15px; color:#25D366; font-weight:bold; font-size:0.85rem; text-decoration:none;">💬 Contactar vía WhatsApp (SPEI)</a>
-            <button class="btn-cerrar-modal" onclick="cerrarModalVIP()">Cancelar</button>
+            <h2><i class="fa-solid fa-unlock-keyhole" style="color: var(--brand-orange);"></i> Activar Pro</h2>
+            <p>Ingresa tu token institucional del Centro 45 y Más para revelar fojas, marcatextos y habilitar exportación.</p>
+            <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN" autocomplete="off">
+            <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="validarTokenVIP()">VALIDAR ACCESO</button>
+            <div style="margin-top: 20px;">
+                <a href="https://wa.me/523321870711?text=Hola,%20quiero%20mi%20token%20VIP" target="_blank" style="color: var(--neon-blue); font-size: 0.8rem; text-decoration: none; font-weight: bold;"><i class="fa-brands fa-whatsapp"></i> Solicitar Token Oficial</a>
+            </div>
+            <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer; font-size: 0.8rem;" onclick="cerrarModalVIP()">Cancelar</button>
         </div>
     </div>
 
+    <!-- LÓGICA CORE -->
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        let bytesOriginales = null;
-        let pdfDocumento = null; 
-        let nivelZoomActual = 1.3;
-        let paginaCargadaActual = null;
-        let esProActivado = false;
+        let bytesOriginales = null, pdfDocumento = null; 
+        let nivelZoomActual = 1.3, paginaCargadaActual = null;
+        let esProActivado = false; 
 
-        function verificarVIP() {
-            document.getElementById('modalVIP').style.display = 'flex';
-        }
-        function cerrarModalVIP() {
-            document.getElementById('modalVIP').style.display = 'none';
-        }
+        // CONTROLES VIP
+        function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
+        function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
         function validarTokenVIP() {
-            const token = document.getElementById('tokenInput').value.trim();
-            if(token === "45YMAS") {
+            if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
                 esProActivado = true;
-                alert("¡Versión VIP activada correctamente!");
                 cerrarModalVIP();
-                document.querySelector('.banner-demo-limitado').style.background = "#059669";
-                document.querySelector('.banner-demo-limitado').innerText = "✓ VERSIÓN VIP ACTIVA";
-                if(window.ultimasAlertasGlobales) {
-                    mostrarPanelPro(window.ultimasAlertasGlobales);
-                }
+                const badge = document.getElementById('status-badge');
+                badge.className = 'status-badge status-pro';
+                badge.innerText = 'VERSIÓN PRO ACTIVA';
+                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> 3. Exportar Limpio';
+                document.getElementById('btn-exportar').onclick = exportarPDFReal;
+                if(window.ultimasAlertasGlobales) mostrarPanelPro(window.ultimasAlertasGlobales);
             } else {
-                alert("Token incorrecto. Solicita tu acceso oficial en el Centro 45 y Más.");
+                alert("Acceso Denegado. Token inválido.");
             }
         }
 
+        // 1. CARGA DE PDF
         async function cargarPDF(event) {
             const file = event.target.files[0];
             if (!file) return;
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('loading').innerText = "Abriendo expediente...";
-
+            mostrarCarga("Estructurando expediente...");
             bytesOriginales = new Uint8Array(await file.arrayBuffer());
             pdfDocumento = await pdfjsLib.getDocument(bytesOriginales).promise;
             
             const carrusel = document.getElementById('grid-fojas');
             carrusel.innerHTML = '';
-            document.getElementById('lista-alertas').innerHTML = '<p style="font-size: 0.9rem; color: #94a3b8; margin-top: 15px;">PDF cargado. Da clic en "Buscar Alertas".</p>';
+            document.getElementById('lista-alertas').innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">Expediente Listo. Ejecuta el Radar.</p>';
             document.getElementById('canvas-visor-central').style.display = 'none';
             document.getElementById('mensaje-vacio').style.display = 'block';
             document.getElementById('caja-zoom').style.display = 'none';
@@ -157,16 +212,12 @@
                 const card = document.createElement('div');
                 card.className = 'foja-card';
                 card.id = `tarjeta-foja-${i}`;
-                card.dataset.numPaginaPdf = i; 
-                card.dataset.rotacion = 0; 
+                card.dataset.numPaginaPdf = i; card.dataset.rotacion = 0; 
                 
                 card.onclick = (e) => { 
                     if(e.target.tagName !== 'BUTTON') { 
-                        if(esProActivado) {
-                            cargarEnVisorCentral(i, window.mapaAlertasPorFoja[i] || []); 
-                        } else {
-                            verificarVIP();
-                        }
+                        if(esProActivado) cargarEnVisorCentral(i, window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : []); 
+                        else verificarVIP();
                     } 
                 };
                 
@@ -174,145 +225,114 @@
                 canvasContainer.className = 'foja-canvas-container';
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = viewportMiniatura.width;
-                canvas.height = viewportMiniatura.height;
+                canvas.width = viewportMiniatura.width; canvas.height = viewportMiniatura.height;
                 await page.render({ canvasContext: ctx, viewport: viewportMiniatura }).promise;
 
                 canvasContainer.appendChild(canvas);
+                
                 const etiqueta = document.createElement('div');
                 etiqueta.className = 'foja-etiqueta';
-                etiqueta.innerText = `Foja ${i}`;
+                etiqueta.innerText = `FOJA ${i}`;
 
                 const accionesDiv = document.createElement('div');
                 accionesDiv.className = 'foja-acciones';
-                
-                const btnRotar = document.createElement('button');
-                btnRotar.className = 'btn-mini';
-                btnRotar.innerText = '↻';
-                btnRotar.onclick = (e) => {
-                    e.stopPropagation();
-                    let rot = parseInt(card.dataset.rotacion) + 90;
-                    card.dataset.rotacion = rot;
-                    canvas.style.transform = `rotate(${rot}deg)`;
-                };
-
-                const btnEliminar = document.createElement('button');
-                btnEliminar.className = 'btn-mini eliminar';
-                btnEliminar.innerText = '🗑️';
+                const btnRotar = document.createElement('button'); btnRotar.className = 'btn-mini'; btnRotar.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+                btnRotar.onclick = (e) => { e.stopPropagation(); let rot = parseInt(card.dataset.rotacion) + 90; card.dataset.rotacion = rot; canvas.style.transform = `rotate(${rot}deg)`; };
+                const btnEliminar = document.createElement('button'); btnEliminar.className = 'btn-mini eliminar'; btnEliminar.innerHTML = '<i class="fa-solid fa-trash"></i>';
                 btnEliminar.onclick = (e) => { e.stopPropagation(); card.remove(); };
 
-                accionesDiv.appendChild(btnRotar);
-                accionesDiv.appendChild(btnEliminar);
-                card.appendChild(etiqueta);
-                card.appendChild(canvasContainer);
-                card.appendChild(accionesDiv);
+                accionesDiv.append(btnRotar, btnEliminar);
+                card.append(etiqueta, canvasContainer, accionesDiv);
                 carrusel.appendChild(card);
             }
 
-            document.getElementById('btn-analizar').style.display = 'inline-block';
-            document.getElementById('btn-exportar').style.display = 'inline-block';
-            document.getElementById('loading').style.display = 'none';
+            document.getElementById('btn-analizar').style.display = 'inline-flex';
+            ocultarCarga();
         }
 
+        // 2. RADAR OCR
         async function escanearAlertas() {
             const cards = document.querySelectorAll('.foja-card');
-            const panelAlertas = document.getElementById('lista-alertas');
-            const loading = document.getElementById('loading');
-            panelAlertas.innerHTML = '';
-            loading.style.display = 'block';
-
+            mostrarCarga("Analizando fojas...");
+            
             const categorias = [
-                { nombre: "Sentencia", palabras: ['sentencia', 'resuelve', 'resolutivos', 'resolutivo'], color: 'rgba(231, 76, 60, 0.4)', borde: '#e74c3c' },
-                { nombre: "Prevención", palabras: ['prevéngase', 'aclarar', 'apercibimiento'], color: 'rgba(230, 126, 34, 0.4)', borde: '#e67e22' },
-                { nombre: "Término / Auto", palabras: ['admite', 'término', 'días'], color: 'rgba(52, 152, 219, 0.4)', borde: '#3498db' }
+                { nombre: "Riesgo: Sentencia", palabras: ['sentencia', 'resuelve', 'resolutivos'], colorF: 'rgba(239, 68, 68, 0.4)', colorB: '#ef4444' },
+                { nombre: "Prevención", palabras: ['prevéngase', 'aclarar', 'apercibimiento'], colorF: 'rgba(245, 158, 11, 0.4)', colorB: '#f59e0b' },
+                { nombre: "Vencimiento", palabras: ['admite', 'término', 'días'], colorF: 'rgba(56, 189, 248, 0.4)', colorB: '#38bdf8' }
             ];
 
-            let totalAlertasGlobales = 0;
+            let totalAlertas = 0;
             window.mapaAlertasPorFoja = {};
             let todasLasAlertasArray = [];
 
             for (let i = 0; i < cards.length; i++) {
-                loading.innerText = `Escaneando foja ${i+1}...`;
                 const numPaginaPdf = cards[i].dataset.numPaginaPdf;
                 const page = await pdfDocumento.getPage(parseInt(numPaginaPdf));
-                const viewportOCR = page.getViewport({ scale: 1.0 });
                 const canvasOCR = document.createElement('canvas');
                 const ctxOCR = canvasOCR.getContext('2d');
-                canvasOCR.width = viewportOCR.width;
-                canvasOCR.height = viewportOCR.height;
+                const viewportOCR = page.getViewport({ scale: 1.0 });
+                canvasOCR.width = viewportOCR.width; canvasOCR.height = viewportOCR.height;
                 await page.render({ canvasContext: ctxOCR, viewport: viewportOCR }).promise;
 
                 const { data } = await Tesseract.recognize(canvasOCR, 'spa');
-                let alertasEnEstaFoja = [];
+                let alertasEnFoja = [];
 
                 data.words.forEach(palabra => {
                     let textoLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
                     if (textoLimpio.length < 3) return;
                     for (let cat of categorias) {
                         if (cat.palabras.includes(textoLimpio)) {
-                            alertasEnEstaFoja.push({
-                                categoria: cat.nombre,
-                                textoExacto: palabra.text,
-                                bbox: palabra.bbox,
-                                colorFondo: cat.color,
-                                colorBorde: cat.borde,
-                                numFoja: numPaginaPdf
-                            });
+                            alertasEnFoja.push({ categoria: cat.nombre, textoExacto: palabra.text, bbox: palabra.bbox, colorFondo: cat.colorF, colorBorde: cat.colorB, numFoja: numPaginaPdf });
                         }
                     }
                 });
 
-                if (alertasEnEstaFoja.length > 0) {
-                    window.mapaAlertasPorFoja[numPaginaPdf] = alertasEnEstaFoja;
-                    totalAlertasGlobales += alertasEnEstaFoja.length;
-                    todasLasAlertasArray.push(...alertasEnEstaFoja);
+                if (alertasEnFoja.length > 0) {
+                    window.mapaAlertasPorFoja[numPaginaPdf] = alertasEnFoja;
+                    totalAlertas += alertasEnFoja.length;
+                    todasLasAlertasArray.push(...alertasEnFoja);
                 }
             }
 
             window.ultimasAlertasGlobales = todasLasAlertasArray;
-            loading.innerText = "¡Escaneo completado!";
-            setTimeout(() => loading.style.display = 'none', 2000);
+            ocultarCarga();
 
-            if (esProActivado) {
-                mostrarPanelPro(todasLasAlertasArray);
-            } else {
-                mostrarPanelDemo(totalAlertasGlobales);
-            }
+            if (esProActivado) mostrarPanelPro(todasLasAlertasArray);
+            else mostrarPanelDemo(totalAlertas);
         }
 
+        // LÓGICA COMERCIAL
         function mostrarPanelDemo(total) {
-            const panelAlertas = document.getElementById('lista-alertas');
-            panelAlertas.innerHTML = `
-                <div style="background:#2a4365; padding:15px; border-radius:6px; margin-bottom:15px; border-left:4px solid #3498db;">
-                    <strong>📊 Reporte General (Demo)</strong><br>
-                    Se detectaron un total de <span style="color:#fb923c; font-size:1.2rem; font-weight:bold;">${total} alertas jurídicas</span> en este expediente.
+            document.getElementById('lista-alertas').innerHTML = `
+                <div style="background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid var(--neon-blue); margin-bottom: 20px;">
+                    <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Reporte General</span><br>
+                    <strong style="color: #fff; font-size: 1.1rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas.</strong>
                 </div>
                 <div class="demo-lock-card">
-                    <h4>🔒 Funciones VIP Bloqueadas</h4>
-                    <p>La versión de prueba está limitada. Desbloquea la plataforma para ver el desglose exacto y las fojas.</p>
-                    <button class="btn-desbloquear-pro" onclick="verificarVIP()">Desbloquear VIP (45YMAS)</button>
+                    <i class="fa-solid fa-lock"></i>
+                    <h4>Funciones VIP Bloqueadas</h4>
+                    <p>Desbloquea para ver el desglose exacto de fojas, el marcatextos de colores y habilitar la exportación del expediente limpio.</p>
+                    <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR (45YMAS)</button>
                 </div>
             `;
         }
 
         function mostrarPanelPro(alertas) {
-            const panelAlertas = document.getElementById('lista-alertas');
-            panelAlertas.innerHTML = `<h4 style="color:#34d399; margin-bottom:15px;">✓ Versión VIP: ${alertas.length} Alertas Detectadas</h4>`;
-            
+            const panel = document.getElementById('lista-alertas');
+            panel.innerHTML = `<div style="color: #34d399; font-size: 0.9rem; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas detalladas</div>`;
             alertas.forEach(a => {
-                const alertaDiv = document.createElement('div');
-                alertaDiv.className = 'alerta-item';
-                alertaDiv.style.borderLeftColor = a.colorBorde;
-                alertaDiv.innerHTML = `<strong>📍 Foja ${a.numFoja}</strong><br>Detectado: ${a.categoria}<div class="motivo-alerta">Palabra clave: "${a.textoExacto}"</div>`;
-                alertaDiv.onclick = () => cargarEnVisorCentral(a.numFoja, window.mapaAlertasPorFoja[a.numFoja]);
-                panelAlertas.appendChild(alertaDiv);
+                const div = document.createElement('div');
+                div.className = 'alerta-item';
+                div.style.borderLeftColor = a.colorBorde;
+                div.innerHTML = `<strong style="color:#fff;"><i class="fa-regular fa-file-lines"></i> FOJA ${a.numFoja}</strong><br><span style="color:var(--text-muted); font-size: 0.85rem;">${a.categoria}</span><div class="motivo-alerta">Palabra: "${a.textoExacto}"</div>`;
+                div.onclick = () => cargarEnVisorCentral(a.numFoja, window.mapaAlertasPorFoja[a.numFoja]);
+                panel.appendChild(div);
             });
         }
 
+        // VISOR CENTRAL
         async function cargarEnVisorCentral(numPagina, alertas) {
-            paginaCargadaActual = numPagina;
-            nivelZoomActual = 1.3;
-
+            paginaCargadaActual = numPagina; nivelZoomActual = 1.3;
             document.querySelectorAll('.foja-card').forEach(c => c.classList.remove('activa'));
             const card = document.getElementById(`tarjeta-foja-${numPagina}`);
             if(card) card.classList.add('activa');
@@ -329,28 +349,24 @@
             const viewport = page.getViewport({ scale: nivelZoomActual });
             const canvas = document.getElementById('canvas-visor-central');
             const ctx = canvas.getContext('2d');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+            canvas.width = viewport.width; canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
             if (esProActivado && alertas && alertas.length > 0) {
                 alertas.forEach(a => {
                     const b = a.bbox;
-                    ctx.fillStyle = a.colorFondo;
-                    ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
-                    ctx.strokeStyle = a.colorBorde;
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
+                    ctx.fillStyle = a.colorFondo; ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
+                    ctx.strokeStyle = a.colorBorde; ctx.lineWidth = 2; ctx.strokeRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
                 });
             }
         }
 
-        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); renderizarCanvasCentral(window.mapaAlertasPorFoja[paginaCargadaActual]); }
-        function resetZoom() { nivelZoomActual = 1.3; renderizarCanvasCentral(window.mapaAlertasPorFoja[paginaCargadaActual]); }
+        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); renderizarCanvasCentral(window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []); }
+        function resetZoom() { nivelZoomActual = 1.3; renderizarCanvasCentral(window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []); }
 
+        // EXPORTACIÓN VIP
         async function exportarPDFReal() {
-            document.getElementById('loading').innerText = "Exportando...";
-            document.getElementById('loading').style.display = 'block';
+            mostrarCarga("Empaquetando...");
             const { PDFDocument, degrees } = PDFLib;
             const docOriginal = await PDFDocument.load(bytesOriginales);
             const docNuevo = await PDFDocument.create();
@@ -364,13 +380,15 @@
                 docNuevo.addPage(pag);
             }
             const bytes = await docNuevo.save();
-            const blob = new Blob([bytes], { type: "application/pdf" });
             const a = document.createElement('a'); 
-            a.href = URL.createObjectURL(blob); 
-            a.download = "Expediente_Limpio_45yMas.pdf"; 
-            a.click();
-            document.getElementById('loading').style.display = 'none';
+            a.href = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" })); 
+            a.download = "Expediente_45yMas_Pro.pdf"; a.click();
+            ocultarCarga();
         }
+
+        // UTILIDADES
+        function mostrarCarga(msg) { document.getElementById('loading').innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${msg}`; document.getElementById('loading').style.display = 'inline-block'; }
+        function ocultarCarga() { document.getElementById('loading').style.display = 'none'; }
     </script>
 </body>
 </html>
