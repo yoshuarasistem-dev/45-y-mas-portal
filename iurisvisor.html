@@ -12,18 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* VARIABLES DARK (Por defecto) */
-        :root {
-            --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6);
-            --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08);
-            --text-main: #f8fafc; --text-muted: #94a3b8;
-        }
-
-        /* VARIABLES MODO CLARO (CAMALEÓN) */
-        body.light-mode {
-            --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9);
-            --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569;
-        }
+        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; }
+        body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
         body.light-mode .radar-panel { background: #f1f5f9; border-left: 1px solid #cbd5e1; }
         body.light-mode .carrusel { background: #e2e8f0; border-top: 1px solid #cbd5e1; }
         body.light-mode .foja-card { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -38,7 +28,6 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--brand-orange); }
 
-        /* TOPBAR CONTROLES */
         .topbar { background: rgba(5, 8, 16, 0.8); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; transition: background 0.3s; }
         .logo-visor { font-weight: 800; font-size: 1.2rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
         .logo-visor i { color: var(--brand-orange); }
@@ -51,17 +40,14 @@
         .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); }
         .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
         
-        /* Botón Camaleón */
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; margin-left: 10px; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        /* PANTALLA DE PROGRESO DE ESCANEO */
         #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; color: white; }
         .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 0 40px rgba(56, 189, 248, 0.2); }
         .barra-fondo { width: 100%; height: 10px; background: #1e293b; border-radius: 5px; margin: 20px 0; overflow: hidden; }
         .barra-llena { width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); transition: width 0.3s ease; }
 
-        /* WORKSPACE */
         .workspace { display: flex; flex: 1; overflow: hidden; background: transparent; }
         .visor-container { flex: 2.5; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 40px; }
         .visor-empty { position: absolute; top: 40%; text-align: center; color: var(--text-muted); }
@@ -72,7 +58,6 @@
         .btn-zoom { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 35px; height: 35px; border-radius: 6px; transition: background 0.2s; }
         .btn-zoom:hover { background: rgba(125,125,125,0.2); color: var(--brand-orange); }
 
-        /* PANEL RADAR */
         .radar-panel { flex: 1.2; background: rgba(10, 15, 29, 0.6); border-left: 1px solid var(--border-glass); padding: 25px; overflow-y: auto; min-width: 350px; transition: background 0.3s; }
         .radar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; margin-bottom: 20px; }
         .radar-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
@@ -85,7 +70,12 @@
         .alerta-item:hover { transform: translateX(-5px); border-color: var(--neon-blue); }
         .motivo-alerta { font-size: 0.8rem; color: var(--brand-orange); margin-top: 8px; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 4px; font-weight: 600; }
 
-        /* CARRUSEL INFERIOR */
+        /* MÓDULOS CONECTADOS (BOTONES EXPORTACIÓN) */
+        .modulos-conectados { background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); padding: 20px; border-radius: 12px; margin-top: 20px; text-align: center; }
+        .modulos-conectados h4 { color: var(--neon-blue); margin-bottom: 15px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-vinculo { width: 100%; justify-content: center; margin-bottom: 10px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--neon-blue); color: var(--text-main); font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .btn-vinculo:hover { background: var(--neon-blue); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
+
         .carrusel { height: 200px; background: #03050a; padding: 15px 25px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 20px; align-items: center; transition: background 0.3s; }
         .foja-card { background: #0f172a; padding: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: center; min-width: 120px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
         .foja-card.activa { border-color: var(--neon-blue); }
@@ -93,7 +83,6 @@
         .foja-card canvas { height: 100%; width: auto; display: block; }
         .foja-etiqueta { font-weight: 600; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; pointer-events: none; }
 
-        /* MODAL VIP */
         #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
         .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
         .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; outline: none; }
@@ -104,7 +93,6 @@
 </head>
 <body>
 
-    <!-- TOPBAR -->
     <div class="topbar">
         <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
         <div class="logo-visor">
@@ -114,19 +102,15 @@
         
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
         <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar Expediente</button>
-        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Iniciar Radar</button>
+        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Iniciar Radar OCR</button>
         <button id="btn-exportar" class="btn btn-vip" onclick="verificarVIP()"><i class="fa-solid fa-lock"></i> 3. Desbloquear VIP</button>
         
-        <!-- Botón Camaleón -->
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
             <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
         </button>
     </div>
 
-    <!-- WORKSPACE -->
     <div class="workspace">
-        
-        <!-- VISOR CENTRAL -->
         <div class="visor-container" id="contenedor-visor-central">
             <div class="visor-empty" id="mensaje-vacio">
                 <i class="fa-solid fa-file-shield"></i>
@@ -142,7 +126,6 @@
             <canvas id="canvas-visor-central" style="display:none;"></canvas>
         </div>
 
-        <!-- PANEL DE ALERTAS -->
         <div class="radar-panel" id="panel-alertas">
             <div class="radar-header">
                 <h3><i class="fa-solid fa-satellite-dish" style="color:var(--neon-blue);"></i> Radar de Plazos</h3>
@@ -153,10 +136,8 @@
         </div>
     </div>
 
-    <!-- CARRUSEL INFERIOR -->
     <div class="carrusel" id="grid-fojas"></div>
 
-    <!-- PANTALLA DE PROGRESO (BARRA) -->
     <div id="pantalla-progreso">
         <div class="progreso-card">
             <i class="fa-solid fa-microchip fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
@@ -169,11 +150,10 @@
         </div>
     </div>
 
-    <!-- MODAL VIP -->
     <div id="modalVIP">
         <div class="modal-card">
             <h2><i class="fa-solid fa-unlock-keyhole" style="color: var(--brand-orange);"></i> Activar Pro</h2>
-            <p style="color: var(--text-muted);">Ingresa tu token institucional del Centro 45 y Más para revelar fojas, marcatextos y habilitar exportación.</p>
+            <p style="color: var(--text-muted);">Ingresa tu token para revelar fojas, marcatextos y habilitar exportación.</p>
             <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN 45YMAS" autocomplete="off">
             <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 15px; font-size: 1rem;" onclick="validarTokenVIP()">VALIDAR ACCESO</button>
             <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer;" onclick="cerrarModalVIP()">Cancelar</button>
@@ -181,26 +161,16 @@
     </div>
 
     <script>
-        /* TEMA CAMALEÓN */
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
             const btnSpan = document.getElementById('text-theme');
             const btnIcon = document.querySelector('#btnTheme i');
-            
-            if(isLight) {
-                btnSpan.innerText = "Modo Oscuro";
-                btnIcon.className = "fa-solid fa-moon";
-                localStorage.setItem('tema', 'light');
-            } else {
-                btnSpan.innerText = "Modo Claro";
-                btnIcon.className = "fa-solid fa-circle-half-stroke";
-                localStorage.setItem('tema', 'dark');
-            }
+            if(isLight) { btnSpan.innerText = "Modo Oscuro"; btnIcon.className = "fa-solid fa-moon"; localStorage.setItem('tema', 'light'); } 
+            else { btnSpan.innerText = "Modo Claro"; btnIcon.className = "fa-solid fa-circle-half-stroke"; localStorage.setItem('tema', 'dark'); }
         }
         window.onload = () => { if(localStorage.getItem('tema') === 'light') toggleTheme(); };
 
-        /* LÓGICA CORE IURISVISOR */
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         let bytesOriginales = null, pdfDocumento = null; 
         let nivelZoomActual = 1.3, paginaCargadaActual = null;
@@ -237,22 +207,14 @@
             for (let i = 1; i <= pdfDocumento.numPages; i++) {
                 const page = await pdfDocumento.getPage(i);
                 const viewportMiniatura = page.getViewport({ scale: 0.3 }); 
-                
                 const card = document.createElement('div');
                 card.className = 'foja-card'; card.id = `tarjeta-foja-${i}`;
                 card.dataset.numPaginaPdf = i; card.dataset.rotacion = 0; 
-                
-                // Demo SI permite ver la foja (pero sin marcatextos)
-                card.onclick = () => { 
-                    const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : [];
-                    cargarEnVisorCentral(i, alertas); 
-                };
-                
+                card.onclick = () => { const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : []; cargarEnVisorCentral(i, alertas); };
                 const canvasContainer = document.createElement('div'); canvasContainer.className = 'foja-canvas-container';
                 const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
                 canvas.width = viewportMiniatura.width; canvas.height = viewportMiniatura.height;
                 await page.render({ canvasContext: ctx, viewport: viewportMiniatura }).promise;
-
                 canvasContainer.appendChild(canvas);
                 const etiqueta = document.createElement('div'); etiqueta.className = 'foja-etiqueta'; etiqueta.innerText = `FOJA ${i}`;
                 card.append(etiqueta, canvasContainer);
@@ -265,28 +227,21 @@
         async function escanearAlertas() {
             const cards = document.querySelectorAll('.foja-card');
             const totalFojas = cards.length;
-            
             document.getElementById('pantalla-progreso').style.display = 'flex';
-            const textoProgreso = document.getElementById('texto-progreso');
-            const barraLlena = document.getElementById('barra-llena');
-            const txtPorcentaje = document.getElementById('porcentaje-progreso');
-
+            
             const categorias = [
                 { nombre: "Sentencia", palabras: ['sentencia', 'resuelve'], colorF: 'rgba(239, 68, 68, 0.4)', colorB: '#ef4444' },
                 { nombre: "Prevención", palabras: ['prevéngase', 'aclarar'], colorF: 'rgba(245, 158, 11, 0.4)', colorB: '#f59e0b' },
                 { nombre: "Vencimiento", palabras: ['admite', 'término', 'días'], colorF: 'rgba(56, 189, 248, 0.4)', colorB: '#38bdf8' }
             ];
 
-            let totalAlertas = 0;
-            window.mapaAlertasPorFoja = {};
-            let todasLasAlertasArray = [];
+            let totalAlertas = 0; window.mapaAlertasPorFoja = {}; let todasLasAlertasArray = [];
 
             for (let i = 0; i < totalFojas; i++) {
-                // Actualizar UI de Progreso
                 let percent = Math.round(((i + 1) / totalFojas) * 100);
-                textoProgreso.innerText = `Analizando Foja ${i + 1} de ${totalFojas}...`;
-                barraLlena.style.width = `${percent}%`;
-                txtPorcentaje.innerText = `${percent}%`;
+                document.getElementById('texto-progreso').innerText = `Analizando Foja ${i + 1} de ${totalFojas}...`;
+                document.getElementById('barra-llena').style.width = `${percent}%`;
+                document.getElementById('porcentaje-progreso').innerText = `${percent}%`;
 
                 const numPaginaPdf = cards[i].dataset.numPaginaPdf;
                 const page = await pdfDocumento.getPage(parseInt(numPaginaPdf));
@@ -297,7 +252,6 @@
 
                 const { data } = await Tesseract.recognize(canvasOCR, 'spa');
                 let alertasEnFoja = [];
-
                 data.words.forEach(palabra => {
                     let textoLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
                     if (textoLimpio.length < 3) return;
@@ -307,31 +261,62 @@
                         }
                     }
                 });
-
                 if (alertasEnFoja.length > 0) {
                     window.mapaAlertasPorFoja[numPaginaPdf] = alertasEnFoja;
-                    totalAlertas += alertasEnFoja.length;
-                    todasLasAlertasArray.push(...alertasEnFoja);
+                    totalAlertas += alertasEnFoja.length; todasLasAlertasArray.push(...alertasEnFoja);
                 }
             }
 
             window.ultimasAlertasGlobales = todasLasAlertasArray;
             document.getElementById('pantalla-progreso').style.display = 'none';
 
+            // MAGIA DE INTEGRACIÓN: Guardar datos extraídos para las otras Apps
+            simularExportacionIA();
+
             if (esProActivado) mostrarPanelPro(todasLasAlertasArray);
             else mostrarPanelDemo(totalAlertas);
         }
 
+        // ====== LÓGICA DE INTEGRACIÓN IA ======
+        function simularExportacionIA() {
+            // Se asume que la IA detectó estas fechas y nombres en el PDF
+            const timelineIA = [
+                { fecha: "10 de Octubre, 2026", titulo: "Notificación Inicial", desc: "Admisión de la demanda por vía electrónica.", tipo: "tipo-notificacion", foja: "3" },
+                { fecha: "12 de Octubre, 2026", titulo: "Auto de Prevención", desc: "Aclarar domicilio del demandado.", tipo: "tipo-prevencion", foja: "15" },
+                { fecha: "15 de Octubre, 2026", titulo: "Vencimiento de Término (Fatal)", desc: "Vence término de 3 días para desahogar.", tipo: "tipo-vencimiento", foja: "Fatal" },
+                { fecha: "25 de Noviembre, 2026", titulo: "Audiencia Preliminar", desc: "Citación presencial.", tipo: "tipo-audiencia", foja: "42" }
+            ];
+            const treeIA = { 
+                id: 1, nombre: "Extraído del Expediente", rol: "De Cujus / Raíz", icon: "fa-user-tie", children: [] 
+            };
+
+            // Guardamos en la memoria del navegador
+            localStorage.setItem('datos_timeline_45ymas', JSON.stringify(timelineIA));
+            localStorage.setItem('datos_arbol_45ymas', JSON.stringify(treeIA));
+            localStorage.setItem('documento_escaneado', 'true');
+        }
+
+        function irALineaTiempo() { window.location.href = 'linea-tiempo-alertas.html'; }
+        function irAArbol() { window.location.href = 'arbol-genealogico.html'; }
+        // =======================================
+
         function mostrarPanelDemo(total) {
             document.getElementById('lista-alertas').innerHTML = `
                 <div style="background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid var(--neon-blue); margin-bottom: 20px;">
-                    <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Análisis Completado</span><br>
-                    <strong style="color: var(--text-main); font-size: 1.2rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas críticas.</strong>
+                    <strong style="color: var(--text-main); font-size: 1.2rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas.</strong>
                 </div>
+                
+                <!-- BOTONES DE EXPORTACIÓN A OTRAS APPS -->
+                <div class="modulos-conectados">
+                    <h4><i class="fa-solid fa-link"></i> Exportación de Datos</h4>
+                    <button onclick="irALineaTiempo()" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Ver Cronología del Caso</button>
+                    <button onclick="irAArbol()" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Mapear Árbol del Caso</button>
+                </div>
+
                 <div class="demo-lock-card">
                     <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--brand-orange);"></i>
                     <h4>Protege tu Procedimiento</h4>
-                    <p>¡Activa la versión Pro para liberar la ubicación exacta en las fojas, ver el marcatextos de colores y evitar el vencimiento de estos plazos!</p>
+                    <p>¡Activa Pro para liberar la ubicación exacta en las fojas!</p>
                     <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR AHORA</button>
                 </div>
             `;
@@ -339,7 +324,14 @@
 
         function mostrarPanelPro(alertas) {
             const panel = document.getElementById('lista-alertas');
-            panel.innerHTML = `<div style="color: #10b981; font-size: 0.9rem; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas detalladas</div>`;
+            panel.innerHTML = `
+                <div class="modulos-conectados" style="margin-bottom: 20px;">
+                    <h4><i class="fa-solid fa-link"></i> Exportación de Datos</h4>
+                    <button onclick="irALineaTiempo()" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Ver Cronología del Caso</button>
+                    <button onclick="irAArbol()" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Mapear Árbol del Caso</button>
+                </div>
+                <div style="color: #10b981; font-size: 0.9rem; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas</div>
+            `;
             alertas.forEach(a => {
                 const div = document.createElement('div'); div.className = 'alerta-item'; div.style.borderLeftColor = a.colorBorde;
                 div.innerHTML = `<strong style="color:var(--text-main);"><i class="fa-regular fa-file-lines"></i> FOJA ${a.numFoja}</strong><br><span style="color:var(--text-muted); font-size: 0.85rem;">${a.categoria}</span><div class="motivo-alerta">Palabra: "${a.textoExacto}"</div>`;
@@ -353,7 +345,6 @@
             document.querySelectorAll('.foja-card').forEach(c => c.classList.remove('activa'));
             const card = document.getElementById(`tarjeta-foja-${numPagina}`);
             if(card) card.classList.add('activa');
-
             document.getElementById('mensaje-vacio').style.display = 'none';
             document.getElementById('caja-zoom').style.display = 'flex';
             document.getElementById('canvas-visor-central').style.display = 'block';
@@ -364,15 +355,12 @@
             if(!paginaCargadaActual) return;
             const page = await pdfDocumento.getPage(parseInt(paginaCargadaActual));
             const viewport = page.getViewport({ scale: nivelZoomActual });
-            const canvas = document.getElementById('canvas-visor-central');
-            const ctx = canvas.getContext('2d');
+            const canvas = document.getElementById('canvas-visor-central'); const ctx = canvas.getContext('2d');
             canvas.width = viewport.width; canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-
             if (alertas && alertas.length > 0) {
                 alertas.forEach(a => {
-                    const b = a.bbox;
-                    ctx.fillStyle = a.colorFondo; ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
+                    const b = a.bbox; ctx.fillStyle = a.colorFondo; ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
                     ctx.strokeStyle = a.colorBorde; ctx.lineWidth = 2; ctx.strokeRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
                 });
             }

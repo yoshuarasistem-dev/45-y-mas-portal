@@ -3,57 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Árbol Sucesorio y Familiar | 45 y Más Pro</title>
-    <!-- Librería para Exportar a Imagen -->
+    <title>Árbol Legal Avanzado | 45 y Más Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* VARIABLES DARK Y LIGHT */
-        :root {
-            --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.7);
-            --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08);
-            --text-main: #f8fafc; --text-muted: #94a3b8;
-            --color-familiar: #ec4899; /* Magenta para el modo familiar */
-        }
-        body.light-mode {
-            --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9);
-            --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569;
-        }
+        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.7); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; --color-familiar: #ec4899; }
+        body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
         body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
         body.light-mode .node-card { background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05) 0%, var(--bg-deep) 100%); transition: background 0.3s, color 0.3s; }
 
-        /* TOPBAR CONTROLES */
         .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; transition: background 0.3s; }
         .logo-visor { font-weight: 800; font-size: 1.2rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
         .logo-visor i { color: #22c55e; }
         
         .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
-        .btn-volver { background: transparent; color: var(--text-muted); border: none; }
-        .btn-volver:hover { color: var(--brand-orange); }
-        .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); }
-        .btn-accion:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); }
-        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); }
-        .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
-        
-        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; margin-left: 10px; }
-        .btn-camaleon:hover { background: var(--brand-orange); color: white; }
+        .btn-volver { background: transparent; color: var(--text-muted); border: none; } .btn-volver:hover { color: var(--brand-orange); }
+        .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); } .btn-accion:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); }
+        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); } .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
+        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; margin-left: 10px; } .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
         .status-badge { background: rgba(250, 204, 21, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
         .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
 
-        /* WORKSPACE Y ÁRBOL CSS */
         .workspace { flex: 1; overflow: auto; padding: 50px; display: flex; justify-content: center; align-items: flex-start; position: relative; }
         .tree-container { margin-top: 20px; padding: 40px; transition: transform 0.3s; }
         
+        /* MAGIA CSS DEL ÁRBOL */
         .tree ul { padding-top: 30px; position: relative; transition: all 0.5s; display: flex; justify-content: center; }
         .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 30px 10px 0 10px; transition: all 0.5s; }
-        
-        /* Conectores BASE (Sucesorio) */
         .tree li::before, .tree li::after { content: ''; position: absolute; top: 0; right: 50%; border-top: 2px solid var(--neon-blue); width: 50%; height: 30px; transition: border-color 0.4s; }
         .tree li::after { right: auto; left: 50%; border-left: 2px solid var(--neon-blue); }
         .tree li:only-child::after, .tree li:only-child::before { display: none; }
@@ -62,39 +44,53 @@
         .tree li:last-child::before { border-right: 2px solid var(--neon-blue); border-radius: 0 8px 0 0; }
         .tree li:first-child::after { border-radius: 8px 0 0 0; }
         .tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid var(--neon-blue); width: 0; height: 30px; transition: border-color 0.4s; }
-        
-        /* Tarjetas de Nodos BASE (Sucesorio) */
-        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 20px 30px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 180px; transition: all 0.3s; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .node-card:hover { border-color: var(--brand-orange); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255, 115, 21, 0.15); }
+
+        /* GRUPO DE NODOS (Para poner parejas AL LADO) */
+        .node-group { display: flex; justify-content: center; align-items: center; gap: 20px; position: relative; }
+        .node-group .node-card { position: relative; z-index: 2; }
+        /* Línea horizontal que une a las parejas */
+        .node-group::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--neon-blue); z-index: 1; transition: background 0.4s; }
+
+        /* TARJETAS DE NODOS */
+        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 20px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 200px; transition: all 0.3s; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .node-card:hover { border-color: var(--brand-orange); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255, 115, 21, 0.15); z-index: 10; }
         .node-card i.main-icon { font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 12px; transition: color 0.4s; }
         .node-card .nombre { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; }
-        .node-card .rol { font-size: 0.8rem; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        
-        /* DISEÑO "MODO FAMILIAR" */
+        .node-card .rol { font-size: 0.8rem; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 8px; }
+        .node-card .fecha { font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
+
+        /* MODO FAMILIAR (Cambio visual) */
         .tree.modo-familiar li::before, .tree.modo-familiar li::after, .tree.modo-familiar ul ul::before,
         .tree.modo-familiar li:last-child::before, .tree.modo-familiar li:first-child::after { border-color: var(--color-familiar); }
+        .tree.modo-familiar .node-group::before { background: var(--color-familiar); }
         .tree.modo-familiar .node-card { border-radius: 50px; border-color: rgba(236, 72, 153, 0.3); }
         .tree.modo-familiar .node-card:hover { border-color: var(--color-familiar); box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2); }
         .tree.modo-familiar .node-card i.main-icon { color: var(--color-familiar); }
 
-        /* Botones Flotantes en Nodo */
-        .node-actions { position: absolute; top: -15px; right: -15px; display: none; gap: 5px; }
+        /* Botones de acción flotantes */
+        .node-actions { position: absolute; top: -15px; right: -15px; display: none; gap: 5px; z-index: 15; }
         .node-card:hover .node-actions { display: flex; }
         .btn-node { background: var(--brand-orange); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
-        .btn-node.add { background: #10b981; }
-        .btn-node.delete { background: #ef4444; }
+        .btn-node.add { background: #10b981; } .btn-node.delete { background: #ef4444; }
         .btn-node:hover { transform: scale(1.15); }
 
-        /* MODALES (DISEÑO ELEGANTE PARA AÑADIR NODOS Y VIP) */
+        /* MODALES ELEGANTES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
         
-        .input-form { background: rgba(0,0,0,0.1); border: 1px solid #1e293b; color: var(--text-main); padding: 12px 15px; width: 100%; border-radius: 8px; font-size: 1rem; margin-bottom: 15px; outline: none; transition: border 0.3s; }
+        .input-form { background: rgba(0,0,0,0.1); border: 1px solid #1e293b; color: var(--text-main); padding: 12px 15px; width: 100%; border-radius: 8px; font-size: 0.95rem; margin-bottom: 15px; outline: none; transition: border 0.3s; }
         body.light-mode .input-form { background: #f8fafc; border-color: #cbd5e1; }
         .input-form:focus { border-color: var(--neon-blue); }
-        .form-label { display: block; text-align: left; font-size: 0.85rem; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
+        .form-label { display: block; text-align: left; font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
 
-        /* HERRAMIENTAS LATERALES */
+        /* Selector de Dirección (Lado o Abajo) */
+        .radio-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .radio-btn { flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid #1e293b; border-radius: 8px; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-size: 0.85rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .radio-btn i { font-size: 1.2rem; }
+        .radio-btn.active { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); color: var(--neon-blue); }
+        body.light-mode .radio-btn { background: #f1f5f9; border-color: #cbd5e1; }
+        body.light-mode .radio-btn.active { background: #e0f2fe; border-color: var(--neon-blue); }
+
         .floating-tools { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; }
         .tool-btn { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .tool-btn:hover { color: var(--brand-orange); transform: scale(1.1); }
@@ -102,7 +98,6 @@
 </head>
 <body>
 
-    <!-- TOPBAR -->
     <div class="topbar">
         <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
         <div class="logo-visor">
@@ -113,43 +108,53 @@
         <button id="btn-modo-arbol" class="btn btn-accion" onclick="toggleModoArbol()" style="border-color: #ec4899; color: #ec4899;">
             <i class="fa-solid fa-users"></i> Cambiar a Modo Familiar
         </button>
-
-        <button id="btn-exportar" class="btn btn-vip" onclick="intentarExportar()"><i class="fa-solid fa-lock"></i> Exportar VIP</button>
-
+        <button id="btn-exportar" class="btn btn-vip" onclick="intentarExportar()"><i class="fa-solid fa-download"></i> Exportar Alta Res</button>
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
             <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
         </button>
     </div>
 
-    <!-- WORKSPACE (LIENZO) -->
+    <!-- LIENZO DE EXPORTACIÓN -->
     <div class="workspace" id="lienzo-exportar">
         <div class="tree-container tree modo-sucesorio" id="tree-root">
-            <!-- El árbol se dibuja aquí -->
+            <!-- El árbol dinámico con ramificaciones (Lado/Abajo) va aquí -->
         </div>
     </div>
 
-    <!-- CONTROLES FLOTANTES -->
     <div class="floating-tools">
         <button class="tool-btn" onclick="zoomTree(0.1)"><i class="fa-solid fa-plus"></i></button>
         <button class="tool-btn" onclick="zoomTree(-0.1)"><i class="fa-solid fa-minus"></i></button>
         <button class="tool-btn" onclick="resetZoom()"><i class="fa-solid fa-expand"></i></button>
     </div>
 
-    <!-- MODAL ELEGANTE PARA AGREGAR FAMILIAR -->
+    <!-- SÚPER MODAL PARA AGREGAR FAMILIARES -->
     <div class="modal-overlay" id="modalAgregar">
         <div class="modal-card">
             <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange));"></div>
-            <h2 style="color: var(--text-main); margin-bottom: 20px; font-size: 1.3rem;"><i class="fa-solid fa-user-plus" style="color: var(--neon-blue);"></i> Agregar Familiar</h2>
+            <h2 style="color: var(--text-main); margin-bottom: 20px; font-size: 1.3rem;"><i class="fa-solid fa-user-plus" style="color: var(--neon-blue);"></i> Añadir al Árbol</h2>
             
             <label class="form-label">Nombre Completo</label>
             <input type="text" id="inputNombre" class="input-form" placeholder="Ej. Juan Pérez">
             
-            <label class="form-label">Parentesco o Rol</label>
-            <input type="text" id="inputRol" class="input-form" placeholder="Ej. Hijo, Cónyuge, Hermano">
+            <label class="form-label">Parentesco o Rol Legal</label>
+            <input type="text" id="inputRol" class="input-form" placeholder="Ej. Heredero, Cónyuge Supérstite">
 
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <label class="form-label">Fechas (Nacimiento / Defunción)</label>
+            <input type="text" id="inputFecha" class="input-form" placeholder="Ej. Nac: 1980 - Def: 2024 (Opcional)">
+
+            <label class="form-label">Dirección de la Rama</label>
+            <div class="radio-group">
+                <div class="radio-btn active" id="btnDireccionAbajo" onclick="seleccionarDireccion('abajo')">
+                    <i class="fa-solid fa-arrow-down"></i> Descendiente
+                </div>
+                <div class="radio-btn" id="btnDireccionLado" onclick="seleccionarDireccion('lado')">
+                    <i class="fa-solid fa-arrow-right"></i> Pareja / Lado
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
                 <button class="btn btn-volver" style="flex: 1; justify-content: center; background: rgba(0,0,0,0.1);" onclick="cerrarModalAgregar()">Cancelar</button>
-                <button class="btn btn-vip" style="flex: 1; justify-content: center;" onclick="confirmarAgregar()">Guardar</button>
+                <button class="btn btn-vip" style="flex: 1; justify-content: center;" onclick="confirmarAgregar()">Dibujar</button>
             </div>
         </div>
     </div>
@@ -159,7 +164,7 @@
         <div class="modal-card">
             <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, #facc15, var(--brand-orange));"></div>
             <h2 style="color: var(--text-main); margin-bottom: 15px;"><i class="fa-solid fa-gem" style="color: var(--brand-orange);"></i> Funciones Pro</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">La versión de prueba permite un máximo de 3 nodos. Ingresa tu token para agregar nodos ilimitados y exportar en alta resolución.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">La versión Demo solo permite 3 nodos en total (Para demostrar la herramienta). Ingresa tu token institucional para añadir ramas ilimitadas y exportar.</p>
             <input type="text" id="tokenInput" class="input-form" style="text-transform: uppercase; text-align: center; font-weight: bold; font-size: 1.2rem;" placeholder="TOKEN VIP" autocomplete="off">
             <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px;" onclick="validarTokenVIP()">DESBLOQUEAR ILIMITADO</button>
             <button class="btn btn-volver" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="cerrarModalVIP()">Cancelar</button>
@@ -175,19 +180,32 @@
             document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
             localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
-        window.onload = () => { if(localStorage.getItem('tema') === 'light') toggleTheme(); renderTree(); };
 
         /* BASES DE DATOS SEPARADAS */
-        let treeSucesorio = { id: 1, nombre: "Autor de la Sucesión", rol: "De Cujus", icon: "fa-user-tie", children: [] };
-        let treeFamiliar = { id: 2, nombre: "Raíz Familiar", rol: "Abuelos / Origen", icon: "fa-house-chimney", children: [] };
+        let treeSucesorio = { id: 1, nombre: "Autor de la Sucesión", rol: "De Cujus", fecha: "Añadir Fechas", icon: "fa-user-tie", spouses: [], children: [] };
+        let treeFamiliar = { id: 2, nombre: "Raíz Familiar", rol: "Origen", fecha: "", icon: "fa-house-chimney", spouses: [], children: [] };
         
-        let nodeCountSucesorio = 1;
-        let nodeCountFamiliar = 1;
         let esModoFamiliar = false;
         let esProActivado = false;
         let scale = 1;
+        let direccionSeleccionada = 'abajo';
 
-        /* CAMBIAR ENTRE BASES DE DATOS */
+        // ====== LECTURA INTELIGENTE (IA simulada desde IurisVisor) ======
+        window.onload = () => { 
+            if(localStorage.getItem('tema') === 'light') toggleTheme(); 
+            
+            // Si el IurisVisor guardó datos, los extraemos y reemplazamos la raíz sucesoria
+            const datosArbolIA = localStorage.getItem('datos_arbol_45ymas');
+            if(datosArbolIA) {
+                const infoExtraida = JSON.parse(datosArbolIA);
+                treeSucesorio.nombre = infoExtraida.nombre;
+                treeSucesorio.rol = infoExtraida.rol;
+                treeSucesorio.fecha = "Datos extraídos automáticamente";
+            }
+            renderTree(); 
+        };
+
+        /* CAMBIAR MODOS */
         function toggleModoArbol() {
             esModoFamiliar = !esModoFamiliar;
             const treeRoot = document.getElementById('tree-root');
@@ -206,95 +224,158 @@
                 document.getElementById('titulo-herramienta').innerText = "Árbol Sucesorio";
                 document.getElementById('logo-icono').className = "fa-solid fa-network-wired"; document.getElementById('logo-icono').style.color = "#22c55e";
             }
-            renderTree(); // Vuelve a dibujar leyendo la base de datos correspondiente
+            renderTree(); 
         }
 
-        /* RENDERIZADO DEL ÁRBOL */
+        /* RENDERIZADO DEL SÚPER ÁRBOL (Cónyuges al lado, Hijos abajo) */
         function renderTree() {
             const rootContainer = document.getElementById('tree-root');
             rootContainer.innerHTML = '';
             const ul = document.createElement('ul');
-            // Decide qué base de datos leer
             const currentData = esModoFamiliar ? treeFamiliar : treeSucesorio;
             ul.appendChild(createNodeElement(currentData));
             rootContainer.appendChild(ul);
         }
 
-        function createNodeElement(nodeData) {
+        function createNodeElement(node) {
             const li = document.createElement('li');
-            const card = document.createElement('div');
-            card.className = 'node-card';
-            card.innerHTML = `
-                <div class="node-actions">
-                    <button class="btn-node add" title="Agregar Familiar" onclick="abrirModalAgregar(${nodeData.id}, event)"><i class="fa-solid fa-plus"></i></button>
-                    ${(nodeData.id !== 1 && nodeData.id !== 2) ? `<button class="btn-node delete" title="Eliminar Rama" onclick="eliminarNodo(${nodeData.id}, event)"><i class="fa-solid fa-trash"></i></button>` : ''}
-                </div>
-                <i class="fa-solid ${nodeData.icon} main-icon"></i>
-                <div class="nombre">${nodeData.nombre}</div>
-                <div class="rol">${nodeData.rol}</div>
-            `;
-            li.appendChild(card);
+            
+            // Contenedor Flex para alinear parejas horizontalmente
+            const group = document.createElement('div');
+            group.className = 'node-group';
+            
+            // Tarjeta Principal
+            group.appendChild(crearTarjetaHTML(node, false));
 
-            if (nodeData.children && nodeData.children.length > 0) {
+            // Tarjetas de Parejas (Spouses)
+            if(node.spouses && node.spouses.length > 0) {
+                node.spouses.forEach(spouse => {
+                    group.appendChild(crearTarjetaHTML(spouse, true, node.id));
+                });
+            }
+            li.appendChild(group);
+
+            // Ramas Descendientes (Children)
+            if (node.children && node.children.length > 0) {
                 const ul = document.createElement('ul');
-                nodeData.children.forEach(child => ul.appendChild(createNodeElement(child)) );
+                node.children.forEach(child => ul.appendChild(createNodeElement(child)) );
                 li.appendChild(ul);
             }
             return li;
         }
 
-        /* LÓGICA DE FORMULARIO ELEGANTE (Sin Prompts) */
+        function crearTarjetaHTML(data, esPareja, parentIdOriginal = null) {
+            const card = document.createElement('div');
+            card.className = 'node-card';
+            
+            let btnAgregarHTML = !esPareja ? `<button class="btn-node add" title="Agregar Rama" onclick="abrirModalAgregar(${data.id}, event)"><i class="fa-solid fa-plus"></i></button>` : '';
+            // No se puede eliminar la raíz (ids 1 o 2)
+            let btnEliminarHTML = (data.id !== 1 && data.id !== 2) ? `<button class="btn-node delete" title="Eliminar" onclick="eliminarNodo(${data.id}, ${esPareja}, ${parentIdOriginal}, event)"><i class="fa-solid fa-trash"></i></button>` : '';
+
+            let fechaHTML = data.fecha ? `<div class="fecha"><i class="fa-regular fa-calendar"></i> ${data.fecha}</div>` : '';
+
+            card.innerHTML = `
+                <div class="node-actions">${btnAgregarHTML}${btnEliminarHTML}</div>
+                <i class="fa-solid ${data.icon} main-icon"></i>
+                <div class="nombre">${data.nombre}</div>
+                <div class="rol">${data.rol}</div>
+                ${fechaHTML}
+            `;
+            return card;
+        }
+
+        /* LÓGICA DEL FORMULARIO Y DIRECCIÓN */
         let parentIdTemp = null;
+        
+        function seleccionarDireccion(dir) {
+            direccionSeleccionada = dir;
+            document.getElementById('btnDireccionAbajo').classList.remove('active');
+            document.getElementById('btnDireccionLado').classList.remove('active');
+            if(dir === 'abajo') document.getElementById('btnDireccionAbajo').classList.add('active');
+            else document.getElementById('btnDireccionLado').classList.add('active');
+        }
+
+        function contarNodos(tree) {
+            let count = 1; // El nodo en sí
+            if(tree.spouses) count += tree.spouses.length;
+            if(tree.children) {
+                tree.children.forEach(c => count += contarNodos(c));
+            }
+            return count;
+        }
+
         function abrirModalAgregar(parentId, event) {
             event.stopPropagation();
-            const currentCount = esModoFamiliar ? nodeCountFamiliar : nodeCountSucesorio;
+            const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
+            const totalNodosActuales = contarNodos(currentTree);
             
-            if (!esProActivado && currentCount >= 3) { 
+            // Límite Demo de 3 nodos
+            if (!esProActivado && totalNodosActuales >= 3) { 
                 verificarVIP(); return; 
             }
             
             parentIdTemp = parentId;
             document.getElementById('inputNombre').value = '';
             document.getElementById('inputRol').value = '';
+            document.getElementById('inputFecha').value = '';
+            seleccionarDireccion('abajo'); // Por defecto
             document.getElementById('modalAgregar').style.display = 'flex';
             document.getElementById('inputNombre').focus();
         }
 
-        function cerrarModalAgregar() {
-            document.getElementById('modalAgregar').style.display = 'none';
-            parentIdTemp = null;
-        }
+        function cerrarModalAgregar() { document.getElementById('modalAgregar').style.display = 'none'; parentIdTemp = null; }
 
         function confirmarAgregar() {
             const nombre = document.getElementById('inputNombre').value.trim();
             const rol = document.getElementById('inputRol').value.trim();
+            const fecha = document.getElementById('inputFecha').value.trim();
             
-            if(!nombre || !rol) { alert("Completa ambos campos para añadir al familiar."); return; }
+            if(!nombre || !rol) { alert("Nombre y Rol son obligatorios."); return; }
             
-            const icon = rol.toLowerCase().includes('cónyuge') || rol.toLowerCase().includes('espos') ? "fa-rings-wedding" : "fa-user";
-            const newNode = { id: Date.now(), nombre: nombre, rol: rol, icon: icon, children: [] };
+            // Inteligencia de iconos
+            let icon = "fa-user";
+            if(rol.toLowerCase().includes('cónyuge') || rol.toLowerCase().includes('espos')) icon = "fa-rings-wedding";
+            if(rol.toLowerCase().includes('hijo') || rol.toLowerCase().includes('niet')) icon = "fa-child";
             
+            const newNode = { id: Date.now(), nombre: nombre, rol: rol, fecha: fecha, icon: icon, spouses: [], children: [] };
             const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
-            addChildToNode(currentTree, parentIdTemp, newNode);
             
-            if(esModoFamiliar) nodeCountFamiliar++; else nodeCountSucesorio++;
+            if(direccionSeleccionada === 'lado') {
+                agregarPareja(currentTree, parentIdTemp, newNode);
+            } else {
+                addChildToNode(currentTree, parentIdTemp, newNode);
+            }
             
             cerrarModalAgregar();
             renderTree();
         }
 
+        // Función recursiva para Descendientes (Abajo)
         function addChildToNode(currentNode, parentId, newNode) {
             if (currentNode.id === parentId) { currentNode.children.push(newNode); return true; }
             if (currentNode.children) { for (let child of currentNode.children) { if (addChildToNode(child, parentId, newNode)) return true; } }
             return false;
         }
 
-        function eliminarNodo(nodeId, event) {
+        // Función recursiva para Parejas (Al Lado)
+        function agregarPareja(currentNode, parentId, newNode) {
+            if (currentNode.id === parentId) { 
+                if(!currentNode.spouses) currentNode.spouses = [];
+                currentNode.spouses.push(newNode); return true; 
+            }
+            if (currentNode.children) { for (let child of currentNode.children) { if (agregarPareja(child, parentId, newNode)) return true; } }
+            return false;
+        }
+
+        function eliminarNodo(nodeId, esPareja, parentIdOriginal, event) {
             event.stopPropagation();
-            if(confirm("¿Seguro que deseas eliminar esta rama familiar?")) { 
+            if(confirm("¿Eliminar este registro y toda su descendencia?")) { 
                 const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
-                removeChild(currentTree, nodeId); 
-                if(esModoFamiliar) nodeCountFamiliar--; else nodeCountSucesorio--;
+                if(esPareja) {
+                    eliminarPareja(currentTree, parentIdOriginal, nodeId);
+                } else {
+                    removeChild(currentTree, nodeId); 
+                }
                 renderTree(); 
             }
         }
@@ -308,11 +389,20 @@
             return false;
         }
 
+        function eliminarPareja(currentNode, parentId, idToRemove) {
+            if (currentNode.id === parentId && currentNode.spouses) {
+                const index = currentNode.spouses.findIndex(s => s.id === idToRemove);
+                if(index > -1) { currentNode.spouses.splice(index, 1); return true; }
+            }
+            if (currentNode.children) { for (let child of currentNode.children) { if (eliminarPareja(child, parentId, idToRemove)) return true; } }
+            return false;
+        }
+
         /* ZOOM */
         function zoomTree(delta) { scale = Math.max(0.5, Math.min(2, scale + delta)); document.getElementById('tree-root').style.transform = `scale(${scale})`; document.getElementById('tree-root').style.transformOrigin = "top center"; }
         function resetZoom() { scale = 1; document.getElementById('tree-root').style.transform = `scale(1)`; }
 
-        /* VIP Y EXPORTACIÓN */
+        /* VIP Y EXPORTACIÓN GARANTIZADA */
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
         function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
         
@@ -321,23 +411,28 @@
                 esProActivado = true; cerrarModalVIP();
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA (ILIMITADO)';
-                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Guardar Imagen Legal';
             } else { alert("Acceso Denegado. Token inválido."); }
         }
 
         function intentarExportar() {
             if(!esProActivado) { verificarVIP(); return; }
-            window.scrollTo(0,0); // Evitar recortes
+            const btnExp = document.getElementById('btn-exportar');
+            btnExp.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+            
+            // Garantizar captura completa subiendo el scroll
+            window.scrollTo(0,0); 
             const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
             
             html2canvas(document.getElementById('lienzo-exportar'), { 
                 backgroundColor: themeBg, 
-                scale: 2 
+                scale: 2,
+                useCORS: true
             }).then(canvas => {
                 const link = document.createElement('a'); 
                 link.download = esModoFamiliar ? 'Arbol_Genealogico_45yMas.png' : 'Mapeo_Sucesorio_45yMas.png'; 
                 link.href = canvas.toDataURL("image/png"); 
                 link.click();
+                btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
             });
         }
     </script>
