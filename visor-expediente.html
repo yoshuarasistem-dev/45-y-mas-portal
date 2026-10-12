@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expediente Inteligente | 45 y Más</title>
-    <!-- Librerías: PDF.js, Tesseract.js y Mammoth.js (Para Word) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
@@ -55,7 +54,6 @@
 
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
         
-        /* Contenedores para el Documento */
         #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute;}
         #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5;}
         
@@ -103,7 +101,7 @@
         
         <div style="display: flex; align-items: center; gap: 20px;">
             <div class="logo-oficial">
-                <img src="assets/LOGO.png" onerror="this.onerror=null; this.src='assets/LOGO.jpg';" alt="45 Y MÁS">
+                <img src="assets/LOGO.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
                 <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
             </div>
             <span class="expediente-title" id="titulo-exp">EXP/000/00</span>
@@ -112,7 +110,7 @@
         <div style="display:flex; gap: 10px;">
             <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumento(event)" multiple>
             <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar PDF / Word</button>
-            <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearPalabrasJudiciales()"><i class="fa-solid fa-radar"></i> Auto-Lectura IA</button>
+            <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearPalabrasJudiciales()"><i class="fa-solid fa-radar"></i> Auto-Lectura MASC</button>
         </div>
     </div>
 
@@ -132,7 +130,6 @@
             <canvas id="canvas-principal" style="display:none;"></canvas>
             <canvas id="canvas-dibujo" style="display:none;"></canvas>
             
-            <!-- Visor Especial para Word (.docx) -->
             <div id="html-visor"></div>
             
             <div style="text-align:center; color:var(--text-muted); margin-top: 100px;" id="msg-vacio">
@@ -154,7 +151,7 @@
             </div>
 
             <div class="panel-content active" id="tab-palabras">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">Buscando alertas de la <strong>Ley de Justicia Administrativa/Alternativa</strong>.</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">Buscando alertas de la <strong>Ley de Justicia Alternativa</strong> (Sanciones, Mediación, Convenios).</p>
                 <div id="contenedor-keywords"></div>
             </div>
 
@@ -193,11 +190,11 @@
         let fojaSeleccionadaIndex = 0;
         let zoomGlobal = 1.2;
 
-        const PALABRAS_BUSCADAS = ["dicta", "sentencia", "resuelve", "previene", "admite", "desecha", "radica", "nulidad", "sobreseimiento", "improcedente", "incompetencia", "suspensión", "apercibimiento", "multa", "arresto"];
+        // NUEVAS PALABRAS CLAVE: LEY DE JUSTICIA ALTERNATIVA ESTADO DE JALISCO
+        const PALABRAS_BUSCADAS = ["acuerdo", "convenio", "mediación", "conciliación", "confidencialidad", "ejecutoria", "sanción", "improcedencia"];
         let resultadosKeywords = {};
         window.mapaAlertasPorFoja = {}; 
 
-        // ==== CARGA PRINCIPAL (PDF o WORD) ====
         async function cargarDocumento(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -208,17 +205,12 @@
             arrayFojas = [];
             window.mapaAlertasPorFoja = {}; 
 
-            // LOGICA PARA ARCHIVOS WORD (.docx)
             if(file.name.endsWith('.docx')) {
                 document.getElementById('texto-progreso').innerText = "Traduciendo Word a formato visual...";
                 const arrayBuffer = await file.arrayBuffer();
-                
-                // Extraer HTML para el visor nativo
                 const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
-                // Extraer texto plano para la búsqueda de IA
                 const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
 
-                // Crear miniatura para Word
                 const canvasMini = document.createElement('canvas');
                 canvasMini.width = 150; canvasMini.height = 200;
                 const ctx = canvasMini.getContext('2d');
@@ -227,18 +219,9 @@
                 ctx.fillText('WORD', 75, 100);
 
                 arrayFojas.push({ 
-                    id: Date.now(), 
-                    numeroLogico: 1, 
-                    isHtml: true, 
-                    htmlContent: result.value,
-                    rawText: rawText.value,
-                    canvasImage: canvasMini, // Solo para la miniatura
-                    rotacion: 0 
+                    id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, rawText: rawText.value, canvasImage: canvasMini, rotacion: 0 
                 });
-
-            } 
-            // LÓGICA PARA PDF ORIGINAL
-            else {
+            } else {
                 const bytes = new Uint8Array(await file.arrayBuffer());
                 const documentoActual = await pdfjsLib.getDocument(bytes).promise;
                 
@@ -262,7 +245,6 @@
             if(arrayFojas.length > 0) seleccionarFoja(0);
         }
 
-        // ==== RENDER FOJAS Y NOTAS ALARMA ====
         function renderizarBarraLateralFojas() {
             const container = document.getElementById('lista-fojas-container');
             container.innerHTML = '';
@@ -322,7 +304,6 @@
             seleccionarFoja(0);
         }
 
-        // ==== VISOR CENTRAL (MANEJA HTML Y CANVAS) ====
         function seleccionarFoja(index) {
             fojaSeleccionadaIndex = index;
             document.querySelectorAll('.foja-item').forEach(el => el.classList.remove('activa'));
@@ -341,31 +322,18 @@
             const divHtml = document.getElementById('html-visor');
 
             if(foja.isHtml) {
-                // Es un archivo WORD
-                canvasP.style.display = 'none';
-                canvasD.style.display = 'none';
-                divHtml.style.display = 'block';
-                divHtml.innerHTML = foja.htmlContent;
-                divHtml.style.transform = `scale(${zoomGlobal - 0.2})`;
-                divHtml.style.transformOrigin = "top center";
+                canvasP.style.display = 'none'; canvasD.style.display = 'none';
+                divHtml.style.display = 'block'; divHtml.innerHTML = foja.htmlContent;
+                divHtml.style.transform = `scale(${zoomGlobal - 0.2})`; divHtml.style.transformOrigin = "top center";
             } else {
-                // Es un PDF / Imagen
-                divHtml.style.display = 'none';
-                canvasP.style.display = 'block';
-                canvasD.style.display = 'block';
+                divHtml.style.display = 'none'; canvasP.style.display = 'block'; canvasD.style.display = 'block';
 
-                const ctxP = canvasP.getContext('2d');
-                const ctxD = canvasD.getContext('2d');
-
-                let w = foja.canvasImage.width * zoomGlobal;
-                let h = foja.canvasImage.height * zoomGlobal;
+                const ctxP = canvasP.getContext('2d'); const ctxD = canvasD.getContext('2d');
+                let w = foja.canvasImage.width * zoomGlobal; let h = foja.canvasImage.height * zoomGlobal;
                 
-                canvasP.width = w; canvasP.height = h;
-                canvasD.width = w; canvasD.height = h;
-                
+                canvasP.width = w; canvasP.height = h; canvasD.width = w; canvasD.height = h;
                 ctxP.drawImage(foja.canvasImage, 0, 0, w, h);
-                canvasP.style.transform = `rotate(${foja.rotacion}deg)`;
-                canvasD.style.transform = `rotate(${foja.rotacion}deg)`; 
+                canvasP.style.transform = `rotate(${foja.rotacion}deg)`; canvasD.style.transform = `rotate(${foja.rotacion}deg)`; 
 
                 ctxD.clearRect(0, 0, w, h);
                 const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
@@ -406,7 +374,6 @@
             let numAsignado = prompt("¿Qué número de foja es esta? (Si es la vuelta, pon el mismo número)", "Ej. 233");
             numAsignado = parseInt(numAsignado) || arrayFojas.length + 1;
 
-            // Soporte para incrustar un Word como foja extra
             if(file.name.endsWith('.docx')) {
                 const arrayBuffer = await file.arrayBuffer();
                 const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
@@ -440,7 +407,6 @@
             event.target.value = '';
         }
 
-        // ==== ESCANEO OCR E INTELIGENCIA DE TEXTO ====
         async function escanearPalabrasJudiciales() {
             if(arrayFojas.length === 0) return;
             document.getElementById('pantalla-progreso').style.display = 'flex';
@@ -458,7 +424,6 @@
                 if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
 
                 if(f.isHtml) {
-                    // Buscar en el texto plano del Word
                     let textoWord = f.rawText.toLowerCase();
                     PALABRAS_BUSCADAS.forEach(p => {
                         if(textoWord.includes(p)) {
@@ -466,7 +431,6 @@
                         }
                     });
                 } else {
-                    // Escaneo OCR en Imagen/PDF
                     const { data } = await Tesseract.recognize(f.canvasImage, 'spa');
                     data.words.forEach(palabra => {
                         let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
@@ -503,7 +467,6 @@
             if(index !== -1) seleccionarFoja(index);
         }
 
-        // ==== NOTAS E ÍNDICE ====
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
