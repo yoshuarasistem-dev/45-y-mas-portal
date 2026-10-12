@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Pro | 45 y Más</title>
+    <title>Portal Pro | Bóveda 45 y Más</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
@@ -18,20 +18,22 @@
         .login-box { background: var(--glass-bg); padding: 50px 40px; border-radius: 16px; border: 1px solid var(--border-glass); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         .login-box h1 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text-main); }
         .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
-        .input-login { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; transition: border 0.3s; }
-        .input-login:focus { border-color: var(--brand-orange); }
+        .input-login, .select-login { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; transition: border 0.3s; }
+        .select-login { appearance: none; cursor: pointer; }
+        .input-login:focus, .select-login:focus { border-color: var(--brand-orange); }
         .btn-login { width: 100%; background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; padding: 15px; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: transform 0.2s; margin-top: 10px; }
         .btn-login:hover { transform: translateY(-2px); }
         
-        /* DASHBOARD SCREEN (Oculto al inicio) */
+        /* DASHBOARD SCREEN */
         #dashboard-screen { display: none; height: 100vh; flex-direction: column; }
         .topbar { background: rgba(15, 23, 42, 0.9); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
         .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
         .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
         
         .main-content { display: flex; flex: 1; overflow: hidden; }
         
-        /* SIDEBAR (Menú Principal) */
+        /* SIDEBAR */
         .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 20px 0; }
         .menu-item { padding: 15px 25px; color: var(--text-muted); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; border-left: 3px solid transparent; }
         .menu-item:hover, .menu-item.active { background: rgba(56, 189, 248, 0.1); color: var(--neon-blue); border-left-color: var(--neon-blue); }
@@ -49,19 +51,32 @@
         .carpeta-card .subtitulo { font-size: 0.8rem; color: var(--text-muted); }
 
         /* MASC CHECKLIST UI */
-        .checklist-container { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 25px; margin-top: 20px; }
-        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-main); }
+        .masc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-glass); }
+        .masc-info h2 { color: var(--brand-orange); margin-bottom: 5px; font-size: 1.4rem; }
+        .masc-info p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 3px; }
+        
+        .checklist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .checklist-container { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 25px; }
+        .checklist-container h3 { color: var(--neon-blue); margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;}
+        
+        .check-group-title { color: var(--brand-orange); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; margin: 20px 0 10px 0; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 4px; }
+        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-main); cursor: pointer; padding: 5px 10px; border-radius: 6px; transition: background 0.2s;}
+        .check-item:hover { background: rgba(255,255,255,0.05); }
         .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brand-orange); cursor: pointer;}
-        .check-group-title { color: var(--brand-orange); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; margin: 20px 0 10px 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 5px;}
+        
+        .check-item.checked { color: var(--text-muted); text-decoration: line-through; }
 
         /* BREADCRUMB */
         .breadcrumb { display: flex; gap: 10px; color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
         .breadcrumb span:hover { color: var(--brand-orange); }
 
-        /* MODAL AGREGAR */
+        /* MODAL */
         .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: var(--bg-panel); padding: 30px; border-radius: 12px; width: 400px; border: 1px solid var(--border-glass); }
-        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%;}
+        .modal-content { background: var(--bg-panel); padding: 35px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid var(--border-glass); }
+        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.2s;}
+        .btn-crear:hover { background: #0ea5e9; }
+        
+        #campo-tipo-masc { display: none; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -69,11 +84,11 @@
     <!-- PANTALLA DE LOGIN -->
     <div id="login-screen">
         <div class="login-box">
-            <i class="fa-solid fa-fingerprint" style="font-size: 3rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
+            <i class="fa-solid fa-fingerprint" style="font-size: 3.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
             <h1>Portal Pro</h1>
             <p>Acceso Seguro a la Bóveda Local</p>
-            <input type="text" id="user" class="input-login" placeholder="Usuario Institucional">
-            <input type="password" id="pass" class="input-login" placeholder="Contraseña">
+            <input type="text" id="user" class="input-login" placeholder="Usuario Institucional (admin)">
+            <input type="password" id="pass" class="input-login" placeholder="Contraseña (45ymas)">
             <button class="btn-login" onclick="iniciarSesion()">INGRESAR AL SISTEMA</button>
             <p id="error-msg" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold;">Credenciales incorrectas.</p>
         </div>
@@ -83,7 +98,7 @@
     <div id="dashboard-screen">
         <div class="topbar">
             <div class="logo"><i class="fa-solid fa-shield-halved" style="color:var(--brand-orange);"></i> Bóveda Confidencial | 45 y Más</div>
-            <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            <button class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
         </div>
         
         <div class="main-content">
@@ -96,24 +111,52 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR DINÁMICO DE CARPETAS -->
-            <div class="folder-area" id="area-trabajo">
-                <!-- Se llena con Javascript -->
-            </div>
+            <!-- CONTENEDOR DINÁMICO -->
+            <div class="folder-area" id="area-trabajo"></div>
         </div>
     </div>
 
     <!-- MODAL PARA CREAR NUEVO EXPEDIENTE/CONVENIO -->
     <div class="modal" id="modal-crear">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px; color: var(--neon-blue);" id="modal-title">Nuevo Registro</h3>
+            <h3 style="margin-bottom: 20px; color: var(--neon-blue); text-align: center;" id="modal-title">Nuevo Registro</h3>
+            
+            <div id="campo-tipo-masc">
+                <label style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">TIPO DE CONVENIO:</label>
+                <select id="select-tipo-masc" class="select-login">
+                    <option value="ARRENDAMIENTO">Preventivo Arrendamiento</option>
+                    <option value="ALIMENTOS">Alimentos y Convivencia</option>
+                    <option value="DIVORCIO">Divorcio Admtvo. y Mutuo</option>
+                </select>
+            </div>
+
+            <label id="lbl-nombre" style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">NOMBRE / NÚMERO:</label>
             <input type="text" id="input-nuevo" class="input-login" placeholder="Ej. EXP/340/26 o Juan Pérez">
-            <button class="btn-crear" onclick="guardarNuevo()">Crear Carpeta</button>
+            
+            <button class="btn-crear" onclick="guardarNuevo()">Crear Carpeta Segura</button>
             <button class="btn-logout" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('modal-crear').style.display='none'">Cancelar</button>
         </div>
     </div>
 
     <script>
+        // ==== BASES DE DATOS DE CHECKLISTS MASC EXACTAS ====
+        const checklistsData = {
+            "ARRENDAMIENTO": {
+                "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"],
+                "Documentos Generales": ["Identificaciones ()*", "Contrato de Arrendamiento ()*", "Contrato de Administracion ()*", "Escritura Publica ( )*", "Predial *", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
+            },
+            "ALIMENTOS": {
+                "Contenido de la Carpeta": ["Solicitud", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final *", "Convenio Digital"],
+                "Documentos Generales": ["Identificaciones ()*", "Actas de Nacimiento Padres ()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte ()"],
+                "Documentos Menores": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
+            },
+            "DIVORCIO": {
+                "Contenido de la Carpeta": ["Solicitud Firmada Por Ambas Partes *", "Dictamen Viabilidad", "Acuerdo de Confidencialidad", "Convenio Final*", "Convenio Digital"],
+                "Documentos Gral Divorcio": ["Identificaciones (1)", "Actas de Nacimiento Conyuges()", "Acta de Matrimonio", "Comprobantes de Domicilio Cada Parte ()", "Comprobantes de Ingreso Cada Parte()", "Certificado No Embarazo (0)"],
+                "Documentos Divorcio Mutuo": ["Actas de Nacimiento de los Hijos ()", "Autorizacion Escucha de Menores", "Constancia Escucha de Menor", "Facturas Bienes Muebles ()", "Escrituras de los Bienes Inmuebles", "Certificado Libertad de Gravamen()*", "Estado de Cuenta del Credito", "Prevencion", "Contestacion a la Prevencion", "No Sancion", "Validacion"]
+            }
+        };
+
         // ==== SISTEMA DE LOGIN ====
         function iniciarSesion() {
             const u = document.getElementById('user').value;
@@ -122,19 +165,17 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard-screen').style.display = 'flex';
                 mostrarSeccion('juridico');
-            } else {
-                document.getElementById('error-msg').style.display = 'block';
-            }
+            } else { document.getElementById('error-msg').style.display = 'block'; }
         }
         function cerrarSesion() { location.reload(); }
 
         // ==== NAVEGACIÓN PRINCIPAL ====
-        let vistaActual = 'juridico'; // 'juridico' o 'masc'
-        let nivelActual = 0; // 0=Juzgados, 1=Años, 2=Expedientes
+        let vistaActual = 'juridico'; 
+        let nivelActual = 0; 
         let pathSelection = { juzgado: '', anio: '', exp: '' };
 
-        const juzgadosJalisco = ["Juzgado 1° Civil", "Juzgado 2° Civil", "Juzgado 1° Familiar", "Juzgado 2° Familiar", "Juzgado 1° Mercantil"];
-        const anios = ["2026", "2025", "2024", "2023"];
+        const juzgadosJalisco = ["Juzgado 1° Civil", "Juzgado 2° Civil", "Juzgado 1° Familiar", "Juzgado 2° Familiar", "Juzgado 1° Mercantil", "Juzgado 2° Mercantil"];
+        const anios = ["2026", "2025", "2024"];
 
         function mostrarSeccion(seccion) {
             vistaActual = seccion; nivelActual = 0;
@@ -165,22 +206,25 @@
                     html += `<div class="grid-carpetas"><div class="carpeta-card" style="border: 2px dashed var(--neon-blue);" onclick="abrirModalCrear('Nuevo Expediente')">
                             <i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Añadir Expediente</div></div>`;
                     
-                    // Cargar expedientes guardados en LocalStorage para esta ruta
                     let exps = JSON.parse(localStorage.getItem(`exp_${pathSelection.juzgado}_${pathSelection.anio}`)) || [];
-                    exps.forEach(e => { html += crearCardCarpeta(e.nombre, 'Última modif: Hoy', `abrirVisor('${e.nombre}')`, 'fa-file-pdf'); });
+                    exps.forEach(e => { html += crearCardCarpeta(e.nombre, 'PDF y Notas locales', `abrirVisor('${e.nombre}')`, 'fa-file-pdf'); });
                     html += `</div>`;
                 }
             } 
             else if (vistaActual === 'masc') {
                 html += `<div class="section-title"><i class="fa-solid fa-handshake"></i> Convenios MASC Activos</div>`;
                 html += `<div class="grid-carpetas"><div class="carpeta-card" style="border: 2px dashed var(--brand-orange);" onclick="abrirModalCrear('Nuevo Convenio MASC')">
-                        <i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Nuevo Solicitante</div></div>`;
+                        <i class="fa-solid fa-user-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Nuevo Solicitante</div></div>`;
                 
                 let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-                mascs.forEach((m, index) => { html += crearCardCarpeta(m.numero, m.nombre, `verChecklistMasc(${index})`, 'fa-folder-open', 'var(--brand-orange)'); });
+                // Se muestran del más reciente al más antiguo (Reverse)
+                mascs.slice().reverse().forEach((m, i) => { 
+                    let realIndex = mascs.length - 1 - i;
+                    let tipoLabel = (m.tipo === "ARRENDAMIENTO") ? "Arrendamiento" : (m.tipo === "ALIMENTOS") ? "Alimentos" : "Divorcio";
+                    html += crearCardCarpeta(`${m.numero} | ${m.nombre}`, `Tipo: ${tipoLabel} - Fecha: ${m.fecha}`, `verChecklistMasc(${realIndex})`, 'fa-folder-open', 'var(--brand-orange)'); 
+                });
                 html += `</div>`;
             }
-
             area.innerHTML = html;
         }
 
@@ -200,12 +244,21 @@
             renderizarVista();
         }
 
-        // ==== CREACIÓN LOCAL (GUARDA EN EL NAVEGADOR) ====
-        let tipoCreacion = '';
+        // ==== CREACIÓN LOCAL ====
         function abrirModalCrear(tipo) {
             tipoCreacion = tipo;
             document.getElementById('modal-title').innerText = tipo;
             document.getElementById('input-nuevo').value = '';
+            
+            if(tipo === 'Nuevo Convenio MASC') {
+                document.getElementById('campo-tipo-masc').style.display = 'block';
+                document.getElementById('lbl-nombre').innerText = "NOMBRE DEL SOLICITANTE:";
+                document.getElementById('input-nuevo').placeholder = "Ej. Juan Pérez Garza";
+            } else {
+                document.getElementById('campo-tipo-masc').style.display = 'none';
+                document.getElementById('lbl-nombre').innerText = "NÚMERO DE EXPEDIENTE:";
+                document.getElementById('input-nuevo').placeholder = "Ej. EXP/340/26";
+            }
             document.getElementById('modal-crear').style.display = 'flex';
         }
 
@@ -220,64 +273,91 @@
                 localStorage.setItem(key, JSON.stringify(exps));
             } else {
                 let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
-                let num = `00${mascs.length + 1}/${new Date().getFullYear().toString().slice(-2)}`;
-                mascs.push({ numero: num, nombre: valor, fecha: new Date().toLocaleDateString() });
+                let tipoSelec = document.getElementById('select-tipo-masc').value;
+                // Generar número correlativo Ej. 001/26
+                let anioActual = new Date().getFullYear().toString().slice(-2);
+                let consecutivo = (mascs.length + 1).toString().padStart(3, '0');
+                let numFolder = `${consecutivo}/${anioActual}`;
+                
+                // Formato de guardado
+                mascs.push({ 
+                    numero: numFolder, 
+                    nombre: valor, 
+                    fecha: new Date().toLocaleDateString(),
+                    tipo: tipoSelec,
+                    checks: {} // Guardará el estado de las palomitas
+                });
                 localStorage.setItem('masc_list', JSON.stringify(mascs));
             }
             document.getElementById('modal-crear').style.display = 'none';
             renderizarVista();
         }
 
-        // ==== REDIRECCIÓN AL NUEVO IURISVISOR ====
+        // ==== REDIRECCIÓN AL EXPEDIENTE INTELIGENTE ====
         function abrirVisor(nombreExp) {
-            // Guardamos qué expediente estamos abriendo
             localStorage.setItem('expediente_abierto', nombreExp);
-            // Redirige al nuevo IurisVisor Pro (Lo crearemos en el paso 2)
             window.location.href = 'visor-expediente.html';
         }
 
-        // ==== VISUALIZADOR DE CHECKLISTS MASC ====
+        // ==== RENDER DE CHECKLISTS MASC EXACTOS ====
         function verChecklistMasc(index) {
             let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
             let m = mascs[index];
-            const area = document.getElementById('area-trabajo');
+            let listaDocs = checklistsData[m.tipo];
             
-            // Checklist duro insertado directamente (Arrendamiento y Alimentos combinados de ejemplo)
-            area.innerHTML = `
-                <div class="breadcrumb" onclick="renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Convenios</div>
-                <div class="section-title"><i class="fa-solid fa-folder-open" style="color:var(--brand-orange)"></i> Expediente MASC: ${m.numero} | ${m.nombre}</div>
-                <p style="color:var(--text-muted); margin-bottom: 20px;">Fecha de Solicitud: ${m.fecha}</p>
+            let htmlChecks = '';
+            
+            // Recorrer las categorías del checklist seleccionado
+            for(let categoria in listaDocs) {
+                htmlChecks += `<div class="check-group-title">${categoria}</div>`;
                 
-                <div style="display:flex; gap:20px;">
-                    <!-- Columna 1: Checklist -->
-                    <div class="checklist-container" style="flex:1;">
-                        <h3>Documentación Requerida</h3>
-                        
-                        <div class="check-group-title">Preventivo Arrendamiento</div>
-                        <label class="check-item"><input type="checkbox"> SOLICITUD</label>
-                        <label class="check-item"><input type="checkbox"> DICTAMEN VIABILIDAD</label>
-                        <label class="check-item"><input type="checkbox"> ACUERDO DE CONFIDENCIALIDAD</label>
-                        <label class="check-item"><input type="checkbox"> CONVENIO FINAL *</label>
-                        
-                        <div class="check-group-title">Documentos Generales</div>
-                        <label class="check-item"><input type="checkbox"> IDENTIFICACIONES ()*</label>
-                        <label class="check-item"><input type="checkbox"> CONTRATO DE ARRENDAMIENTO ()*</label>
-                        <label class="check-item"><input type="checkbox"> PREDIAL *</label>
-                    </div>
+                listaDocs[categoria].forEach(item => {
+                    let itemId = `${categoria}_${item}`;
+                    let isChecked = m.checks[itemId] ? 'checked' : '';
+                    let classCheck = m.checks[itemId] ? 'checked' : '';
 
-                    <!-- Columna 2: Archivos Digitales -->
-                    <div class="checklist-container" style="flex:1;">
-                        <h3>Bóveda de Archivos del Convenio</h3>
-                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Los PDFs cargados se vinculan a este MASC.</p>
-                        
-                        <div class="carpeta-card" style="border: 1px dashed var(--brand-orange); padding:15px;" onclick="abrirVisor('${m.numero}')">
-                            <i class="fa-solid fa-file-pdf folder-icon" style="font-size: 2rem;"></i>
-                            <div class="titulo">Abrir Lector Inteligente</div>
-                            <div class="subtitulo">Escanear documentos a este caso</div>
-                        </div>
+                    htmlChecks += `
+                    <label class="check-item ${classCheck}">
+                        <input type="checkbox" onchange="actualizarCheckMasc(${index}, '${itemId}', this.checked)" ${isChecked}> 
+                        ${item}
+                    </label>`;
+                });
+            }
+
+            const area = document.getElementById('area-trabajo');
+            let tipoVisual = (m.tipo === "ARRENDAMIENTO") ? "Preventivo Arrendamiento" : (m.tipo === "ALIMENTOS") ? "Alimentos y Convivencia" : "Divorcio Admtvo. y Mutuo";
+
+            area.innerHTML = `
+                <div class="breadcrumb" onclick="renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Convenios Activos</div>
+                
+                <div class="masc-header">
+                    <div class="masc-info">
+                        <h2>${m.numero}</h2>
+                        <p><strong style="color:var(--text-main);">Solicitante:</strong> ${m.nombre}</p>
+                        <p><strong style="color:var(--text-main);">Tipo:</strong> ${tipoVisual}</p>
+                        <p><strong style="color:var(--text-main);">Fecha:</strong> ${m.fecha}</p>
+                    </div>
+                    <div>
+                        <button class="btn-login" style="margin:0; padding: 10px 20px; font-size: 0.9rem;" onclick="abrirVisor('MASC_${m.numero.replace('/','-')}')">
+                            <i class="fa-solid fa-file-pdf"></i> Abrir Expediente Digital
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="checklist-grid">
+                    <div class="checklist-container" style="grid-column: 1 / -1;">
+                        <h3><i class="fa-solid fa-list-check"></i> Checklist de Documentación Requerida</h3>
+                        ${htmlChecks}
                     </div>
                 </div>
             `;
+        }
+
+        function actualizarCheckMasc(mascIndex, itemId, isChecked) {
+            let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
+            mascs[mascIndex].checks[itemId] = isChecked;
+            localStorage.setItem('masc_list', JSON.stringify(mascs));
+            verChecklistMasc(mascIndex); // Refrescar visualmente (tachar letra)
         }
     </script>
 </body>
