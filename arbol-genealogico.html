@@ -17,7 +17,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05) 0%, var(--bg-deep) 100%); transition: background 0.3s, color 0.3s; }
 
-        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; transition: background 0.3s; }
+        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; transition: background 0.3s; flex-wrap: wrap; }
         .logo-visor { font-weight: 800; font-size: 1.2rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
         .logo-visor i { color: #22c55e; }
         
@@ -30,8 +30,8 @@
         .status-badge { background: rgba(250, 204, 21, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
         .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
 
-        .workspace { flex: 1; overflow: auto; padding: 50px; display: flex; justify-content: center; align-items: flex-start; position: relative; }
-        .tree-container { margin-top: 20px; padding: 40px; transition: transform 0.3s; }
+        .workspace { flex: 1; overflow: auto; padding: 50px; display: flex; justify-content: center; align-items: flex-start; position: relative; width: 100%; }
+        .tree-container { margin-top: 20px; padding: 40px; transition: transform 0.3s; transform-origin: top center; }
         
         /* MAGIA CSS DEL ÁRBOL */
         .tree ul { padding-top: 30px; position: relative; transition: all 0.5s; display: flex; justify-content: center; }
@@ -48,7 +48,6 @@
         /* GRUPO DE NODOS (Para poner parejas AL LADO) */
         .node-group { display: flex; justify-content: center; align-items: center; gap: 20px; position: relative; }
         .node-group .node-card { position: relative; z-index: 2; }
-        /* Línea horizontal que une a las parejas */
         .node-group::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--neon-blue); z-index: 1; transition: background 0.4s; }
 
         /* TARJETAS DE NODOS */
@@ -76,7 +75,7 @@
 
         /* MODALES ELEGANTES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; width: 90%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
         
         .input-form { background: rgba(0,0,0,0.1); border: 1px solid #1e293b; color: var(--text-main); padding: 12px 15px; width: 100%; border-radius: 8px; font-size: 0.95rem; margin-bottom: 15px; outline: none; transition: border 0.3s; }
         body.light-mode .input-form { background: #f8fafc; border-color: #cbd5e1; }
@@ -84,8 +83,8 @@
         .form-label { display: block; text-align: left; font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
 
         /* Selector de Dirección (Lado o Abajo) */
-        .radio-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        .radio-btn { flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid #1e293b; border-radius: 8px; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-size: 0.85rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .radio-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .radio-btn { flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid #1e293b; border-radius: 8px; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-size: 0.85rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 120px; }
         .radio-btn i { font-size: 1.2rem; }
         .radio-btn.active { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); color: var(--neon-blue); }
         body.light-mode .radio-btn { background: #f1f5f9; border-color: #cbd5e1; }
@@ -94,6 +93,15 @@
         .floating-tools { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; }
         .tool-btn { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .tool-btn:hover { color: var(--brand-orange); transform: scale(1.1); }
+
+        /* Responsividad Celulares */
+        @media (max-width: 768px) {
+            .topbar { justify-content: center; }
+            .node-card { min-width: 150px; padding: 15px; }
+            .node-card i.main-icon { font-size: 2rem; }
+            .node-card .nombre { font-size: 0.9rem; }
+            .workspace { padding: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -106,7 +114,7 @@
         </div>
         
         <button id="btn-modo-arbol" class="btn btn-accion" onclick="toggleModoArbol()" style="border-color: #ec4899; color: #ec4899;">
-            <i class="fa-solid fa-users"></i> Cambiar a Modo Familiar
+            <i class="fa-solid fa-users"></i> Cambiar a Familiar
         </button>
         <button id="btn-exportar" class="btn btn-vip" onclick="intentarExportar()"><i class="fa-solid fa-download"></i> Exportar Alta Res</button>
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
@@ -164,7 +172,7 @@
         <div class="modal-card">
             <div style="position: absolute; top:0; left:0; width:100%; height:5px; background: linear-gradient(90deg, #facc15, var(--brand-orange));"></div>
             <h2 style="color: var(--text-main); margin-bottom: 15px;"><i class="fa-solid fa-gem" style="color: var(--brand-orange);"></i> Funciones Pro</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">La versión Demo solo permite 3 nodos en total (Para demostrar la herramienta). Ingresa tu token institucional para añadir ramas ilimitadas y exportar.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">La versión Demo solo permite 3 nodos en total. Ingresa tu token institucional para añadir ramas ilimitadas y habilitar la exportación completa.</p>
             <input type="text" id="tokenInput" class="input-form" style="text-transform: uppercase; text-align: center; font-weight: bold; font-size: 1.2rem;" placeholder="TOKEN VIP" autocomplete="off">
             <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px;" onclick="validarTokenVIP()">DESBLOQUEAR ILIMITADO</button>
             <button class="btn btn-volver" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="cerrarModalVIP()">Cancelar</button>
@@ -186,15 +194,21 @@
         let treeFamiliar = { id: 2, nombre: "Raíz Familiar", rol: "Origen", fecha: "", icon: "fa-house-chimney", spouses: [], children: [] };
         
         let esModoFamiliar = false;
-        let esProActivado = false;
+        let esProActivado = localStorage.getItem('pro_activo') === 'true'; // COMPRUEBA EL TOKEN GLOBAL
         let scale = 1;
         let direccionSeleccionada = 'abajo';
 
-        // ====== LECTURA INTELIGENTE (IA simulada desde IurisVisor) ======
+        // ====== INICIALIZACIÓN Y LECTURA INTELIGENTE ======
         window.onload = () => { 
             if(localStorage.getItem('tema') === 'light') toggleTheme(); 
             
-            // Si el IurisVisor guardó datos, los extraemos y reemplazamos la raíz sucesoria
+            // Revisa si ya somos VIP desde el IurisVisor
+            if(esProActivado) {
+                const badge = document.getElementById('status-badge');
+                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA (ILIMITADO)';
+            }
+
+            // Extrae datos simulados del IurisVisor si existen
             const datosArbolIA = localStorage.getItem('datos_arbol_45ymas');
             if(datosArbolIA) {
                 const infoExtraida = JSON.parse(datosArbolIA);
@@ -219,7 +233,7 @@
                 document.getElementById('logo-icono').className = "fa-solid fa-people-group"; document.getElementById('logo-icono').style.color = "var(--color-familiar)";
             } else {
                 treeRoot.classList.replace('modo-familiar', 'modo-sucesorio');
-                btnModo.innerHTML = '<i class="fa-solid fa-users"></i> Cambiar a Modo Familiar';
+                btnModo.innerHTML = '<i class="fa-solid fa-users"></i> Cambiar a Familiar';
                 btnModo.style.borderColor = "#ec4899"; btnModo.style.color = "#ec4899";
                 document.getElementById('titulo-herramienta').innerText = "Árbol Sucesorio";
                 document.getElementById('logo-icono').className = "fa-solid fa-network-wired"; document.getElementById('logo-icono').style.color = "#22c55e";
@@ -227,7 +241,7 @@
             renderTree(); 
         }
 
-        /* RENDERIZADO DEL SÚPER ÁRBOL (Cónyuges al lado, Hijos abajo) */
+        /* RENDERIZADO DEL SÚPER ÁRBOL */
         function renderTree() {
             const rootContainer = document.getElementById('tree-root');
             rootContainer.innerHTML = '';
@@ -296,11 +310,9 @@
         }
 
         function contarNodos(tree) {
-            let count = 1; // El nodo en sí
+            let count = 1; 
             if(tree.spouses) count += tree.spouses.length;
-            if(tree.children) {
-                tree.children.forEach(c => count += contarNodos(c));
-            }
+            if(tree.children) { tree.children.forEach(c => count += contarNodos(c)); }
             return count;
         }
 
@@ -309,7 +321,6 @@
             const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
             const totalNodosActuales = contarNodos(currentTree);
             
-            // Límite Demo de 3 nodos
             if (!esProActivado && totalNodosActuales >= 3) { 
                 verificarVIP(); return; 
             }
@@ -318,7 +329,7 @@
             document.getElementById('inputNombre').value = '';
             document.getElementById('inputRol').value = '';
             document.getElementById('inputFecha').value = '';
-            seleccionarDireccion('abajo'); // Por defecto
+            seleccionarDireccion('abajo'); 
             document.getElementById('modalAgregar').style.display = 'flex';
             document.getElementById('inputNombre').focus();
         }
@@ -332,7 +343,6 @@
             
             if(!nombre || !rol) { alert("Nombre y Rol son obligatorios."); return; }
             
-            // Inteligencia de iconos
             let icon = "fa-user";
             if(rol.toLowerCase().includes('cónyuge') || rol.toLowerCase().includes('espos')) icon = "fa-rings-wedding";
             if(rol.toLowerCase().includes('hijo') || rol.toLowerCase().includes('niet')) icon = "fa-child";
@@ -350,14 +360,12 @@
             renderTree();
         }
 
-        // Función recursiva para Descendientes (Abajo)
         function addChildToNode(currentNode, parentId, newNode) {
             if (currentNode.id === parentId) { currentNode.children.push(newNode); return true; }
             if (currentNode.children) { for (let child of currentNode.children) { if (addChildToNode(child, parentId, newNode)) return true; } }
             return false;
         }
 
-        // Función recursiva para Parejas (Al Lado)
         function agregarPareja(currentNode, parentId, newNode) {
             if (currentNode.id === parentId) { 
                 if(!currentNode.spouses) currentNode.spouses = [];
@@ -369,13 +377,10 @@
 
         function eliminarNodo(nodeId, esPareja, parentIdOriginal, event) {
             event.stopPropagation();
-            if(confirm("¿Eliminar este registro y toda su descendencia?")) { 
+            if(confirm("¿Eliminar este registro y su descendencia?")) { 
                 const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
-                if(esPareja) {
-                    eliminarPareja(currentTree, parentIdOriginal, nodeId);
-                } else {
-                    removeChild(currentTree, nodeId); 
-                }
+                if(esPareja) eliminarPareja(currentTree, parentIdOriginal, nodeId);
+                else removeChild(currentTree, nodeId); 
                 renderTree(); 
             }
         }
@@ -399,7 +404,7 @@
         }
 
         /* ZOOM */
-        function zoomTree(delta) { scale = Math.max(0.5, Math.min(2, scale + delta)); document.getElementById('tree-root').style.transform = `scale(${scale})`; document.getElementById('tree-root').style.transformOrigin = "top center"; }
+        function zoomTree(delta) { scale = Math.max(0.5, Math.min(2, scale + delta)); document.getElementById('tree-root').style.transform = `scale(${scale})`; }
         function resetZoom() { scale = 1; document.getElementById('tree-root').style.transform = `scale(1)`; }
 
         /* VIP Y EXPORTACIÓN GARANTIZADA */
@@ -408,7 +413,9 @@
         
         function validarTokenVIP() {
             if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
-                esProActivado = true; cerrarModalVIP();
+                esProActivado = true; 
+                localStorage.setItem('pro_activo', 'true'); // GUARDA EL ESTADO VIP GLOBAL
+                cerrarModalVIP();
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA (ILIMITADO)';
             } else { alert("Acceso Denegado. Token inválido."); }
@@ -421,19 +428,37 @@
             
             // Garantizar captura completa subiendo el scroll
             window.scrollTo(0,0); 
-            const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
             
-            html2canvas(document.getElementById('lienzo-exportar'), { 
-                backgroundColor: themeBg, 
-                scale: 2,
-                useCORS: true
-            }).then(canvas => {
-                const link = document.createElement('a'); 
-                link.download = esModoFamiliar ? 'Arbol_Genealogico_45yMas.png' : 'Mapeo_Sucesorio_45yMas.png'; 
-                link.href = canvas.toDataURL("image/png"); 
-                link.click();
-                btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
-            });
+            // Restaurar zoom para que no salga cortada en la foto
+            const zoomOriginal = scale;
+            resetZoom();
+
+            const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
+            const treeContainer = document.getElementById('lienzo-exportar');
+
+            setTimeout(() => {
+                html2canvas(treeContainer, { 
+                    backgroundColor: themeBg, 
+                    scale: 2, // Alta definición
+                    useCORS: true,
+                    windowWidth: treeContainer.scrollWidth,
+                    windowHeight: treeContainer.scrollHeight
+                }).then(canvas => {
+                    const link = document.createElement('a'); 
+                    link.download = esModoFamiliar ? 'Arbol_Genealogico_45yMas.png' : 'Mapeo_Sucesorio_45yMas.png'; 
+                    link.href = canvas.toDataURL("image/png"); 
+                    link.click();
+                    
+                    btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
+                    
+                    // Regresar al zoom del usuario
+                    if(zoomOriginal !== 1) zoomTree(zoomOriginal - 1);
+                }).catch(err => {
+                    console.error("Error al exportar:", err);
+                    alert("Ocurrió un error al capturar la imagen. Inténtalo nuevamente.");
+                    btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
+                });
+            }, 500); // Pequeño retraso para que el DOM se acomode sin zoom
         }
     </script>
 </body>
