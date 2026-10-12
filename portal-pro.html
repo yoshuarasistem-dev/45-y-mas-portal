@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pro | 45 y Más</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.8); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --success: #10b981; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(circle at center, rgba(56, 189, 248, 0.03) 0%, transparent 100%); }
+        
+        /* LOGIN SCREEN */
+        #login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; z-index: 50; position: absolute; background: var(--bg-deep); }
+        .login-box { background: var(--glass-bg); padding: 50px 40px; border-radius: 16px; border: 1px solid var(--border-glass); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .login-box h1 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text-main); }
+        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+        .input-login { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; transition: border 0.3s; }
+        .input-login:focus { border-color: var(--brand-orange); }
+        .btn-login { width: 100%; background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; padding: 15px; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: transform 0.2s; margin-top: 10px; }
+        .btn-login:hover { transform: translateY(-2px); }
+        
+        /* DASHBOARD SCREEN (Oculto al inicio) */
+        #dashboard-screen { display: none; height: 100vh; flex-direction: column; }
+        .topbar { background: rgba(15, 23, 42, 0.9); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
+        .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        
+        .main-content { display: flex; flex: 1; overflow: hidden; }
+        
+        /* SIDEBAR (Menú Principal) */
+        .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 20px 0; }
+        .menu-item { padding: 15px 25px; color: var(--text-muted); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; border-left: 3px solid transparent; }
+        .menu-item:hover, .menu-item.active { background: rgba(56, 189, 248, 0.1); color: var(--neon-blue); border-left-color: var(--neon-blue); }
+        
+        /* ÁREA DE CARPETAS */
+        .folder-area { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-deep); }
+        .section-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        
+        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        
+        .carpeta-card { background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .carpeta-card:hover { transform: translateY(-5px); border-color: var(--brand-orange); box-shadow: 0 10px 20px rgba(255, 115, 21, 0.1); }
+        .carpeta-card i.folder-icon { font-size: 3.5rem; color: var(--neon-blue); margin-bottom: 15px; }
+        .carpeta-card .titulo { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 1.1rem;}
+        .carpeta-card .subtitulo { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* MASC CHECKLIST UI */
+        .checklist-container { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 25px; margin-top: 20px; }
+        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-main); }
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brand-orange); cursor: pointer;}
+        .check-group-title { color: var(--brand-orange); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; margin: 20px 0 10px 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 5px;}
+
+        /* BREADCRUMB */
+        .breadcrumb { display: flex; gap: 10px; color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+        .breadcrumb span:hover { color: var(--brand-orange); }
+
+        /* MODAL AGREGAR */
+        .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bg-panel); padding: 30px; border-radius: 12px; width: 400px; border: 1px solid var(--border-glass); }
+        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%;}
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div id="login-screen">
+        <div class="login-box">
+            <i class="fa-solid fa-fingerprint" style="font-size: 3rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
+            <h1>Portal Pro</h1>
+            <p>Acceso Seguro a la Bóveda Local</p>
+            <input type="text" id="user" class="input-login" placeholder="Usuario Institucional">
+            <input type="password" id="pass" class="input-login" placeholder="Contraseña">
+            <button class="btn-login" onclick="iniciarSesion()">INGRESAR AL SISTEMA</button>
+            <p id="error-msg" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold;">Credenciales incorrectas.</p>
+        </div>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL (DASHBOARD) -->
+    <div id="dashboard-screen">
+        <div class="topbar">
+            <div class="logo"><i class="fa-solid fa-shield-halved" style="color:var(--brand-orange);"></i> Bóveda Confidencial | 45 y Más</div>
+            <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="menu-item active" id="menu-juridico" onclick="mostrarSeccion('juridico')">
+                    <i class="fa-solid fa-gavel"></i> Expedientes Jurídicos
+                </div>
+                <div class="menu-item" id="menu-masc" onclick="mostrarSeccion('masc')">
+                    <i class="fa-solid fa-handshake"></i> Convenios MASC
+                </div>
+            </div>
+
+            <!-- CONTENEDOR DINÁMICO DE CARPETAS -->
+            <div class="folder-area" id="area-trabajo">
+                <!-- Se llena con Javascript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA CREAR NUEVO EXPEDIENTE/CONVENIO -->
+    <div class="modal" id="modal-crear">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--neon-blue);" id="modal-title">Nuevo Registro</h3>
+            <input type="text" id="input-nuevo" class="input-login" placeholder="Ej. EXP/340/26 o Juan Pérez">
+            <button class="btn-crear" onclick="guardarNuevo()">Crear Carpeta</button>
+            <button class="btn-logout" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('modal-crear').style.display='none'">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        // ==== SISTEMA DE LOGIN ====
+        function iniciarSesion() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if(u === 'admin' && p === '45ymas') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'flex';
+                mostrarSeccion('juridico');
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+        function cerrarSesion() { location.reload(); }
+
+        // ==== NAVEGACIÓN PRINCIPAL ====
+        let vistaActual = 'juridico'; // 'juridico' o 'masc'
+        let nivelActual = 0; // 0=Juzgados, 1=Años, 2=Expedientes
+        let pathSelection = { juzgado: '', anio: '', exp: '' };
+
+        const juzgadosJalisco = ["Juzgado 1° Civil", "Juzgado 2° Civil", "Juzgado 1° Familiar", "Juzgado 2° Familiar", "Juzgado 1° Mercantil"];
+        const anios = ["2026", "2025", "2024", "2023"];
+
+        function mostrarSeccion(seccion) {
+            vistaActual = seccion; nivelActual = 0;
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('menu-' + seccion).classList.add('active');
+            renderizarVista();
+        }
+
+        function renderizarVista() {
+            const area = document.getElementById('area-trabajo');
+            let html = '';
+
+            if (vistaActual === 'juridico') {
+                if (nivelActual === 0) {
+                    html += `<div class="section-title"><i class="fa-solid fa-building-columns"></i> Selecciona un Juzgado</div><div class="grid-carpetas">`;
+                    juzgadosJalisco.forEach(j => { html += crearCardCarpeta(j, 'Expedientes locales', `entrarNivel(1, '${j}')`, 'fa-folder'); });
+                    html += `</div>`;
+                } 
+                else if (nivelActual === 1) {
+                    html += `<div class="breadcrumb" onclick="entrarNivel(0)"><i class="fa-solid fa-arrow-left"></i> Volver a Juzgados</div>`;
+                    html += `<div class="section-title">${pathSelection.juzgado} > Selecciona el Año</div><div class="grid-carpetas">`;
+                    anios.forEach(a => { html += crearCardCarpeta(a, 'Año judicial', `entrarNivel(2, '${a}')`, 'fa-calendar'); });
+                    html += `</div>`;
+                }
+                else if (nivelActual === 2) {
+                    html += `<div class="breadcrumb" onclick="entrarNivel(1)"><i class="fa-solid fa-arrow-left"></i> Volver a Años</div>`;
+                    html += `<div class="section-title">${pathSelection.juzgado} > ${pathSelection.anio} > Expedientes</div>`;
+                    html += `<div class="grid-carpetas"><div class="carpeta-card" style="border: 2px dashed var(--neon-blue);" onclick="abrirModalCrear('Nuevo Expediente')">
+                            <i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Añadir Expediente</div></div>`;
+                    
+                    // Cargar expedientes guardados en LocalStorage para esta ruta
+                    let exps = JSON.parse(localStorage.getItem(`exp_${pathSelection.juzgado}_${pathSelection.anio}`)) || [];
+                    exps.forEach(e => { html += crearCardCarpeta(e.nombre, 'Última modif: Hoy', `abrirVisor('${e.nombre}')`, 'fa-file-pdf'); });
+                    html += `</div>`;
+                }
+            } 
+            else if (vistaActual === 'masc') {
+                html += `<div class="section-title"><i class="fa-solid fa-handshake"></i> Convenios MASC Activos</div>`;
+                html += `<div class="grid-carpetas"><div class="carpeta-card" style="border: 2px dashed var(--brand-orange);" onclick="abrirModalCrear('Nuevo Convenio MASC')">
+                        <i class="fa-solid fa-plus folder-icon" style="color:var(--text-main);"></i><div class="titulo">Nuevo Solicitante</div></div>`;
+                
+                let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
+                mascs.forEach((m, index) => { html += crearCardCarpeta(m.numero, m.nombre, `verChecklistMasc(${index})`, 'fa-folder-open', 'var(--brand-orange)'); });
+                html += `</div>`;
+            }
+
+            area.innerHTML = html;
+        }
+
+        function crearCardCarpeta(titulo, subtitulo, onclickAction, icon, color='var(--neon-blue)') {
+            return `
+            <div class="carpeta-card" onclick="${onclickAction}">
+                <i class="fa-solid ${icon} folder-icon" style="color:${color};"></i>
+                <div class="titulo">${titulo}</div>
+                <div class="subtitulo">${subtitulo}</div>
+            </div>`;
+        }
+
+        function entrarNivel(nivel, valor='') {
+            nivelActual = nivel;
+            if(nivel === 1) pathSelection.juzgado = valor;
+            if(nivel === 2) pathSelection.anio = valor;
+            renderizarVista();
+        }
+
+        // ==== CREACIÓN LOCAL (GUARDA EN EL NAVEGADOR) ====
+        let tipoCreacion = '';
+        function abrirModalCrear(tipo) {
+            tipoCreacion = tipo;
+            document.getElementById('modal-title').innerText = tipo;
+            document.getElementById('input-nuevo').value = '';
+            document.getElementById('modal-crear').style.display = 'flex';
+        }
+
+        function guardarNuevo() {
+            let valor = document.getElementById('input-nuevo').value.trim();
+            if(!valor) return;
+
+            if(vistaActual === 'juridico') {
+                let key = `exp_${pathSelection.juzgado}_${pathSelection.anio}`;
+                let exps = JSON.parse(localStorage.getItem(key)) || [];
+                exps.push({ nombre: valor });
+                localStorage.setItem(key, JSON.stringify(exps));
+            } else {
+                let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
+                let num = `00${mascs.length + 1}/${new Date().getFullYear().toString().slice(-2)}`;
+                mascs.push({ numero: num, nombre: valor, fecha: new Date().toLocaleDateString() });
+                localStorage.setItem('masc_list', JSON.stringify(mascs));
+            }
+            document.getElementById('modal-crear').style.display = 'none';
+            renderizarVista();
+        }
+
+        // ==== REDIRECCIÓN AL NUEVO IURISVISOR ====
+        function abrirVisor(nombreExp) {
+            // Guardamos qué expediente estamos abriendo
+            localStorage.setItem('expediente_abierto', nombreExp);
+            // Redirige al nuevo IurisVisor Pro (Lo crearemos en el paso 2)
+            window.location.href = 'visor-expediente.html';
+        }
+
+        // ==== VISUALIZADOR DE CHECKLISTS MASC ====
+        function verChecklistMasc(index) {
+            let mascs = JSON.parse(localStorage.getItem('masc_list')) || [];
+            let m = mascs[index];
+            const area = document.getElementById('area-trabajo');
+            
+            // Checklist duro insertado directamente (Arrendamiento y Alimentos combinados de ejemplo)
+            area.innerHTML = `
+                <div class="breadcrumb" onclick="renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Convenios</div>
+                <div class="section-title"><i class="fa-solid fa-folder-open" style="color:var(--brand-orange)"></i> Expediente MASC: ${m.numero} | ${m.nombre}</div>
+                <p style="color:var(--text-muted); margin-bottom: 20px;">Fecha de Solicitud: ${m.fecha}</p>
+                
+                <div style="display:flex; gap:20px;">
+                    <!-- Columna 1: Checklist -->
+                    <div class="checklist-container" style="flex:1;">
+                        <h3>Documentación Requerida</h3>
+                        
+                        <div class="check-group-title">Preventivo Arrendamiento</div>
+                        <label class="check-item"><input type="checkbox"> SOLICITUD</label>
+                        <label class="check-item"><input type="checkbox"> DICTAMEN VIABILIDAD</label>
+                        <label class="check-item"><input type="checkbox"> ACUERDO DE CONFIDENCIALIDAD</label>
+                        <label class="check-item"><input type="checkbox"> CONVENIO FINAL *</label>
+                        
+                        <div class="check-group-title">Documentos Generales</div>
+                        <label class="check-item"><input type="checkbox"> IDENTIFICACIONES ()*</label>
+                        <label class="check-item"><input type="checkbox"> CONTRATO DE ARRENDAMIENTO ()*</label>
+                        <label class="check-item"><input type="checkbox"> PREDIAL *</label>
+                    </div>
+
+                    <!-- Columna 2: Archivos Digitales -->
+                    <div class="checklist-container" style="flex:1;">
+                        <h3>Bóveda de Archivos del Convenio</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Los PDFs cargados se vinculan a este MASC.</p>
+                        
+                        <div class="carpeta-card" style="border: 1px dashed var(--brand-orange); padding:15px;" onclick="abrirVisor('${m.numero}')">
+                            <i class="fa-solid fa-file-pdf folder-icon" style="font-size: 2rem;"></i>
+                            <div class="titulo">Abrir Lector Inteligente</div>
+                            <div class="subtitulo">Escanear documentos a este caso</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
