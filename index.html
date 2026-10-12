@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.75); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; --success: #10b981; }
+        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.85); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; --success: #10b981; }
         body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.85); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
         body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
         body.light-mode .service-category, body.light-mode .video-card, body.light-mode .contact-card { background: #ffffff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
@@ -17,7 +17,7 @@
         body { background: var(--bg-deep); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         
         /* TOPBAR */
-        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .topbar { background: rgba(5, 8, 16, 0.9); backdrop-filter: blur(15px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); position: fixed; width: 100%; top: 0; z-index: 1000; }
         .sub-brand-topbar { font-size: 0.8rem; color: var(--text-muted); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         
         .nav-links { display: flex; gap: 20px; align-items: center; }
@@ -29,17 +29,17 @@
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        /* HERO CON CARRUSEL DE FONDO (PORTADA 1 Y PORTADA 2) */
-        .hero { position: relative; padding: 160px 20px 100px 20px; text-align: center; min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
+        /* HERO CON CARRUSEL DE FONDO REPARADO */
+        .hero { position: relative; padding: 160px 20px 100px 20px; text-align: center; min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; background-color: #0b1329; }
         
         .hero-bg-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
-        .hero-slide.active { opacity: 0.35; } /* Visible pero sutil para leer textos */
+        .hero-slide.active { opacity: 0.45; } /* Visibilidad óptima */
         
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(5,8,16,0.6) 0%, rgba(5,8,16,0.95) 100%); z-index: 2; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(5,8,16,0.4) 0%, rgba(5,8,16,0.9) 100%); z-index: 2; }
         
         .hero-content { position: relative; z-index: 3; max-width: 800px; }
-        .logo-principal-centro { max-width: 260px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 10px 25px rgba(0,0,0,0.5)); }
+        .logo-principal-centro { max-width: 260px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6)); }
         
         .hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
         .hero h1 span { background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -61,24 +61,25 @@
         .service-list li { margin-bottom: 15px; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
         .service-list li i { color: var(--success); margin-top: 4px; font-size: 0.8rem; }
 
-        /* VIDEOS EN HORIZONTAL (3 PLATAFORMAS) */
+        /* REDES SOCIALES EN HORIZONTAL (3 COLUMNAS CON BOTÓN DE PLAY) */
         .videos-section { padding: 80px 20px; text-align: center; max-width: 1200px; margin: 0 auto; }
-        .videos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 40px; }
+        .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 40px; }
+        @media(max-width: 900px) { .videos-grid { grid-template-columns: 1fr; } }
         
-        .video-card { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 16px; padding: 25px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center;}
-        .video-card:hover { transform: translateY(-5px); border-color: var(--neon-blue); }
-        .video-icon-wrapper { width: 70px; height: 70px; border-radius: 50%; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 15px;}
-        .video-icon-wrapper i { font-size: 2rem; color: var(--neon-blue); }
-        .video-card h4 { color: var(--text-main); font-size: 1.2rem; margin-bottom: 8px; }
-        .video-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; margin-bottom: 20px;}
+        .video-card { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 16px; padding: 25px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; overflow: hidden; }
+        .video-card:hover { transform: translateY(-5px); border-color: var(--neon-blue); box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15); }
         
-        .btn-social { padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 0.9rem; }
+        .video-play-preview { width: 100%; height: 160px; background: rgba(0,0,0,0.4); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 1px solid var(--border-glass); position: relative; }
+        .btn-play-circle { width: 60px; height: 60px; background: var(--brand-orange); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: 0.3s; box-shadow: 0 0 20px rgba(255, 115, 21, 0.5); border: none; }
+        .btn-play-circle:hover { transform: scale(1.1); background: #ff8c3b; }
+
+        .video-card h4 { color: var(--text-main); font-size: 1.1rem; margin-bottom: 8px; }
+        .video-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px;}
+        
+        .btn-social { padding: 8px 16px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; font-size: 0.8rem; }
         .btn-tiktok { background: #000; color: #fff; border: 1px solid #333; }
-        .btn-tiktok:hover { background: #ff0050; border-color: #ff0050; }
         .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; border: none; }
-        .btn-instagram:hover { opacity: 0.9; }
         .btn-facebook { background: #1877F2; color: #fff; border: 1px solid #1877F2; }
-        .btn-facebook:hover { background: #0c5bce; }
 
         /* ACREDITACIONES Y LOGO SECUNDARIO */
         .acreditaciones-section { padding: 80px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px;}
@@ -137,7 +138,7 @@
         </div>
     </nav>
 
-    <!-- HERO CON CARRUSEL DE FONDO (PORTADA1 Y PORTADA2) -->
+    <!-- HERO CON CARRUSEL DE FONDO -->
     <section class="hero" id="inicio">
         <div class="hero-bg-slider">
             <div class="hero-slide active" style="background-image: url('assets/portada1.jpeg');"></div>
@@ -189,7 +190,7 @@
         </div>
     </section>
 
-    <!-- VIDEOS EN HORIZONTAL (TIKTOK, INSTAGRAM, FACEBOOK) -->
+    <!-- REDES SOCIALES EN HORIZONTAL CON BOTÓN DE PLAY -->
     <section class="videos-section" id="capsulas">
         <div class="section-header">
             <p>Asesoría en Redes</p>
@@ -197,25 +198,34 @@
         </div>
         <div class="videos-grid">
             
+            <!-- TIKTOK -->
             <div class="video-card">
-                <div class="video-icon-wrapper"><i class="fa-brands fa-tiktok"></i></div>
-                <h4>El Abogato Mediador (TikTok)</h4>
-                <p>Consejos legales rápidos, mediación explicada de forma sencilla y directa.</p>
-                <a href="https://www.tiktok.com/@45ymas_oficial/video/7693953839174569224" target="_blank" class="btn-social btn-tiktok"><i class="fa-solid fa-play"></i> Ver en TikTok</a>
+                <div class="video-play-preview">
+                    <a href="https://www.tiktok.com/@45ymas_oficial/video/7693953839174569224" target="_blank" class="btn-play-circle" title="Reproducir video"><i class="fa-solid fa-play"></i></a>
+                </div>
+                <h4>El Abogato Mediador</h4>
+                <p>Consejos de mediación explicados de forma sencilla y directa.</p>
+                <a href="https://www.tiktok.com/@45ymas_oficial/video/7693953839174569224" target="_blank" class="btn-social btn-tiktok"><i class="fa-brands fa-tiktok"></i> Ver en TikTok</a>
             </div>
 
+            <!-- INSTAGRAM -->
             <div class="video-card">
-                <div class="video-icon-wrapper" style="background: rgba(220, 39, 67, 0.1);"><i class="fa-brands fa-instagram" style="color: #dc2743;"></i></div>
-                <h4>Reel Informativo (Instagram)</h4>
-                <p>Conoce los beneficios de la justicia alternativa y nuestros casos de éxito.</p>
-                <a href="https://www.instagram.com/m.45ymas/reel/Ddo92Wfvk-5/" target="_blank" class="btn-social btn-instagram"><i class="fa-solid fa-play"></i> Ver en Instagram</a>
+                <div class="video-play-preview">
+                    <a href="https://www.instagram.com/m.45ymas/reel/Ddo92Wfvk-5/" target="_blank" class="btn-play-circle" title="Reproducir reel"><i class="fa-solid fa-play"></i></a>
+                </div>
+                <h4>Reel Informativo</h4>
+                <p>Conoce los beneficios de la justicia alternativa y nuestros casos.</p>
+                <a href="https://www.instagram.com/m.45ymas/reel/Ddo92Wfvk-5/" target="_blank" class="btn-social btn-instagram"><i class="fa-brands fa-instagram"></i> Ver en Instagram</a>
             </div>
 
+            <!-- FACEBOOK -->
             <div class="video-card">
-                <div class="video-icon-wrapper" style="background: rgba(24, 119, 242, 0.1);"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></div>
-                <h4>Cápsula Preventiva (Facebook)</h4>
-                <p>Análisis a fondo sobre convenios de arrendamiento y contratos seguros.</p>
-                <a href="https://www.facebook.com/reel/" target="_blank" class="btn-social btn-facebook"><i class="fa-solid fa-play"></i> Ver en Facebook</a>
+                <div class="video-play-preview">
+                    <a href="https://www.facebook.com/reel/" target="_blank" class="btn-play-circle" title="Reproducir reel"><i class="fa-solid fa-play"></i></a>
+                </div>
+                <h4>Cápsula Preventiva</h4>
+                <p>Análisis a fondo sobre convenios de arrendamiento seguros.</p>
+                <a href="https://www.facebook.com/reel/" target="_blank" class="btn-social btn-facebook"><i class="fa-brands fa-facebook"></i> Ver en Facebook</a>
             </div>
 
         </div>
@@ -277,15 +287,16 @@
     </footer>
 
     <script>
-        // SCRIPT PARA EL CARRUSEL DE FONDO (PORTADA 1 Y PORTADA 2)
         let currentSlide = 0;
         const slides = document.querySelectorAll('.hero-slide');
         function nextSlide() {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
+            if(slides.length > 0) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
         }
-        setInterval(nextSlide, 5000); // Rota cada 5 segundos
+        if(slides.length > 1) { setInterval(nextSlide, 5000); }
 
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
