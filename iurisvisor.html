@@ -2,168 +2,316 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IurisVisor Pro | Centro 45 y Más</title>
+    <title>IurisVisor: Versión Ejecutoriada - CNPCF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; }
-        header { background-color: #1A365D; color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 1.4rem; }
-        header a { color: #E36414; text-decoration: none; font-weight: bold; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        body { font-family: 'Montserrat', sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; color: #333; overflow: hidden; }
+        .controles-superior { background: white; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 10px; align-items: center; z-index: 10; }
+        button { padding: 8px 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; font-size: 13px; }
+        .btn-cargar { background: #1A365D; } .btn-cargar:hover { background: #0f172a; }
+        .btn-analizar { background: #6f42c1; display: none; } 
+        .btn-exportar { background: #E36414; display: none; } 
+        .btn-volver { background: #64748b; text-decoration: none; display: inline-flex; align-items: center; }
+        #loading { display: none; font-weight: bold; color: #E36414; margin-left: 10px; }
         
-        /* MURO DE BLOQUEO VIP (SOFT-GATE) */
-        #muroMembresia { background: linear-gradient(135deg, #0f172a, #1A365D); color: white; padding: 50px; border-radius: 15px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        #muroMembresia h2 { color: #E36414; margin-bottom: 15px; font-size: 1.8rem; }
-        #muroMembresia p { color: #94a3b8; margin-bottom: 25px; font-size: 1.05rem; }
-        .input-token { padding: 12px; width: 280px; border-radius: 8px; border: none; font-size: 1rem; text-align: center; margin-right: 10px; }
-        .btn-desbloquear { background-color: #E36414; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-desbloquear:hover { background-color: #c9550c; }
-        .btn-wsp-token { display: inline-block; margin-top: 20px; color: #25D366; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
-
-        /* CONTENIDO VIP (OCULTO HASTA VALIDAR) */
-        #contenidoVIP { display: none; }
-        .grid-visor { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
-        @media(max-width: 900px) { .grid-visor { grid-template-columns: 1fr; } }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        .card h2 { color: #1A365D; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid #E36414; padding-bottom: 8px; }
+        .area-trabajo { display: flex; flex: 1; overflow: hidden; }
+        .visor-central-container { flex: 2.5; background: #dcdde1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+        .visor-mensaje-vacio { position: absolute; top: 40%; color: #7f8c8d; font-size: 18px; text-align: center; }
+        #canvas-visor-central { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-radius: 4px; transition: transform 0.2s; transform-origin: top center; }
         
-        .upload-box { border: 2px dashed #cbd5e1; padding: 25px; text-align: center; border-radius: 8px; background: #fafafa; cursor: pointer; margin-bottom: 15px; }
-        .upload-box:hover { background: #f1f5f9; }
-        #pdfViewer { width: 100%; height: 500px; border: 1px solid #cbd5e1; border-radius: 8px; display: none; background: #e2e8f0; }
+        .controles-zoom { position: fixed; top: 90px; left: 20px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 5px; display: none; gap: 5px; z-index: 5; flex-direction: column;}
+        .btn-zoom { background: #34495e; padding: 5px 10px; font-size: 14px; }
+        
+        .panel-alertas { flex: 1.2; background: #1A365D; color: white; padding: 20px; overflow-y: auto; border-left: 5px solid #0f172a; min-width: 320px; max-width: 450px;}
+        .alerta-item { background: #2a4365; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 5px solid #E36414; cursor: pointer; transition: 0.2s; }
+        .alerta-item:hover { background: #334e68; }
+        .motivo-alerta { font-size: 13px; color: #cbd5e1; margin-top: 8px; font-style: italic; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 3px; }
 
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
-        .btn-calcular { background-color: #E36414; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
-        .btn-calcular:hover { background-color: #c9550c; }
-        .alerta-resultado { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; display: none; }
-        .semaforo-verde { background-color: #d1fae5; color: #065f46; border: 1px solid #34d399; }
-        .semaforo-amarillo { background-color: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
-        .semaforo-rojo { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+        .carrusel-inferior { height: 220px; background: #bdc3c7; border-top: 2px solid #7f8c8d; padding: 15px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 15px; align-items: center; }
+        .foja-card { background: white; padding: 8px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-align: center; position: relative; min-width: 130px; cursor: pointer; border: 3px solid transparent;}
+        .foja-card.activa { border-color: #1A365D; background: #e8f4f8; }
+        .foja-canvas-container { overflow: hidden; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 5px; height: 130px; display: flex; justify-content: center; align-items: center; background: #f9f9f9;}
+        .foja-card canvas { height: 100%; width: auto; display: block; }
+        .foja-etiqueta { font-weight: bold; font-size: 12px; margin-bottom: 5px; }
+        .foja-acciones { display: flex; justify-content: space-between; margin-top: 5px; }
+        .btn-mini { background: #bdc3c7; color: #333; padding: 3px 6px; font-size: 11px; }
+        .btn-mini.eliminar { background: #e74c3c; color: white; }
+
+        /* MODAL DE VIP / TOKEN */
+        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11, 15, 25, 0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-card { background: white; padding: 40px; border-radius: 16px; text-align: center; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-top: 5px solid #E36414; }
+        .modal-card h2 { color: #1A365D; margin-bottom: 10px; font-size: 1.5rem; }
+        .modal-card p { color: #64748b; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .input-vip { padding: 12px; width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 1.1rem; margin-bottom: 15px; font-weight: bold; }
+        .btn-validar { background: #E36414; color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; border: none; cursor: pointer; }
+        .btn-cerrar-modal { background: none; border: none; color: #94a3b8; margin-top: 15px; cursor: pointer; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>📡 IurisVisor Pro <span style="font-size: 0.8rem; background: #E36414; padding: 3px 8px; border-radius: 4px;">Acreditación 065</span></h1>
-        <a href="index.html">← Volver al Portal Principal</a>
-    </header>
+    <div class="controles-superior">
+        <a href="index.html" class="btn btn-volver">← Portal</a>
+        <h2 style="margin: 0; margin-right: 15px; color: #1A365D; font-size: 1.2rem;">📡 IurisVisor Pro <span style="font-size:0.7rem; background:#E36414; color:white; padding:2px 6px; border-radius:4px;">DEMO GRATUITA</span></h2>
+        <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
+        <button class="btn-cargar" onclick="document.getElementById('pdf-upload').click()">📂 1. Cargar PDF (Demo)</button>
+        <button id="btn-analizar" class="btn-analizar" onclick="escanearAlertas()">🔍 2. Radar de Alertas</button>
+        <button id="btn-exportar" class="btn-exportar" onclick="verificarVIP()">💾 3. Guardar Ordenado (VIP)</button>
+        <div id="loading">Cargando...</div>
+    </div>
 
-    <div class="container">
-        
-        <!-- MURO DE MEMBRESÍA (SOFT-GATE) -->
-        <div id="muroMembresia">
-            <h2>🔒 Acceso Exclusivo IurisVisor Pro</h2>
-            <p>Esta herramienta avanzada requiere membresía activa del Centro Privado 45 y Más.<br>Ingresa tu token de acceso mensual o solicita tu validación vía WhatsApp.</p>
-            <div>
-                <input type="text" id="tokenInput" class="input-token" placeholder="Ingresa tu Token VIP (ej: 45YMAS)">
-                <button class="btn-desbloquear" onclick="validarToken()">Desbloquear Herramienta</button>
+    <div class="area-trabajo">
+        <div class="visor-central-container" id="contenedor-visor-central">
+            <div class="visor-mensaje-vacio" id="mensaje-vacio">
+                ℹ️ Estás usando la <strong>Versión de Prueba</strong> de IurisVisor.<br>Carga tu expediente PDF para explorar el análisis y el radar de plazos.
             </div>
+            <div class="controles-zoom" id="caja-zoom">
+                <button class="btn-zoom" onclick="cambiarZoom(0.2)">➕</button>
+                <button class="btn-zoom" onclick="cambiarZoom(-0.2)">➖</button>
+                <button class="btn-zoom" onclick="resetZoom()">⟲</button>
+            </div>
+            <canvas id="canvas-visor-central" style="display:none;"></canvas>
+        </div>
+
+        <div class="panel-alertas" id="panel-alertas">
+            <h3 style="color: #fb923c; border-bottom: 1px solid #334155; padding-bottom: 10px;">Radar Legal (Demo)</h3>
+            <div id="lista-alertas"></div>
+        </div>
+    </div>
+
+    <div class="carrusel-inferior" id="grid-fojas"></div>
+
+    <!-- MODAL DE SOLICITUD DE TOKEN VIP -->
+    <div id="modalVIP">
+        <div class="modal-card">
+            <h2>🔒 Función Exclusiva VIP</h2>
+            <p>La exportación y limpieza definitiva de expedientes requiere membresía activa del Centro 45 y Más.<br>Ingresa tu token o solicítalo vía WhatsApp.</p>
+            <input type="text" id="tokenInput" class="input-vip" placeholder="Ej. 45YMAS">
+            <button class="btn-validar" onclick="validarTokenVIP()">Desbloquear Función Pro</button>
             <br>
-            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20realizar%20mi%20pago%20SPEI%20para%20obtener%20mi%20token%20de%20IurisVisor%20Pro" target="_blank" class="btn-wsp-token">💬 ¿No tienes token? Solicítalo aquí por WhatsApp (SPEI)</a>
+            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20mi%20token%20VIP%20para%20exportar%20en%20IurisVisor" target="_blank" style="display:block; margin-top:15px; color:#25D366; font-weight:bold; font-size:0.85rem; text-decoration:none;">💬 Obtener Token por WhatsApp (SPEI)</a>
+            <button class="btn-cerrar-modal" onclick="cerrarModalVIP()">Cancelar</button>
         </div>
-
-        <!-- CONTENIDO VIP PROTEGIDO -->
-        <div id="contenidoVIP">
-            <div class="grid-visor">
-                <div>
-                    <div class="card">
-                        <h2>📁 Visor de Expediente Judicial (PDF)</h2>
-                        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-                            <p id="textoCarga">📄 <strong>Haga clic aquí para seleccionar su archivo PDF</strong></p>
-                            <input type="file" id="fileInput" style="display: none;" accept=".pdf" onchange="cargarPDF(event)">
-                        </div>
-                        <iframe id="pdfViewer"></iframe>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="card">
-                        <h2>⏱️ Semáforo y Control de Plazos</h2>
-                        <div class="form-group">
-                            <label>Fecha de Notificación:</label>
-                            <input type="date" id="fechaNotificacion">
-                        </div>
-                        <div class="form-group">
-                            <label>Días hábiles fatales:</label>
-                            <input type="number" id="diasPlazo" value="3" min="1" max="30">
-                        </div>
-                        <button class="btn-calcular" onclick="calcularPlazo()">Calcular Vencimiento</button>
-                        <div id="resultadoAlerta" class="alerta-resultado"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        // CONTRASEÑA VIP DE PRUEBA (Mañana ante el jefe puedes usar: 45YMAS)
-        const TOKEN_CORRECTO = "45YMAS";
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        let bytesOriginales = null;
+        let pdfDocumento = null; 
+        let nivelZoomActual = 1.3;
+        let paginaCargadaActual = null;
+        let alertasPaginaCargada = []; 
 
-        function validarToken() {
-            const tokenUser = document.getElementById('tokenInput').value.trim();
-            if(tokenUser === TOKEN_CORRECTO) {
-                document.getElementById('muroMembresia').style.display = 'none';
-                document.getElementById('contenidoVIP').style.display = 'block';
+        function verificarVIP() {
+            document.getElementById('modalVIP').style.display = 'flex';
+        }
+        function cerrarModalVIP() {
+            document.getElementById('modalVIP').style.display = 'none';
+        }
+        function validarTokenVIP() {
+            const token = document.getElementById('tokenInput').value.trim();
+            if(token === "45YMAS") {
+                alert("¡Token validado con éxito! Iniciando exportación...");
+                cerrarModalVIP();
+                exportarPDFReal();
             } else {
-                alert('Token incorrecto o membresía vencida. Solicita tu acceso por WhatsApp.');
+                alert("Token incorrecto. Solicita tu acceso oficial en el Centro 45 y Más.");
             }
         }
 
-        function cargarPDF(event) {
-            const archivo = event.target.files[0];
-            if (archivo) {
-                const lectorURL = URL.createObjectURL(archivo);
-                const visor = document.getElementById('pdfViewer');
-                const textoCarga = document.getElementById('textoCarga');
-                
-                visor.style.display = 'block';
-                visor.src = lectorURL;
-                textoCarga.innerHTML = `✅ Archivo cargado correctamente: <strong>${archivo.name}</strong>`;
-            }
-        }
+        async function cargarPDF(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerText = "Abriendo expediente...";
 
-        function calcularPlazo() {
-            const fechaInput = document.getElementById('fechaNotificacion').value;
-            const dias = parseInt(document.getElementById('diasPlazo').value);
-            const resultadoDiv = document.getElementById('resultadoAlerta');
-
-            if (!fechaInput) {
-                alert('Seleccione una fecha válida.');
-                return;
-            }
-
-            let fechaNotif = new Date(fechaInput);
-            let fechaVencimiento = new Date(fechaNotif);
-            let diasAgregados = 0;
+            bytesOriginales = new Uint8Array(await file.arrayBuffer());
+            pdfDocumento = await pdfjsLib.getDocument(bytesOriginales).promise;
             
-            while(diasAgregados < dias) {
-                fechaVencimiento.setDate(fechaVencimiento.getDate() + 1);
-                let diaSemana = fechaVencimiento.getDay();
-                if(diaSemana !== 0 && diaSemana !== 6) {
-                    diasAgregados++;
+            const carrusel = document.getElementById('grid-fojas');
+            carrusel.innerHTML = '';
+            document.getElementById('lista-alertas').innerHTML = '';
+            document.getElementById('canvas-visor-central').style.display = 'none';
+            document.getElementById('mensaje-vacio').style.display = 'block';
+            document.getElementById('caja-zoom').style.display = 'none';
+
+            for (let i = 1; i <= pdfDocumento.numPages; i++) {
+                const page = await pdfDocumento.getPage(i);
+                const viewportMiniatura = page.getViewport({ scale: 0.3 }); 
+                
+                const card = document.createElement('div');
+                card.className = 'foja-card';
+                card.id = `tarjeta-foja-${i}`;
+                card.dataset.numPaginaPdf = i; 
+                card.dataset.rotacion = 0; 
+                
+                card.onclick = (e) => { if(e.target.tagName !== 'BUTTON') { cargarEnVisorCentral(i, []); } };
+                
+                const canvasContainer = document.createElement('div');
+                canvasContainer.className = 'foja-canvas-container';
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewportMiniatura.width;
+                canvas.height = viewportMiniatura.height;
+                await page.render({ canvasContext: ctx, viewport: viewportMiniatura }).promise;
+
+                canvasContainer.appendChild(canvas);
+                const etiqueta = document.createElement('div');
+                etiqueta.className = 'foja-etiqueta';
+                etiqueta.innerText = `Foja ${i}`;
+
+                const accionesDiv = document.createElement('div');
+                accionesDiv.className = 'foja-acciones';
+                
+                const btnRotar = document.createElement('button');
+                btnRotar.className = 'btn-mini';
+                btnRotar.innerText = '↻';
+                btnRotar.onclick = (e) => {
+                    e.stopPropagation();
+                    let rot = parseInt(card.dataset.rotacion) + 90;
+                    card.dataset.rotacion = rot;
+                    canvas.style.transform = `rotate(${rot}deg)`;
+                };
+
+                const btnEliminar = document.createElement('button');
+                btnEliminar.className = 'btn-mini eliminar';
+                btnEliminar.innerText = '🗑️';
+                btnEliminar.onclick = (e) => { e.stopPropagation(); card.remove(); };
+
+                accionesDiv.appendChild(btnRotar);
+                accionesDiv.appendChild(btnEliminar);
+                card.appendChild(etiqueta);
+                card.appendChild(canvasContainer);
+                card.appendChild(accionesDiv);
+                carrusel.appendChild(card);
+            }
+
+            document.getElementById('btn-analizar').style.display = 'inline-block';
+            document.getElementById('btn-exportar').style.display = 'inline-block';
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        async function escanearAlertas() {
+            const cards = document.querySelectorAll('.foja-card');
+            const panelAlertas = document.getElementById('lista-alertas');
+            const loading = document.getElementById('loading');
+            panelAlertas.innerHTML = '';
+            loading.style.display = 'block';
+
+            const categorias = [
+                { nombre: "Sentencia", palabras: ['sentencia', 'resuelve', 'resolutivos', 'resolutivo'], color: 'rgba(231, 76, 60, 0.4)', borde: '#e74c3c' },
+                { nombre: "Prevención", palabras: ['prevéngase', 'aclarar', 'apercibimiento'], color: 'rgba(230, 126, 34, 0.4)', borde: '#e67e22' },
+                { nombre: "Término / Auto", palabras: ['admite', 'término', 'días'], color: 'rgba(52, 152, 219, 0.4)', borde: '#3498db' }
+            ];
+
+            for (let i = 0; i < cards.length; i++) {
+                loading.innerText = `Analizando foja ${i+1}...`;
+                const numPaginaPdf = cards[i].dataset.numPaginaPdf;
+                const page = await pdfDocumento.getPage(parseInt(numPaginaPdf));
+                const viewportOCR = page.getViewport({ scale: 1.0 });
+                const canvasOCR = document.createElement('canvas');
+                const ctxOCR = canvasOCR.getContext('2d');
+                canvasOCR.width = viewportOCR.width;
+                canvasOCR.height = viewportOCR.height;
+                await page.render({ canvasContext: ctxOCR, viewport: viewportOCR }).promise;
+
+                const { data } = await Tesseract.recognize(canvasOCR, 'spa');
+                let alertasEnEstaFoja = [];
+
+                data.words.forEach(palabra => {
+                    let textoLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
+                    if (textoLimpio.length < 3) return;
+                    for (let cat of categorias) {
+                        if (cat.palabras.includes(textoLimpio)) {
+                            alertasEnEstaFoja.push({
+                                categoria: cat.nombre,
+                                textoExacto: palabra.text,
+                                bbox: palabra.bbox,
+                                colorFondo: cat.color,
+                                colorBorde: cat.borde
+                            });
+                        }
+                    }
+                });
+
+                if (alertasEnEstaFoja.length > 0) {
+                    const alertaDiv = document.createElement('div');
+                    alertaDiv.className = 'alerta-item';
+                    alertaDiv.style.borderLeftColor = alertasEnEstaFoja[0].colorBorde;
+                    let motivos = alertasEnEstaFoja.map(a => `"${a.textoExacto}"`).join(', ');
+                    alertaDiv.innerHTML = `<strong>📍 Foja ${i+1}</strong><br>Detectado: ${alertasEnEstaFoja[0].categoria}<div class="motivo-alerta">Palabras: ${motivos}</div>`;
+                    alertaDiv.onclick = () => cargarEnVisorCentral(numPaginaPdf, alertasEnEstaFoja);
+                    panelAlertas.appendChild(alertaDiv);
                 }
             }
+            loading.innerText = "¡Radar completado!";
+            setTimeout(() => loading.style.display = 'none', 3000);
+        }
 
-            let hoy = new Date();
-            let diferenciaDias = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
+        async function cargarEnVisorCentral(numPagina, alertas) {
+            paginaCargadaActual = numPagina;
+            alertasPaginaCargada = alertas;
+            nivelZoomActual = 1.3;
 
-            resultadoDiv.style.display = 'block';
-            resultadoDiv.className = 'alerta-resultado';
+            document.querySelectorAll('.foja-card').forEach(c => c.classList.remove('activa'));
+            const card = document.getElementById(`tarjeta-foja-${numPagina}`);
+            if(card) card.classList.add('activa');
 
-            if (diferenciaDias > 3) {
-                resultadoDiv.classList.add('semaforo-verde');
-                resultadoDiv.innerHTML = `🟢 Plazo Seguro<br>Vence el: ${fechaVencimiento.toLocaleDateString()}<br><small>Quedan ${diferenciaDias} días hábiles.</small>`;
-            } else if (diferenciaDias >= 1 && diferenciaDias <= 3) {
-                resultadoDiv.classList.add('semaforo-amarillo');
-                resultadoDiv.innerHTML = `🟡 ¡Atención Próxima!<br>Vence el: ${fechaVencimiento.toLocaleDateString()}<br><small>Quedan ${diferenciaDias} días hábiles.</small>`;
-            } else {
-                resultadoDiv.classList.add('semaforo-rojo');
-                resultadoDiv.innerHTML = `🔴 ¡URGENTE / VENCIDO!<br>Fecha límite: ${fechaVencimiento.toLocaleDateString()}<br><small>Revisar prevención de inmediato.</small>`;
+            document.getElementById('mensaje-vacio').style.display = 'none';
+            document.getElementById('caja-zoom').style.display = 'flex';
+            document.getElementById('canvas-visor-central').style.display = 'block';
+            renderizarCanvasCentral();
+        }
+
+        async function renderizarCanvasCentral() {
+            if(!paginaCargadaActual) return;
+            const page = await pdfDocumento.getPage(parseInt(paginaCargadaActual));
+            const viewport = page.getViewport({ scale: nivelZoomActual });
+            const canvas = document.getElementById('canvas-visor-central');
+            const ctx = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+            if (alertasPaginaCargada && alertasPaginaCargada.length > 0) {
+                alertasPaginaCargada.forEach(a => {
+                    const b = a.bbox;
+                    ctx.fillStyle = a.colorFondo;
+                    ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
+                    ctx.strokeStyle = a.colorBorde;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
+                });
             }
+        }
+
+        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); renderizarCanvasCentral(); }
+        function resetZoom() { nivelZoomActual = 1.3; renderizarCanvasCentral(); }
+
+        async function exportarPDFReal() {
+            document.getElementById('loading').innerText = "Exportando...";
+            document.getElementById('loading').style.display = 'block';
+            const { PDFDocument, degrees } = PDFLib;
+            const docOriginal = await PDFDocument.load(bytesOriginales);
+            const docNuevo = await PDFDocument.create();
+            const cards = document.querySelectorAll('.foja-card');
+            
+            for(let i=0; i<cards.length; i++) {
+                const idx = parseInt(cards[i].dataset.numPaginaPdf) - 1;
+                const rot = parseInt(cards[i].dataset.rotacion) || 0;
+                const [pag] = await docNuevo.copyPages(docOriginal, [idx]);
+                if (rot !== 0) pag.setRotation(degrees(pag.getRotation().angle + rot));
+                docNuevo.addPage(pag);
+            }
+            const bytes = await docNuevo.save();
+            const blob = new Blob([bytes], { type: "application/pdf" });
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = "Expediente_Limpio_45yMas.pdf"; 
+            a.click();
+            document.getElementById('loading').style.display = 'none';
         }
     </script>
 </body>
