@@ -8,97 +8,98 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <!-- Estilos y Fuentes -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* BASE OSCURA NUEVA ERA */
+        /* VARIABLES DARK (Por defecto) */
         :root {
             --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6);
             --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc; --text-muted: #94a3b8;
         }
+
+        /* VARIABLES MODO CLARO (CAMALEÓN) */
+        body.light-mode {
+            --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9);
+            --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569;
+        }
+        body.light-mode .radar-panel { background: #f1f5f9; border-left: 1px solid #cbd5e1; }
+        body.light-mode .carrusel { background: #e2e8f0; border-top: 1px solid #cbd5e1; }
+        body.light-mode .foja-card { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
+        body.light-mode .logo-visor { color: #0f172a; }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
-        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s, color 0.3s; }
         
-        /* SCROLLBAR */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--brand-orange); }
 
         /* TOPBAR CONTROLES */
-        .topbar { background: rgba(5, 8, 16, 0.8); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
-        .logo-visor { font-weight: 800; font-size: 1.2rem; color: #fff; margin-right: auto; display: flex; align-items: center; gap: 10px; }
+        .topbar { background: rgba(5, 8, 16, 0.8); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; transition: background 0.3s; }
+        .logo-visor { font-weight: 800; font-size: 1.2rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
         .logo-visor i { color: var(--brand-orange); }
         
-        .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: white; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
-        .btn-volver { background: transparent; color: var(--text-muted); }
-        .btn-volver:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-volver { background: transparent; color: var(--text-muted); border: none; }
+        .btn-volver:hover { color: var(--brand-orange); }
         .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); }
-        .btn-accion:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); }
+        .btn-accion:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); }
+        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 5px 15px rgba(255, 115, 21, 0.3); }
         .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 21, 0.5); }
         
-        #loading { display: none; font-size: 0.85rem; color: var(--brand-orange); font-weight: bold; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        /* Botón Camaleón */
+        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; margin-left: 10px; }
+        .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        /* ÁREA DE TRABAJO PRINCIPAL */
-        .workspace { display: flex; flex: 1; overflow: hidden; background: radial-gradient(circle at center, #0f172a 0%, var(--bg-deep) 100%); }
-        
-        /* VISOR CENTRAL */
+        /* PANTALLA DE PROGRESO DE ESCANEO */
+        #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; color: white; }
+        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 0 40px rgba(56, 189, 248, 0.2); }
+        .barra-fondo { width: 100%; height: 10px; background: #1e293b; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+        .barra-llena { width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); transition: width 0.3s ease; }
+
+        /* WORKSPACE */
+        .workspace { display: flex; flex: 1; overflow: hidden; background: transparent; }
         .visor-container { flex: 2.5; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 40px; }
         .visor-empty { position: absolute; top: 40%; text-align: center; color: var(--text-muted); }
-        .visor-empty i { font-size: 4rem; color: #1e293b; margin-bottom: 15px; display: block; }
-        #canvas-visor-central { background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border-radius: 4px; transition: transform 0.2s; }
+        .visor-empty i { font-size: 4rem; margin-bottom: 15px; display: block; opacity: 0.5; }
+        #canvas-visor-central { background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border-radius: 4px; transition: transform 0.2s; }
         
         .zoom-controls { position: fixed; bottom: 250px; left: 30px; background: var(--glass-bg); backdrop-filter: blur(10px); padding: 10px; border-radius: 12px; border: 1px solid var(--border-glass); display: none; flex-direction: column; gap: 8px; z-index: 5; }
         .btn-zoom { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 35px; height: 35px; border-radius: 6px; transition: background 0.2s; }
-        .btn-zoom:hover { background: rgba(255,255,255,0.1); color: var(--neon-blue); }
+        .btn-zoom:hover { background: rgba(125,125,125,0.2); color: var(--brand-orange); }
 
-        /* PANEL RADAR (DASHBOARD) */
-        .radar-panel { flex: 1.2; background: rgba(10, 15, 29, 0.95); border-left: 1px solid var(--border-glass); padding: 25px; overflow-y: auto; min-width: 350px; display: flex; flex-direction: column; }
-        .radar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
-        .radar-header h3 { color: var(--text-main); font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .radar-header h3 i { color: var(--neon-blue); }
+        /* PANEL RADAR */
+        .radar-panel { flex: 1.2; background: rgba(10, 15, 29, 0.6); border-left: 1px solid var(--border-glass); padding: 25px; overflow-y: auto; min-width: 350px; transition: background 0.3s; }
+        .radar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; margin-bottom: 20px; }
+        .radar-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
         
-        /* TARJETA DEMO LOCK */
         .demo-lock-card { background: rgba(255, 115, 21, 0.05); border: 1px dashed var(--brand-orange); padding: 25px; border-radius: 12px; text-align: center; margin-top: 20px; }
-        .demo-lock-card i { font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 15px; }
-        .demo-lock-card h4 { color: #fff; margin-bottom: 10px; font-size: 1.1rem; }
+        .demo-lock-card h4 { color: var(--text-main); margin: 10px 0; font-size: 1.1rem; }
         .demo-lock-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
         
-        /* ITEM ALERTA PRO */
-        .alerta-item { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--brand-orange); cursor: pointer; transition: all 0.2s; }
-        .alerta-item:hover { background: rgba(255,255,255,0.05); transform: translateX(-5px); }
-        .motivo-alerta { font-size: 0.8rem; color: var(--neon-blue); margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; font-family: monospace; }
+        .alerta-item { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--brand-orange); cursor: pointer; transition: transform 0.2s; }
+        .alerta-item:hover { transform: translateX(-5px); border-color: var(--neon-blue); }
+        .motivo-alerta { font-size: 0.8rem; color: var(--brand-orange); margin-top: 8px; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 4px; font-weight: 600; }
 
         /* CARRUSEL INFERIOR */
-        .carrusel { height: 200px; background: #03050a; border-top: 1px solid #1e293b; padding: 15px 25px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 20px; align-items: center; }
-        .foja-card { background: #0f172a; padding: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; min-width: 120px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
-        .foja-card.activa { border-color: var(--neon-blue); background: rgba(56, 189, 248, 0.1); }
-        .foja-canvas-container { overflow: hidden; border-radius: 4px; margin-bottom: 8px; height: 110px; background: #fff; display: flex; justify-content: center; align-items: center; }
+        .carrusel { height: 200px; background: #03050a; padding: 15px 25px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 20px; align-items: center; transition: background 0.3s; }
+        .foja-card { background: #0f172a; padding: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: center; min-width: 120px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
+        .foja-card.activa { border-color: var(--neon-blue); }
+        .foja-canvas-container { overflow: hidden; border-radius: 4px; margin-bottom: 8px; height: 110px; background: #fff; display: flex; justify-content: center; align-items: center; pointer-events: none; }
         .foja-card canvas { height: 100%; width: auto; display: block; }
-        .foja-etiqueta { font-weight: 600; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
-        .foja-acciones { display: flex; justify-content: space-between; }
-        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; transition: background 0.2s; }
-        .btn-mini:hover { background: rgba(255,255,255,0.2); }
-        .btn-mini.eliminar:hover { background: #ef4444; }
+        .foja-etiqueta { font-weight: 600; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; pointer-events: none; }
 
-        /* GLASS MODAL VIP */
+        /* MODAL VIP */
         #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; overflow: hidden; }
-        .modal-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); }
-        .modal-card h2 { color: #fff; margin-bottom: 15px; font-size: 1.5rem; }
-        .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px; }
-        .input-vip { background: rgba(0,0,0,0.3); border: 1px solid #1e293b; color: #fff; padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; outline: none; }
-        .input-vip:focus { border-color: var(--brand-orange); box-shadow: 0 0 15px rgba(255, 115, 21, 0.2); }
-        
-        /* UTILIDADES ESTADO */
-        .status-badge { background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; letter-spacing: 1px; }
-        .status-demo { color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
-        .status-pro { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; outline: none; }
+        .input-vip:focus { border-color: var(--brand-orange); }
+        .status-badge { background: rgba(250, 204, 21, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
     </style>
 </head>
 <body>
@@ -108,14 +109,18 @@
         <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
         <div class="logo-visor">
             <i class="fa-solid fa-microchip"></i> IurisVisor Pro
-            <span class="status-badge status-demo" id="status-badge">VERSIÓN DEMO</span>
+            <span class="status-badge" id="status-badge">VERSIÓN DEMO</span>
         </div>
         
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
-        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar PDF</button>
+        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar Expediente</button>
         <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Iniciar Radar</button>
         <button id="btn-exportar" class="btn btn-vip" onclick="verificarVIP()"><i class="fa-solid fa-lock"></i> 3. Desbloquear VIP</button>
-        <div id="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...</div>
+        
+        <!-- Botón Camaleón -->
+        <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
+            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
+        </button>
     </div>
 
     <!-- WORKSPACE -->
@@ -126,24 +131,24 @@
             <div class="visor-empty" id="mensaje-vacio">
                 <i class="fa-solid fa-file-shield"></i>
                 <h2>Dashboard Inactivo</h2>
-                <p>Carga un expediente PDF para iniciar el análisis inteligente.</p>
+                <p>Carga un expediente PDF para iniciar el análisis.</p>
             </div>
             
             <div class="zoom-controls" id="caja-zoom">
-                <button class="btn-zoom" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-                <button class="btn-zoom" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                <button class="btn-zoom" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-plus"></i></button>
+                <button class="btn-zoom" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-minus"></i></button>
                 <button class="btn-zoom" onclick="resetZoom()"><i class="fa-solid fa-expand"></i></button>
             </div>
             <canvas id="canvas-visor-central" style="display:none;"></canvas>
         </div>
 
-        <!-- PANEL DE ALERTAS (RADAR) -->
+        <!-- PANEL DE ALERTAS -->
         <div class="radar-panel" id="panel-alertas">
             <div class="radar-header">
-                <h3><i class="fa-solid fa-satellite-dish"></i> Radar de Plazos</h3>
+                <h3><i class="fa-solid fa-satellite-dish" style="color:var(--neon-blue);"></i> Radar de Plazos</h3>
             </div>
             <div id="lista-alertas">
-                <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">Esperando carga de documento...</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">Esperando documento...</p>
             </div>
         </div>
     </div>
@@ -151,113 +156,124 @@
     <!-- CARRUSEL INFERIOR -->
     <div class="carrusel" id="grid-fojas"></div>
 
-    <!-- GLASS MODAL VIP -->
-    <div id="modalVIP">
-        <div class="modal-card">
-            <h2><i class="fa-solid fa-unlock-keyhole" style="color: var(--brand-orange);"></i> Activar Pro</h2>
-            <p>Ingresa tu token institucional del Centro 45 y Más para revelar fojas, marcatextos y habilitar exportación.</p>
-            <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN" autocomplete="off">
-            <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="validarTokenVIP()">VALIDAR ACCESO</button>
-            <div style="margin-top: 20px;">
-                <a href="https://wa.me/523321870711?text=Hola,%20quiero%20mi%20token%20VIP" target="_blank" style="color: var(--neon-blue); font-size: 0.8rem; text-decoration: none; font-weight: bold;"><i class="fa-brands fa-whatsapp"></i> Solicitar Token Oficial</a>
+    <!-- PANTALLA DE PROGRESO (BARRA) -->
+    <div id="pantalla-progreso">
+        <div class="progreso-card">
+            <i class="fa-solid fa-microchip fa-fade" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
+            <h3 style="color: white; margin-bottom: 10px;">Motor OCR IurisVisor</h3>
+            <p id="texto-progreso" style="color: #cbd5e1; font-size: 0.9rem;">Preparando escaneo...</p>
+            <div class="barra-fondo">
+                <div class="barra-llena" id="barra-llena"></div>
             </div>
-            <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer; font-size: 0.8rem;" onclick="cerrarModalVIP()">Cancelar</button>
+            <p id="porcentaje-progreso" style="font-weight: bold; color: var(--brand-orange);">0%</p>
         </div>
     </div>
 
-    <!-- LÓGICA CORE -->
+    <!-- MODAL VIP -->
+    <div id="modalVIP">
+        <div class="modal-card">
+            <h2><i class="fa-solid fa-unlock-keyhole" style="color: var(--brand-orange);"></i> Activar Pro</h2>
+            <p style="color: var(--text-muted);">Ingresa tu token institucional del Centro 45 y Más para revelar fojas, marcatextos y habilitar exportación.</p>
+            <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN 45YMAS" autocomplete="off">
+            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 15px; font-size: 1rem;" onclick="validarTokenVIP()">VALIDAR ACCESO</button>
+            <button style="background:none; border:none; color: var(--text-muted); margin-top: 15px; cursor:pointer;" onclick="cerrarModalVIP()">Cancelar</button>
+        </div>
+    </div>
+
     <script>
+        /* TEMA CAMALEÓN */
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            const btnSpan = document.getElementById('text-theme');
+            const btnIcon = document.querySelector('#btnTheme i');
+            
+            if(isLight) {
+                btnSpan.innerText = "Modo Oscuro";
+                btnIcon.className = "fa-solid fa-moon";
+                localStorage.setItem('tema', 'light');
+            } else {
+                btnSpan.innerText = "Modo Claro";
+                btnIcon.className = "fa-solid fa-circle-half-stroke";
+                localStorage.setItem('tema', 'dark');
+            }
+        }
+        window.onload = () => { if(localStorage.getItem('tema') === 'light') toggleTheme(); };
+
+        /* LÓGICA CORE IURISVISOR */
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         let bytesOriginales = null, pdfDocumento = null; 
         let nivelZoomActual = 1.3, paginaCargadaActual = null;
         let esProActivado = false; 
 
-        // CONTROLES VIP
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
         function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
         function validarTokenVIP() {
             if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
-                esProActivado = true;
-                cerrarModalVIP();
+                esProActivado = true; cerrarModalVIP();
                 const badge = document.getElementById('status-badge');
-                badge.className = 'status-badge status-pro';
-                badge.innerText = 'VERSIÓN PRO ACTIVA';
+                badge.className = 'status-badge status-pro'; badge.innerText = 'VERSIÓN PRO ACTIVA';
                 document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> 3. Exportar Limpio';
-                document.getElementById('btn-exportar').onclick = exportarPDFReal;
                 if(window.ultimasAlertasGlobales) mostrarPanelPro(window.ultimasAlertasGlobales);
-            } else {
-                alert("Acceso Denegado. Token inválido.");
-            }
+                if(paginaCargadaActual) cargarEnVisorCentral(paginaCargadaActual, window.mapaAlertasPorFoja[paginaCargadaActual]);
+            } else { alert("Acceso Denegado. Token inválido."); }
         }
 
-        // 1. CARGA DE PDF
         async function cargarPDF(event) {
             const file = event.target.files[0];
             if (!file) return;
-            mostrarCarga("Estructurando expediente...");
+            document.getElementById('pantalla-progreso').style.display = 'flex';
+            document.getElementById('texto-progreso').innerText = "Cargando estructura del PDF...";
+            
             bytesOriginales = new Uint8Array(await file.arrayBuffer());
             pdfDocumento = await pdfjsLib.getDocument(bytesOriginales).promise;
             
             const carrusel = document.getElementById('grid-fojas');
             carrusel.innerHTML = '';
-            document.getElementById('lista-alertas').innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">Expediente Listo. Ejecuta el Radar.</p>';
+            document.getElementById('lista-alertas').innerHTML = '<p style="color: var(--text-muted); text-align: center; margin-top: 20px;">Expediente Listo. Ejecuta el Radar.</p>';
             document.getElementById('canvas-visor-central').style.display = 'none';
             document.getElementById('mensaje-vacio').style.display = 'block';
-            document.getElementById('caja-zoom').style.display = 'none';
 
             for (let i = 1; i <= pdfDocumento.numPages; i++) {
                 const page = await pdfDocumento.getPage(i);
                 const viewportMiniatura = page.getViewport({ scale: 0.3 }); 
                 
                 const card = document.createElement('div');
-                card.className = 'foja-card';
-                card.id = `tarjeta-foja-${i}`;
+                card.className = 'foja-card'; card.id = `tarjeta-foja-${i}`;
                 card.dataset.numPaginaPdf = i; card.dataset.rotacion = 0; 
                 
-                card.onclick = (e) => { 
-                    if(e.target.tagName !== 'BUTTON') { 
-                        if(esProActivado) cargarEnVisorCentral(i, window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : []); 
-                        else verificarVIP();
-                    } 
+                // Demo SI permite ver la foja (pero sin marcatextos)
+                card.onclick = () => { 
+                    const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : [];
+                    cargarEnVisorCentral(i, alertas); 
                 };
                 
-                const canvasContainer = document.createElement('div');
-                canvasContainer.className = 'foja-canvas-container';
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
+                const canvasContainer = document.createElement('div'); canvasContainer.className = 'foja-canvas-container';
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
                 canvas.width = viewportMiniatura.width; canvas.height = viewportMiniatura.height;
                 await page.render({ canvasContext: ctx, viewport: viewportMiniatura }).promise;
 
                 canvasContainer.appendChild(canvas);
-                
-                const etiqueta = document.createElement('div');
-                etiqueta.className = 'foja-etiqueta';
-                etiqueta.innerText = `FOJA ${i}`;
-
-                const accionesDiv = document.createElement('div');
-                accionesDiv.className = 'foja-acciones';
-                const btnRotar = document.createElement('button'); btnRotar.className = 'btn-mini'; btnRotar.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
-                btnRotar.onclick = (e) => { e.stopPropagation(); let rot = parseInt(card.dataset.rotacion) + 90; card.dataset.rotacion = rot; canvas.style.transform = `rotate(${rot}deg)`; };
-                const btnEliminar = document.createElement('button'); btnEliminar.className = 'btn-mini eliminar'; btnEliminar.innerHTML = '<i class="fa-solid fa-trash"></i>';
-                btnEliminar.onclick = (e) => { e.stopPropagation(); card.remove(); };
-
-                accionesDiv.append(btnRotar, btnEliminar);
-                card.append(etiqueta, canvasContainer, accionesDiv);
+                const etiqueta = document.createElement('div'); etiqueta.className = 'foja-etiqueta'; etiqueta.innerText = `FOJA ${i}`;
+                card.append(etiqueta, canvasContainer);
                 carrusel.appendChild(card);
             }
-
             document.getElementById('btn-analizar').style.display = 'inline-flex';
-            ocultarCarga();
+            document.getElementById('pantalla-progreso').style.display = 'none';
         }
 
-        // 2. RADAR OCR
         async function escanearAlertas() {
             const cards = document.querySelectorAll('.foja-card');
-            mostrarCarga("Analizando fojas...");
+            const totalFojas = cards.length;
             
+            document.getElementById('pantalla-progreso').style.display = 'flex';
+            const textoProgreso = document.getElementById('texto-progreso');
+            const barraLlena = document.getElementById('barra-llena');
+            const txtPorcentaje = document.getElementById('porcentaje-progreso');
+
             const categorias = [
-                { nombre: "Riesgo: Sentencia", palabras: ['sentencia', 'resuelve', 'resolutivos'], colorF: 'rgba(239, 68, 68, 0.4)', colorB: '#ef4444' },
-                { nombre: "Prevención", palabras: ['prevéngase', 'aclarar', 'apercibimiento'], colorF: 'rgba(245, 158, 11, 0.4)', colorB: '#f59e0b' },
+                { nombre: "Sentencia", palabras: ['sentencia', 'resuelve'], colorF: 'rgba(239, 68, 68, 0.4)', colorB: '#ef4444' },
+                { nombre: "Prevención", palabras: ['prevéngase', 'aclarar'], colorF: 'rgba(245, 158, 11, 0.4)', colorB: '#f59e0b' },
                 { nombre: "Vencimiento", palabras: ['admite', 'término', 'días'], colorF: 'rgba(56, 189, 248, 0.4)', colorB: '#38bdf8' }
             ];
 
@@ -265,11 +281,16 @@
             window.mapaAlertasPorFoja = {};
             let todasLasAlertasArray = [];
 
-            for (let i = 0; i < cards.length; i++) {
+            for (let i = 0; i < totalFojas; i++) {
+                // Actualizar UI de Progreso
+                let percent = Math.round(((i + 1) / totalFojas) * 100);
+                textoProgreso.innerText = `Analizando Foja ${i + 1} de ${totalFojas}...`;
+                barraLlena.style.width = `${percent}%`;
+                txtPorcentaje.innerText = `${percent}%`;
+
                 const numPaginaPdf = cards[i].dataset.numPaginaPdf;
                 const page = await pdfDocumento.getPage(parseInt(numPaginaPdf));
-                const canvasOCR = document.createElement('canvas');
-                const ctxOCR = canvasOCR.getContext('2d');
+                const canvasOCR = document.createElement('canvas'); const ctxOCR = canvasOCR.getContext('2d');
                 const viewportOCR = page.getViewport({ scale: 1.0 });
                 canvasOCR.width = viewportOCR.width; canvasOCR.height = viewportOCR.height;
                 await page.render({ canvasContext: ctxOCR, viewport: viewportOCR }).promise;
@@ -295,43 +316,39 @@
             }
 
             window.ultimasAlertasGlobales = todasLasAlertasArray;
-            ocultarCarga();
+            document.getElementById('pantalla-progreso').style.display = 'none';
 
             if (esProActivado) mostrarPanelPro(todasLasAlertasArray);
             else mostrarPanelDemo(totalAlertas);
         }
 
-        // LÓGICA COMERCIAL
         function mostrarPanelDemo(total) {
             document.getElementById('lista-alertas').innerHTML = `
                 <div style="background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid var(--neon-blue); margin-bottom: 20px;">
-                    <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Reporte General</span><br>
-                    <strong style="color: #fff; font-size: 1.1rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas.</strong>
+                    <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Análisis Completado</span><br>
+                    <strong style="color: var(--text-main); font-size: 1.2rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas críticas.</strong>
                 </div>
                 <div class="demo-lock-card">
-                    <i class="fa-solid fa-lock"></i>
-                    <h4>Funciones VIP Bloqueadas</h4>
-                    <p>Desbloquea para ver el desglose exacto de fojas, el marcatextos de colores y habilitar la exportación del expediente limpio.</p>
-                    <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR (45YMAS)</button>
+                    <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--brand-orange);"></i>
+                    <h4>Protege tu Procedimiento</h4>
+                    <p>¡Activa la versión Pro para liberar la ubicación exacta en las fojas, ver el marcatextos de colores y evitar el vencimiento de estos plazos!</p>
+                    <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR AHORA</button>
                 </div>
             `;
         }
 
         function mostrarPanelPro(alertas) {
             const panel = document.getElementById('lista-alertas');
-            panel.innerHTML = `<div style="color: #34d399; font-size: 0.9rem; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas detalladas</div>`;
+            panel.innerHTML = `<div style="color: #10b981; font-size: 0.9rem; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas detalladas</div>`;
             alertas.forEach(a => {
-                const div = document.createElement('div');
-                div.className = 'alerta-item';
-                div.style.borderLeftColor = a.colorBorde;
-                div.innerHTML = `<strong style="color:#fff;"><i class="fa-regular fa-file-lines"></i> FOJA ${a.numFoja}</strong><br><span style="color:var(--text-muted); font-size: 0.85rem;">${a.categoria}</span><div class="motivo-alerta">Palabra: "${a.textoExacto}"</div>`;
+                const div = document.createElement('div'); div.className = 'alerta-item'; div.style.borderLeftColor = a.colorBorde;
+                div.innerHTML = `<strong style="color:var(--text-main);"><i class="fa-regular fa-file-lines"></i> FOJA ${a.numFoja}</strong><br><span style="color:var(--text-muted); font-size: 0.85rem;">${a.categoria}</span><div class="motivo-alerta">Palabra: "${a.textoExacto}"</div>`;
                 div.onclick = () => cargarEnVisorCentral(a.numFoja, window.mapaAlertasPorFoja[a.numFoja]);
                 panel.appendChild(div);
             });
         }
 
-        // VISOR CENTRAL
-        async function cargarEnVisorCentral(numPagina, alertas) {
+        async function cargarEnVisorCentral(numPagina, alertas = []) {
             paginaCargadaActual = numPagina; nivelZoomActual = 1.3;
             document.querySelectorAll('.foja-card').forEach(c => c.classList.remove('activa'));
             const card = document.getElementById(`tarjeta-foja-${numPagina}`);
@@ -352,7 +369,7 @@
             canvas.width = viewport.width; canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-            if (esProActivado && alertas && alertas.length > 0) {
+            if (alertas && alertas.length > 0) {
                 alertas.forEach(a => {
                     const b = a.bbox;
                     ctx.fillStyle = a.colorFondo; ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
@@ -361,34 +378,8 @@
             }
         }
 
-        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); renderizarCanvasCentral(window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []); }
-        function resetZoom() { nivelZoomActual = 1.3; renderizarCanvasCentral(window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []); }
-
-        // EXPORTACIÓN VIP
-        async function exportarPDFReal() {
-            mostrarCarga("Empaquetando...");
-            const { PDFDocument, degrees } = PDFLib;
-            const docOriginal = await PDFDocument.load(bytesOriginales);
-            const docNuevo = await PDFDocument.create();
-            const cards = document.querySelectorAll('.foja-card');
-            
-            for(let i=0; i<cards.length; i++) {
-                const idx = parseInt(cards[i].dataset.numPaginaPdf) - 1;
-                const rot = parseInt(cards[i].dataset.rotacion) || 0;
-                const [pag] = await docNuevo.copyPages(docOriginal, [idx]);
-                if (rot !== 0) pag.setRotation(degrees(pag.getRotation().angle + rot));
-                docNuevo.addPage(pag);
-            }
-            const bytes = await docNuevo.save();
-            const a = document.createElement('a'); 
-            a.href = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" })); 
-            a.download = "Expediente_45yMas_Pro.pdf"; a.click();
-            ocultarCarga();
-        }
-
-        // UTILIDADES
-        function mostrarCarga(msg) { document.getElementById('loading').innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${msg}`; document.getElementById('loading').style.display = 'inline-block'; }
-        function ocultarCarga() { document.getElementById('loading').style.display = 'none'; }
+        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []; renderizarCanvasCentral(alertas); }
+        function resetZoom() { nivelZoomActual = 1.3; const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []; renderizarCanvasCentral(alertas); }
     </script>
 </body>
 </html>

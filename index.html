@@ -4,32 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Centro Privado 45 y Más | Mediación y Justicia Alternativa</title>
-    <!-- Hoja de Estilos -->
     <link rel="stylesheet" href="style.css">
-    <!-- Iconos FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- ESTILOS EXTRAS PARA EL MODO CAMALEÓN (CLARO/OSCURO) -->
+    <style>
+        .btn-camaleon {
+            background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange);
+            padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.85rem;
+            transition: all 0.3s; display: flex; align-items: center; gap: 8px; margin-left: 20px;
+        }
+        .btn-camaleon:hover { background: var(--brand-orange); color: white; }
+
+        /* VARIABLES PARA EL MODO CLARO (BOTÓN CAMALEÓN) */
+        body.light-mode {
+            --bg-deep: #f0f4f8;
+            --bg-surface: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            background-image: radial-gradient(circle at 15% 50%, rgba(26, 54, 93, 0.05) 0%, transparent 50%),
+                              radial-gradient(circle at 85% 30%, rgba(255, 115, 21, 0.05) 0%, transparent 50%);
+        }
+        body.light-mode .hero-centrado h1 { background: linear-gradient(to right, #0f172a, #334155); -webkit-background-clip: text; }
+        body.light-mode .top-bar-minimal { background: rgba(255, 255, 255, 0.9); }
+        body.light-mode .logo-min { background: linear-gradient(90deg, #0f172a, var(--brand-orange)); -webkit-background-clip: text; }
+        body.light-mode .card-servicio h3 { color: #ea580c; }
+        body.light-mode .card-servicio::before { background: linear-gradient(135deg, rgba(0,0,0,0.02) 0%, transparent 100%); }
+    </style>
 </head>
 <body>
 
-    <!-- BARRA SUPERIOR (TOP BAR) -->
+    <!-- BARRA SUPERIOR -->
     <div class="top-bar-minimal">
         <span><i class="fa-solid fa-location-dot"></i> Hilarión Romero Gil #935, Alcalde Barranquitas, GDL.</span>
         <span><i class="fa-solid fa-phone"></i> Cel: (33) 2187-0711 | Of: (33) 3330-5471</span>
     </div>
 
-    <!-- HEADER / NAVEGACIÓN GLASSMORPHISM -->
+    <!-- HEADER / NAVEGACIÓN -->
     <header class="header-principal">
         <div class="logo-min">45 Y MÁS</div>
-        <nav class="nav-links">
+        <nav class="nav-links" style="align-items: center;">
             <a href="#inicio">Inicio</a>
             <a href="#servicios">Especialidades</a>
             <a href="#capsulas">Cápsulas Legales</a>
             <a href="#academia">Diplomados</a>
             <a href="#ecosistema" style="color: #ff7315;"><i class="fa-solid fa-lock"></i> Portal Pro</a>
+            
+            <!-- BOTÓN CAMALEÓN -->
+            <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
+                <i class="fa-solid fa-circle-half-stroke"></i> <span>Modo Claro</span>
+            </button>
         </nav>
     </header>
 
-    <!-- HERO SECTION (PORTADA GIGANTE) -->
+    <!-- HERO SECTION -->
     <main id="inicio" class="hero-centrado">
         <div class="contenedor-majestuoso">
             <div class="logo-marco-gigante-impacto">
@@ -47,10 +77,10 @@
         </div>
     </main>
 
-    <!-- SECCIÓN: SERVICIOS Y CONVENIOS (TARJETAS NEÓN) -->
+    <!-- SECCIÓN: SERVICIOS Y CONVENIOS -->
     <section id="servicios" class="seccion-base">
         <h2 class="titulo-seccion">Especialidades y Convenios</h2>
-        <p class="subtitulo-seccion">Otorgamos validez jurídica inmediata a través de métodos alternos de solución de controversias, blindando tu patrimonio y tranquilidad.</p>
+        <p class="subtitulo-seccion">Otorgamos validez jurídica inmediata a través de métodos alternos de solución de controversias, blindando tu patrimonio.</p>
 
         <div class="grid-servicios">
             <div class="card-servicio">
@@ -83,66 +113,55 @@
         </div>
     </section>
 
-    <!-- SECCIÓN: CÁPSULAS Y REDES (MULTIMEDIA INTELIGENTE) -->
+    <!-- SECCIÓN: CÁPSULAS Y REDES (VIDEOS REALES) -->
     <section id="capsulas" class="seccion-base">
         <h2 class="titulo-seccion">Cápsulas y Contenido Legal</h2>
-        <p class="subtitulo-seccion">Mantente informado con nuestras transmisiones semanales. Estrategias, consejos y análisis de la nueva era del derecho.</p>
+        <p class="subtitulo-seccion">Mantente informado con nuestras transmisiones semanales.</p>
 
         <div class="grid-multimedia">
-            <!-- Tarjeta Facebook -->
+            <!-- REEL FACEBOOK INCRUSTADO -->
             <div class="card-media">
-                <div class="media-placeholder">
-                    <i class="fa-solid fa-circle-play"></i>
+                <div style="background: #000; display: flex; justify-content: center; align-items: center; padding: 10px 0;">
+                    <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F2294379061356755&show_text=false&width=267" width="267" height="476" style="border:none;overflow:hidden; border-radius: 8px;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
                 </div>
                 <div class="info-media">
                     <span class="badge-dia">Lunes y Viernes</span>
                     <h3>Cápsulas de Mediación</h3>
-                    <p>No te pierdas nuestras sesiones prácticas sobre cómo resolver conflictos sin desgaste emocional ni económico.</p>
+                    <p>Estrategias sobre cómo resolver conflictos sin desgaste emocional ni económico.</p>
                     <a href="https://www.facebook.com/M.45yMas/?locale=es_LA" target="_blank" class="btn-red facebook">
-                        <i class="fa-brands fa-facebook"></i> Ver en Facebook
+                        <i class="fa-brands fa-facebook"></i> Seguir en Facebook
                     </a>
                 </div>
             </div>
 
-            <!-- Tarjeta TikTok (Abogato) -->
+            <!-- TIKTOK ABOGATO INCRUSTADO -->
             <div class="card-media">
-                <div class="media-placeholder">
-                    <i class="fa-solid fa-play"></i>
+                <div style="background: #000; display: flex; justify-content: center; align-items: center;">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@45ymas_oficial/video/7693953839174569224" data-video-id="7693953839174569224" style="max-width: 605px;min-width: 325px;" > <section> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
                 </div>
                 <div class="info-media">
                     <span class="badge-dia especial">Miércoles</span>
                     <h3>El Abogato Mediador</h3>
-                    <p>Análisis dinámico, directo y sin filtros sobre amparos, contratos y secretos de la justicia alternativa.</p>
+                    <p>Análisis directo y sin filtros sobre amparos, contratos y justicia alternativa.</p>
                     <a href="https://www.tiktok.com/@45ymas_oficial?lang=es-419" target="_blank" class="btn-red tiktok">
                         <i class="fa-brands fa-tiktok"></i> Seguir en TikTok
                     </a>
                 </div>
             </div>
         </div>
-
-        <!-- Banner Instagram -->
-        <div class="instagram-banner">
-            <i class="fa-brands fa-instagram" style="font-size: 2.5rem; color: #fff;"></i>
-            <span>Infografías, tips diarios y detrás de escena. ¡Conecta en Instagram!</span>
-            <a href="https://www.instagram.com/m.45ymas/" target="_blank" class="btn-red instagram">Seguir @m.45ymas</a>
-        </div>
     </section>
 
     <!-- SECCIÓN: ACADEMIA Y DIPLOMADOS -->
     <section id="academia" class="seccion-base">
         <h2 class="titulo-seccion">Academia 45 y Más</h2>
-        <p class="subtitulo-seccion">Formando a la próxima generación de expertos en Mecanismos Alternativos de Solución de Controversias (MASC).</p>
-
         <div class="grid-multimedia" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
-            <div class="card-media" style="flex-direction: row; align-items: center; text-align: left; background: #0a0f1d;">
-                <div class="media-placeholder" style="width: 250px; height: 100%; border-right: 1px solid #1e293b;">
-                    <i class="fa-solid fa-graduation-cap" style="color: #ff7315;"></i>
-                </div>
+            <div class="card-media" style="flex-direction: row; align-items: center; text-align: left; background: var(--bg-surface);">
+                <div style="padding: 30px; font-size: 4rem; color: var(--brand-orange);"><i class="fa-solid fa-graduation-cap"></i></div>
                 <div class="info-media" style="padding: 30px;">
-                    <span class="badge-dia especial" style="background: rgba(255,255,255,0.1); color: white;">Contenido Exclusivo</span>
+                    <span class="badge-dia especial">Contenido Exclusivo</span>
                     <h3>Diplomado de Certificación</h3>
-                    <p>Revive las sesiones de nuestros diplomados pasados, accede a material de estudio premium y prepárate para las próximas certificaciones del IJA.</p>
-                    <a href="https://wa.me/523321870711?text=Hola,%20quiero%20información%20sobre%20los%20diplomados%20y%20material%20de%20estudio" target="_blank" class="btn-red" style="background: #1A365D; border: 1px solid #3b82f6;">
+                    <p>Revive las sesiones de nuestros diplomados pasados y accede a material de estudio premium.</p>
+                    <a href="https://wa.me/523321870711?text=Hola,%20quiero%20información%20sobre%20los%20diplomados" target="_blank" class="btn-red" style="background: #1A365D; max-width: 200px;">
                         <i class="fa-solid fa-book-open"></i> Solicitar Acceso
                     </a>
                 </div>
@@ -150,24 +169,24 @@
         </div>
     </section>
 
-    <!-- SECCIÓN: ECOSISTEMA PRO (HERRAMIENTAS VIP) -->
+    <!-- SECCIÓN: ECOSISTEMA PRO -->
     <section id="ecosistema" class="seccion-base" style="margin-bottom: 0;">
         <h2 class="titulo-seccion">Ecosistema Tecnológico Pro</h2>
-        <p class="subtitulo-seccion">Nuestras herramientas propietarias de análisis jurídico. Acceso restringido para usuarios con membresía activa.</p>
+        <p class="subtitulo-seccion">Nuestras herramientas propietarias de análisis jurídico.</p>
         
         <div class="ecosistema-dock">
             <a href="iurisvisor.html" class="dock-item">
                 <div class="dock-item-icon"><i class="fa-solid fa-microchip"></i></div>
                 <div class="dock-item-info">
                     <strong>IurisVisor Pro</strong>
-                    <small>Escáner Inteligente (OCR)</small>
+                    <small>Escáner Inteligente</small>
                 </div>
             </a>
             <a href="arbol-genealogico.html" class="dock-item">
                 <div class="dock-item-icon"><i class="fa-solid fa-network-wired"></i></div>
                 <div class="dock-item-info">
                     <strong>Árbol Sucesorio</strong>
-                    <small>Mapeo de Vínculos Legal</small>
+                    <small>Mapeo Legal</small>
                 </div>
             </a>
             <a href="linea-tiempo-alertas.html" class="dock-item">
@@ -182,14 +201,35 @@
 
     <!-- FOOTER -->
     <footer>
-        <p>© 2026 Centro Privado en Mediación y Conciliación 45 y Más. Todos los derechos reservados.</p>
-        <p style="margin-top: 10px; font-size: 0.75rem;">Acreditación Oficial IJA 065 | Hilarión Romero Gil #935, Guadalajara, Jalisco.</p>
+        <p>© 2026 Centro Privado en Mediación y Conciliación 45 y Más.</p>
     </footer>
 
-    <!-- BOTÓN WHATSAPP FLOTANTE -->
-    <a href="https://wa.me/523321870711" target="_blank" class="whatsapp-flotante" title="Asistencia Inmediata">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+    <!-- SCRIPT DEL BOTÓN CAMALEÓN -->
+    <script>
+        // Función para cambiar de Dark a Light mode
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            const btnSpan = document.querySelector('#btnTheme span');
+            const btnIcon = document.querySelector('#btnTheme i');
+            
+            if(isLight) {
+                btnSpan.innerText = "Modo Oscuro";
+                btnIcon.className = "fa-solid fa-moon";
+                localStorage.setItem('tema', 'light');
+            } else {
+                btnSpan.innerText = "Modo Claro";
+                btnIcon.className = "fa-solid fa-circle-half-stroke";
+                localStorage.setItem('tema', 'dark');
+            }
+        }
 
+        // Cargar preferencia guardada
+        window.onload = () => {
+            if(localStorage.getItem('tema') === 'light') {
+                toggleTheme();
+            }
+        };
+    </script>
 </body>
 </html>
