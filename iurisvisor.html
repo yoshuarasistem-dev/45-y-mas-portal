@@ -73,7 +73,7 @@
         .btn-vinculo { width: 100%; justify-content: center; margin-bottom: 8px; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--neon-blue); color: var(--text-main); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-decoration: none; }
         .btn-vinculo:hover { background: var(--neon-blue); color: white; }
 
-        /* CARRUSEL CON BOTONES DE ROTAR Y ELIMINAR RESTAURADOS */
+        /* CARRUSEL CON BOTONES DE ROTAR Y ELIMINAR */
         .carrusel { height: 190px; background: #03050a; padding: 12px 20px; overflow-x: auto; display: flex; gap: 15px; align-items: center; }
         .foja-card { background: #0f172a; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center; min-width: 110px; cursor: pointer; border: 2px solid transparent; position: relative; }
         .foja-card.activa { border-color: var(--neon-blue); }
@@ -81,7 +81,7 @@
         .foja-card canvas { height: 100%; width: auto; display: block; }
         .foja-etiqueta { font-weight: 600; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; }
         .foja-controles-mini { display: flex; justify-content: space-around; gap: 5px; }
-        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; }
+        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; transition: background 0.2s; }
         .btn-mini:hover { background: var(--brand-orange); }
 
         #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
@@ -97,16 +97,16 @@
         <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
         <div class="logo-visor">
             <i class="fa-solid fa-microchip"></i> IurisVisor Pro
-            <span class="status-badge" id="status-badge">DEMO</span>
+            <span class="status-badge" id="status-badge">VERSIÓN DEMO</span>
         </div>
         
         <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
-        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar PDF</button>
-        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Radar OCR</button>
+        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar Expediente</button>
+        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Iniciar Radar OCR</button>
         <button id="btn-exportar" class="btn btn-vip" onclick="verificarVIP()"><i class="fa-solid fa-lock"></i> 3. Desbloquear Pro</button>
         
         <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
-            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Claro</span>
+            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
         </button>
     </div>
 
@@ -164,7 +164,7 @@
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('text-theme').innerText = isLight ? "Oscuro" : "Claro";
+            document.getElementById('text-theme').innerText = isLight ? "Modo Oscuro" : "Modo Claro";
             document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
             localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
@@ -173,12 +173,14 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         let bytesOriginales = null, pdfDocumento = null; 
         let nivelZoomActual = 1.3, paginaCargadaActual = null;
+        
+        // Verifica el token global en localStorage
         let esProActivado = localStorage.getItem('pro_activo') === 'true';
 
         if(esProActivado) {
             document.getElementById('status-badge').className = 'status-badge status-pro';
             document.getElementById('status-badge').innerText = 'PRO ACTIVA';
-            document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Exportar';
+            document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Guardar PDF';
         }
 
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
@@ -192,10 +194,10 @@
                 
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
-                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Exportar';
+                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Guardar PDF';
                 
                 if(window.ultimasAlertasGlobales) mostrarPanelPro(window.ultimasAlertasGlobales);
-                alert("¡Token Validado! Las pestañas conectadas de Línea de Tiempo y Árbol ya están en Modo Pro.");
+                alert("¡Token Validado! Las pestañas de Cronología y Árbol han sido desbloqueadas.");
             } else { alert("Acceso Denegado. Token inválido."); }
         }
 
@@ -239,7 +241,7 @@
 
             const etiqueta = document.createElement('div'); etiqueta.className = 'foja-etiqueta'; etiqueta.innerText = `FOJA ${i}`;
             
-            // Botones de rotar y eliminar restaurados
+            // Botones interactivos por miniatura
             const controlesMini = document.createElement('div'); controlesMini.className = 'foja-controles-mini';
             controlesMini.innerHTML = `
                 <button class="btn-mini" title="Rotar" onclick="event.stopPropagation(); rotarFoja(${i})"><i class="fa-solid fa-rotate-right"></i></button>
@@ -308,27 +310,46 @@
             window.ultimasAlertasGlobales = todasLasAlertasArray;
             document.getElementById('pantalla-progreso').style.display = 'none';
 
-            simularExportacionIA();
+            simularExportacionIA(); // Mandar datos reales a localStorage
 
             if (esProActivado) mostrarPanelPro(todasLasAlertasArray);
             else mostrarPanelDemo(totalAlertas);
         }
 
-        // EXPORTACIÓN A OTRAS APPS EN NUEVA PESTAÑA
+        // ==============================================================
+        // EXPORTACIÓN DINÁMICA DE DATOS REALES A CRONOLOGÍA Y ÁRBOL
+        // ==============================================================
         function simularExportacionIA() {
-            const timelineIA = [
-                { fecha: "10 de Octubre, 2026", titulo: "Notificación Inicial", desc: "Admisión de la demanda por vía electrónica.", tipo: "tipo-notificacion", foja: "3" },
-                { fecha: "12 de Octubre, 2026", titulo: "Auto de Prevención", desc: "Aclarar domicilio del demandado.", tipo: "tipo-prevencion", foja: "15" },
-                { fecha: "15 de Octubre, 2026", titulo: "Vencimiento de Término (Fatal)", desc: "Vence término de 3 días para desahogar.", tipo: "tipo-vencimiento", foja: "Fatal" },
-                { fecha: "25 de Noviembre, 2026", titulo: "Audiencia Preliminar", desc: "Citación presencial.", tipo: "tipo-audiencia", foja: "42" }
-            ];
-            const treeIA = { id: 1, nombre: "Juicio Principal Extraído", rol: "De Cujus / Raíz", fecha: "Nac: 1975 - Def: 2026", icon: "fa-user-tie", spouses: [], children: [] };
+            let timelineIA = [];
+            
+            if(window.ultimasAlertasGlobales && window.ultimasAlertasGlobales.length > 0) {
+                window.ultimasAlertasGlobales.forEach(alerta => {
+                    let tipo = 'tipo-notificacion';
+                    let titulo = 'Alerta Detectada';
+                    let desc = `Se encontró el término "${alerta.textoExacto}" en el documento.`;
+
+                    if(alerta.categoria === 'Sentencia') { tipo = 'tipo-audiencia'; titulo = 'Resolución / Sentencia'; }
+                    if(alerta.categoria === 'Prevención') { tipo = 'tipo-prevencion'; titulo = 'Prevención del Juzgado'; }
+                    if(alerta.categoria === 'Vencimiento') { tipo = 'tipo-vencimiento'; titulo = 'Alerta de Vencimiento'; desc = `Peligro detectado por la palabra "${alerta.textoExacto}".`; }
+
+                    timelineIA.push({
+                        fecha: `ALERTA EN FOJA ${alerta.numFoja}`,
+                        titulo: titulo,
+                        desc: desc,
+                        tipo: tipo,
+                        foja: alerta.numFoja
+                    });
+                });
+            } else {
+                timelineIA = [ { fecha: "Dato General", titulo: "Expediente Sin Alertas Críticas", desc: "No se encontraron vencimientos graves.", tipo: "tipo-notificacion", foja: "1" } ];
+            }
+
+            const treeIA = { id: 1, nombre: "Expediente Analizado", rol: "De Cujus / Raíz", fecha: "Extraído del Escaneo", icon: "fa-folder-open", spouses: [], children: [] };
 
             localStorage.setItem('datos_timeline_45ymas', JSON.stringify(timelineIA));
             localStorage.setItem('datos_arbol_45ymas', JSON.stringify(treeIA));
         }
 
-        // Abre en nueva pestaña con el estado pro transferido automáticamente
         function abrirEnNuevaPestaña(url) {
             window.open(url, '_blank');
         }
@@ -348,7 +369,7 @@
                 <div class="demo-lock-card">
                     <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--brand-orange);"></i>
                     <h4>Protege tu Procedimiento</h4>
-                    <p>¡Activa Pro para desbloquear exportaciones y reportes ilimitados!</p>
+                    <p>¡Activa Pro para desbloquear exportaciones y ver ubicación en fojas!</p>
                     <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR AHORA</button>
                 </div>
             `;

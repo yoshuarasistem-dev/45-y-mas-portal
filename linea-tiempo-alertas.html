@@ -39,7 +39,10 @@
         .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
 
         .workspace { flex: 1; overflow: auto; padding: 40px 20px; display: flex; justify-content: center; position: relative; }
-        .timeline-container { max-width: 800px; width: 100%; position: relative; padding-left: 40px; padding-bottom: 50px; }
+        
+        /* Contenedor de Exportación Aislado */
+        .export-wrapper { max-width: 800px; width: 100%; padding: 20px; border-radius: 12px; transition: background 0.3s; }
+        .timeline-container { width: 100%; position: relative; padding-left: 40px; padding-bottom: 20px; }
         .timeline-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 14px; width: 3px; background: linear-gradient(to bottom, var(--neon-blue), var(--brand-orange)); border-radius: 3px; }
 
         .timeline-item { position: relative; margin-bottom: 35px; opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s forwards; }
@@ -114,10 +117,12 @@
         </button>
     </div>
 
-    <!-- EL ÁREA QUE SE VA A EXPORTAR -->
-    <div class="workspace" id="lienzo-exportar">
-        <div class="timeline-container" id="timeline-container">
-            <!-- SE GENERA DINÁMICAMENTE POR JS -->
+    <div class="workspace">
+        <!-- Wrapper aislado para una exportación perfecta -->
+        <div class="export-wrapper" id="lienzo-exportar">
+            <div class="timeline-container" id="timeline-container">
+                <!-- SE GENERA DINÁMICAMENTE POR JS -->
+            </div>
         </div>
     </div>
 
@@ -156,17 +161,14 @@
         window.onload = () => { 
             if(localStorage.getItem('tema') === 'light') toggleTheme(); 
             
-            // Si ya está desbloqueado desde IurisVisor, actualiza la UI
             if(esProActivado) {
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; 
                 badge.innerText = 'PRO ACTIVA';
             }
             
-            // Dibuja el calendario automáticamente leyendo el LocalStorage
             renderizarLineaDeTiempo(); 
             
-            // Si se abrió en nueva pestaña, ajusta el botón de volver
             if(window.history.length <= 1) {
                 document.getElementById('btnCerrar').innerHTML = '<i class="fa-solid fa-times"></i> Cerrar Pestaña';
             } else {
@@ -180,7 +182,6 @@
             const datosGuardados = localStorage.getItem('datos_timeline_45ymas');
 
             if (!datosGuardados) {
-                // Estado Vacío (Aún no escanean nada)
                 container.innerHTML = `
                     <div style="text-align:center; padding: 60px 20px; color: var(--text-muted);">
                         <i class="fa-solid fa-calendar-xmark" style="font-size: 4.5rem; margin-bottom: 20px; opacity: 0.5;"></i>
@@ -194,12 +195,10 @@
             const plazos = JSON.parse(datosGuardados);
             let html = '';
 
-            // 1. Mostrar plazos iniciales (gratis)
             for(let i = 0; i < Math.min(2, plazos.length); i++) {
                 html += crearItemHTML(plazos[i], i);
             }
 
-            // 2. Si hay más plazos, verificar estado PRO
             if(plazos.length > 2) {
                 if(esProActivado) {
                     for(let i = 2; i < plazos.length; i++) {
@@ -248,8 +247,6 @@
             const btn = document.getElementById('btn-sync');
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Leyendo...';
             btn.style.pointerEvents = 'none';
-
-            // Animación y forzar re-lectura
             setTimeout(() => {
                 renderizarLineaDeTiempo();
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Actualizado';
@@ -272,13 +269,10 @@
         function validarTokenVIP() {
             if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
                 esProActivado = true; 
-                localStorage.setItem('pro_activo', 'true'); // GUARDA EN TODO EL NAVEGADOR
+                localStorage.setItem('pro_activo', 'true'); 
                 cerrarModalVIP();
-                
                 const badge = document.getElementById('status-badge');
                 badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
-                
-                // Redibuja limpio
                 renderizarLineaDeTiempo();
             } else { alert("Acceso Denegado. Token inválido."); }
         }
@@ -289,31 +283,32 @@
             const btnExp = document.getElementById('btn-exportar');
             btnExp.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
             
-            // TRUCO VITAL: Subir el scroll asegura que capture todo el documento hacia abajo
-            window.scrollTo(0,0);
-            
-            const container = document.getElementById('lienzo-exportar');
+            const wrapper = document.getElementById('lienzo-exportar');
             const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
             
-            setTimeout(() => {
-                html2canvas(container, { 
-                    backgroundColor: themeBg, 
-                    scale: 2, // Alta Resolución
-                    useCORS: true,
-                    windowWidth: container.scrollWidth,
-                    windowHeight: container.scrollHeight
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'Calendario_Plazos_45yMas.png'; 
-                    link.href = canvas.toDataURL("image/png"); 
-                    link.click();
-                    btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Calendario';
-                }).catch(err => {
-                    alert("Hubo un error al generar la imagen.");
-                    console.error(err);
-                    btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Calendario';
-                });
-            }, 300); // Pequeño retraso para que suba el scroll
+            // Forzar fondo sólido al contenedor solo para la foto
+            wrapper.style.background = themeBg;
+            
+            html2canvas(wrapper, { 
+                backgroundColor: themeBg, 
+                scale: 2, // Alta Resolución
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Calendario_Plazos_45yMas.png'; 
+                link.href = canvas.toDataURL("image/png"); 
+                link.click();
+                
+                // Restaurar botones y fondo
+                wrapper.style.background = 'transparent';
+                btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Calendario';
+            }).catch(err => {
+                alert("Hubo un error al generar la imagen.");
+                console.error(err);
+                wrapper.style.background = 'transparent';
+                btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Guardar Calendario';
+            });
         }
     </script>
 </body>

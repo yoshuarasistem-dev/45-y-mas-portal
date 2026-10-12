@@ -30,8 +30,11 @@
         .status-badge { background: rgba(250, 204, 21, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
         .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
 
-        .workspace { flex: 1; overflow: auto; padding: 50px; display: flex; justify-content: center; align-items: flex-start; position: relative; width: 100%; }
-        .tree-container { margin-top: 20px; padding: 40px; transition: transform 0.3s; transform-origin: top center; }
+        .workspace { flex: 1; overflow: auto; padding: 40px; display: flex; justify-content: center; align-items: flex-start; position: relative; width: 100%; }
+        
+        /* Contenedor Aislado para Exportación Segura */
+        .export-wrapper { padding: 40px; border-radius: 12px; transition: background 0.3s; display: inline-block; min-width: 100%; text-align: center; }
+        .tree-container { transition: transform 0.3s; transform-origin: top center; display: inline-block; }
         
         /* MAGIA CSS DEL ÁRBOL */
         .tree ul { padding-top: 30px; position: relative; transition: all 0.5s; display: flex; justify-content: center; }
@@ -45,20 +48,17 @@
         .tree li:first-child::after { border-radius: 8px 0 0 0; }
         .tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid var(--neon-blue); width: 0; height: 30px; transition: border-color 0.4s; }
 
-        /* GRUPO DE NODOS (Para poner parejas AL LADO) */
         .node-group { display: flex; justify-content: center; align-items: center; gap: 20px; position: relative; }
         .node-group .node-card { position: relative; z-index: 2; }
         .node-group::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--neon-blue); z-index: 1; transition: background 0.4s; }
 
-        /* TARJETAS DE NODOS */
-        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 20px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 200px; transition: all 0.3s; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .node-card { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; padding: 20px; border-radius: 12px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); min-width: 200px; transition: all 0.3s; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
         .node-card:hover { border-color: var(--brand-orange); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255, 115, 21, 0.15); z-index: 10; }
         .node-card i.main-icon { font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 12px; transition: color 0.4s; }
         .node-card .nombre { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; }
         .node-card .rol { font-size: 0.8rem; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 8px; }
         .node-card .fecha { font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
 
-        /* MODO FAMILIAR (Cambio visual) */
         .tree.modo-familiar li::before, .tree.modo-familiar li::after, .tree.modo-familiar ul ul::before,
         .tree.modo-familiar li:last-child::before, .tree.modo-familiar li:first-child::after { border-color: var(--color-familiar); }
         .tree.modo-familiar .node-group::before { background: var(--color-familiar); }
@@ -66,14 +66,12 @@
         .tree.modo-familiar .node-card:hover { border-color: var(--color-familiar); box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2); }
         .tree.modo-familiar .node-card i.main-icon { color: var(--color-familiar); }
 
-        /* Botones de acción flotantes */
         .node-actions { position: absolute; top: -15px; right: -15px; display: none; gap: 5px; z-index: 15; }
         .node-card:hover .node-actions { display: flex; }
         .btn-node { background: var(--brand-orange); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
         .btn-node.add { background: #10b981; } .btn-node.delete { background: #ef4444; }
         .btn-node:hover { transform: scale(1.15); }
 
-        /* MODALES ELEGANTES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
         .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; width: 90%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
         
@@ -82,7 +80,6 @@
         .input-form:focus { border-color: var(--neon-blue); }
         .form-label { display: block; text-align: left; font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
 
-        /* Selector de Dirección (Lado o Abajo) */
         .radio-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .radio-btn { flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid #1e293b; border-radius: 8px; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-size: 0.85rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 120px; }
         .radio-btn i { font-size: 1.2rem; }
@@ -90,24 +87,22 @@
         body.light-mode .radio-btn { background: #f1f5f9; border-color: #cbd5e1; }
         body.light-mode .radio-btn.active { background: #e0f2fe; border-color: var(--neon-blue); }
 
-        .floating-tools { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; }
+        .floating-tools { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 100;}
         .tool-btn { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: var(--text-main); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .tool-btn:hover { color: var(--brand-orange); transform: scale(1.1); }
 
-        /* Responsividad Celulares */
         @media (max-width: 768px) {
             .topbar { justify-content: center; }
             .node-card { min-width: 150px; padding: 15px; }
             .node-card i.main-icon { font-size: 2rem; }
             .node-card .nombre { font-size: 0.9rem; }
-            .workspace { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
     <div class="topbar">
-        <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
+        <button onclick="window.close()" class="btn btn-volver" id="btnCerrar"><i class="fa-solid fa-arrow-left"></i> Volver al Visor</button>
         <div class="logo-visor">
             <i class="fa-solid fa-network-wired" id="logo-icono"></i> <span id="titulo-herramienta">Árbol Sucesorio</span>
             <span class="status-badge status-demo" id="status-badge">VERSIÓN DEMO</span>
@@ -122,10 +117,12 @@
         </button>
     </div>
 
-    <!-- LIENZO DE EXPORTACIÓN -->
-    <div class="workspace" id="lienzo-exportar">
-        <div class="tree-container tree modo-sucesorio" id="tree-root">
-            <!-- El árbol dinámico con ramificaciones (Lado/Abajo) va aquí -->
+    <!-- WRAPPER DE EXPORTACIÓN (Para evitar fondo negro) -->
+    <div class="workspace">
+        <div class="export-wrapper" id="lienzo-exportar">
+            <div class="tree-container tree modo-sucesorio" id="tree-root">
+                <!-- El árbol dinámico con ramificaciones (Lado/Abajo) va aquí -->
+            </div>
         </div>
     </div>
 
@@ -180,7 +177,6 @@
     </div>
 
     <script>
-        /* TEMA CAMALEÓN */
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
@@ -189,37 +185,38 @@
             localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
 
-        /* BASES DE DATOS SEPARADAS */
-        let treeSucesorio = { id: 1, nombre: "Autor de la Sucesión", rol: "De Cujus", fecha: "Añadir Fechas", icon: "fa-user-tie", spouses: [], children: [] };
+        let treeSucesorio = { id: 1, nombre: "Expediente / Caso", rol: "Raíz Principal", fecha: "", icon: "fa-folder-open", spouses: [], children: [] };
         let treeFamiliar = { id: 2, nombre: "Raíz Familiar", rol: "Origen", fecha: "", icon: "fa-house-chimney", spouses: [], children: [] };
         
         let esModoFamiliar = false;
-        let esProActivado = localStorage.getItem('pro_activo') === 'true'; // COMPRUEBA EL TOKEN GLOBAL
+        let esProActivado = localStorage.getItem('pro_activo') === 'true'; 
         let scale = 1;
         let direccionSeleccionada = 'abajo';
 
-        // ====== INICIALIZACIÓN Y LECTURA INTELIGENTE ======
         window.onload = () => { 
             if(localStorage.getItem('tema') === 'light') toggleTheme(); 
             
-            // Revisa si ya somos VIP desde el IurisVisor
             if(esProActivado) {
                 const badge = document.getElementById('status-badge');
-                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA (ILIMITADO)';
+                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
             }
 
-            // Extrae datos simulados del IurisVisor si existen
             const datosArbolIA = localStorage.getItem('datos_arbol_45ymas');
             if(datosArbolIA) {
                 const infoExtraida = JSON.parse(datosArbolIA);
                 treeSucesorio.nombre = infoExtraida.nombre;
                 treeSucesorio.rol = infoExtraida.rol;
-                treeSucesorio.fecha = "Datos extraídos automáticamente";
+                treeSucesorio.fecha = infoExtraida.fecha;
             }
             renderTree(); 
+            
+            if(window.history.length <= 1) {
+                document.getElementById('btnCerrar').innerHTML = '<i class="fa-solid fa-times"></i> Cerrar Pestaña';
+            } else {
+                document.getElementById('btnCerrar').onclick = () => { window.location.href = 'iurisvisor.html'; };
+            }
         };
 
-        /* CAMBIAR MODOS */
         function toggleModoArbol() {
             esModoFamiliar = !esModoFamiliar;
             const treeRoot = document.getElementById('tree-root');
@@ -241,7 +238,6 @@
             renderTree(); 
         }
 
-        /* RENDERIZADO DEL SÚPER ÁRBOL */
         function renderTree() {
             const rootContainer = document.getElementById('tree-root');
             rootContainer.innerHTML = '';
@@ -253,15 +249,11 @@
 
         function createNodeElement(node) {
             const li = document.createElement('li');
-            
-            // Contenedor Flex para alinear parejas horizontalmente
             const group = document.createElement('div');
             group.className = 'node-group';
             
-            // Tarjeta Principal
             group.appendChild(crearTarjetaHTML(node, false));
 
-            // Tarjetas de Parejas (Spouses)
             if(node.spouses && node.spouses.length > 0) {
                 node.spouses.forEach(spouse => {
                     group.appendChild(crearTarjetaHTML(spouse, true, node.id));
@@ -269,7 +261,6 @@
             }
             li.appendChild(group);
 
-            // Ramas Descendientes (Children)
             if (node.children && node.children.length > 0) {
                 const ul = document.createElement('ul');
                 node.children.forEach(child => ul.appendChild(createNodeElement(child)) );
@@ -283,7 +274,6 @@
             card.className = 'node-card';
             
             let btnAgregarHTML = !esPareja ? `<button class="btn-node add" title="Agregar Rama" onclick="abrirModalAgregar(${data.id}, event)"><i class="fa-solid fa-plus"></i></button>` : '';
-            // No se puede eliminar la raíz (ids 1 o 2)
             let btnEliminarHTML = (data.id !== 1 && data.id !== 2) ? `<button class="btn-node delete" title="Eliminar" onclick="eliminarNodo(${data.id}, ${esPareja}, ${parentIdOriginal}, event)"><i class="fa-solid fa-trash"></i></button>` : '';
 
             let fechaHTML = data.fecha ? `<div class="fecha"><i class="fa-regular fa-calendar"></i> ${data.fecha}</div>` : '';
@@ -298,7 +288,6 @@
             return card;
         }
 
-        /* LÓGICA DEL FORMULARIO Y DIRECCIÓN */
         let parentIdTemp = null;
         
         function seleccionarDireccion(dir) {
@@ -319,9 +308,8 @@
         function abrirModalAgregar(parentId, event) {
             event.stopPropagation();
             const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
-            const totalNodosActuales = contarNodos(currentTree);
             
-            if (!esProActivado && totalNodosActuales >= 3) { 
+            if (!esProActivado && contarNodos(currentTree) >= 3) { 
                 verificarVIP(); return; 
             }
             
@@ -350,11 +338,8 @@
             const newNode = { id: Date.now(), nombre: nombre, rol: rol, fecha: fecha, icon: icon, spouses: [], children: [] };
             const currentTree = esModoFamiliar ? treeFamiliar : treeSucesorio;
             
-            if(direccionSeleccionada === 'lado') {
-                agregarPareja(currentTree, parentIdTemp, newNode);
-            } else {
-                addChildToNode(currentTree, parentIdTemp, newNode);
-            }
+            if(direccionSeleccionada === 'lado') agregarPareja(currentTree, parentIdTemp, newNode);
+            else addChildToNode(currentTree, parentIdTemp, newNode);
             
             cerrarModalAgregar();
             renderTree();
@@ -403,62 +388,59 @@
             return false;
         }
 
-        /* ZOOM */
         function zoomTree(delta) { scale = Math.max(0.5, Math.min(2, scale + delta)); document.getElementById('tree-root').style.transform = `scale(${scale})`; }
         function resetZoom() { scale = 1; document.getElementById('tree-root').style.transform = `scale(1)`; }
 
-        /* VIP Y EXPORTACIÓN GARANTIZADA */
         function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
         function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
         
         function validarTokenVIP() {
             if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
                 esProActivado = true; 
-                localStorage.setItem('pro_activo', 'true'); // GUARDA EL ESTADO VIP GLOBAL
+                localStorage.setItem('pro_activo', 'true'); 
                 cerrarModalVIP();
                 const badge = document.getElementById('status-badge');
-                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA (ILIMITADO)';
+                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
             } else { alert("Acceso Denegado. Token inválido."); }
         }
 
+        // MOTOR DE EXPORTACIÓN BLINDADO CONTRA FONDOS NEGROS
         function intentarExportar() {
             if(!esProActivado) { verificarVIP(); return; }
             const btnExp = document.getElementById('btn-exportar');
             btnExp.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
             
-            // Garantizar captura completa subiendo el scroll
             window.scrollTo(0,0); 
-            
-            // Restaurar zoom para que no salga cortada en la foto
             const zoomOriginal = scale;
-            resetZoom();
+            resetZoom(); // Resetear zoom para que no salga mal escalado
 
+            const wrapper = document.getElementById('lienzo-exportar');
             const themeBg = document.body.classList.contains('light-mode') ? "#f8fafc" : "#050810";
-            const treeContainer = document.getElementById('lienzo-exportar');
+            
+            // Forzamos el fondo sólido en el contenedor antes de fotografiar
+            wrapper.style.background = themeBg;
 
             setTimeout(() => {
-                html2canvas(treeContainer, { 
+                html2canvas(wrapper, { 
                     backgroundColor: themeBg, 
-                    scale: 2, // Alta definición
+                    scale: 2,
                     useCORS: true,
-                    windowWidth: treeContainer.scrollWidth,
-                    windowHeight: treeContainer.scrollHeight
+                    logging: false
                 }).then(canvas => {
                     const link = document.createElement('a'); 
-                    link.download = esModoFamiliar ? 'Arbol_Genealogico_45yMas.png' : 'Mapeo_Sucesorio_45yMas.png'; 
+                    link.download = esModoFamiliar ? 'Arbol_Familiar_45yMas.png' : 'Arbol_Sucesorio_45yMas.png'; 
                     link.href = canvas.toDataURL("image/png"); 
                     link.click();
                     
+                    wrapper.style.background = 'transparent'; // Devolver a la normalidad
                     btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
-                    
-                    // Regresar al zoom del usuario
-                    if(zoomOriginal !== 1) zoomTree(zoomOriginal - 1);
+                    if(zoomOriginal !== 1) zoomTree(zoomOriginal - 1); // Restaurar zoom
                 }).catch(err => {
-                    console.error("Error al exportar:", err);
-                    alert("Ocurrió un error al capturar la imagen. Inténtalo nuevamente.");
+                    wrapper.style.background = 'transparent';
                     btnExp.innerHTML = '<i class="fa-solid fa-download"></i> Exportar Alta Res';
+                    alert("Error en la captura de pantalla.");
                 });
-            }, 500); // Pequeño retraso para que el DOM se acomode sin zoom
+            }, 300);
         }
     </script>
 </body>
