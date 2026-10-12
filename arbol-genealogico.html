@@ -4,121 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Árbol Genealógico Legal | Centro 45 y Más</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; }
-        header { background-color: #1A365D; color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 1.4rem; }
-        header a { color: #E36414; text-decoration: none; font-weight: bold; }
-        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        :root {
+            --primary: #E36414; --sidebar-bg: #1A365D; --bg-color: #f1f5f9;
+            --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        body { background: var(--bg-color); height: 100vh; overflow: hidden; display: flex; color: var(--text-main); }
+        .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-header { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
+        .nav-menu { list-style: none; padding: 15px 0; flex-grow: 1; }
+        .nav-item { padding: 12px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-size: 14px; border-left: 4px solid transparent; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); }
+        .nav-item.active { background: rgba(255,255,255,0.1); border-left-color: var(--primary); font-weight: bold; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .topbar { background: white; height: 65px; padding: 0 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 50; }
+        .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: white; }
+        .btn-vip { background: var(--primary); }
+        .banner-demo-limitado { background: #b91c1c; color: white; padding: 10px; text-align: center; font-weight: bold; font-size: 0.85rem; }
+        .view-container { position: absolute; top: 105px; left: 0; right: 0; bottom: 0; overflow: auto; padding: 40px; text-align: center; }
+        .tree-card-demo { background: white; max-width: 600px; margin: 50px auto; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid var(--primary); }
         
-        /* MURO DE BLOQUEO VIP */
-        #muroMembresia { background: linear-gradient(135deg, #0f172a, #1A365D); color: white; padding: 50px; border-radius: 15px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        #muroMembresia h2 { color: #E36414; margin-bottom: 15px; font-size: 1.8rem; }
-        #muroMembresia p { color: #94a3b8; margin-bottom: 25px; font-size: 1.05rem; }
-        .input-token { padding: 12px; width: 280px; border-radius: 8px; border: none; font-size: 1rem; text-align: center; margin-right: 10px; }
-        .btn-desbloquear { background-color: #E36414; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-desbloquear:hover { background-color: #c9550c; }
-        .btn-wsp-token { display: inline-block; margin-top: 20px; color: #25D366; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
-
-        /* CONTENIDO VIP OCULTO */
-        #contenidoVIP { display: none; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        .card h2 { color: #1A365D; margin-bottom: 15px; font-size: 1.3rem; border-bottom: 2px solid #E36414; padding-bottom: 8px; }
-        
-        .arbol-canvas { border: 2px dashed #cbd5e1; background: #fafafa; border-radius: 10px; padding: 40px; min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
-        .nodo-familiar { background: #1A365D; color: white; padding: 15px 25px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 320px; text-align: center; }
-        .nodo-familiar.cruce { background: #E36414; }
-        
-        .btn-accion { background-color: #E36414; color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; display: block; margin: 20px auto 0 auto; }
-        .btn-accion:hover { background-color: #c9550c; }
-        .info-box { background: #e0f2fe; border-left: 4px solid #0284c7; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem; color: #0369a1; }
+        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11, 15, 25, 0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-card { background: white; padding: 40px; border-radius: 16px; text-align: center; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-top: 5px solid #E36414; }
+        .input-vip { padding: 12px; width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 1.1rem; margin-bottom: 15px; font-weight: bold; }
+        .btn-validar { background: #E36414; color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>🌳 Árbol Genealógico Legal <span style="font-size: 0.8rem; background: #E36414; padding: 3px 8px; border-radius: 4px;">Mediación Familiar</span></h1>
-        <a href="index.html">← Volver al Portal Principal</a>
-    </header>
-
-    <div class="container">
-        
-        <!-- MURO DE MEMBRESÍA VIP -->
-        <div id="muroMembresia">
-            <h2>🔒 Acceso Exclusivo Árbol Genealógico</h2>
-            <p>Herramienta restringida a mediadores certificados y miembros del Centro 45 y Más.<br>Ingresa tu token de acceso o adquiere tu membresía vía SPEI.</p>
-            <div>
-                <input type="text" id="tokenInput" class="input-token" placeholder="Ingresa tu Token VIP (ej: 45YMAS)">
-                <button class="btn-desbloquear" onclick="validarToken()">Desbloquear Herramienta</button>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
+            <h2>Árbol Sucesorio</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active"><i class="fa-solid fa-sitemap"></i> Mapeo Sucesorio</li>
+            <li class="nav-item" onclick="location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Volver al Portal</li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="banner-demo-limitado">⚠️ VERSIÓN DE PRUEBA LIMITADA - MÓDULO SUCESORIO</div>
+        <div class="topbar">
+            <div style="font-weight: 800; color: #1A365D;">Mapeo Dinámico de Vínculos y Sucesiones</div>
+            <button class="btn btn-vip" onclick="verificarVIP()">🔓 Desbloquear VIP</button>
+        </div>
+        <div class="view-container">
+            <div class="tree-card-demo">
+                <h3>🌳 Módulo de Árbol Genealógico Legal</h3>
+                <p style="color: #64748b; margin: 15px 0; line-height: 1.6;">Esta herramienta interactiva permite estructurar herencias y vínculos familiares con validez jurídica. La versión de prueba muestra nodos limitados.</p>
+                <button class="btn btn-vip" style="padding: 12px 25px;" onclick="verificarVIP()">Desbloquear Módulo Completo (45YMAS)</button>
             </div>
+        </div>
+    </div>
+
+    <div id="modalVIP">
+        <div class="modal-card">
+            <h2>🔒 Desbloquear Versión VIP</h2>
+            <p>Ingresa tu token oficial del Centro 45 y Más para desbloquear todo el ecosistema (IurisVisor, Árbol y Línea de Tiempo de Alertas).</p>
+            <input type="text" id="tokenInput" class="input-vip" placeholder="Ej. 45YMAS">
+            <button class="btn-validar" onclick="validarTokenVIP()">Desbloquear VIP</button>
             <br>
-            <a href="https://wa.me/523321870711?text=Hola,%20quiero%20mi%20token%20de%20acceso%20para%20el%20Árbol%20Genealógico" target="_blank" class="btn-wsp-token">💬 Solicitar Token vía WhatsApp (SPEI)</a>
+            <button style="background:none; border:none; color:#94a3b8; margin-top:15px; cursor:pointer;" onclick="document.getElementById('modalVIP').style.display='none'">Cancelar</button>
         </div>
-
-        <!-- CONTENIDO VIP PROTEGIDO -->
-        <div id="contenidoVIP">
-            <div class="card">
-                <h2>Mapeo Dinámico de Vínculos y Sucesiones</h2>
-                <div class="info-box">
-                    ℹ️ Agrega nuevos nodos familiares en tiempo real para estructurar los acuerdos de mediación.
-                </div>
-
-                <div class="arbol-canvas" id="canvasArbol">
-                    <div class="nodo-familiar">
-                        👴 <strong>Titular / Autor</strong><br>
-                        <span style="font-size: 0.8rem; opacity: 0.8;">Juan Pérez Gómez</span>
-                    </div>
-                    
-                    <div style="font-size: 1.2rem; color: #E36414;">↓</div>
-
-                    <div class="nodo-familiar cruce">
-                        💍 <strong>Cónyuge</strong><br>
-                        <span style="font-size: 0.8rem; opacity: 0.8;">María López Sánchez</span>
-                    </div>
-
-                    <div style="font-size: 1.2rem; color: #E36414;">↓</div>
-
-                    <div class="nodo-familiar" style="width: 260px; background: #334155;">
-                        👶 Heredero: Carlos Pérez
-                    </div>
-                </div>
-
-                <button class="btn-accion" onclick="agregarFamiliar()">➕ Añadir Nuevo Familiar / Heredero</button>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        const TOKEN_CORRECTO = "45YMAS";
-
-        function validarToken() {
-            const tokenUser = document.getElementById('tokenInput').value.trim();
-            if(tokenUser === TOKEN_CORRECTO) {
-                document.getElementById('muroMembresia').style.display = 'none';
-                document.getElementById('contenidoVIP').style.display = 'block';
-            } else {
-                alert('Token incorrecto o membresía vencida. Solicita tu acceso por WhatsApp.');
-            }
-        }
-
-        function agregarFamiliar() {
-            const canvas = document.getElementById('canvasArbol');
-            
-            const flecha = document.createElement('div');
-            flecha.style.fontSize = "1.2rem";
-            flecha.style.color = "#E36414";
-            flecha.innerText = "↓";
-            canvas.appendChild(flecha);
-
-            const nuevoNodo = document.createElement('div');
-            nuevoNodo.className = "nodo-familiar";
-            nuevoNodo.style.background = "#0f172a";
-            nuevoNodo.innerHTML = `👤 <strong>Familiar Vinculado</strong><br><span style="font-size: 0.8rem; opacity: 0.8;">Nuevo integrante registrado</span>`;
-            
-            canvas.appendChild(nuevoNodo);
+        function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
+        function validarTokenVIP() {
+            if(document.getElementById('tokenInput').value.trim() === "45YMAS") {
+                alert("¡Acceso VIP concedido a todo el Ecosistema Pro!");
+                document.querySelector('.banner-demo-limitado').style.background = "#059669";
+                document.querySelector('.banner-demo-limitado').innerText = "✓ VERSIÓN VIP ACTIVA - ACCESO TOTAL";
+                document.getElementById('modalVIP').style.display = 'none';
+            } else { alert("Token incorrecto."); }
         }
     </script>
 </body>
