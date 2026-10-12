@@ -3,106 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centro Privado 45 y Más | LegalTech</title>
+    <title>45 Y MÁS | Centro Privado de Mediación y Conciliación</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; }
+        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.6); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; --success: #10b981; }
         body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.8); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
         body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
-        body.light-mode .feature-card { background: #ffffff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        body.light-mode .feature-card, body.light-mode .service-category { background: #ffffff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         
-        /* TOPBAR CORPORATIVA */
-        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .logo { font-weight: 900; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; color: var(--brand-orange); letter-spacing: -1px; }
-        .logo span { color: var(--text-main); }
+        /* TOPBAR CORPORATIVA OFICIAL */
+        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); position: fixed; width: 100%; top: 0; z-index: 1000; }
         
-        .nav-links { display: flex; gap: 30px; align-items: center; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--neon-blue); }
+        /* LOGO OFICIAL ESTANDARIZADO */
+        .logo-oficial { display: flex; flex-direction: column; }
+        .logo-oficial .brand { font-weight: 900; font-size: 1.6rem; color: var(--brand-orange); letter-spacing: -1px; display: flex; align-items: center; gap: 8px; line-height: 1; margin-bottom: 2px;}
+        .logo-oficial .brand span { color: var(--text-main); }
+        .logo-oficial .sub-brand { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--brand-orange); }
         
         .btn-pro { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue) !important; padding: 10px 20px; border-radius: 8px; font-weight: 800 !important; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
         .btn-pro:hover { background: var(--neon-blue); color: #000 !important; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); transform: translateY(-2px); }
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        /* HERO SECTION (El imán de ventas) */
-        .hero { padding: 150px 20px 80px 20px; text-align: center; background-image: radial-gradient(circle at center, rgba(255, 115, 21, 0.05) 0%, transparent 70%); }
-        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; }
+        /* HERO SECTION */
+        .hero { padding: 160px 20px 80px 20px; text-align: center; background-image: radial-gradient(circle at top center, rgba(255, 115, 21, 0.08) 0%, transparent 60%); }
+        .hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
         .hero h1 span { background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px auto; line-height: 1.6; }
+        .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; }
         
-        .btn-ingresar { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); color: white; padding: 18px 40px; border-radius: 30px; font-size: 1.1rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(255, 115, 21, 0.3); transition: all 0.3s; border: none; cursor: pointer;}
+        /* SECCIÓN DE SERVICIOS (DEL PDF) */
+        .services-section { padding: 60px 20px 100px 20px; background: var(--bg-panel); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-size: 2.2rem; color: var(--text-main); margin-bottom: 10px; }
+        .section-header p { color: var(--brand-orange); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;}
+
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .service-category { background: var(--bg-deep); padding: 35px; border-radius: 16px; border: 1px solid var(--border-glass); transition: transform 0.3s; }
+        .service-category:hover { transform: translateY(-5px); border-color: var(--brand-orange); }
+        .service-category h3 { color: var(--brand-orange); margin-bottom: 20px; font-size: 1.3rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; display: flex; align-items: center; gap: 10px;}
+        .service-category h3 i { color: var(--neon-blue); font-size: 1.5rem; }
+        
+        .service-list { list-style: none; }
+        .service-list li { margin-bottom: 15px; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
+        .service-list li i { color: var(--success); margin-top: 4px; font-size: 0.8rem; }
+
+        /* BANNER LEGALTECH */
+        .legaltech-banner { padding: 80px 20px; text-align: center; background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(15, 23, 42, 0.8) 100%); }
+        .legaltech-banner h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        .btn-ingresar { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); color: white; padding: 18px 40px; border-radius: 30px; font-size: 1.1rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(255, 115, 21, 0.3); transition: all 0.3s; border: none; cursor: pointer; margin-top: 20px;}
         .btn-ingresar:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(255, 115, 21, 0.5); }
 
-        /* FEATURES (Puntos de Venta) */
-        .features { padding: 50px 20px 100px 20px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
-        .feature-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 40px 30px; width: 320px; text-align: center; transition: all 0.4s; }
-        .feature-card:hover { transform: translateY(-10px); border-color: var(--neon-blue); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
-        .feature-icon { font-size: 3rem; margin-bottom: 20px; color: var(--neon-blue); }
-        .feature-card h3 { font-size: 1.3rem; margin-bottom: 15px; color: var(--text-main); }
-        .feature-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
-
         /* FOOTER */
-        .footer { background: var(--bg-panel); padding: 30px; text-align: center; border-top: 1px solid var(--border-glass); margin-top: auto; }
-        .footer p { color: var(--text-muted); font-size: 0.85rem; }
+        .footer { background: var(--bg-panel); padding: 40px 20px; text-align: center; border-top: 1px solid var(--border-glass); margin-top: auto; }
+        .footer p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;}
+        .footer .contact-info { color: var(--text-main); font-weight: bold; font-size: 0.9rem; }
 
         @media (max-width: 900px) {
-            .nav-links { display: none; } /* Ocultar menú en móviles por ahora */
-            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } 
+            .hero h1 { font-size: 2.3rem; }
             .topbar { padding: 15px 20px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- TOPBAR CON EL NUEVO LOGO OFICIAL -->
     <nav class="topbar">
-        <div class="logo"><i class="fa-solid fa-scale-balanced"></i> 45 Y MÁS <span>Pro</span></div>
+        <div class="logo-oficial">
+            <div class="brand"><i class="fa-solid fa-scale-balanced"></i> 45<span>YMÁS</span></div>
+            <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
+        </div>
         <div class="nav-links">
-            <a href="#">Inicio</a>
-            <a href="#">Especialidades</a>
-            <a href="#">Diplomados</a>
-            <a href="portal-pro.html" class="btn-pro"><i class="fa-solid fa-lock"></i> Acceso Bóveda</a>
+            <a href="#servicios">Servicios</a>
+            <a href="#legaltech">LegalTech</a>
+            <a href="portal-pro.html" class="btn-pro"><i class="fa-solid fa-lock"></i> Portal Pro</a>
             <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
                 <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
             </button>
         </div>
     </nav>
 
+    <!-- HERO SECTION -->
     <section class="hero">
-        <h1>El futuro de la gestión <br><span>Jurídica y MASC</span></h1>
-        <p>Una bóveda digital cifrada en tu navegador. Administra tus expedientes, audita plazos con IA y gestiona convenios con privacidad absoluta.</p>
+        <h1>Centro Privado de <br><span>Mediación y Conciliación</span></h1>
+        <p>Expertos en métodos alternativos para la solución de controversias. Justicia rápida, pacífica y con la misma validez que una sentencia judicial.</p>
+    </section>
+
+    <!-- SECCIÓN DE SERVICIOS -->
+    <section class="services-section" id="servicios">
+        <div class="section-header">
+            <p>Portafolio Institucional</p>
+            <h2>Servicios que se Prestan</h2>
+        </div>
+        
+        <div class="services-grid">
+            <div class="service-category">
+                <h3><i class="fa-solid fa-hands-holding-circle"></i> Métodos Alternos</h3>
+                <ul class="service-list">
+                    <li><i class="fa-solid fa-check"></i> Proceso Tradicional en Juzgados</li>
+                    <li><i class="fa-solid fa-check"></i> Mediación</li>
+                    <li><i class="fa-solid fa-check"></i> Conciliación</li>
+                    <li><i class="fa-solid fa-check"></i> Juntas Restaurativas</li>
+                    <li><i class="fa-solid fa-check"></i> Derecho Colaborativo</li>
+                </ul>
+            </div>
+
+            <div class="service-category">
+                <h3><i class="fa-solid fa-children"></i> Convenios Familiares</h3>
+                <ul class="service-list">
+                    <li><i class="fa-solid fa-check"></i> Alimentos, Custodia y Convivencia</li>
+                    <li><i class="fa-solid fa-check"></i> Alimentos entre cónyuges / Pensión Compensatoria</li>
+                    <li><i class="fa-solid fa-check"></i> Alimentos para hijos mayores de edad</li>
+                    <li><i class="fa-solid fa-check"></i> Alimentos de hijos a padres</li>
+                    <li><i class="fa-solid fa-check"></i> Compensación Económica</li>
+                    <li><i class="fa-solid fa-check"></i> Divorcio Administrativo / Mutuo Consentimiento</li>
+                </ul>
+            </div>
+
+            <div class="service-category">
+                <h3><i class="fa-solid fa-file-contract"></i> Convenios Civiles</h3>
+                <ul class="service-list">
+                    <li><i class="fa-solid fa-check"></i> Contrato Preventivo de Arrendamiento Puro</li>
+                    <li><i class="fa-solid fa-check"></i> Contrato Preventivo de Arrendamiento</li>
+                    <li><i class="fa-solid fa-check"></i> Contratos de mutuo con interés y garantía prendaria</li>
+                    <li><i class="fa-solid fa-check"></i> Contratos de Comodato</li>
+                    <li><i class="fa-solid fa-check"></i> Contratos de Prestación de Servicios Profesionales</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANNER DE LA HERRAMIENTA PRO -->
+    <section class="legaltech-banner" id="legaltech">
+        <h2>¿Eres parte de la red de <span>45 Y MÁS</span>?</h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;">Accede a nuestra Bóveda Digital Privada. Gestiona expedientes con IA, visualiza alertas judiciales y controla tus checklists MASC desde un entorno 100% confidencial.</p>
         <a href="portal-pro.html" class="btn-ingresar">
-            Iniciar Sesión Institucional <i class="fa-solid fa-arrow-right"></i>
+            Ingresar al Portal Pro <i class="fa-solid fa-arrow-right"></i>
         </a>
     </section>
 
-    <section class="features">
-        <div class="feature-card">
-            <i class="fa-solid fa-shield-halved feature-icon" style="color: #10b981;"></i>
-            <h3>100% Confidencial</h3>
-            <p>Arquitectura Local-First. Ningún documento ni dato de tus clientes se sube a servidores externos. Todo se cifra en tu propia máquina.</p>
-        </div>
-
-        <div class="feature-card">
-            <i class="fa-solid fa-microchip feature-icon"></i>
-            <h3>Expediente Inteligente</h3>
-            <p>Deja que la IA escanee, cuente y localice actuaciones críticas (Sentencias, Prevenciones) al instante en tus PDF judiciales.</p>
-        </div>
-
-        <div class="feature-card">
-            <i class="fa-solid fa-handshake feature-icon" style="color: var(--brand-orange);"></i>
-            <h3>Gestor MASC</h3>
-            <p>Controla la viabilidad de tus convenios (Arrendamiento, Familia) con checklists automatizados e integrados a tu bóveda.</p>
-        </div>
-    </section>
-
+    <!-- FOOTER OFICIAL -->
     <footer class="footer">
-        <p>© 2026 Centro Privado en Mediación y Conciliación 45 y Más. Todos los derechos reservados.</p>
+        <p class="contact-info">Lic. Yoshua Salvador Ramos | Mediador y Conciliador Certificado</p>
+        <p style="margin-bottom: 15px;">Cel. (33) 2187-0711 | Tel. (33) 3330-5471 | mov45ymas@gmail.com</p>
+        <p>© 2026 Centro Privado en Mediación y Conciliación 45 y Más. Acreditación 065 IJA.</p>
     </footer>
 
     <script>
@@ -113,10 +166,7 @@
             document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
             localStorage.setItem('tema', isLight ? 'light' : 'dark');
         }
-
-        window.onload = () => { 
-            if(localStorage.getItem('tema') === 'light') toggleTheme(); 
-        };
+        window.onload = () => { if(localStorage.getItem('tema') === 'light') toggleTheme(); };
     </script>
 </body>
 </html>

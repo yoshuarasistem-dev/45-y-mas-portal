@@ -8,10 +8,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.9); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --danger: #ef4444; }
+        :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.9); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --danger: #ef4444; --success: #10b981; }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -20,11 +20,15 @@
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
 
-        /* TOPBAR */
+        /* TOPBAR CON LOGO OFICIAL */
         .topbar { background: var(--bg-panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
-        .logo-visor { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
-        .logo-visor i { color: var(--brand-orange); }
-        .expediente-title { background: rgba(56, 189, 248, 0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; color: var(--neon-blue); font-weight: bold; border: 1px solid rgba(56, 189, 248, 0.3); }
+        
+        .logo-oficial { display: flex; flex-direction: column; }
+        .logo-oficial .brand { font-weight: 900; font-size: 1.2rem; color: var(--brand-orange); letter-spacing: -1px; display: flex; align-items: center; gap: 8px; line-height: 1; margin-bottom: 2px;}
+        .logo-oficial .brand span { color: var(--text-main); }
+        .logo-oficial .sub-brand { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .expediente-title { background: rgba(56, 189, 248, 0.1); padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; color: var(--neon-blue); font-weight: bold; border: 1px solid rgba(56, 189, 248, 0.3); }
         
         .btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
         .btn-volver { background: transparent; color: var(--text-muted); border: none; } .btn-volver:hover { color: var(--brand-orange); }
@@ -49,7 +53,7 @@
         .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
         .btn-mini:hover { background: var(--brand-orange); }
 
-        .alerta-faltante { background: rgba(239, 68, 68, 0.1); border: 1px dashed var(--danger); color: var(--danger); padding: 10px; border-radius: 6px; font-size: 0.75rem; text-align: center; cursor: pointer; margin-bottom: 5px; }
+        .alerta-faltante { background: rgba(239, 68, 68, 0.1); border: 1px dashed var(--danger); color: var(--danger); padding: 10px; border-radius: 6px; font-size: 0.75rem; text-align: center; cursor: pointer; margin-bottom: 5px; font-weight: bold;}
 
         /* COLUMNA 2: VISOR CENTRAL */
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
@@ -71,7 +75,7 @@
         .keyword-word { font-weight: 800; color: var(--text-main); font-size: 0.95rem; text-transform: uppercase; }
         .keyword-count { background: rgba(56, 189, 248, 0.2); color: var(--neon-blue); padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
         .keyword-fojas { font-size: 0.75rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 5px; }
-        .badge-foja { background: rgba(255, 255, 255, 0.1); padding: 3px 6px; border-radius: 4px; cursor: pointer; }
+        .badge-foja { background: rgba(255, 255, 255, 0.1); padding: 3px 6px; border-radius: 4px; cursor: pointer; font-weight: 600;}
         .badge-foja:hover { background: var(--brand-orange); color: white; }
 
         /* Bloc de Notas */
@@ -88,12 +92,17 @@
 <body>
 
     <div class="topbar">
-        <a href="portal-pro.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Salir a Carpetas</a>
-        <div class="logo-visor">
-            <i class="fa-solid fa-microchip"></i> Expediente Inteligente
+        <a href="portal-pro.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Bóveda</a>
+        
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="logo-oficial">
+                <div class="brand"><i class="fa-solid fa-scale-balanced"></i> 45<span>YMÁS</span></div>
+                <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
+            </div>
             <span class="expediente-title" id="titulo-exp">EXP/000/00</span>
         </div>
-        <div>
+
+        <div style="display:flex; gap: 10px;">
             <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDFBase(event)" multiple>
             <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> Cargar Escaneo</button>
             <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearPalabrasJudiciales()"><i class="fa-solid fa-radar"></i> Iniciar Auto-Lectura</button>
@@ -101,7 +110,6 @@
     </div>
 
     <div class="workspace">
-        
         <!-- COLUMNA 1: FOJAS (Izquierda) -->
         <div class="sidebar-fojas">
             <div class="sidebar-header">
@@ -117,9 +125,9 @@
         <div class="visor-central">
             <canvas id="canvas-principal" style="display:none;"></canvas>
             <div style="text-align:center; color:var(--text-muted); margin-top: 100px;" id="msg-vacio">
-                <i class="fa-solid fa-file-shield" style="font-size: 4rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                <i class="fa-solid fa-folder-open" style="font-size: 4rem; opacity: 0.3; margin-bottom: 15px;"></i>
                 <h3>Visor Inactivo</h3>
-                <p>Selecciona una foja a la izquierda.</p>
+                <p>Selecciona una foja a la izquierda o carga un escaneo.</p>
             </div>
 
             <div class="zoom-controls" id="controles-zoom" style="display: none;">
@@ -137,7 +145,7 @@
 
             <!-- Panel Palabras Clave -->
             <div class="panel-content active" id="tab-palabras">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">El sistema buscará actuaciones clave. Presiona "Iniciar Auto-Lectura" arriba.</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">El sistema buscará actuaciones clave. Presiona "Iniciar Auto-Lectura" en la barra superior.</p>
                 <div id="contenedor-keywords">
                     <!-- Se llenará dinámicamente -->
                 </div>
@@ -147,8 +155,8 @@
             <div class="panel-content" id="tab-notas">
                 <h4 style="color: var(--neon-blue); margin-bottom: 10px; font-size: 0.9rem;">Apuntes del Expediente</h4>
                 <textarea class="nota-area" id="texto-notas" placeholder="Escribe observaciones, fechas para recordar o estrategias sobre este caso..."></textarea>
-                <button class="btn btn-accion" style="width: 100%; justify-content: center;" onclick="guardarNotas()"><i class="fa-solid fa-save"></i> Guardar Notas</button>
-                <p id="nota-guardada" style="color: var(--success); font-size: 0.75rem; text-align: center; margin-top: 10px; display: none;">Guardado localmente.</p>
+                <button class="btn btn-accion" style="width: 100%; justify-content: center;" onclick="guardarNotas()"><i class="fa-solid fa-save"></i> Guardar Notas Localmente</button>
+                <p id="nota-guardada" style="color: var(--success); font-size: 0.75rem; text-align: center; margin-top: 10px; display: none;"><i class="fa-solid fa-check"></i> Guardado seguro.</p>
             </div>
         </div>
 
@@ -176,7 +184,7 @@
 
         // Variables Globales del PDF
         let documentoActual = null;
-        let arrayFojas = []; // Guardará objetos { id, numeroLogico, canvasImage, textInfo }
+        let arrayFojas = []; 
         let fojaSeleccionadaIndex = 0;
         let zoomGlobal = 1.2;
 
@@ -198,17 +206,16 @@
             arrayFojas = [];
             for (let i = 1; i <= documentoActual.numPages; i++) {
                 const page = await documentoActual.getPage(i);
-                const viewport = page.getViewport({ scale: 1.5 }); // Buena calidad base
+                const viewport = page.getViewport({ scale: 1.5 });
                 
                 const canvas = document.createElement('canvas');
                 canvas.width = viewport.width; canvas.height = viewport.height;
                 const ctx = canvas.getContext('2d');
                 await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-                // Guardar en array en memoria
                 arrayFojas.push({
                     id: Date.now() + i,
-                    numeroLogico: i, // Asume que la hoja 1 es la foja 1 (se puede cambiar luego si hay faltantes)
+                    numeroLogico: i, 
                     canvasImage: canvas,
                     rotacion: 0
                 });
@@ -260,7 +267,6 @@
                 container.appendChild(div);
                 document.getElementById('cont-canvas-'+i).appendChild(canvasMini);
                 
-                // Aplicar rotación visual en miniatura
                 if(f.rotacion !== 0) canvasMini.style.transform = `rotate(${f.rotacion}deg)`;
             }
         }
@@ -295,7 +301,6 @@
             renderizarVisorCentral();
         }
 
-        // CONTROLES DE FOJA
         function rotarFojaEnMemoria(index) {
             arrayFojas[index].rotacion = (arrayFojas[index].rotacion + 90) % 360;
             renderizarBarraLateralFojas();
@@ -305,7 +310,7 @@
         function eliminarFojaEnMemoria(index) {
             if(confirm("¿Eliminar esta foja del expediente?")) {
                 arrayFojas.splice(index, 1);
-                // Reajustar numeración lógica subsecuente (Opcional, depende de la política del despacho)
+                // Reajustar numeración lógica subsecuente
                 for(let i=index; i<arrayFojas.length; i++) arrayFojas[i].numeroLogico--;
                 
                 renderizarBarraLateralFojas();
@@ -319,7 +324,6 @@
             const file = event.target.files[0];
             if(!file) return;
 
-            // Para simplificar el prototipo, asumimos que suben una imagen JPG/PNG de la hoja faltante o un PDF de 1 hoja
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
@@ -328,15 +332,12 @@
                     canvas.width = img.width; canvas.height = img.height;
                     canvas.getContext('2d').drawImage(img, 0, 0);
 
-                    // Preguntar qué numero de foja es
-                    let numAsignado = prompt("¿Qué número de foja es esta? (Si es vuelta, usa el mismo número de la hoja frontal)", "Ej. 233");
+                    let numAsignado = prompt("¿Qué número de foja es esta? (Si es la vuelta, ingresa el mismo número de su frente. Ej: 233)", "Ej. 233");
                     numAsignado = parseInt(numAsignado) || arrayFojas.length + 1;
 
                     arrayFojas.push({ id: Date.now(), numeroLogico: numAsignado, canvasImage: canvas, rotacion: 0 });
                     
-                    // Reordenar por numero logico
                     arrayFojas.sort((a,b) => a.numeroLogico - b.numeroLogico);
-                    
                     renderizarBarraLateralFojas();
                 };
                 img.src = e.target.result;
@@ -349,7 +350,6 @@
             if(arrayFojas.length === 0) return;
             document.getElementById('pantalla-progreso').style.display = 'flex';
             
-            // Inicializar contador a cero
             resultadosKeywords = {};
             PALABRAS_BUSCADAS.forEach(p => resultadosKeywords[p.toLowerCase()] = []);
 
@@ -359,13 +359,11 @@
                 document.getElementById('texto-progreso').innerText = `Analizando Foja ${f.numeroLogico}...`;
                 document.getElementById('barra-llena').style.width = `${percent}%`;
 
-                // Tesseract lee la imagen del canvas en memoria
                 const { data } = await Tesseract.recognize(f.canvasImage, 'spa');
                 
                 data.words.forEach(palabra => {
                     let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
                     if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
-                        // Guardar la foja donde se encontró
                         if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) {
                             resultadosKeywords[txtLimpio].push(f.numeroLogico);
                         }
