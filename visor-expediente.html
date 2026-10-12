@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expediente Inteligente | 45 y Más</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -151,7 +151,7 @@
             </div>
 
             <div class="panel-content active" id="tab-palabras">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">Buscando alertas de la <strong>Ley de Justicia Alternativa</strong> (Sanciones, Mediación, Convenios).</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">Buscando alertas de la <strong>Ley de Justicia Alternativa</strong>.</p>
                 <div id="contenedor-keywords"></div>
             </div>
 
@@ -190,7 +190,6 @@
         let fojaSeleccionadaIndex = 0;
         let zoomGlobal = 1.2;
 
-        // NUEVAS PALABRAS CLAVE: LEY DE JUSTICIA ALTERNATIVA ESTADO DE JALISCO
         const PALABRAS_BUSCADAS = ["acuerdo", "convenio", "mediación", "conciliación", "confidencialidad", "ejecutoria", "sanción", "improcedencia"];
         let resultadosKeywords = {};
         window.mapaAlertasPorFoja = {}; 
