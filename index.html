@@ -16,7 +16,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         body { background: var(--bg-deep); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         
-        /* TOPBAR */
         .topbar { background: rgba(5, 8, 16, 0.9); backdrop-filter: blur(15px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); position: fixed; width: 100%; top: 0; z-index: 1000; }
         .sub-brand-topbar { font-size: 0.8rem; color: var(--text-muted); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         
@@ -29,14 +28,14 @@
         .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.3s; }
         .btn-camaleon:hover { background: var(--brand-orange); color: white; }
 
-        /* HERO CON CARRUSEL REPARADO (RUTAS ESTRICTAS) */
+        /* HERO CON CARRUSEL DIRECTO EN CSS */
         .hero { position: relative; padding: 160px 20px 100px 20px; text-align: center; min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; background-color: #0b1329; }
         
         .hero-bg-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
-        .hero-slide.active { opacity: 0.4; }
+        .hero-slide.active { opacity: 0.5; }
         
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(5,8,16,0.5) 0%, rgba(5,8,16,0.95) 100%); z-index: 2; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(5,8,16,0.3) 0%, rgba(5,8,16,0.95) 100%); z-index: 2; }
         
         .hero-content { position: relative; z-index: 3; max-width: 800px; }
         .logo-principal-centro { max-width: 260px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6)); }
@@ -61,20 +60,19 @@
         .service-list li { margin-bottom: 15px; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
         .service-list li i { color: var(--success); margin-top: 4px; font-size: 0.8rem; }
 
-        /* REDES SOCIALES (EMBEDS REALES HORIZONTALES) */
+        /* REDES SOCIALES HORIZONTALES CON EMBEDS ORIGINALES */
         .videos-section { padding: 80px 20px; text-align: center; max-width: 1200px; margin: 0 auto; }
-        .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; align-items: stretch; }
+        .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; align-items: start; }
         @media(max-width: 900px) { .videos-grid { grid-template-columns: 1fr; } }
         
-        .video-card { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 16px; padding: 25px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .video-card { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 16px; padding: 25px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%;}
         .video-card:hover { transform: translateY(-5px); border-color: var(--neon-blue); box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15); }
         
-        /* Contenedor estricto para que los 3 videos midan lo mismo */
-        .embed-container { width: 100%; height: 450px; background: #000; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 1px solid var(--border-glass); display: flex; justify-content: center; align-items: center; }
-        .embed-container iframe, .embed-container blockquote { width: 100%; height: 100%; border: none; }
+        .embed-container { width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; border-radius: 8px; overflow: hidden; background: #000; min-height: 400px; }
+        .embed-container iframe { width: 100%; border: none; }
 
-        .video-card h4 { color: var(--text-main); font-size: 1.1rem; margin-bottom: 8px; }
-        .video-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px; flex-grow: 1;}
+        .video-card h4 { color: var(--text-main); font-size: 1.1rem; margin-bottom: 8px; margin-top: auto;}
+        .video-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px;}
         
         .btn-social { padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; font-size: 0.85rem; width: 100%; justify-content: center; }
         .btn-tiktok { background: #000; color: #fff; border: 1px solid #333; }
@@ -114,14 +112,6 @@
 
         .footer { background: var(--bg-panel); padding: 40px 20px; text-align: center; border-top: 1px solid var(--border-glass); margin-top: auto; }
         .footer p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;}
-
-        @media (max-width: 900px) {
-            .nav-links { display: none; } 
-            .hero h1 { font-size: 2.3rem; }
-            .topbar { padding: 15px 20px; }
-            .acreditaciones-section { flex-direction: column; text-align: center; }
-            .acreditaciones-text { text-align: center; }
-        }
     </style>
 </head>
 <body>
@@ -141,17 +131,16 @@
         </div>
     </nav>
 
-    <!-- HERO CON CARRUSEL DE FONDO CORREGIDO -->
+    <!-- HERO CON CARRUSEL DE FONDO FORZADO DESDE HTML -->
     <section class="hero" id="inicio">
         <div class="hero-bg-slider">
-            <!-- Se cargará la imagen directamente. Si falla, el fondo css oscuro actúa como red de seguridad -->
-            <div class="hero-slide active" id="slide1"></div>
-            <div class="hero-slide" id="slide2"></div>
+            <div class="hero-slide active" style="background-image: url('assets/portada1.jpeg');"></div>
+            <div class="hero-slide" style="background-image: url('assets/portada2.jpeg');"></div>
         </div>
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
-            <img src="./assets/LOGO.png" alt="45 Y MÁS Oficial" class="logo-principal-centro" onerror="this.outerHTML='<h1 style=\\\'color:var(--brand-orange); font-size:3.5rem; margin-bottom:20px;\\\'>45 Y MÁS</h1>'">
+            <img src="assets/LOGO.png" alt="45 Y MÁS Oficial" class="logo-principal-centro" onerror="this.outerHTML='<h1 style=\\\'color:var(--brand-orange); font-size:3.5rem; margin-bottom:20px;\\\'>45 Y MÁS</h1>'">
             
             <h1>Centro Privado de <br><span>Mediación y Conciliación</span></h1>
             <p>Expertos en métodos alternativos para la solución de controversias. Justicia rápida, pacífica y con la misma validez que una sentencia judicial.</p>
@@ -194,7 +183,7 @@
         </div>
     </section>
 
-    <!-- REDES SOCIALES HORIZONTALES CON EMBEDS ORIGINALES (REPRODUCTORES) -->
+    <!-- REDES SOCIALES HORIZONTALES CON REPRODUCTORES REALES NATIVOS -->
     <section class="videos-section" id="capsulas">
         <div class="section-header">
             <p>Asesoría en Redes</p>
@@ -202,37 +191,37 @@
         </div>
         <div class="videos-grid">
             
-            <!-- TIKTOK EMBED REAL -->
+            <!-- TIKTOK -->
             <div class="video-card">
-                <div class="embed-container">
-                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@45ymas_oficial/video/7693953839174569224" data-video-id="7693953839174569224" style="max-width: 100%; min-width: 100%; margin: 0;">
+                <div class="embed-container" style="background: transparent;">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@45ymas_oficial/video/7693953839174569224" data-video-id="7693953839174569224" style="max-width: 100%; min-width: 100%; margin: 0; padding: 0;">
                         <section></section>
                     </blockquote>
                     <script async src="https://www.tiktok.com/embed.js"></script>
                 </div>
                 <h4>El Abogato Mediador</h4>
                 <p>Consejos de mediación explicados de forma sencilla y directa.</p>
-                <a href="https://www.tiktok.com/@45ymas_oficial" target="_blank" class="btn-social btn-tiktok"><i class="fa-brands fa-tiktok"></i> Ver Perfil TikTok</a>
+                <a href="https://www.tiktok.com/@45ymas_oficial" target="_blank" class="btn-social btn-tiktok"><i class="fa-brands fa-tiktok"></i> Ir al Perfil</a>
             </div>
 
-            <!-- INSTAGRAM EMBED REAL -->
+            <!-- INSTAGRAM -->
             <div class="video-card">
-                <div class="embed-container" style="background: #fafafa;">
+                <div class="embed-container" style="background: transparent; height: 500px;">
                     <iframe src="https://www.instagram.com/p/Ddo92Wfvk-5/embed" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
                 </div>
                 <h4>Reel Informativo</h4>
                 <p>Conoce los beneficios de la justicia alternativa y nuestros casos.</p>
-                <a href="https://www.instagram.com/m.45ymas/" target="_blank" class="btn-social btn-instagram"><i class="fa-brands fa-instagram"></i> Ver Perfil Instagram</a>
+                <a href="https://www.instagram.com/m.45ymas/" target="_blank" class="btn-social btn-instagram"><i class="fa-brands fa-instagram"></i> Ir al Perfil</a>
             </div>
 
-            <!-- FACEBOOK EMBED REAL -->
+            <!-- FACEBOOK -->
             <div class="video-card">
-                <div class="embed-container">
-                    <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2F45ymasoficial%2Fvideos%2F886737526756857%2F&show_text=false&width=267&t=0" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                <div class="embed-container" style="background: transparent;">
+                    <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2F45ymasoficial%2Fvideos%2F886737526756857%2F&show_text=false&width=267&t=0" width="100%" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
                 </div>
                 <h4>Cápsula Preventiva</h4>
                 <p>Análisis a fondo sobre convenios de arrendamiento seguros.</p>
-                <a href="https://www.facebook.com/45ymasoficial" target="_blank" class="btn-social btn-facebook"><i class="fa-brands fa-facebook"></i> Ir a Página Facebook</a>
+                <a href="https://www.facebook.com/45ymasoficial" target="_blank" class="btn-social btn-facebook"><i class="fa-brands fa-facebook"></i> Ir a la Página</a>
             </div>
 
         </div>
@@ -244,7 +233,7 @@
             <h2>Mediadores y Conciliadores Certificados</h2>
             <p>El <strong>Centro Privado 45 Y MÁS</strong> cuenta con la certificación oficial del Instituto de Justicia Alternativa del Estado de Jalisco. Garantizamos procedimientos apegados a la ley, con total imparcialidad y confidencialidad para proteger tu patrimonio y tranquilidad familiar.</p>
         </div>
-        <img src="./assets/logo45.jpeg" onerror="this.outerHTML='<h3 style=\\\'color:var(--brand-orange);\\\'>[LOGO ROMPECABEZAS]</h3>';" alt="Logo Rompecabezas 45 y Más" class="puzzle-logo">
+        <img src="assets/logo45.jpeg" onerror="this.outerHTML='<h3 style=\\\'color:var(--brand-orange);\\\'>[LOGO ROMPECABEZAS]</h3>';" alt="Logo Rompecabezas 45 y Más" class="puzzle-logo">
     </section>
 
     <!-- CONTACTO Y MAPA -->
@@ -294,13 +283,6 @@
     </footer>
 
     <script>
-        // SCRIPT ROBUSTO PARA EL CARRUSEL
-        const img1 = new Image(); img1.src = './assets/portada1.jpeg';
-        const img2 = new Image(); img2.src = './assets/portada2.jpeg';
-        
-        img1.onload = () => document.getElementById('slide1').style.backgroundImage = "url('./assets/portada1.jpeg')";
-        img2.onload = () => document.getElementById('slide2').style.backgroundImage = "url('./assets/portada2.jpeg')";
-
         let currentSlide = 0;
         const slides = document.querySelectorAll('.hero-slide');
         function nextSlide() {

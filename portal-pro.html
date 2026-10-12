@@ -7,7 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- SDK Firebase -->
+    <!-- SDK de Firebase para Sincronización en la Nube -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     
@@ -75,10 +75,11 @@
         .btn-view { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: 0.3s; }
         .btn-view:hover { background: var(--success); color: #fff; }
 
-        /* MODALES */
+        /* MODALES LIMPIOS */
         .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: var(--bg-panel); padding: 35px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid var(--border-glass); text-align: center; }
-        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
+        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.3s;}
+        .btn-crear:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
         
         .modal-visor-content { background: var(--bg-panel); border: 1px solid var(--border-glass); width: 85vw; height: 85vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
         .modal-visor-header { padding: 15px 25px; background: rgba(0,0,0,0.4); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
@@ -148,19 +149,6 @@
         </div>
     </div>
 
-    <!-- MODAL VISOR PDF INDIVIDUAL MASC -->
-    <div class="modal" id="modal-visor-pdf">
-        <div class="modal-visor-content">
-            <div class="modal-visor-header">
-                <h3 id="visor-titulo-doc" style="color: var(--neon-blue); font-size: 1.1rem;">Visualizando Documento</h3>
-                <button class="btn-logout" onclick="cerrarVisorPDF()"><i class="fa-solid fa-xmark"></i> Cerrar</button>
-            </div>
-            <div class="modal-visor-body">
-                <iframe id="iframe-pdf-visor" src=""></iframe>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL PARA CREAR NUEVO CONVENIO MASC (SIN ALERTA NATIVA) -->
     <div class="modal" id="modal-crear-masc">
         <div class="modal-content">
@@ -177,8 +165,21 @@
         </div>
     </div>
 
+    <!-- MODAL VISOR PDF INDIVIDUAL MASC -->
+    <div class="modal" id="modal-visor-pdf">
+        <div class="modal-visor-content">
+            <div class="modal-visor-header">
+                <h3 id="visor-titulo-doc" style="color: var(--neon-blue); font-size: 1.1rem;">Visualizando Documento</h3>
+                <button class="btn-logout" onclick="cerrarVisorPDF()"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+            </div>
+            <div class="modal-visor-body">
+                <iframe id="iframe-pdf-visor" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // CONFIGURACIÓN FIREBASE PARA ADMIN (Si no la pones, igual funciona en local)
+        // CONFIGURACIÓN FIREBASE PARA ADMIN (Mantiene funcionalidad híbrida)
         const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
         let db = null; let esAdmin = false; let listaExpedientesMasc = [];
 
@@ -273,7 +274,7 @@
                     html += `<div class="section-header-box"><div class="section-title">${pathJuridico.juzgado} > ${pathJuridico.anio} > Expedientes</div><button class="btn-upload" onclick="document.getElementById('modal-crear').style.display='flex'"><i class="fa-solid fa-plus"></i> Añadir Expediente</button></div>`;
                     html += `<div class="grid-carpetas">`;
                     let exps = JSON.parse(localStorage.getItem(`exp_${pathJuridico.juzgado}_${pathJuridico.anio}`)) || [];
-                    exps.forEach(e => { html += `<div class="carpeta-card" onclick="abrirVisorJuridico('${e.nombre}')"><i class="fa-solid fa-file-pdf folder-icon" style="color:var(--success);"></i><div class="titulo">${e.nombre}</div><div class="subtitulo">Gestión Digital</div></div>`; });
+                    exps.forEach(e => { html += `<div class="carpeta-card" onclick="abrirVisorCentral('${e.nombre}')"><i class="fa-solid fa-file-pdf folder-icon" style="color:var(--success);"></i><div class="titulo">${e.nombre}</div><div class="subtitulo">Gestión Digital</div></div>`; });
                     html += `</div>`;
                 }
             } 
@@ -306,8 +307,15 @@
                 }
                 else if (nivelMasc === 4) {
                     let m = listaExpedientesMasc[pathMasc.indexExp];
-                    html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Expedientes</div>
-                    <div class="section-header-box"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> Expediente MASC: ${m.numero}</div></div>
+                    html += `
+                    <div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Expedientes</div>
+                    
+                    <div class="section-header-box" style="align-items: center;">
+                        <div class="section-title"><i class="fa-solid fa-folder-tree"></i> Expediente MASC: ${m.numero}</div>
+                        <!-- BOTÓN MAESTRO PARA ABRIR TODO EL EXPEDIENTE EN EL VISOR IA -->
+                        <button class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.9rem;" onclick="abrirVisorCentral('MASC-${m.numero}')"><i class="fa-solid fa-eye"></i> Ver Expediente Completo</button>
+                    </div>
+
                     <div class="gestion-box">
                         <div class="form-row">
                             <div class="form-group"><label>Nombre del Solicitante:</label><input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo"></div>
@@ -348,9 +356,10 @@
             renderizarVista();
         }
 
-        function abrirVisorJuridico(nombreExp) {
+        // FUNCIÓN MAESTRA QUE MANDA AL VISOR (SIRVE PARA MASC Y JURÍDICO)
+        function abrirVisorCentral(nombreExp) {
             localStorage.setItem('expediente_abierto', nombreExp);
-            registrarActividad("Lectura", `Consulta del expediente digital ${nombreExp}`);
+            registrarActividad("Auditoría", `Abriendo en Visor Inteligente: ${nombreExp}`);
             window.location.href = 'visor-expediente.html';
         }
 
