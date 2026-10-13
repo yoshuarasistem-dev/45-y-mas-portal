@@ -7,10 +7,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- FIREBASE & GOOGLE DRIVE -->
+    <!-- FIREBASE (Solo para la base de datos de texto/metadatos) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script src="https://accounts.google.com/gsi/client" onload="initGoogleDrive()"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     
     <style>
@@ -254,7 +253,7 @@
         const GOOGLE_CLIENT_ID = '326577655461-e7s01aoc20tofbgmrplt0bdt6ouhe27o.apps.googleusercontent.com';
         let tokenClient;
         let gDriveToken = localStorage.getItem('drive_token') || null;
-        let driveStorageInfo = { used: 0, limit: 5242880 }; // Default a 5TB
+        let driveStorageInfo = { used: 0, limit: 5242880 }; 
 
         async function obtenerTelemetriaDrive() {
             if(!gDriveToken) return;
@@ -290,7 +289,13 @@
             }
         }
 
-        function conectarDrive() { if(tokenClient) tokenClient.requestAccessToken({prompt: 'consent'}); }
+        function conectarDrive() { 
+            if(tokenClient) {
+                tokenClient.requestAccessToken({prompt: 'consent'}); 
+            } else {
+                alert("La librería de Google aún se está cargando o hubo un error de red. Intenta en un momento.");
+            }
+        }
 
         async function subirAGoogleDrive(file) {
             const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', { method: 'POST', headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type }, body: file });
@@ -316,7 +321,24 @@
 
         function registrarActividad(accion) { if(!usuarioActivoObj) return; let logKey = 'actividad_log_' + usuarioActivoObj.entornoId; let logs = JSON.parse(localStorage.getItem(logKey)) || []; let fecha = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }); logs.unshift({ user: usuarioActivoObj.user, fecha: fecha, accion: accion }); if(logs.length > 200) logs.pop(); localStorage.setItem(logKey, JSON.stringify(logs)); }
         function calcularUsoMemoria() { let _lsTotal = 0, _xLen, _x; for (_x in localStorage) { if (!localStorage.hasOwnProperty(_x)) continue; _xLen = ((localStorage[_x].length + _x.length) * 2); _lsTotal += _xLen; } return (_lsTotal / 1024 / 1024).toFixed(2); }
-        window.onload = () => { let sessionUser = localStorage.getItem('sesion_activa_user'); if(sessionUser) { let found = bovedaUsers.find(x => x.user === sessionUser); if(found) { document.getElementById('user').value = found.user; document.getElementById('pass').value = found.pass; iniciarSesion(); } } };
+        
+        // --- ARREGLO DE ORDEN DE CARGA (SOLUCIONA EL BOTON MUERTO) ---
+        window.onload = () => { 
+            let sessionUser = localStorage.getItem('sesion_activa_user'); 
+            if(sessionUser) { 
+                let found = bovedaUsers.find(x => x.user === sessionUser); 
+                if(found) { document.getElementById('user').value = found.user; document.getElementById('pass').value = found.pass; iniciarSesion(); } 
+            } 
+            
+            // Cargar el script de Google GSI de forma segura y controlada al final
+            const scriptGoogle = document.createElement('script');
+            scriptGoogle.src = "https://accounts.google.com/gsi/client";
+            scriptGoogle.async = true;
+            scriptGoogle.defer = true;
+            scriptGoogle.onload = initGoogleDrive;
+            document.body.appendChild(scriptGoogle);
+        };
+
         function detectarEnter(event) { if(event.key === 'Enter') { iniciarSesion(); } }
 
         async function iniciarSesion() {
