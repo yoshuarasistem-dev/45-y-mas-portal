@@ -95,9 +95,7 @@
         .breadcrumb { display: flex; gap: 8px; color: var(--text-muted); margin-bottom: 15px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
         .breadcrumb span:hover { color: var(--brand-orange); }
 
-        /* =========================================
-           RESPONSIVE DESIGN (MÓVILES) ARREGLADO
-           ========================================= */
+        /* RESPONSIVE DESIGN (MÓVILES) */
         @media (max-width: 768px) {
             .topbar { padding: 10px 15px; flex-wrap: wrap; }
             .logo-oficial { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -105,12 +103,10 @@
             
             .main-content { flex-direction: column; }
             
-            /* Menú lateral se convierte en Pestañas Horizontales Arriba */
             .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-glass); flex-direction: row; padding: 0; overflow-x: auto; white-space: nowrap; }
             .menu-item { padding: 12px 15px; border-left: none; border-bottom: 3px solid transparent; font-size: 0.85rem; }
             .menu-item.active { border-left: none; border-bottom-color: var(--neon-blue); }
 
-            /* Área de carpetas toma el 100% */
             .folder-area { padding: 15px; width: 100%; }
             .grid-carpetas { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
             .carpeta-card { padding: 15px; }
@@ -125,7 +121,6 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <div class="logo-oficial" style="align-items: center; margin-bottom: 25px;">
@@ -141,7 +136,6 @@
         </div>
     </div>
 
-    <!-- PANTALLA PRINCIPAL BÓVEDA -->
     <div id="dashboard-screen">
         <div class="topbar">
             <div class="logo-oficial">
@@ -159,13 +153,10 @@
                 <div class="menu-item active" id="menu-juridico" onclick="mostrarMenu('juridico')"><i class="fa-solid fa-gavel"></i> Expedientes Jurídicos</div>
                 <div class="menu-item" id="menu-masc" onclick="mostrarMenu('masc')"><i class="fa-solid fa-handshake"></i> Convenios MASC</div>
             </div>
-            <div class="folder-area" id="area-trabajo">
-                <!-- AQUI SE RENDERIZAN LAS CARPETAS -->
-            </div>
+            <div class="folder-area" id="area-trabajo"></div>
         </div>
     </div>
 
-    <!-- MODAL CREAR EXPEDIENTE JURÍDICO -->
     <div class="modal" id="modal-crear">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: var(--neon-blue); font-size: 1.1rem;">Nuevo Expediente Jurídico</h3>
@@ -178,7 +169,6 @@
         </div>
     </div>
 
-    <!-- MODAL CREAR CONVENIO MASC -->
     <div class="modal" id="modal-crear-masc">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: var(--brand-orange); font-size: 1.1rem;">Apertura Convenio MASC</h3>
@@ -194,7 +184,6 @@
         </div>
     </div>
 
-    <!-- MODAL VISOR PDF MASC -->
     <div class="modal" id="modal-visor-pdf">
         <div class="modal-visor-content">
             <div class="modal-visor-header">
@@ -208,23 +197,18 @@
     </div>
 
     <script>
-        // SCRIPT RECONSTRUIDO CON PROTECCIÓN DE ERRORES (TRY/CATCH)
         const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
         let db = null; 
         let esAdmin = false; 
         let listaExpedientesMasc = [];
 
-        try { 
-            if(firebaseConfig.apiKey !== "TU_API_KEY") { 
-                firebase.initializeApp(firebaseConfig); 
-                db = firebase.firestore(); 
-            } 
-        } catch(e) { console.log("Firebase inactivo"); }
+        try { if(firebaseConfig.apiKey !== "TU_API_KEY") { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } } catch(e) { console.log("Firebase inactivo"); }
 
+        // LISTA DE JUZGADOS RESTAURADA COMPLETA
         const catJuzgados = {
-            "Civil": ["Juzgado 1° Civil", "Juzgado 2° Civil", "Juzgado 3° Civil", "Juzgado 4° Civil", "Juzgado 5° Civil", "Juzgado 6° Civil"],
-            "Familiar": ["Juzgado 1° Familiar", "Juzgado 2° Familiar", "Juzgado 3° Familiar", "Juzgado 4° Familiar", "Especializado Niños", "Violencia Mujeres"],
-            "Mercantil": ["Juzgado 1° Mercantil", "Juzgado 2° Mercantil", "Juzgado 3° Mercantil", "Juzgado 4° Mercantil", "Juzgado 5° Mercantil"]
+            "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
+            "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Especializado Niños", "Violencia Mujeres"],
+            "Mercantil": ["Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil"]
         };
         const anios = ["2026", "2025", "2024", "2023", "2022"];
         
@@ -236,11 +220,7 @@
         let pathMasc = { centro: '', anio: '', tipo: '', indexExp: null };
         const tiposMascObj = { "ARRENDAMIENTO": "Preventivo Arrendamiento", "ALIMENTOS": "Alimentos y Convivencia", "DIVORCIO": "Divorcio Admtvo. y Mutuo" };
 
-        function detectarEnter(event) {
-            if(event.key === 'Enter') {
-                iniciarSesion();
-            }
-        }
+        function detectarEnter(event) { if(event.key === 'Enter') { iniciarSesion(); } }
 
         async function iniciarSesion() {
             try {
@@ -268,55 +248,38 @@
                     errorMsg.style.display = 'block'; 
                 }
             } catch (error) {
-                console.error("Error crítico en inicio de sesión:", error);
-                alert("Hubo un error de lectura en el navegador. Por favor vacía el caché.");
+                console.error("Error en inicio de sesión:", error);
             }
         }
 
-        function cerrarSesion() { 
-            localStorage.removeItem('usuario_admin'); 
-            location.reload(); 
-        }
+        function cerrarSesion() { localStorage.removeItem('usuario_admin'); location.reload(); }
 
-        // CARGA SEGURA PARA EVITAR EL CRASHEO QUE MENCIONASTE
         function cargarLocalesSeguro() {
             try {
                 let data = localStorage.getItem('masc_list_manual');
                 listaExpedientesMasc = data ? JSON.parse(data) : [];
             } catch (error) {
-                console.error("Los datos locales estaban dañados y fueron reseteados.");
                 listaExpedientesMasc = [];
                 localStorage.removeItem('masc_list_manual');
             }
         }
 
-        async function sincronizarDesdeNube() { 
-            try { 
-                const snapshot = await db.collection('expedientes_masc').get(); 
-                listaExpedientesMasc = []; 
-                snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); 
-            } catch(e) { 
-                cargarLocalesSeguro(); 
-            } 
-        }
+        async function sincronizarDesdeNube() { try { const snapshot = await db.collection('expedientes_masc').get(); listaExpedientesMasc = []; snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); } catch(e) { cargarLocalesSeguro(); } }
 
         async function guardarEnBDMasc() { 
             if(esAdmin && db) { 
-                try { 
-                    for(let m of listaExpedientesMasc) { 
-                        await db.collection('expedientes_masc').doc(m.numero.replace('/', '-')).set(m); 
-                    } 
-                } catch(e) {} 
+                try { for(let m of listaExpedientesMasc) { await db.collection('expedientes_masc').doc(m.numero.replace('/', '-')).set(m); } } catch(e) {} 
             } 
-            localStorage.setItem('masc_list_manual', JSON.stringify(listaExpedientesMasc)); 
+            try {
+                localStorage.setItem('masc_list_manual', JSON.stringify(listaExpedientesMasc)); 
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    alert("¡Límite de memoria alcanzado! El PDF es demasiado pesado para el guardado de la tabla local.");
+                }
+            }
         }
 
-        function mostrarMenu(menu) { 
-            vistaActual = menu; 
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
-            document.getElementById('menu-' + menu).classList.add('active'); 
-            renderizarVista(); 
-        }
+        function mostrarMenu(menu) { vistaActual = menu; document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById('menu-' + menu).classList.add('active'); renderizarVista(); }
 
         function renderizarVista() {
             const area = document.getElementById('area-trabajo'); 
@@ -392,7 +355,6 @@
                 }
                 area.innerHTML = html;
             } catch (error) {
-                console.error("Error al renderizar el menú", error);
                 area.innerHTML = "<p style='color:red; text-align:center;'>Ocurrió un error interno al mostrar los datos.</p>";
             }
         }
@@ -432,8 +394,42 @@
         async function guardarCampoMASC(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); }
         async function toggleFirmado(index, valor) { listaExpedientesMasc[index].firmadoPartes = valor; await guardarEnBDMasc(); }
         async function toggleResolucion(index, tipo, valor) { if(tipo === 'prevencion') listaExpedientesMasc[index].prevencionActiva = valor; if(tipo === 'validacion') listaExpedientesMasc[index].validacionActiva = valor; await guardarEnBDMasc(); renderizarVista(); }
-        function subirDocMASC(index, tipoDoc, event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = async function(e) { if(!listaExpedientesMasc[index].docs) listaExpedientesMasc[index].docs = {}; listaExpedientesMasc[index].docs[tipoDoc] = e.target.result; await guardarEnBDMasc(); renderizarVista(); }; reader.readAsDataURL(file); }
-        function verDocumento(base64Data, titulo) { document.getElementById('visor-titulo-doc').innerText = titulo; document.getElementById('iframe-pdf-visor').src = base64Data; document.getElementById('modal-visor-pdf').style.display = 'flex'; }
+        
+        function subirDocMASC(index, tipoDoc, event) { 
+            const file = event.target.files[0]; 
+            if(!file) return; 
+            const reader = new FileReader(); 
+            reader.onload = async function(e) { 
+                if(!listaExpedientesMasc[index].docs) listaExpedientesMasc[index].docs = {}; 
+                listaExpedientesMasc[index].docs[tipoDoc] = e.target.result; 
+                await guardarEnBDMasc(); 
+                renderizarVista(); 
+            }; 
+            reader.readAsDataURL(file); 
+        }
+        
+        // SOLUCIÓN AL ERROR DE VISUALIZACIÓN DEL PDF (Conversión a Blob para evitar bloqueo del Iframe)
+        function verDocumento(base64Data, titulo) { 
+            document.getElementById('visor-titulo-doc').innerText = titulo; 
+            try {
+                fetch(base64Data)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const blobUrl = URL.createObjectURL(blob);
+                        document.getElementById('iframe-pdf-visor').src = blobUrl;
+                        document.getElementById('modal-visor-pdf').style.display = 'flex';
+                    })
+                    .catch(e => {
+                        // Fallback seguro
+                        document.getElementById('iframe-pdf-visor').src = base64Data;
+                        document.getElementById('modal-visor-pdf').style.display = 'flex';
+                    });
+            } catch (error) {
+                document.getElementById('iframe-pdf-visor').src = base64Data;
+                document.getElementById('modal-visor-pdf').style.display = 'flex';
+            }
+        }
+        
         function cerrarVisorPDF() { document.getElementById('modal-visor-pdf').style.display = 'none'; document.getElementById('iframe-pdf-visor').src = ''; }
     </script>
 </body>
