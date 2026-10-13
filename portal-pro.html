@@ -63,7 +63,9 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
         .form-group label { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
-        
+        .form-input { background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 10px; border-radius: 6px; font-size: 0.9rem; outline: none; }
+        .form-input:focus { border-color: var(--brand-orange); }
+
         .docs-table { width: 100%; border-collapse: collapse; margin-top: 15px; display: block; overflow-x: auto; white-space: nowrap; }
         .docs-table th, .docs-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-glass); font-size: 0.85rem; }
         .docs-table th { color: var(--brand-orange); background: rgba(0,0,0,0.2); }
@@ -137,6 +139,7 @@
                 <div class="menu-item" id="menu-masc" onclick="mostrarMenu('masc')"><i class="fa-solid fa-handshake"></i> Convenios MASC</div>
                 <div class="menu-item" id="menu-usuarios" onclick="mostrarMenu('usuarios')" style="display:none;"><i class="fa-solid fa-users-cog"></i> Gestión de Equipo</div>
                 <div class="menu-item" id="menu-actividad" onclick="mostrarMenu('actividad')"><i class="fa-solid fa-list-check"></i> Actividad</div>
+                <div class="menu-item" id="menu-almacenamiento" onclick="mostrarMenu('almacenamiento')" style="display:none;"><i class="fa-solid fa-server"></i> Almacenamiento</div>
             </div>
             <div class="folder-area" id="area-trabajo"></div>
         </div>
@@ -159,6 +162,9 @@
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: var(--brand-orange); font-size: 1.1rem;">Apertura Convenio MASC</h3>
             <div style="text-align:left;">
+                <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">NÚMERO DE EXPEDIENTE (Manual):</label>
+                <input type="text" id="input-numero-masc" class="input-login" placeholder="Ej. 001/26">
+
                 <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">NOMBRE DEL SOLICITANTE:</label>
                 <input type="text" id="input-solicitante-masc" class="input-login" placeholder="Nombre completo">
                 
@@ -170,7 +176,7 @@
         </div>
     </div>
 
-    <!-- Modal Gestión de Centro (Nuevo/Editar) -->
+    <!-- Modal Gestión de Centro -->
     <div class="modal" id="modal-centro">
         <div class="modal-content">
             <h3 id="titulo-modal-centro" style="margin-bottom: 15px; color: var(--neon-blue); font-size: 1.1rem;">Gestión de Centro</h3>
@@ -184,7 +190,7 @@
         </div>
     </div>
 
-    <!-- Modal Gestión de Usuario (Nuevo/Editar) -->
+    <!-- Modal Gestión de Usuario -->
     <div class="modal" id="modal-usuario">
         <div class="modal-content">
             <h3 id="titulo-modal-usuario" style="margin-bottom: 15px; color: var(--neon-blue); font-size: 1.1rem;">Gestión de Usuario</h3>
@@ -230,7 +236,6 @@
         let nivelJuridico = 0; let pathJuridico = { juzgado: '', anio: '' };
         let nivelMasc = 0; let pathMasc = { centro: '', anio: '', tipo: '', indexExp: null };
         
-        // --- NÚCLEO DE ROLES Y MULTI-TENANT ---
         const usuariosDefecto = [
             { user: "admin", pass: "45ymas", entornoId: "despacho45", cloud: true, addUsers: true, isMaster: true },
             { user: "chava", pass: "45ymas", entornoId: "despacho45", cloud: true, addUsers: false, isMaster: false },
@@ -238,40 +243,36 @@
             { user: "aldo", pass: "45ymas", entornoId: "aldo_indep", cloud: false, addUsers: true, isMaster: false }
         ];
 
-        // Inicialización de Bóveda Principal si no existe
         let bovedaUsers = JSON.parse(localStorage.getItem('boveda_usuarios_sistema'));
-        if(!bovedaUsers) { 
-            bovedaUsers = usuariosDefecto; 
-            localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); 
-        }
+        if(!bovedaUsers) { bovedaUsers = usuariosDefecto; localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); }
 
-        // Asignación de Centros por Defecto a los entornos
-        if(!localStorage.getItem('centros_db_despacho45')) {
-            localStorage.setItem('centros_db_despacho45', JSON.stringify(["Despacho 45yMas", "Centro 065", "Centro 353"]));
-        }
-        if(!localStorage.getItem('centros_db_aldo_indep')) {
-            localStorage.setItem('centros_db_aldo_indep', JSON.stringify([])); // Aldo inicia libre/vacío
-        }
+        if(!localStorage.getItem('centros_db_despacho45')) { localStorage.setItem('centros_db_despacho45', JSON.stringify(["Despacho 45yMas", "Centro 065", "Centro 353"])); }
+        if(!localStorage.getItem('centros_db_aldo_indep')) { localStorage.setItem('centros_db_aldo_indep', JSON.stringify([])); }
 
-        let usuarioActivoObj = null;
-        let esAdmin = false; 
-        let storageMascKey = ''; 
-        let storageCentrosKey = '';
-        let centrosMASC = []; 
-        let listaExpedientesMasc = [];
+        let usuarioActivoObj = null; let esAdmin = false; let storageMascKey = ''; let storageCentrosKey = '';
+        let centrosMASC = []; let listaExpedientesMasc = [];
 
-        // Sistema de Log / Registro de Actividad
         function registrarActividad(accion) {
             if(!usuarioActivoObj) return;
             let logKey = 'actividad_log_' + usuarioActivoObj.entornoId;
             let logs = JSON.parse(localStorage.getItem(logKey)) || [];
             let fecha = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
             logs.unshift({ user: usuarioActivoObj.user, fecha: fecha, accion: accion });
-            if(logs.length > 200) logs.pop(); // Limite de 200 registros por entorno
+            if(logs.length > 200) logs.pop(); 
             localStorage.setItem(logKey, JSON.stringify(logs));
         }
 
-        // Detección de sesión persistente
+        // Calculador de Memoria Global en MB
+        function calcularUsoMemoria() {
+            let _lsTotal = 0, _xLen, _x;
+            for (_x in localStorage) {
+                if (!localStorage.hasOwnProperty(_x)) continue;
+                _xLen = ((localStorage[_x].length + _x.length) * 2);
+                _lsTotal += _xLen;
+            }
+            return (_lsTotal / 1024 / 1024).toFixed(2);
+        }
+
         window.onload = () => {
             let sessionUser = localStorage.getItem('sesion_activa_user');
             if(sessionUser) {
@@ -287,71 +288,37 @@
                 const u = document.getElementById('user').value.trim().toLowerCase();
                 const p = document.getElementById('pass').value;
                 const errorMsg = document.getElementById('error-msg');
-                
                 const foundUser = bovedaUsers.find(x => x.user.toLowerCase() === u && x.pass === p);
 
                 if(foundUser) {
-                    errorMsg.style.display = 'none'; 
-                    usuarioActivoObj = foundUser;
-                    localStorage.setItem('sesion_activa_user', foundUser.user);
-                    
+                    errorMsg.style.display = 'none'; usuarioActivoObj = foundUser; localStorage.setItem('sesion_activa_user', foundUser.user);
                     esAdmin = foundUser.cloud; 
                     
-                    // Asignación de entorno Aislado por "entornoId"
                     storageMascKey = 'boveda_masc_' + foundUser.entornoId;
                     storageCentrosKey = 'centros_db_' + foundUser.entornoId;
-
-                    // Recuperar los centros de este entorno
                     let centrosGuardados = localStorage.getItem(storageCentrosKey);
                     centrosMASC = centrosGuardados ? JSON.parse(centrosGuardados) : [];
 
                     document.getElementById('login-screen').style.display = 'none'; 
                     document.getElementById('dashboard-screen').style.display = 'flex';
-                    
                     document.getElementById('badge-modo-sesion').innerHTML = foundUser.isMaster ? "👑 Admin Master" : `👤 ${foundUser.user.toUpperCase()}`;
                     document.getElementById('badge-modo-sesion').style.color = foundUser.isMaster ? "var(--brand-orange)" : (foundUser.cloud ? "var(--neon-blue)" : "var(--success)");
                     
-                    if(foundUser.addUsers) document.getElementById('menu-usuarios').style.display = 'flex';
-                    else document.getElementById('menu-usuarios').style.display = 'none';
+                    if(foundUser.addUsers) document.getElementById('menu-usuarios').style.display = 'flex'; else document.getElementById('menu-usuarios').style.display = 'none';
+                    if(foundUser.isMaster) document.getElementById('menu-almacenamiento').style.display = 'flex'; else document.getElementById('menu-almacenamiento').style.display = 'none';
 
-                    if(!localStorage.getItem('sesion_activa_user_prev')) {
-                        registrarActividad("Inició sesión en el sistema.");
-                        localStorage.setItem('sesion_activa_user_prev', 'true'); // Evitar spam de logs al recargar
-                    }
+                    if(!localStorage.getItem('sesion_activa_user_prev')) { registrarActividad("Inició sesión en el sistema."); localStorage.setItem('sesion_activa_user_prev', 'true'); }
 
                     if(esAdmin && db) { await sincronizarDesdeNube(); } else { cargarLocalesSeguro(); }
                     mostrarMenu('juridico');
-                } else { 
-                    errorMsg.style.display = 'block'; 
-                }
+                } else { errorMsg.style.display = 'block'; }
             } catch (error) { console.error("Error en inicio de sesión:", error); }
         }
 
         function cerrarSesion() { registrarActividad("Cerró sesión."); localStorage.removeItem('sesion_activa_user'); localStorage.removeItem('sesion_activa_user_prev'); location.reload(); }
-
-        function cargarLocalesSeguro() {
-            try { let data = localStorage.getItem(storageMascKey); listaExpedientesMasc = data ? JSON.parse(data) : []; } catch (error) { listaExpedientesMasc = []; }
-        }
-
-        async function sincronizarDesdeNube() { 
-            try { 
-                const snapshot = await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).get(); 
-                listaExpedientesMasc = []; 
-                snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); 
-            } catch(e) { cargarLocalesSeguro(); } 
-        }
-
-        async function guardarEnBDMasc() { 
-            if(esAdmin && db) { 
-                try { 
-                    for(let m of listaExpedientesMasc) { 
-                        let docId = m.centro.replace(/[^a-zA-Z0-9]/g, '') + '_' + m.numero.replace('/', '-');
-                        await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).doc(docId).set(m); 
-                    } 
-                } catch(e) {} 
-            } 
-            try { localStorage.setItem(storageMascKey, JSON.stringify(listaExpedientesMasc)); } catch (e) { if (e.name === 'QuotaExceededError') { alert("¡Límite de memoria! PDF muy pesado."); } }
-        }
+        function cargarLocalesSeguro() { try { let data = localStorage.getItem(storageMascKey); listaExpedientesMasc = data ? JSON.parse(data) : []; } catch (error) { listaExpedientesMasc = []; } }
+        async function sincronizarDesdeNube() { try { const snapshot = await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).get(); listaExpedientesMasc = []; snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); } catch(e) { cargarLocalesSeguro(); } }
+        async function guardarEnBDMasc() { if(esAdmin && db) { try { for(let m of listaExpedientesMasc) { let docId = m.centro.replace(/[^a-zA-Z0-9]/g, '') + '_' + m.numero.replace('/', '-'); await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).doc(docId).set(m); } } catch(e) {} } try { localStorage.setItem(storageMascKey, JSON.stringify(listaExpedientesMasc)); } catch (e) { if (e.name === 'QuotaExceededError') { alert("¡Límite de memoria! PDF muy pesado."); } } }
 
         function mostrarMenu(menu) { vistaActual = menu; document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById('menu-' + menu).classList.add('active'); renderizarVista(); }
 
@@ -402,16 +369,35 @@
                         html += `</div>`;
                     }
                     else if (nivelMasc === 3) {
-                        html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Tipos</div><div class="section-header-box"><div class="section-title">${pathMasc.anio} > ${tiposMascObj[pathMasc.tipo]}</div><button type="button" class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'"><i class="fa-solid fa-plus"></i> Nuevo Expediente</button></div><div class="grid-carpetas">`;
-                        listaExpedientesMasc.forEach((m, i) => { if(m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.tipo === pathMasc.tipo) {
-                            html += `<div class="carpeta-card" onclick="nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()"><i class="fa-solid fa-file-contract folder-icon" style="color:var(--success);"></i><div class="titulo">${m.numero}</div><div class="subtitulo">${m.solicitante || 'Sin Solicitante'}</div></div>`; 
-                        }});
+                        html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Tipos</div><div class="section-header-box"><div class="section-title">${pathMasc.anio} > ${tiposMascObj[pathMasc.tipo]}</div><button type="button" class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'; document.getElementById('input-numero-masc').value='';"><i class="fa-solid fa-plus"></i> Nuevo Expediente</button></div><div class="grid-carpetas">`;
+                        listaExpedientesMasc.forEach((m, i) => { 
+                            if(m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.tipo === pathMasc.tipo) {
+                                let d = m.docs || {}; let c = (d.solicitud?1:0)+(d.dictamen?1:0)+(d.acuerdo?1:0)+(d.convenio?1:0);
+                                let badge = c === 4 ? '<span style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> Completo</span>' : `<span style="color:var(--brand-orange);"><i class="fa-solid fa-spinner"></i> Docs ${c}/4</span>`;
+                                html += `<div class="carpeta-card" onclick="nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()"><i class="fa-solid fa-file-contract folder-icon" style="color:${c===4?'var(--success)':'var(--neon-blue)'};"></i><div class="titulo">${m.numero}</div><div class="subtitulo" style="margin-bottom:5px;">${m.solicitante || 'Sin Solicitante'}</div><div style="font-size:0.75rem; font-weight:bold;">${badge}</div></div>`; 
+                            }
+                        });
                         html += `</div>`;
                     }
                     else if (nivelMasc === 4) {
                         let m = listaExpedientesMasc[pathMasc.indexExp];
+                        let d = m.docs || {}; let count = (d.solicitud?1:0)+(d.dictamen?1:0)+(d.acuerdo?1:0)+(d.convenio?1:0);
+                        let prog = count * 25; let colorProg = count === 4 ? 'var(--success)' : 'var(--brand-orange)';
+
                         html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Expedientes</div>
-                        <div class="section-header-box" style="align-items: center;"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> MASC: ${m.numero}</div><button type="button" class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.8rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})"><i class="fa-solid fa-eye"></i> Visor Completo</button></div>
+                        <div class="section-header-box" style="align-items: center;"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> MASC: ${m.numero}</div><button type="button" id="btn-visor-completo" class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.8rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})"><i class="fa-solid fa-eye"></i> Visor Completo</button></div>
+                        
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                <span style="font-size:0.85rem; font-weight:bold; color:var(--text-main);"><i class="fa-solid fa-list-check"></i> Integración del Expediente</span>
+                                <span style="font-size:0.85rem; font-weight:bold; color:${colorProg};">${prog}% Completado</span>
+                            </div>
+                            <div style="width:100%; height:10px; background:#1e293b; border-radius:5px; overflow:hidden;">
+                                <div style="width:${prog}%; height:100%; background:${colorProg}; transition:width 0.5s ease-in-out;"></div>
+                            </div>
+                            ${count === 4 ? '<p style="color:var(--success); font-size:0.75rem; margin-top:8px; text-align:right;"><i class="fa-solid fa-check-double"></i> Documentación lista para lectura y revisión.</p>' : ''}
+                        </div>
+
                         <div class="gestion-box">
                             <div class="form-row"><div class="form-group"><label>Solicitante:</label><input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo"></div><div class="form-group"><label>Patrocinado por:</label><input type="text" class="form-input" value="${m.patrocinado || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'patrocinado', this.value)" placeholder="Ej. Eduviges"></div></div>
                             <h4 style="color:var(--brand-orange); margin: 20px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-file-pdf"></i> Documentación Obligatoria</h4>
@@ -435,183 +421,124 @@
                 }
                 else if (vistaActual === 'usuarios') {
                     html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-users-cog"></i> Gestión de Equipo</div><button type="button" class="btn-upload" onclick="abrirModalUsuario(-1)"><i class="fa-solid fa-user-plus"></i> Nuevo Usuario</button></div>`;
-                    
                     html += `<div class="docs-table"><table style="width:100%; border-collapse: collapse; background: var(--bg-panel);"><tr><th>Usuario</th><th>Entorno de Trabajo</th><th>Nube</th><th>Gestor</th><th>Acciones</th></tr>`;
-                    
                     bovedaUsers.forEach((u, i) => {
-                        // Admin maestro ve a todos. El gestor solo ve a los de su propio entorno.
                         if(usuarioActivoObj.isMaster || u.entornoId === usuarioActivoObj.entornoId) {
-                            html += `<tr>
-                                <td><strong>${u.user}</strong></td>
-                                <td><span style="background:rgba(255,115,21,0.2); color:var(--brand-orange); padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold;">${u.entornoId}</span></td>
-                                <td>${u.cloud ? '<i class="fa-solid fa-cloud" style="color:var(--neon-blue);"></i> Sí' : '<i class="fa-solid fa-hard-drive" style="color:var(--text-muted);"></i> Local'}</td>
-                                <td>${u.addUsers ? '✅ Sí' : '❌ No'}</td>
-                                <td>
-                                    ${u.isMaster ? '<span style="color:var(--danger); font-size:0.75rem; font-weight:bold;">SÚPER ADMIN</span>' : `
-                                    <button type="button" class="btn-upload" style="margin-right: 5px; padding: 4px 8px;" onclick="abrirModalUsuario(${i})"><i class="fa-solid fa-pen"></i></button>
-                                    <button type="button" class="btn-view" style="color:var(--danger); border-color:var(--danger); padding:4px 8px;" onclick="eliminarUsuario(${i})"><i class="fa-solid fa-trash"></i></button>
-                                    `}
-                                </td>
-                            </tr>`;
+                            html += `<tr><td><strong>${u.user}</strong></td><td><span style="background:rgba(255,115,21,0.2); color:var(--brand-orange); padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold;">${u.entornoId}</span></td><td>${u.cloud ? '<i class="fa-solid fa-cloud" style="color:var(--neon-blue);"></i> Sí' : '<i class="fa-solid fa-hard-drive" style="color:var(--text-muted);"></i> Local'}</td><td>${u.addUsers ? '✅ Sí' : '❌ No'}</td><td>${u.isMaster ? '<span style="color:var(--danger); font-size:0.75rem; font-weight:bold;">SÚPER ADMIN</span>' : `<button type="button" class="btn-upload" style="margin-right: 5px; padding: 4px 8px;" onclick="abrirModalUsuario(${i})"><i class="fa-solid fa-pen"></i></button><button type="button" class="btn-view" style="color:var(--danger); border-color:var(--danger); padding:4px 8px;" onclick="eliminarUsuario(${i})"><i class="fa-solid fa-trash"></i></button>`}</td></tr>`;
                         }
                     });
                     html += `</table></div>`;
                 }
                 else if (vistaActual === 'actividad') {
                     html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-list-check"></i> Registro de Actividad</div></div>`;
-                    
-                    let logKey = 'actividad_log_' + usuarioActivoObj.entornoId;
-                    let logs = JSON.parse(localStorage.getItem(logKey)) || [];
-                    
+                    let logKey = 'actividad_log_' + usuarioActivoObj.entornoId; let logs = JSON.parse(localStorage.getItem(logKey)) || [];
                     html += `<div class="docs-table"><table style="width:100%; border-collapse: collapse; background: var(--bg-panel);"><tr><th>Fecha y Hora</th><th>Usuario</th><th>Acción Registrada</th></tr>`;
-                    
-                    if(logs.length === 0) {
-                        html += `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No hay actividad reciente en el entorno.</td></tr>`;
-                    } else {
-                        logs.forEach(l => {
-                            html += `<tr class="log-row">
-                                <td style="color:var(--text-muted); font-size:0.75rem;">${l.fecha}</td>
-                                <td><strong style="color:var(--brand-orange); text-transform:uppercase; font-size:0.8rem;">${l.user}</strong></td>
-                                <td>${l.accion}</td>
-                            </tr>`;
-                        });
-                    }
+                    if(logs.length === 0) { html += `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No hay actividad reciente en el entorno.</td></tr>`; } else { logs.forEach(l => { html += `<tr class="log-row"><td style="color:var(--text-muted); font-size:0.75rem;">${l.fecha}</td><td><strong style="color:var(--brand-orange); text-transform:uppercase; font-size:0.8rem;">${l.user}</strong></td><td>${l.accion}</td></tr>`; }); }
                     html += `</table></div>`;
+                }
+                else if (vistaActual === 'almacenamiento') {
+                    let mbUsados = calcularUsoMemoria();
+                    let pctLocal = Math.min((mbUsados / 5) * 100, 100).toFixed(1); 
+                    let pctNube = Math.min((mbUsados / 1024) * 100, 100).toFixed(2);
+
+                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-server"></i> Telemetría de Almacenamiento</div></div>`;
+                    html += `
+                    <div class="gestion-box" style="display:flex; flex-direction:column; gap: 20px;">
+                        <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);">
+                            <h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-solid fa-hard-drive"></i> Caché del Navegador (Bóveda Local)</h4>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <span style="font-size:0.85rem; color:var(--text-main);">Usado: ${mbUsados} MB / 5.00 MB (Límite Seguro)</span>
+                                <span style="font-size:0.85rem; font-weight:bold; color:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};">${pctLocal}%</span>
+                            </div>
+                            <div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;">
+                                <div style="width:${pctLocal}%; height:100%; background:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};"></div>
+                            </div>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Al acercarse al 100%, el navegador podría bloquear la carga de nuevos documentos. Asegúrate de tener sincronizada la nube.</p>
+                        </div>
+
+                        <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);">
+                            <h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-solid fa-cloud"></i> Servidor Nube (Firestore)</h4>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <span style="font-size:0.85rem; color:var(--text-main);">Estimado Sincronizado: ${mbUsados} MB / 1024.00 MB (Cuota Gratuita)</span>
+                                <span style="font-size:0.85rem; font-weight:bold; color:var(--success);">${pctNube}%</span>
+                            </div>
+                            <div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;">
+                                <div style="width:${pctNube}%; height:100%; background:var(--success);"></div>
+                            </div>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Capacidad disponible en el proyecto Firebase 45YMÁS. Esta métrica es un cálculo aproximado basado en la compresión Base64.</p>
+                        </div>
+                    </div>
+                    `;
                 }
                 
                 area.innerHTML = html;
             } catch (error) { area.innerHTML = "<p style='color:red; text-align:center;'>Ocurrió un error interno al mostrar los datos.</p>"; }
         }
 
-        // LÓGICA DE CENTROS (MODAL)
-        function abrirModalCentro(index) {
-            document.getElementById('edit-centro-index').value = index;
-            document.getElementById('titulo-modal-centro').innerText = index === -1 ? "Nuevo Centro" : "Editar Centro";
-            document.getElementById('input-nombre-centro').value = index === -1 ? "" : centrosMASC[index];
-            document.getElementById('modal-centro').style.display = 'flex';
-        }
+        // LÓGICA DE CENTROS Y USUARIOS
+        function abrirModalCentro(index) { document.getElementById('edit-centro-index').value = index; document.getElementById('titulo-modal-centro').innerText = index === -1 ? "Nuevo Centro" : "Editar Centro"; document.getElementById('input-nombre-centro').value = index === -1 ? "" : centrosMASC[index]; document.getElementById('modal-centro').style.display = 'flex'; }
+        function guardarCentro() { let nuevoNombre = document.getElementById('input-nombre-centro').value.trim(); let editIndex = document.getElementById('edit-centro-index').value; if(nuevoNombre === "") return; if(editIndex == -1) { if(centrosMASC.includes(nuevoNombre)) { alert("El centro ya existe."); return; } centrosMASC.push(nuevoNombre); registrarActividad("Añadió un nuevo Centro: " + nuevoNombre); } else { let viejoNombre = centrosMASC[editIndex]; centrosMASC[editIndex] = nuevoNombre; listaExpedientesMasc.forEach(m => { if(m.centro === viejoNombre) m.centro = nuevoNombre; }); guardarEnBDMasc(); registrarActividad("Renombró el Centro de '" + viejoNombre + "' a '" + nuevoNombre + "'"); } localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC)); document.getElementById('modal-centro').style.display = 'none'; renderizarVista(); }
+        function abrirModalUsuario(index) { document.getElementById('edit-user-index').value = index; document.getElementById('titulo-modal-usuario').innerText = index === -1 ? "Nuevo Usuario" : "Editar Usuario"; if(index === -1) { document.getElementById('input-user-name').value = ""; document.getElementById('input-user-pass').value = "45ymas"; document.getElementById('input-user-add').checked = false; document.getElementById('input-user-cloud').checked = false; document.getElementById('input-user-name').disabled = false; } else { let u = bovedaUsers[index]; document.getElementById('input-user-name').value = u.user; document.getElementById('input-user-pass').value = u.pass; document.getElementById('input-user-add').checked = u.addUsers; document.getElementById('input-user-cloud').checked = u.cloud; document.getElementById('input-user-name').disabled = true; } if(usuarioActivoObj.isMaster) document.getElementById('cont-user-cloud').style.display = 'inline-flex'; else document.getElementById('cont-user-cloud').style.display = 'none'; document.getElementById('modal-usuario').style.display = 'flex'; }
+        function guardarUsuario() { let n = document.getElementById('input-user-name').value.trim().toLowerCase(); let p = document.getElementById('input-user-pass').value.trim(); let add = document.getElementById('input-user-add').checked; let cloud = usuarioActivoObj.isMaster ? document.getElementById('input-user-cloud').checked : false; let editIndex = document.getElementById('edit-user-index').value; if(!n || !p) { alert("Completa los campos."); return; } if(editIndex == -1) { if(bovedaUsers.find(x => x.user === n)) { alert("Usuario ya existe."); return; } bovedaUsers.push({ user: n, pass: p, entornoId: usuarioActivoObj.entornoId, cloud: cloud, addUsers: add, isMaster: false }); registrarActividad("Creó perfil de usuario: " + n); } else { bovedaUsers[editIndex].pass = p; bovedaUsers[editIndex].cloud = cloud; bovedaUsers[editIndex].addUsers = add; registrarActividad("Editó perfil de usuario: " + bovedaUsers[editIndex].user); } localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); document.getElementById('modal-usuario').style.display = 'none'; renderizarVista(); }
+        window.eliminarUsuario = function(index) { if(confirm("¿Eliminar perfil? Sus expedientes creados quedarán intactos.")) { registrarActividad("Eliminó al usuario: " + bovedaUsers[index].user); bovedaUsers.splice(index, 1); localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); renderizarVista(); } };
 
-        function guardarCentro() {
-            let nuevoNombre = document.getElementById('input-nombre-centro').value.trim();
-            let editIndex = document.getElementById('edit-centro-index').value;
-            if(nuevoNombre === "") return;
-
-            if(editIndex == -1) {
-                if(centrosMASC.includes(nuevoNombre)) { alert("El centro ya existe."); return; }
-                centrosMASC.push(nuevoNombre);
-                registrarActividad("Añadió un nuevo Centro: " + nuevoNombre);
-            } else {
-                let viejoNombre = centrosMASC[editIndex];
-                centrosMASC[editIndex] = nuevoNombre;
-                // Actualiza en cascada expedientes ligados al nombre viejo
-                listaExpedientesMasc.forEach(m => { if(m.centro === viejoNombre) m.centro = nuevoNombre; });
-                guardarEnBDMasc();
-                registrarActividad("Renombró el Centro de '" + viejoNombre + "' a '" + nuevoNombre + "'");
-            }
-            
-            localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC));
-            document.getElementById('modal-centro').style.display = 'none';
-            renderizarVista();
-        }
-
-        // LÓGICA DE USUARIOS (MODAL)
-        function abrirModalUsuario(index) {
-            document.getElementById('edit-user-index').value = index;
-            document.getElementById('titulo-modal-usuario').innerText = index === -1 ? "Nuevo Usuario" : "Editar Usuario";
-            
-            if(index === -1) {
-                document.getElementById('input-user-name').value = "";
-                document.getElementById('input-user-pass').value = "45ymas";
-                document.getElementById('input-user-add').checked = false;
-                document.getElementById('input-user-cloud').checked = false;
-                document.getElementById('input-user-name').disabled = false;
-            } else {
-                let u = bovedaUsers[index];
-                document.getElementById('input-user-name').value = u.user;
-                document.getElementById('input-user-pass').value = u.pass;
-                document.getElementById('input-user-add').checked = u.addUsers;
-                document.getElementById('input-user-cloud').checked = u.cloud;
-                document.getElementById('input-user-name').disabled = true; // No cambiar nombre de user
-            }
-
-            // Solo Master puede dar permisos de nube
-            if(usuarioActivoObj.isMaster) document.getElementById('cont-user-cloud').style.display = 'inline-flex';
-            else document.getElementById('cont-user-cloud').style.display = 'none';
-
-            document.getElementById('modal-usuario').style.display = 'flex';
-        }
-
-        function guardarUsuario() {
-            let n = document.getElementById('input-user-name').value.trim().toLowerCase();
-            let p = document.getElementById('input-user-pass').value.trim();
-            let add = document.getElementById('input-user-add').checked;
-            let cloud = usuarioActivoObj.isMaster ? document.getElementById('input-user-cloud').checked : false;
-            let editIndex = document.getElementById('edit-user-index').value;
-
-            if(!n || !p) { alert("Completa los campos."); return; }
-
-            if(editIndex == -1) {
-                if(bovedaUsers.find(x => x.user === n)) { alert("Usuario ya existe."); return; }
-                bovedaUsers.push({ user: n, pass: p, entornoId: usuarioActivoObj.entornoId, cloud: cloud, addUsers: add, isMaster: false });
-                registrarActividad("Creó perfil de usuario: " + n);
-            } else {
-                bovedaUsers[editIndex].pass = p;
-                bovedaUsers[editIndex].cloud = cloud;
-                bovedaUsers[editIndex].addUsers = add;
-                registrarActividad("Editó perfil de usuario: " + bovedaUsers[editIndex].user);
-            }
-
-            localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers));
-            document.getElementById('modal-usuario').style.display = 'none';
-            renderizarVista();
-        }
-
-        window.eliminarUsuario = function(index) {
-            if(confirm("¿Eliminar este perfil permanentemente? Sus expedientes creados quedarán intactos en la bóveda.")) {
-                registrarActividad("Eliminó al usuario: " + bovedaUsers[index].user);
-                bovedaUsers.splice(index, 1);
-                localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers));
-                renderizarVista();
-            }
-        };
-
-        function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${storageMascKey}_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); registrarActividad(`Creó expediente jurídico: ${val} en ${pathJuridico.juzgado}`); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
+        function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${storageMascKey}_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); registrarActividad(`Creó expediente jurídico: ${val}`); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
+        function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); localStorage.setItem('modo_multidoc', 'false'); registrarActividad(`Abrió Visor PDF Jurídico: ${nombreExp}`); window.location.href = 'visor-expediente.html'; }
         
-        function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); registrarActividad(`Abrió Visor PDF de Jurídico: ${nombreExp}`); window.location.href = 'visor-expediente.html'; }
-        
-        function base64ToBlob(base64Data) {
-            try {
-                const arr = base64Data.split(',');
-                const mime = arr[0].match(/:(.*?);/)[1];
-                const bstr = atob(arr[1]);
-                let n = bstr.length;
-                const u8arr = new Uint8Array(n);
-                while(n--) { u8arr[n] = bstr.charCodeAt(n); }
-                return new Blob([u8arr], {type: mime});
-            } catch(e) { return null; }
-        }
-
         async function abrirVisorMASC(index) {
             try {
+                let btn = document.getElementById('btn-visor-completo');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparando...';
+                
                 let m = listaExpedientesMasc[index];
                 let nombreExp = `MASC-${m.numero.replace(/\//g, '-')}`;
                 localStorage.setItem('expediente_abierto', nombreExp);
-                registrarActividad(`Abrió Visor Inteligente para expediente MASC: ${m.numero}`);
+                registrarActividad(`Empacó y envió a visor el expediente múltiple: ${m.numero}`);
                 
-                if(m.docs && m.docs.convenio) {
-                    let blob = base64ToBlob(m.docs.convenio);
-                    if(blob) {
-                        await localforage.setItem('archivo_' + nombreExp, { blob: blob, name: `Convenio_${nombreExp}.pdf`, type: 'application/pdf' });
-                    }
+                let paqueteDocs = [];
+                if(m.docs && m.docs.solicitud) paqueteDocs.push({ name: "1. Solicitud", b64: m.docs.solicitud });
+                if(m.docs && m.docs.dictamen) paqueteDocs.push({ name: "2. Dictamen", b64: m.docs.dictamen });
+                if(m.docs && m.docs.acuerdo) paqueteDocs.push({ name: "3. Acuerdo", b64: m.docs.acuerdo });
+                if(m.docs && m.docs.convenio) paqueteDocs.push({ name: "4. Convenio", b64: m.docs.convenio });
+                
+                if(paqueteDocs.length === 0) {
+                    alert("No hay documentos para visualizar. Sube al menos uno.");
+                    btn.innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo';
+                    return;
                 }
+
+                await localforage.setItem('paquete_masc_' + nombreExp, paqueteDocs);
+                localStorage.setItem('modo_multidoc', 'true');
+                
                 window.location.href = 'visor-expediente.html';
-            } catch (e) { console.error("Error iniciando visor:", e); alert("Ocurrió un problema al leer el documento."); }
+            } catch (e) { 
+                console.error(e); 
+                alert("Ocurrió un error al preparar el visor."); 
+                document.getElementById('btn-visor-completo').innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo';
+            }
         }
 
-        async function procesarNuevoMASC() { let solicitante = document.getElementById('input-solicitante-masc').value.trim(); if(!solicitante) return; let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); let filtrados = listaExpedientesMasc.filter(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio); let numFinal = `${(filtrados.length + 1).toString().padStart(3, '0')}/${pathMasc.anio.slice(-2)}`; listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, docs: {} }); await guardarEnBDMasc(); registrarActividad(`Aperturó nuevo convenio MASC: ${numFinal} en ${pathMasc.centro}`); document.getElementById('modal-crear-masc').style.display = 'none'; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; renderizarVista(); }
-        async function guardarCampoMASC(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); registrarActividad(`Modificó el campo [${campo}] del expediente MASC: ${listaExpedientesMasc[index].numero}`); }
-        async function toggleFirmado(index, valor) { listaExpedientesMasc[index].firmadoPartes = valor; await guardarEnBDMasc(); registrarActividad(valor ? `Marcó como FIRMADO el expediente ${listaExpedientesMasc[index].numero}` : `Quitó firma al expediente ${listaExpedientesMasc[index].numero}`); }
-        async function toggleResolucion(index, tipo, valor) { if(tipo === 'prevencion') listaExpedientesMasc[index].prevencionActiva = valor; if(tipo === 'validacion') listaExpedientesMasc[index].validacionActiva = valor; await guardarEnBDMasc(); registrarActividad(`Modificó estatus de [${tipo}] a ${valor ? 'Activo' : 'Inactivo'} en exp: ${listaExpedientesMasc[index].numero}`); renderizarVista(); }
+        async function procesarNuevoMASC() { 
+            let numFinal = document.getElementById('input-numero-masc').value.trim();
+            let solicitante = document.getElementById('input-solicitante-masc').value.trim(); 
+            let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); 
+            
+            if(!numFinal || !solicitante) { alert("Número de expediente y Solicitante son obligatorios."); return; }
+            
+            let existe = listaExpedientesMasc.find(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.numero === numFinal);
+            if(existe) { alert("Este número de expediente ya fue registrado en este año y centro."); return; }
+
+            listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, docs: {} }); 
+            await guardarEnBDMasc(); 
+            registrarActividad(`Aperturó nuevo convenio MASC: ${numFinal}`); 
+            document.getElementById('modal-crear-masc').style.display = 'none'; 
+            document.getElementById('input-numero-masc').value = ''; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; 
+            renderizarVista(); 
+        }
+
+        async function guardarCampoMASC(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); registrarActividad(`Modificó [${campo}] en expediente: ${listaExpedientesMasc[index].numero}`); }
+        async function toggleFirmado(index, valor) { listaExpedientesMasc[index].firmadoPartes = valor; await guardarEnBDMasc(); }
+        async function toggleResolucion(index, tipo, valor) { if(tipo === 'prevencion') listaExpedientesMasc[index].prevencionActiva = valor; if(tipo === 'validacion') listaExpedientesMasc[index].validacionActiva = valor; await guardarEnBDMasc(); renderizarVista(); }
         
         function subirDocMASC(index, tipoDoc, event) { 
             const file = event.target.files[0]; 
@@ -627,6 +554,8 @@
             reader.readAsDataURL(file); 
         }
         
+        function base64ToBlob(base64Data) { try { const arr = base64Data.split(','); const mime = arr[0].match(/:(.*?);/)[1]; const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n); while(n--) { u8arr[n] = bstr.charCodeAt(n); } return new Blob([u8arr], {type: mime}); } catch(e) { return null; } }
+
         function verDocumento(base64Data, titulo) { 
             document.getElementById('visor-titulo-doc').innerText = titulo; 
             const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -636,20 +565,13 @@
             
             if (isMobile && blob) {
                 const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = titulo + ".pdf";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                const a = document.createElement('a'); a.href = url; a.download = titulo + ".pdf"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 setTimeout(() => URL.revokeObjectURL(url), 100);
             } else if (blob) {
                 const blobUrl = URL.createObjectURL(blob);
                 document.getElementById('iframe-pdf-visor').src = blobUrl;
                 document.getElementById('modal-visor-pdf').style.display = 'flex';
-            } else {
-                window.open(base64Data, '_blank');
-            }
+            } else { window.open(base64Data, '_blank'); }
         }
         function cerrarVisorPDF() { document.getElementById('modal-visor-pdf').style.display = 'none'; document.getElementById('iframe-pdf-visor').src = ''; }
     </script>
