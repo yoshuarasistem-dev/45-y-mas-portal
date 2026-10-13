@@ -6,8 +6,12 @@
     <title>Bóveda Pro | Sistema Jurídico y MASC</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Librerías de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <!-- LIBRERÍA FALTANTE AGREGADA: Necesaria para conectar con el Visor Inteligente -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     
     <style>
         :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.85); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --success: #10b981; --danger: #ef4444; }
@@ -320,19 +324,20 @@
         function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
         function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); window.location.href = 'visor-expediente.html'; }
         
+        // CORRECCIÓN: Función que conecta la Bóveda con el Visor Inteligente usando localforage
         async function abrirVisorMASC(index) {
             let m = listaExpedientesMasc[index];
             let nombreExp = `MASC-${m.numero.replace('/', '-')}`;
             localStorage.setItem('expediente_abierto', nombreExp);
             
-            // Consolidamos los documentos cargados del expediente MASC para que el visor inteligente los lea de golpe
+            // Mandamos el Convenio cargado al Visor Inteligente
             if(m.docs && m.docs.convenio) {
                 try {
                     let res = await fetch(m.docs.convenio);
                     let blob = await res.blob();
                     await localforage.setItem('archivo_' + nombreExp, { blob: blob, name: `Convenio_${m.numero.replace('/', '-')}.pdf`, type: 'application/pdf' });
                 } catch(e) {
-                    await localforage.setItem('archivo_' + nombreExp, m.docs.convenio);
+                    console.error("Error al transferir el blob MASC", e);
                 }
             }
             window.location.href = 'visor-expediente.html';
@@ -356,18 +361,40 @@
             reader.readAsDataURL(file); 
         }
         
+        // CORRECCIÓN: Detección de celular para manejar el PDF nativamente y evitar la pantalla gris de error en Android/iOS
         function verDocumento(base64Data, titulo) { 
             document.getElementById('visor-titulo-doc').innerText = titulo; 
-            try {
+            const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // En celular forzamos la descarga o apertura en app nativa de PDF
                 fetch(base64Data).then(res => res.blob()).then(blob => {
-                    const blobUrl = URL.createObjectURL(blob);
-                    document.getElementById('iframe-pdf-visor').src = blobUrl;
-                    document.getElementById('modal-visor-pdf').style.display = 'flex';
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = titulo + ".pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    setTimeout(() => URL.revokeObjectURL(url), 100);
                 }).catch(e => {
-                    document.getElementById('iframe-pdf-visor').src = base64Data; document.getElementById('modal-visor-pdf').style.display = 'flex';
+                    window.open(base64Data, '_blank');
                 });
-            } catch (error) {
-                document.getElementById('iframe-pdf-visor').src = base64Data; document.getElementById('modal-visor-pdf').style.display = 'flex';
+            } else {
+                // En PC el iframe funciona perfectamente
+                try {
+                    fetch(base64Data).then(res => res.blob()).then(blob => {
+                        const blobUrl = URL.createObjectURL(blob);
+                        document.getElementById('iframe-pdf-visor').src = blobUrl;
+                        document.getElementById('modal-visor-pdf').style.display = 'flex';
+                    }).catch(e => {
+                        document.getElementById('iframe-pdf-visor').src = base64Data; 
+                        document.getElementById('modal-visor-pdf').style.display = 'flex';
+                    });
+                } catch (error) {
+                    document.getElementById('iframe-pdf-visor').src = base64Data; 
+                    document.getElementById('modal-visor-pdf').style.display = 'flex';
+                }
             }
         }
         function cerrarVisorPDF() { document.getElementById('modal-visor-pdf').style.display = 'none'; document.getElementById('iframe-pdf-visor').src = ''; }
