@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expediente Inteligente IA | 45 y Más</title>
     
-    <!-- Librerías Optimizadas -->
+    <!-- Librerías de Visualización y OCR (Versiones probadas y estables) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js@5/dist/tesseract.min.js"></script>
+    <!-- Tesseract.js (Versión 5 estable) -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     
-    <!-- LIBRERÍAS NUEVAS PARA GUARDADO HÍBRIDO -->
+    <!-- Librerías para Guardado Persistente -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -22,19 +21,27 @@
         :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.9); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --danger: #ef4444; --success: #10b981; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg-deep); } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         
-        .topbar { background: var(--bg-panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; } 
+        ::-webkit-scrollbar-track { background: var(--bg-deep); } 
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        
+        /* HEADER (Top Bar) */
+        .topbar { background: var(--bg-panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; flex-wrap: wrap; gap: 10px; }
         .logo-oficial { display: flex; flex-direction: column; align-items: flex-start; }
         .logo-oficial img { max-height: 40px; object-fit: contain; margin-bottom: 2px; }
         .logo-oficial .sub-brand { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-        .expediente-title { background: rgba(56, 189, 248, 0.1); padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; color: var(--neon-blue); font-weight: bold; border: 1px solid rgba(56, 189, 248, 0.3); }
-        .btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .expediente-title { background: rgba(56, 189, 248, 0.1); padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; color: var(--neon-blue); font-weight: bold; border: 1px solid rgba(56, 189, 248, 0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        
+        .btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; justify-content: center; }
         .btn-volver { background: transparent; color: var(--text-muted); border: none; } .btn-volver:hover { color: var(--brand-orange); }
         .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); } .btn-accion:hover { background: var(--neon-blue); color: #000; }
-        .workspace { display: flex; flex: 1; overflow: hidden; }
 
-        .sidebar-fojas { width: 240px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; }
+        /* ÁREA DE TRABAJO PRINCIPAL */
+        .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+        /* PANEL IZQUIERDO: FOJAS */
+        .sidebar-fojas { width: 240px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 5; }
         .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border-glass); text-align: center; }
         .btn-add-foja { width: 100%; background: transparent; border: 1px dashed var(--brand-orange); color: var(--brand-orange); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s; margin-bottom: 8px;}
         .btn-add-foja:hover { background: rgba(255, 115, 21, 0.1); }
@@ -48,75 +55,111 @@
         .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; }
         .btn-mini:hover { background: var(--brand-orange); }
 
-        .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; background: var(--bg-deep); }
-        #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute;}
-        #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5;} 
-        #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 850px; min-height: 1100px; padding: 50px; font-family: 'Arial', sans-serif; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
-        .zoom-controls { position: fixed; bottom: 30px; left: 260px; background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 10;}
+        /* VISOR CENTRAL */
+        .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: var(--bg-deep); }
+        #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute; transform-origin: top center; transition: transform 0.2s ease;}
+        #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5; transform-origin: top center; transition: transform 0.2s ease;} 
+        #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 850px; min-height: 1100px; padding: 50px; font-family: 'Arial', sans-serif; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
+        .zoom-controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 10;}
 
-        .sidebar-herramientas { width: 340px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; }
+        /* PANEL DERECHO: HERRAMIENTAS */
+        .sidebar-herramientas { width: 320px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 5; }
         .tabs { display: flex; border-bottom: 1px solid var(--border-glass); }
-        .tab { flex: 1; text-align: center; padding: 15px; cursor: pointer; font-weight: bold; font-size: 0.85rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: 0.3s; }
+        .tab { flex: 1; text-align: center; padding: 15px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: 0.3s; }
         .tab.active { color: var(--neon-blue); border-bottom-color: var(--neon-blue); }
         .panel-content { flex: 1; overflow-y: auto; padding: 20px; display: none; flex-direction: column;}
         .panel-content.active { display: flex; }
 
+        /* Estilos IA Detección */
         .keyword-card { background: var(--bg-deep); border: 1px solid var(--border-glass); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
         .keyword-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .keyword-word { font-weight: 800; color: var(--text-main); font-size: 0.95rem; text-transform: uppercase; }
+        .keyword-word { font-weight: 800; color: var(--text-main); font-size: 0.9rem; text-transform: uppercase; }
         .keyword-count { background: rgba(56, 189, 248, 0.2); color: var(--neon-blue); padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
         .keyword-fojas { font-size: 0.75rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 5px; }
         .badge-foja { background: rgba(255, 255, 255, 0.1); padding: 3px 6px; border-radius: 4px; cursor: pointer; font-weight: 600;}
         .badge-foja:hover { background: var(--brand-orange); color: white; }
 
-        .nota-area { width: 100%; flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 15px; border-radius: 8px; resize: none; font-size: 0.9rem; outline: none; margin-bottom: 10px; min-height: 150px;}
+        /* Estilos Apuntes */
+        .nota-area { width: 100%; flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 15px; border-radius: 8px; resize: none; font-size: 0.9rem; outline: none; margin-bottom: 10px; min-height: 120px;}
         .nota-area:focus { border-color: var(--brand-orange); }
-        #indice-notas-container { max-height: 250px; overflow-y: auto; border-bottom: 1px solid var(--border-glass); margin-bottom: 15px; padding-bottom: 10px; }
+        #indice-notas-container { max-height: 200px; overflow-y: auto; border-bottom: 1px solid var(--border-glass); margin-bottom: 15px; padding-bottom: 10px; }
         .nota-preview { background: rgba(255,255,255,0.03); border-left: 3px solid var(--brand-orange); padding: 10px; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;}
         .nota-preview:hover { background: rgba(255,255,255,0.08); }
 
-        /* PANTALLA DE PROGRESO (Optimizada) */
+        /* PANTALLAS DE CARGA */
         #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
-        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 40px; border-radius: 12px; text-align: center; width: 400px; box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);}
+        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 30px; border-radius: 12px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);}
         .barra-fondo { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; margin: 20px 0; overflow: hidden; }
         .barra-llena { width: 0%; height: 100%; background: var(--neon-blue); transition: width 0.3s ease; }
+
+        /* BOTONES MÓVILES PARA ABRIR/CERRAR PANELES */
+        .btn-toggle-panel { display: none; background: var(--glass-bg); border: 1px solid var(--border-glass); color: var(--text-main); padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+
+        /* RESPONSIVE DESIGN (Media Queries) */
+        @media (max-width: 1024px) {
+            .btn-toggle-panel { display: inline-flex; align-items: center; gap: 5px; }
+            .sidebar-fojas { position: absolute; left: 0; top: 0; height: 100%; transform: translateX(-100%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); }
+            .sidebar-fojas.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+            
+            .sidebar-herramientas { position: absolute; right: 0; top: 0; height: 100%; transform: translateX(100%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); }
+            .sidebar-herramientas.open { transform: translateX(0); box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+            
+            .topbar { padding: 10px; }
+            .topbar-actions { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 10px; }
+            .topbar-branding { display: flex; justify-content: space-between; width: 100%; align-items: center;}
+            
+            .btn { padding: 6px 10px; font-size: 0.75rem; }
+            .expediente-title { display: none; } /* Ocultar título si falta espacio */
+        }
+        
+        @media (max-width: 480px) {
+            .progreso-card { padding: 20px; }
+            #html-visor { padding: 20px; }
+            .zoom-controls { bottom: 10px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="topbar">
-        <div style="display:flex; gap:10px;">
-            <a href="index.html" class="btn btn-volver" style="border: 1px solid var(--border-glass);"><i class="fa-solid fa-house"></i> Inicio</a>
-            <a href="portal-pro.html" class="btn btn-volver" style="border: 1px solid var(--border-glass);"><i class="fa-solid fa-vault"></i> Bóveda Pro</a>
-        </div>
-        
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <div class="logo-oficial">
-                <img src="./assets/LOGO.png" onerror="this.outerHTML='<div style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); letter-spacing:-1px;\\\'><i class=\\\'fa-solid fa-scale-balanced\\\'></i> 45<span style=\\\'color:var(--text-main);\\\'>YMÁS</span></div>'" alt="45 Y MÁS">
-                <div class="sub-brand" id="etiqueta-almacenamiento">Bóveda Local Activa</div>
+        <div class="topbar-branding">
+            <button class="btn-toggle-panel" onclick="toggleFojas()"><i class="fa-solid fa-layer-group"></i> Fojas</button>
+            
+            <div class="logo-oficial" style="align-items: center; text-align: center;">
+                <div style="font-weight:900; font-size:1rem; color:var(--brand-orange); letter-spacing:-1px;"><i class="fa-solid fa-scale-balanced"></i> 45<span style="color:var(--text-main);">YMÁS</span></div>
+                <div class="sub-brand" id="etiqueta-almacenamiento" style="font-size: 0.5rem;">Bóveda Local</div>
             </div>
-            <span class="expediente-title" id="titulo-exp">EXP/000/00</span>
+            
+            <button class="btn-toggle-panel" onclick="toggleHerramientas()"><i class="fa-solid fa-toolbox"></i> Herramientas</button>
         </div>
 
-        <div style="display:flex; gap: 10px;">
+        <div class="topbar-actions">
+            <a href="index.html" class="btn btn-volver" style="border: 1px solid var(--border-glass);"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="portal-pro.html" class="btn btn-volver" style="border: 1px solid var(--border-glass);"><i class="fa-solid fa-vault"></i> Bóveda</a>
+            
+            <span class="expediente-title" id="titulo-exp" style="display: none;">EXP/000/00</span> <!-- Oculto por defecto en móvil, mostrado en JS si hay espacio -->
+            
             <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumentoManual(event)">
-            <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar Archivo</button>
-            <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearTodoElExpediente()"><i class="fa-solid fa-brain"></i> Auto-Lectura IA</button>
+            <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar</button>
+            <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearAlertasInfalible()"><i class="fa-solid fa-brain"></i> Auto-Lectura IA</button>
         </div>
     </div>
 
     <div class="workspace">
-        <div class="sidebar-fojas">
+        <!-- PANEL IZQUIERDO -->
+        <div class="sidebar-fojas" id="panel-fojas">
             <div class="sidebar-header">
+                <button class="btn-add-foja" style="border-color:var(--danger); color:var(--danger); display: none;" id="btn-cerrar-fojas" onclick="toggleFojas()"><i class="fa-solid fa-xmark"></i> Cerrar Panel</button>
                 <input type="file" id="add-foja-input" accept=".pdf, .doc, .docx, image/*" style="display:none;" onchange="agregarFojaFaltante(event)">
-                <button class="btn-add-foja" onclick="document.getElementById('add-foja-input').click()"><i class="fa-solid fa-plus"></i> Insertar Foja / Vuelta</button>
+                <button class="btn-add-foja" onclick="document.getElementById('add-foja-input').click()"><i class="fa-solid fa-plus"></i> Insertar Foja</button>
                 <button class="btn-add-foja" style="border-color:var(--neon-blue); color:var(--neon-blue);" onclick="autoOrdenarFojas()"><i class="fa-solid fa-arrow-down-1-9"></i> Auto-Ordenar</button>
             </div>
             <div class="fojas-list" id="lista-fojas-container">
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Sube un archivo para comenzar la lectura.</p>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Sube un archivo para comenzar.</p>
             </div>
         </div>
 
+        <!-- VISOR CENTRAL -->
         <div class="visor-central" id="contenedor-visor-zoom">
             <canvas id="canvas-principal" style="display:none;"></canvas>
             <canvas id="canvas-dibujo" style="display:none;"></canvas>
@@ -126,16 +169,20 @@
             <div style="text-align:center; color:var(--text-muted); margin-top: 100px;" id="msg-vacio">
                 <i class="fa-solid fa-folder-open" style="font-size: 4rem; opacity: 0.3; margin-bottom: 15px;"></i>
                 <h3>Visor Inactivo</h3>
-                <p>El expediente no contiene archivos guardados.</p>
+                <p>El expediente no contiene archivos guardados o debes seleccionar una foja.</p>
             </div>
 
             <div class="zoom-controls" id="controles-zoom" style="display: none;">
-                <button class="btn btn-mini" style="width:30px; height:30px;" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-plus"></i></button>
-                <button class="btn btn-mini" style="width:30px; height:30px;" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-minus"></i></button>
+                <button class="btn btn-mini" style="width:35px; height:35px; font-size: 1rem;" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                <button class="btn btn-mini" style="width:35px; height:35px; font-size: 1rem;" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
             </div>
         </div>
 
-        <div class="sidebar-herramientas">
+        <!-- PANEL DERECHO -->
+        <div class="sidebar-herramientas" id="panel-herramientas">
+            <div class="sidebar-header" style="display: none;" id="btn-cerrar-herr">
+                <button class="btn-add-foja" style="border-color:var(--danger); color:var(--danger); width: 90%; margin: 0 auto;" onclick="toggleHerramientas()"><i class="fa-solid fa-xmark"></i> Cerrar Panel</button>
+            </div>
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('tab-palabras', this)"><i class="fa-solid fa-radar"></i> Alertas IA</div>
                 <div class="tab" onclick="switchTab('tab-notas', this)"><i class="fa-solid fa-pen-to-square"></i> Apuntes</div>
@@ -165,7 +212,7 @@
     <div id="pantalla-progreso">
         <div class="progreso-card">
             <i class="fa-solid fa-hdd fa-fade" id="icono-progreso" style="font-size: 3.5rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
-            <h3 style="color: white; margin-bottom: 5px;" id="titulo-progreso">Procesando Bóveda</h3>
+            <h3 style="color: white; margin-bottom: 5px; font-size: 1.2rem;" id="titulo-progreso">Procesando Bóveda</h3>
             <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.85rem;">Verificando archivos guardados...</p>
             <p id="texto-subprogreso" style="color: var(--brand-orange); font-size: 0.75rem; margin-top: 8px; font-weight: bold;"></p>
             <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
@@ -178,32 +225,35 @@
         
         let nombreExpediente = localStorage.getItem('expediente_abierto') || 'EXP_NUEVO';
         document.getElementById('titulo-exp').innerText = nombreExpediente;
+        if(window.innerWidth > 1024) document.getElementById('titulo-exp').style.display = 'inline-block'; // Solo muestra titulo en PC
 
         let arrayFojas = []; 
         let fojaSeleccionadaIndex = 0;
-        let zoomGlobal = 1.2;
+        let zoomGlobal = 1.0; // Cambiado a 1.0 por defecto para que no se salga de pantalla
         let detenerEjecucion = false;
         let pdfGlobal = null; 
         
-        const PALABRAS_BUSCADAS = ["acuerdo", "convenio", "mediación", "conciliación", "confidencialidad", "ejecutoria", "sanción", "improcedencia", "alimentos", "divorcio"];
+        // DICCIONARIO DE PALABRAS (Actualizado para MASC y Familiar)
+        const categoriasIA = [
+            { nombre: "Sentencia / Resolución", palabras: ['sentencia', 'resuelve', 'resolutivos', 'resolutivo', 'acuerdo', 'convenio'], colorFondo: 'rgba(231, 76, 60, 0.4)', colorBorde: '#e74c3c' },
+            { nombre: "Prevención / Requerimiento", palabras: ['prevéngase', 'aclarar', 'apercibimiento', 'requiérase', 'subsiste', 'omiso'], colorFondo: 'rgba(230, 126, 34, 0.4)', colorBorde: '#e67e22' },
+            { nombre: "Término / Auto", palabras: ['admite', 'término', 'días', 'improrrogable', 'caducidad', 'mediación', 'conciliación'], colorFondo: 'rgba(52, 152, 219, 0.4)', colorBorde: '#3498db' },
+            { nombre: "Familiar / MASC", palabras: ['liquidación', 'sociedad', 'inventario', 'alimentos', 'pensión', 'divorcio'], colorFondo: 'rgba(255, 105, 180, 0.4)', colorBorde: '#ff69b4' }
+        ];
+
         let resultadosKeywords = {};
         window.mapaAlertasPorFoja = {}; 
 
-        // CONFIGURACIÓN FIREBASE STORAGE (Para el Admin)
-        const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
-        let storageRef = null;
-        let esAdmin = localStorage.getItem('usuario_admin') === 'true';
-
-        try {
-            if(firebaseConfig.apiKey !== "TU_API_KEY") {
-                firebase.initializeApp(firebaseConfig);
-                storageRef = firebase.storage().ref();
-            }
-        } catch(e) { console.log("Firebase Storage Inactivo."); }
-
-        if (esAdmin && storageRef) {
-            document.getElementById('etiqueta-almacenamiento').innerText = "Bóveda Híbrida Activa (Local + Nube)";
-            document.getElementById('etiqueta-almacenamiento').style.color = "var(--neon-blue)";
+        // CONTROLES RESPONSIVOS
+        function toggleFojas() {
+            const panel = document.getElementById('panel-fojas');
+            panel.classList.toggle('open');
+            document.getElementById('btn-cerrar-fojas').style.display = panel.classList.contains('open') ? 'block' : 'none';
+        }
+        function toggleHerramientas() {
+            const panel = document.getElementById('panel-herramientas');
+            panel.classList.toggle('open');
+            document.getElementById('btn-cerrar-herr').style.display = panel.classList.contains('open') ? 'block' : 'none';
         }
 
         // ==========================================
@@ -213,30 +263,11 @@
             mostrarProgreso("fa-hdd", "Buscando en Bóveda", "Revisando disco duro local...");
             
             try {
-                // 1. INTENTA BUSCAR EL PDF EN LA BÓVEDA LOCAL DE LA PC (IndexedDB)
                 let archivoBlob = await localforage.getItem('archivo_' + nombreExpediente);
                 
                 if (archivoBlob) {
-                    // Si ya estaba guardado en tu compu, lo abre
                     await procesarArchivoInterno(archivoBlob);
-                } 
-                else if (esAdmin && storageRef) {
-                    // 2. SI NO ESTÁ LOCAL, Y ERES ADMIN, LO BUSCA EN LA NUBE
-                    document.getElementById('texto-progreso').innerText = "Descargando desde la Nube...";
-                    try {
-                        let url = await storageRef.child(`expedientes_pdfs/${nombreExpediente}.pdf`).getDownloadURL();
-                        let response = await fetch(url);
-                        let cloudBlob = await response.blob();
-                        
-                        // Lo guarda en tu PC para la próxima vez no gastar internet
-                        await localforage.setItem('archivo_' + nombreExpediente, cloudBlob);
-                        await procesarArchivoInterno(cloudBlob);
-                    } catch (e) {
-                        // No estaba ni local ni en la nube.
-                        ocultarProgreso();
-                    }
                 } else {
-                    // No hay archivo guardado.
                     ocultarProgreso();
                 }
             } catch (error) {
@@ -245,29 +276,17 @@
             }
         };
 
-        // CUANDO SUBES UN ARCHIVO MANUALMENTE DESDE EL BOTÓN
         async function cargarDocumentoManual(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             mostrarProgreso("fa-save", "Guardando Documento", "Asegurando archivo en la bóveda profunda...");
-            
-            // 1. GUARDA EL ARCHIVO LOCALMENTE PARA SIEMPRE (IndexedDB)
             await localforage.setItem('archivo_' + nombreExpediente, file);
-
-            // 2. SI ERES ADMIN, SUBE UNA COPIA A LA NUBE (En segundo plano)
-            if (esAdmin && storageRef) {
-                storageRef.child(`expedientes_pdfs/${nombreExpediente}.pdf`).put(file)
-                .then(() => console.log("Archivo respaldado en la nube exitosamente."))
-                .catch(e => console.log("Error al subir a la nube", e));
-            }
-
-            // 3. LO MUESTRA EN PANTALLA
             await procesarArchivoInterno(file);
         }
 
         // ==========================================
-        // 2. EL MOTOR DE LECTURA DE PDF (Optimizado)
+        // 2. EL MOTOR DE LECTURA DE PDF
         // ==========================================
         async function procesarArchivoInterno(archivoBlob) {
             detenerEjecucion = false;
@@ -277,9 +296,11 @@
             
             arrayFojas = [];
             window.mapaAlertasPorFoja = {}; 
-            PALABRAS_BUSCADAS.forEach(p => resultadosKeywords[p] = []);
             
-            // Si el archivo es un File (y tiene nombre) verificamos extensión. Si es Blob de internet, asumimos PDF.
+            categoriasIA.forEach(c => {
+                c.palabras.forEach(p => resultadosKeywords[p] = []);
+            });
+            
             let isWord = archivoBlob.name ? (archivoBlob.name.endsWith('.docx') || archivoBlob.name.endsWith('.doc')) : false;
 
             if(isWord) {
@@ -292,7 +313,6 @@
                 const bytes = new Uint8Array(await archivoBlob.arrayBuffer());
                 pdfGlobal = await pdfjsLib.getDocument(bytes).promise;
                 
-                // Carga ultrarrápida: Solo el índice, nada de imágenes aún
                 for (let i = 1; i <= pdfGlobal.numPages; i++) {
                     arrayFojas.push({ id: Date.now() + i, numeroLogico: i, isHtml: false, numPaginaPdf: i, rotacion: 0 });
                 }
@@ -320,23 +340,17 @@
         }
 
         // ==========================================
-        // 3. LA INTELIGENCIA ARTIFICIAL (Tesseract V5 Estable)
+        // 3. LA INTELIGENCIA ARTIFICIAL "INFALIBLE" (Tesseract v5 sin Worker manual)
         // ==========================================
-        async function escanearTodoElExpediente() {
+        async function escanearAlertasInfalible() {
             if(arrayFojas.length === 0) return;
             detenerEjecucion = false;
-            mostrarProgreso("fa-brain", "IA Analizando Expediente", "Iniciando Motor de Lectura...");
+            mostrarProgreso("fa-brain", "IA Analizando Expediente", "Iniciando Motor de Lectura Infalible...");
             document.getElementById('btn-cancelar-ia').style.display = 'inline-block';
             
-            const worker = await Tesseract.createWorker('spa', 1, {
-                logger: m => {
-                    if(m.status === 'recognizing text') {
-                        document.getElementById('texto-subprogreso').innerText = `Reconociendo caracteres: ${Math.round(m.progress * 100)}%`;
-                    } else {
-                        document.getElementById('texto-subprogreso').innerText = m.status;
-                    }
-                }
-            });
+            resultadosKeywords = {};
+            window.mapaAlertasPorFoja = {}; 
+            categoriasIA.forEach(c => { c.palabras.forEach(p => resultadosKeywords[p] = []); });
 
             try {
                 for (let i = 0; i < arrayFojas.length; i++) {
@@ -344,38 +358,52 @@
                     
                     let f = arrayFojas[i];
                     actualizarBarra(Math.round(((i) / arrayFojas.length) * 100));
-                    document.getElementById('texto-progreso').innerText = `Procesando Foja ${f.numeroLogico} de ${arrayFojas.length}`;
+                    document.getElementById('texto-progreso').innerText = `Leyendo Foja ${f.numeroLogico} de ${arrayFojas.length}...`;
+                    document.getElementById('texto-subprogreso').innerText = "Extrayendo palabras clave...";
                     
                     if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
 
                     if(f.isHtml) {
                         let textoWord = f.rawText.toLowerCase();
-                        PALABRAS_BUSCADAS.forEach(p => {
-                            if(textoWord.includes(p)) {
-                                if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico);
-                            }
+                        categoriasIA.forEach(cat => {
+                            cat.palabras.forEach(p => {
+                                if(textoWord.includes(p)) {
+                                    if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico);
+                                }
+                            });
                         });
                     } else {
                         try {
-                            const canvasTemporalOCR = await obtenerCanvasFoja(f, 1.0); 
-                            const { data } = await worker.recognize(canvasTemporalOCR);
+                            // GENERAR CANVAS A ESCALA 1.0 PARA OCR (Infalible y exacto)
+                            const canvasOCR = await obtenerCanvasFoja(f, 1.0); 
+                            
+                            // LLAMADO DIRECTO A TESSERACT V5 (Sin Workers manuales que crashean)
+                            const { data } = await Tesseract.recognize(canvasOCR, 'spa');
                             
                             data.words.forEach(palabra => {
-                                let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
-                                if(PALABRAS_BUSCADAS.includes(txtLimpio)) {
-                                    if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico);
-                                    window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorBorde: '#ef4444', colorFondo: 'rgba(239, 68, 68, 0.4)' });
+                                let textoLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
+                                if (textoLimpio.length < 3) return;
+
+                                for (let cat of categoriasIA) {
+                                    if (cat.palabras.includes(textoLimpio)) {
+                                        if(!resultadosKeywords[textoLimpio].includes(f.numeroLogico)) resultadosKeywords[textoLimpio].push(f.numeroLogico);
+                                        window.mapaAlertasPorFoja[f.numeroLogico].push({ 
+                                            bbox: palabra.bbox, 
+                                            colorFondo: cat.colorFondo, 
+                                            colorBorde: cat.colorBorde 
+                                        });
+                                    }
                                 }
                             });
-                            canvasTemporalOCR.width = 0; canvasTemporalOCR.height = 0; // Libera memoria al instante
+
+                            canvasOCR.width = 0; canvasOCR.height = 0; // Liberar RAM
                         } catch (e) {
-                            console.warn("Error leyendo foja " + f.numeroLogico, e);
+                            console.warn("Error OCR en foja " + f.numeroLogico, e);
                         }
                     }
                 }
-                await worker.terminate();
             } catch (error) {
-                console.error("Error global en Tesseract:", error);
+                console.error("Error en Tesseract Infalible:", error);
             }
 
             ocultarProgreso();
@@ -383,6 +411,9 @@
                 switchTab('tab-palabras', document.querySelectorAll('.tab')[0]);
                 mostrarResultadosKeywords();
                 renderizarVisorCentral(); 
+                
+                // Si estamos en movil, abre automáticamente el panel de herramientas para que vea el resultado
+                if(window.innerWidth <= 1024) toggleHerramientas();
             }
         }
 
@@ -401,7 +432,7 @@
                     cont.innerHTML += `<div class="keyword-card"><div class="keyword-header"><span class="keyword-word">${key}</span><span class="keyword-count">${fojas.length}</span></div><div class="keyword-fojas">En: ${badges}</div></div>`;
                 }
             }
-            if(!encontroAlgo) cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No se detectaron alertas judiciales.</p>`;
+            if(!encontroAlgo) cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No se detectaron alertas de la Ley.</p>`;
         }
 
         async function renderizarBarraLateralFojas() {
@@ -436,7 +467,7 @@
 
             if(foja.isHtml) {
                 canvasP.style.display = 'none'; canvasD.style.display = 'none'; divHtml.style.display = 'block';
-                divHtml.innerHTML = foja.htmlContent; divHtml.style.transform = `scale(${zoomGlobal - 0.2})`; divHtml.style.transformOrigin = "top center";
+                divHtml.innerHTML = foja.htmlContent; divHtml.style.transform = `scale(${zoomGlobal})`;
             } else {
                 divHtml.style.display = 'none'; canvasP.style.display = 'block'; canvasD.style.display = 'block';
 
@@ -459,8 +490,23 @@
             }
         }
 
-        function seleccionarFoja(index) { fojaSeleccionadaIndex = index; document.querySelectorAll('.foja-item').forEach(el => el.classList.remove('activa')); document.getElementById('thumb-' + index).classList.add('activa'); document.getElementById('msg-vacio').style.display = 'none'; document.getElementById('controles-zoom').style.display = 'flex'; cargarNotasDeFojaActual(); renderizarVisorCentral(); }
-        function cambiarZoom(delta) { zoomGlobal = Math.max(0.5, Math.min(3, zoomGlobal + delta)); renderizarVisorCentral(); }
+        function seleccionarFoja(index) { 
+            fojaSeleccionadaIndex = index; 
+            document.querySelectorAll('.foja-item').forEach(el => el.classList.remove('activa')); 
+            document.getElementById('thumb-' + index).classList.add('activa'); 
+            document.getElementById('msg-vacio').style.display = 'none'; 
+            document.getElementById('controles-zoom').style.display = 'flex'; 
+            cargarNotasDeFojaActual(); 
+            renderizarVisorCentral(); 
+            
+            // Si está en móvil y se seleccionó una foja, oculta el panel lateral para verla
+            if(window.innerWidth <= 1024) {
+                document.getElementById('panel-fojas').classList.remove('open');
+                document.getElementById('btn-cerrar-fojas').style.display = 'none';
+            }
+        }
+
+        function cambiarZoom(delta) { zoomGlobal = Math.max(0.3, Math.min(3, zoomGlobal + delta)); renderizarVisorCentral(); }
         async function eliminarFojaEnMemoria(index) { if(confirm("¿Eliminar foja?")) { arrayFojas.splice(index, 1); for(let i=index; i<arrayFojas.length; i++) arrayFojas[i].numeroLogico--; renderizarBarraLateralFojas(); if(arrayFojas.length > 0) seleccionarFoja(Math.max(0, index-1)); else { document.getElementById('canvas-principal').style.display='none'; document.getElementById('canvas-dibujo').style.display='none'; document.getElementById('msg-vacio').style.display='block'; await localforage.removeItem('archivo_' + nombreExpediente); } } }
         function moverFoja(index, dir) { if(index + dir < 0 || index + dir >= arrayFojas.length) return; let temp = arrayFojas[index]; arrayFojas[index] = arrayFojas[index + dir]; arrayFojas[index + dir] = temp; renderizarBarraLateralFojas(); if(fojaSeleccionadaIndex === index) seleccionarFoja(index + dir); else if(fojaSeleccionadaIndex === index + dir) seleccionarFoja(index); }
         function buscarFojaPorNumero(num) { let index = arrayFojas.findIndex(f => f.numeroLogico === parseInt(num)); if(index !== -1) seleccionarFoja(index); }
@@ -469,7 +515,7 @@
         // Notas
         function cargarNotasDeFojaActual() { if(arrayFojas.length === 0) return; let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico; document.getElementById('titulo-nota-foja').innerText = `Apuntes - Foja ${num}`; let dataNota = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${num}`)) || {texto: '', fecha: ''}; document.getElementById('texto-notas').value = dataNota.texto; document.getElementById('info-nota-fecha').innerText = dataNota.fecha ? `Última edición: ${dataNota.fecha}` : ''; }
         function guardarNotas() { if(arrayFojas.length === 0) return; let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico; let texto = document.getElementById('texto-notas').value; let fechaActual = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }); if(texto.trim() === '') localStorage.removeItem(`notas_${nombreExpediente}_f${num}`); else localStorage.setItem(`notas_${nombreExpediente}_f${num}`, JSON.stringify({ texto: texto, fecha: fechaActual })); document.getElementById('info-nota-fecha').innerText = `Última edición: ${fechaActual}`; const msg = document.getElementById('nota-guardada'); msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 3000); renderizarBarraLateralFojas(); renderizarIndiceNotas(); }
-        function renderizarIndiceNotas() { const list = document.getElementById('lista-resumen-notas'); list.innerHTML = ''; let hayNotas = false; let notasArray = []; for(let i=0; i<localStorage.length; i++) { let key = localStorage.key(i); if(key.startsWith(`notas_${nombreExpediente}_f`)) { let numFoja = parseInt(key.split('_f')[1]); let dataNota = JSON.parse(localStorage.getItem(key)); notasArray.push({ foja: numFoja, texto: dataNota.texto }); } } notasArray.sort((a,b) => a.foja - b.foja); notasArray.forEach(nota => { hayNotas = true; let extracto = nota.texto.substring(0, 45) + (nota.texto.length > 45 ? '...' : ''); list.innerHTML += `<div class="nota-preview" onclick="buscarFojaPorNumero(${nota.foja})"><strong style="color:var(--neon-blue); font-size:0.8rem;">Foja ${nota.foja}</strong><p style="font-size:0.75rem; color:var(--text-main); margin:3px 0;">"${extracto}"</p></div>`; }); if(!hayNotas) list.innerHTML = `<p style="font-size:0.75rem; color:var(--text-muted); text-align:center;">No hay notas guardadas.</p>`; }
+        function renderizarIndiceNotas() { const list = document.getElementById('lista-resumen-notas'); list.innerHTML = ''; let hayNotas = false; let notasArray = []; for(let i=0; i<localStorage.length; i++) { let key = localStorage.key(i); if(key.startsWith(`notas_${nombreExpediente}_f`)) { let numFoja = parseInt(key.split('_f')[1]); let dataNota = JSON.parse(localStorage.getItem(key)); notasArray.push({ foja: numFoja, texto: dataNota.texto }); } } notasArray.sort((a,b) => a.foja - b.foja); notasArray.forEach(nota => { hayNotas = true; let extracto = nota.texto.substring(0, 45) + (nota.texto.length > 45 ? '...' : ''); list.innerHTML += `<div class="nota-preview" onclick="buscarFojaPorNumero(${nota.foja}); if(window.innerWidth <= 1024) toggleHerramientas();"><strong style="color:var(--neon-blue); font-size:0.8rem;">Foja ${nota.foja}</strong><p style="font-size:0.75rem; color:var(--text-main); margin:3px 0;">"${extracto}"</p></div>`; }); if(!hayNotas) list.innerHTML = `<p style="font-size:0.75rem; color:var(--text-muted); text-align:center;">No hay notas guardadas.</p>`; }
 
         function mostrarProgreso(icono, titulo, texto) { document.getElementById('icono-progreso').className = `fa-solid ${icono} fa-fade`; document.getElementById('titulo-progreso').innerText = titulo; document.getElementById('texto-progreso').innerText = texto; document.getElementById('barra-llena').style.width = '0%'; document.getElementById('btn-cancelar-ia').style.display = 'none'; document.getElementById('pantalla-progreso').style.display = 'flex'; }
         function actualizarBarra(porcentaje) { document.getElementById('barra-llena').style.width = `${porcentaje}%`; }
