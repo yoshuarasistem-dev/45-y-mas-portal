@@ -7,10 +7,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Librerías de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <!-- LIBRERÍA FALTANTE AGREGADA: Necesaria para conectar con el Visor Inteligente -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     
     <style>
@@ -111,12 +109,12 @@
                 <img src="./assets/LOGO.png" onerror="this.outerHTML='<h1 style=\\\'color:var(--brand-orange); font-size:2rem;\\\'>45 Y MÁS</h1>'" alt="45 Y MÁS">
                 <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
             </div>
-            <p style="color:var(--brand-orange); font-weight:bold; margin-bottom: 10px;">Bóveda Confidencial</p>
-            <p style="font-size: 0.75rem; color:var(--text-muted); margin-bottom: 20px;">Usa usuario <strong>admin</strong> (para guardar local y nube) o modo privado.</p>
-            <input type="text" id="user" class="input-login" placeholder="Usuario (ej. admin)" onkeypress="detectarEnter(event)">
-            <input type="password" id="pass" class="input-login" placeholder="Contraseña (45ymas)" onkeypress="detectarEnter(event)">
-            <button class="btn-login" onclick="iniciarSesion()">INGRESAR</button>
-            <p id="error-msg" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold; font-size: 0.85rem;">Contraseña incorrecta.</p>
+            <p style="color:var(--brand-orange); font-weight:bold; margin-bottom: 10px;">Bóveda Institucional</p>
+            <p style="font-size: 0.75rem; color:var(--text-muted); margin-bottom: 20px;">Ingresa tus credenciales autorizadas por el administrador de red.</p>
+            <input type="text" id="user" class="input-login" placeholder="Usuario" onkeypress="detectarEnter(event)">
+            <input type="password" id="pass" class="input-login" placeholder="Contraseña" onkeypress="detectarEnter(event)">
+            <button type="button" class="btn-login" onclick="iniciarSesion()">INGRESAR</button>
+            <p id="error-msg" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold; font-size: 0.85rem;">Credenciales incorrectas.</p>
         </div>
     </div>
 
@@ -128,7 +126,7 @@
             </div>
             <div style="display:flex; gap: 8px;">
                 <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i></a>
-                <button class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+                <button type="button" class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
             </div>
         </div>
         
@@ -136,11 +134,13 @@
             <div class="sidebar">
                 <div class="menu-item active" id="menu-juridico" onclick="mostrarMenu('juridico')"><i class="fa-solid fa-gavel"></i> Expedientes Jurídicos</div>
                 <div class="menu-item" id="menu-masc" onclick="mostrarMenu('masc')"><i class="fa-solid fa-handshake"></i> Convenios MASC</div>
+                <div class="menu-item" id="menu-usuarios" onclick="mostrarMenu('usuarios')" style="display:none;"><i class="fa-solid fa-users-cog"></i> Gestión de Equipo</div>
             </div>
             <div class="folder-area" id="area-trabajo"></div>
         </div>
     </div>
 
+    <!-- Modales -->
     <div class="modal" id="modal-crear">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: var(--neon-blue); font-size: 1.1rem;">Nuevo Expediente Jurídico</h3>
@@ -148,8 +148,8 @@
                 <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">NÚMERO DE EXPEDIENTE:</label>
                 <input type="text" id="input-nuevo-juridico" class="input-login" placeholder="Ej. EXP/340/26">
             </div>
-            <button class="btn-crear" onclick="guardarExpedienteJuridico()">Crear Carpeta Segura</button>
-            <button class="btn-logout" style="width: 100%; margin-top: 10px; justify-content: center;" onclick="document.getElementById('modal-crear').style.display='none'">Cancelar</button>
+            <button type="button" class="btn-crear" onclick="guardarExpedienteJuridico()">Crear Carpeta Segura</button>
+            <button type="button" class="btn-logout" style="width: 100%; margin-top: 10px; justify-content: center;" onclick="document.getElementById('modal-crear').style.display='none'">Cancelar</button>
         </div>
     </div>
 
@@ -163,8 +163,8 @@
                 <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">RECOMENDADO POR (OPCIONAL):</label>
                 <input type="text" id="input-patrocinado-masc" class="input-login" placeholder="Ej. Eduviges">
             </div>
-            <button class="btn-crear" style="background: var(--brand-orange);" onclick="procesarNuevoMASC()">Guardar Convenio</button>
-            <button class="btn-logout" style="width: 100%; margin-top: 10px; justify-content: center;" onclick="document.getElementById('modal-crear-masc').style.display='none'">Cancelar</button>
+            <button type="button" class="btn-crear" style="background: var(--brand-orange);" onclick="procesarNuevoMASC()">Guardar Convenio</button>
+            <button type="button" class="btn-logout" style="width: 100%; margin-top: 10px; justify-content: center;" onclick="document.getElementById('modal-crear-masc').style.display='none'">Cancelar</button>
         </div>
     </div>
 
@@ -172,7 +172,7 @@
         <div class="modal-visor-content">
             <div class="modal-visor-header">
                 <h3 id="visor-titulo-doc" style="color: var(--neon-blue); font-size: 1rem;">Visualizando Doc</h3>
-                <button class="btn-logout" onclick="cerrarVisorPDF()"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+                <button type="button" class="btn-logout" onclick="cerrarVisorPDF()"><i class="fa-solid fa-xmark"></i> Cerrar</button>
             </div>
             <div class="modal-visor-body">
                 <iframe id="iframe-pdf-visor" src=""></iframe>
@@ -182,68 +182,131 @@
 
     <script>
         const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
-        let db = null; let esAdmin = false; let listaExpedientesMasc = [];
+        let db = null; 
 
         try { if(firebaseConfig.apiKey !== "TU_API_KEY") { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } } catch(e) { console.log("Firebase inactivo"); }
 
         const catJuzgados = {
-            "Civil": [
-                "Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", 
-                "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", 
-                "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", 
-                "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", 
-                "Juzgado 13° de lo Civil"
-            ],
-            "Familiar": [
-                "Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", 
-                "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", 
-                "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", 
-                "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", 
-                "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", 
-                "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar",
-                "Especializado Niños", "Violencia Mujeres"
-            ],
-            "Mercantil": [
-                "Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", 
-                "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", 
-                "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", 
-                "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil", 
-                "Juzgado 13° Mercantil", "Juzgado 14° Mercantil", "Juzgado 15° Mercantil", "Juzgado 16° Mercantil", "Juzgado 17° Mercantil", "Juzgado 18° Mercantil", "Juzgado 19° Mercantil"
-            ]
+            "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
+            "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Especializado Niños", "Violencia Mujeres"],
+            "Mercantil": ["Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil", "Juzgado 13° Mercantil", "Juzgado 14° Mercantil", "Juzgado 15° Mercantil", "Juzgado 16° Mercantil", "Juzgado 17° Mercantil", "Juzgado 18° Mercantil", "Juzgado 19° Mercantil"]
         };
         const anios = ["2026", "2025", "2024", "2023", "2022"];
+        const tiposMascObj = { "ARRENDAMIENTO": "Preventivo Arrendamiento", "ALIMENTOS": "Alimentos y Convivencia", "DIVORCIO": "Divorcio Admtvo. y Mutuo" };
         
         let vistaActual = 'juridico'; let materiaActiva = "Civil";
         let nivelJuridico = 0; let pathJuridico = { juzgado: '', anio: '' };
         let nivelMasc = 0; let pathMasc = { centro: '', anio: '', tipo: '', indexExp: null };
-        const tiposMascObj = { "ARRENDAMIENTO": "Preventivo Arrendamiento", "ALIMENTOS": "Alimentos y Convivencia", "DIVORCIO": "Divorcio Admtvo. y Mutuo" };
+        
+        // --- NÚCLEO DE ROLES Y MULTI-TENANT ---
+        const usuariosDefecto = [
+            { user: "admin", pass: "45ymas", centro: "Despacho 45yMas", cloud: true, addUsers: true, isMaster: true },
+            { user: "chava", pass: "45ymas", centro: "Despacho 45yMas", cloud: true, addUsers: false, isMaster: false },
+            { user: "ceci", pass: "45ymas", centro: "Despacho 45yMas", cloud: true, addUsers: false, isMaster: false },
+            { user: "aldo", pass: "45ymas", centro: "Centro 353", cloud: false, addUsers: true, isMaster: false }
+        ];
+
+        let bovedaUsers = JSON.parse(localStorage.getItem('boveda_usuarios_sistema'));
+        if(!bovedaUsers) { bovedaUsers = usuariosDefecto; localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); }
+
+        let usuarioActivoObj = null;
+        let esAdmin = false; 
+        let storageMascKey = ''; 
+        let centrosMASC = []; 
+        let listaExpedientesMasc = [];
+
+        // Detección de sesión persistente (no te saca si actualizas o vuelves de un PDF)
+        window.onload = () => {
+            let sessionUser = localStorage.getItem('sesion_activa_user');
+            if(sessionUser) {
+                let found = bovedaUsers.find(x => x.user === sessionUser);
+                if(found) { document.getElementById('user').value = found.user; document.getElementById('pass').value = found.pass; iniciarSesion(); }
+            }
+        };
 
         function detectarEnter(event) { if(event.key === 'Enter') { iniciarSesion(); } }
 
         async function iniciarSesion() {
             try {
-                const u = document.getElementById('user').value.trim(); const p = document.getElementById('pass').value;
+                const u = document.getElementById('user').value.trim().toLowerCase();
+                const p = document.getElementById('pass').value;
                 const errorMsg = document.getElementById('error-msg');
-                if(p === '45ymas') {
-                    errorMsg.style.display = 'none'; esAdmin = (u.toLowerCase() === 'admin'); localStorage.setItem('usuario_admin', esAdmin);
-                    document.getElementById('login-screen').style.display = 'none'; document.getElementById('dashboard-screen').style.display = 'flex';
-                    if(esAdmin && db) { document.getElementById('badge-modo-sesion').innerHTML = "☁️ Admin"; document.getElementById('badge-modo-sesion').style.color = "var(--neon-blue)"; await sincronizarDesdeNube(); } else { cargarLocalesSeguro(); }
+                
+                const foundUser = bovedaUsers.find(x => x.user.toLowerCase() === u && x.pass === p);
+
+                if(foundUser) {
+                    errorMsg.style.display = 'none'; 
+                    usuarioActivoObj = foundUser;
+                    localStorage.setItem('sesion_activa_user', foundUser.user);
+                    
+                    esAdmin = foundUser.cloud; // Define si sincroniza a Firebase
+                    
+                    // Asignación de entorno Aislado por Centro
+                    let centroClave = foundUser.centro.replace(/[^a-zA-Z0-9]/g, '');
+                    storageMascKey = 'boveda_db_' + centroClave;
+
+                    // Recupera las carpetas/centros visibles en el entorno
+                    let centrosGuardados = localStorage.getItem('carpetas_' + storageMascKey);
+                    centrosMASC = centrosGuardados ? JSON.parse(centrosGuardados) : [foundUser.centro];
+
+                    document.getElementById('login-screen').style.display = 'none'; 
+                    document.getElementById('dashboard-screen').style.display = 'flex';
+                    
+                    document.getElementById('badge-modo-sesion').innerHTML = foundUser.isMaster ? "👑 Admin Master" : `👤 ${foundUser.user.toUpperCase()}`;
+                    document.getElementById('badge-modo-sesion').style.color = foundUser.isMaster ? "var(--brand-orange)" : (foundUser.cloud ? "var(--neon-blue)" : "var(--success)");
+                    
+                    // Muestra botón de gestión si el usuario tiene privilegios
+                    if(foundUser.addUsers) document.getElementById('menu-usuarios').style.display = 'flex';
+                    else document.getElementById('menu-usuarios').style.display = 'none';
+
+                    if(esAdmin && db) { await sincronizarDesdeNube(); } else { cargarLocalesSeguro(); }
                     mostrarMenu('juridico');
-                } else { errorMsg.style.display = 'block'; }
+                } else { 
+                    errorMsg.style.display = 'block'; 
+                }
             } catch (error) { console.error("Error en inicio de sesión:", error); }
         }
 
-        function cerrarSesion() { localStorage.removeItem('usuario_admin'); location.reload(); }
+        function cerrarSesion() { localStorage.removeItem('sesion_activa_user'); location.reload(); }
 
         function cargarLocalesSeguro() {
-            try { let data = localStorage.getItem('masc_list_manual'); listaExpedientesMasc = data ? JSON.parse(data) : []; } catch (error) { listaExpedientesMasc = []; localStorage.removeItem('masc_list_manual'); }
+            try { let data = localStorage.getItem(storageMascKey); listaExpedientesMasc = data ? JSON.parse(data) : []; } catch (error) { listaExpedientesMasc = []; }
         }
 
-        async function sincronizarDesdeNube() { try { const snapshot = await db.collection('expedientes_masc').get(); listaExpedientesMasc = []; snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); } catch(e) { cargarLocalesSeguro(); } }
+        async function sincronizarDesdeNube() { 
+            try { 
+                const snapshot = await db.collection('expedientes_masc').get(); 
+                listaExpedientesMasc = []; 
+                snapshot.forEach(doc => { 
+                    let data = doc.data();
+                    // Solo descargamos expedientes que pertenezcan al entorno del usuario, o todos si es Master
+                    if(usuarioActivoObj.isMaster || centrosMASC.includes(data.centro)) {
+                        listaExpedientesMasc.push(data); 
+                    }
+                }); 
+            } catch(e) { cargarLocalesSeguro(); } 
+        }
 
         async function guardarEnBDMasc() { 
-            if(esAdmin && db) { try { for(let m of listaExpedientesMasc) { await db.collection('expedientes_masc').doc(m.numero.replace('/', '-')).set(m); } } catch(e) {} } 
-            try { localStorage.setItem('masc_list_manual', JSON.stringify(listaExpedientesMasc)); } catch (e) { if (e.name === 'QuotaExceededError') { alert("¡Límite de memoria! PDF muy pesado."); } }
+            if(esAdmin && db) { 
+                try { 
+                    for(let m of listaExpedientesMasc) { 
+                        // El ID evita que 2 centros diferentes sobreescriban el mismo número "001-26"
+                        let docId = m.centro.replace(/[^a-zA-Z0-9]/g, '') + '_' + m.numero.replace('/', '-');
+                        await db.collection('expedientes_masc').doc(docId).set(m); 
+                    } 
+                } catch(e) {} 
+            } 
+            try { localStorage.setItem(storageMascKey, JSON.stringify(listaExpedientesMasc)); } catch (e) { if (e.name === 'QuotaExceededError') { alert("¡Límite de memoria! PDF muy pesado."); } }
+        }
+
+        function agregarCentroNuevo() {
+            let nombre = prompt("Ingresa el nombre del nuevo Centro/Sede:");
+            if (nombre && nombre.trim() !== "") {
+                centrosMASC.push(nombre.trim());
+                localStorage.setItem('carpetas_' + storageMascKey, JSON.stringify(centrosMASC));
+                renderizarVista();
+            }
         }
 
         function mostrarMenu(menu) { vistaActual = menu; document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById('menu-' + menu).classList.add('active'); renderizarVista(); }
@@ -263,16 +326,16 @@
                         html += `</div>`;
                     }
                     else if (nivelJuridico === 2) {
-                        html += `<div class="breadcrumb" onclick="nivelJuridico=1; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Años</div><div class="section-header-box"><div class="section-title">${pathJuridico.anio} > Expedientes</div><button class="btn-upload" onclick="document.getElementById('modal-crear').style.display='flex'"><i class="fa-solid fa-plus"></i> Añadir</button></div><div class="grid-carpetas">`;
-                        let dataStr = localStorage.getItem(`exp_${pathJuridico.juzgado}_${pathJuridico.anio}`); let exps = dataStr ? JSON.parse(dataStr) : [];
+                        html += `<div class="breadcrumb" onclick="nivelJuridico=1; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Años</div><div class="section-header-box"><div class="section-title">${pathJuridico.anio} > Expedientes</div><button type="button" class="btn-upload" onclick="document.getElementById('modal-crear').style.display='flex'"><i class="fa-solid fa-plus"></i> Añadir</button></div><div class="grid-carpetas">`;
+                        let dataStr = localStorage.getItem(`exp_${storageMascKey}_${pathJuridico.juzgado}_${pathJuridico.anio}`); let exps = dataStr ? JSON.parse(dataStr) : [];
                         exps.forEach(e => { html += `<div class="carpeta-card" onclick="abrirVisorCentral('${e.nombre}')"><i class="fa-solid fa-file-pdf folder-icon" style="color:var(--success);"></i><div class="titulo">${e.nombre}</div><div class="subtitulo">Gestión Digital</div></div>`; });
                         html += `</div>`;
                     }
                 } 
                 else if (vistaActual === 'masc') {
                     if (nivelMasc === 0) {
-                        html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Centros de Mediación MASC</div></div><div class="grid-carpetas">`;
-                        ["Centro 065", "Centro 353"].forEach(c => { html += `<div class="carpeta-card" onclick="nivelMasc=1; pathMasc.centro='${c}'; renderizarVista()"><img src="./assets/logo45.jpeg" class="center-logo" onerror="this.outerHTML='<i class=\\\'fa-solid fa-building folder-icon\\\' style=\\\'color:var(--brand-orange);\\\'></i>'"><div class="titulo">${c}</div><div class="subtitulo">Sede Activa</div></div>`; });
+                        html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Centros MASC de tu Entorno</div><button type="button" class="btn-upload" onclick="agregarCentroNuevo()"><i class="fa-solid fa-plus"></i> Nuevo Centro</button></div><div class="grid-carpetas">`;
+                        centrosMASC.forEach(c => { html += `<div class="carpeta-card" onclick="nivelMasc=1; pathMasc.centro='${c}'; renderizarVista()"><img src="./assets/logo45.jpeg" class="center-logo" onerror="this.outerHTML='<i class=\\\'fa-solid fa-building folder-icon\\\' style=\\\'color:var(--brand-orange);\\\'></i>'"><div class="titulo">${c}</div><div class="subtitulo">Sede Activa</div></div>`; });
                         html += `</div>`;
                     }
                     else if (nivelMasc === 1) {
@@ -286,7 +349,7 @@
                         html += `</div>`;
                     }
                     else if (nivelMasc === 3) {
-                        html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Tipos</div><div class="section-header-box"><div class="section-title">${pathMasc.anio} > ${tiposMascObj[pathMasc.tipo]}</div><button class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'"><i class="fa-solid fa-plus"></i> Nuevo</button></div><div class="grid-carpetas">`;
+                        html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Tipos</div><div class="section-header-box"><div class="section-title">${pathMasc.anio} > ${tiposMascObj[pathMasc.tipo]}</div><button type="button" class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'"><i class="fa-solid fa-plus"></i> Nuevo</button></div><div class="grid-carpetas">`;
                         listaExpedientesMasc.forEach((m, i) => { if(m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.tipo === pathMasc.tipo) {
                             html += `<div class="carpeta-card" onclick="nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()"><i class="fa-solid fa-file-contract folder-icon" style="color:var(--success);"></i><div class="titulo">${m.numero}</div><div class="subtitulo">${m.solicitante || 'Sin Solicitante'}</div></div>`; 
                         }});
@@ -295,52 +358,142 @@
                     else if (nivelMasc === 4) {
                         let m = listaExpedientesMasc[pathMasc.indexExp];
                         html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Expedientes</div>
-                        <div class="section-header-box" style="align-items: center;"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> MASC: ${m.numero}</div><button class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.8rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})"><i class="fa-solid fa-eye"></i> Visor Completo</button></div>
+                        <div class="section-header-box" style="align-items: center;"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> MASC: ${m.numero}</div><button type="button" class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.8rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})"><i class="fa-solid fa-eye"></i> Visor Completo</button></div>
                         <div class="gestion-box">
                             <div class="form-row"><div class="form-group"><label>Solicitante:</label><input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo"></div><div class="form-group"><label>Patrocinado por:</label><input type="text" class="form-input" value="${m.patrocinado || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'patrocinado', this.value)" placeholder="Ej. Eduviges"></div></div>
                             <h4 style="color:var(--brand-orange); margin: 20px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-file-pdf"></i> Documentación Obligatoria</h4>
                             <div class="docs-table">
                                 <table style="width:100%; border-collapse: collapse;">
                                 <tr><th>Documento Requerido</th><th>Estado</th><th>Acción Manual</th></tr>
-                                <tr><td><strong>1. Solicitud firmada</strong></td><td>${m.docs && m.docs.solicitud ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-solicitud" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'solicitud', event)"><button class="btn-upload" onclick="document.getElementById('file-solicitud').click()">Subir</button> ${m.docs && m.docs.solicitud ? `<button class="btn-view" onclick="verDocumento('${m.docs.solicitud}', 'Solicitud')">Ver</button>` : ''}</td></tr>
-                                <tr><td><strong>2. Dictamen de viabilidad</strong></td><td>${m.docs && m.docs.dictamen ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-dictamen" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'dictamen', event)"><button class="btn-upload" onclick="document.getElementById('file-dictamen').click()">Subir</button> ${m.docs && m.docs.dictamen ? `<button class="btn-view" onclick="verDocumento('${m.docs.dictamen}', 'Dictamen')">Ver</button>` : ''}</td></tr>
-                                <tr><td><strong>3. Acuerdo confidencial</strong></td><td>${m.docs && m.docs.acuerdo ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-acuerdo" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'acuerdo', event)"><button class="btn-upload" onclick="document.getElementById('file-acuerdo').click()">Subir</button> ${m.docs && m.docs.acuerdo ? `<button class="btn-view" onclick="verDocumento('${m.docs.acuerdo}', 'Acuerdo')">Ver</button>` : ''}</td></tr>
-                                <tr><td><strong>4. Convenio final</strong><br><label style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;"><input type="checkbox" ${m.firmadoPartes ? 'checked' : ''} onchange="toggleFirmado(${pathMasc.indexExp}, this.checked)"> Firmado partes</label></td><td>${m.docs && m.docs.convenio ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-convenio" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'convenio', event)"><button class="btn-upload" onclick="document.getElementById('file-convenio').click()">Subir</button> ${m.docs && m.docs.convenio ? `<button class="btn-view" onclick="verDocumento('${m.docs.convenio}', 'Convenio')">Ver</button>` : ''}</td></tr>
-                                <tr><td><strong>5. Convenio digital (Word)</strong></td><td>${m.docs && m.docs.word ? '✅ Almacenado' : '❌ Pendiente'}</td><td><input type="file" id="file-word" accept=".doc, .docx" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'word', event)"><button class="btn-upload" onclick="document.getElementById('file-word').click()">Subir</button></td></tr>
+                                <tr><td><strong>1. Solicitud firmada</strong></td><td>${m.docs && m.docs.solicitud ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-solicitud" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'solicitud', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-solicitud').click()">Subir</button> ${m.docs && m.docs.solicitud ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.solicitud}', 'Solicitud')">Ver</button>` : ''}</td></tr>
+                                <tr><td><strong>2. Dictamen de viabilidad</strong></td><td>${m.docs && m.docs.dictamen ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-dictamen" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'dictamen', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-dictamen').click()">Subir</button> ${m.docs && m.docs.dictamen ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.dictamen}', 'Dictamen')">Ver</button>` : ''}</td></tr>
+                                <tr><td><strong>3. Acuerdo confidencial</strong></td><td>${m.docs && m.docs.acuerdo ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-acuerdo" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'acuerdo', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-acuerdo').click()">Subir</button> ${m.docs && m.docs.acuerdo ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.acuerdo}', 'Acuerdo')">Ver</button>` : ''}</td></tr>
+                                <tr><td><strong>4. Convenio final</strong><br><label style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;"><input type="checkbox" ${m.firmadoPartes ? 'checked' : ''} onchange="toggleFirmado(${pathMasc.indexExp}, this.checked)"> Firmado partes</label></td><td>${m.docs && m.docs.convenio ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-convenio" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'convenio', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-convenio').click()">Subir</button> ${m.docs && m.docs.convenio ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.convenio}', 'Convenio')">Ver</button>` : ''}</td></tr>
+                                <tr><td><strong>5. Convenio digital (Word)</strong></td><td>${m.docs && m.docs.word ? '✅ Almacenado' : '❌ Pendiente'}</td><td><input type="file" id="file-word" accept=".doc, .docx" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'word', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-word').click()">Subir</button></td></tr>
                                 </table>
                             </div>
                             <h4 style="color:var(--brand-orange); margin: 30px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-gavel"></i> Resoluciones y Tiempos del IJA</h4>
                             <div class="form-row">
-                                <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.prevencionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'prevencion', this.checked)"> Marcar Prevención</label>${m.prevencionActiva ? `<p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Contestación: ${m.docs && m.docs.contestacionPrevencion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-contestacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'contestacionPrevencion', event)"><button class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-contestacion').click()">Subir</button> ${m.docs && m.docs.contestacionPrevencion ? `<button class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.contestacionPrevencion}', 'Contestación')">Ver</button>` : ''}` : ''}</div>
-                                <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.validacionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'validacion', this.checked)"> Validado / No Sanción</label>${m.validacionActiva ? `<p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Validación: ${m.docs && m.docs.documentoValidacion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-validacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'documentoValidacion', event)"><button class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-validacion').click()">Subir</button> ${m.docs && m.docs.documentoValidacion ? `<button class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.documentoValidacion}', 'Validación')">Ver</button>` : ''}` : ''}</div>
+                                <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.prevencionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'prevencion', this.checked)"> Marcar Prevención</label>${m.prevencionActiva ? `<p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Contestación: ${m.docs && m.docs.contestacionPrevencion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-contestacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'contestacionPrevencion', event)"><button type="button" class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-contestacion').click()">Subir</button> ${m.docs && m.docs.contestacionPrevencion ? `<button type="button" class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.contestacionPrevencion}', 'Contestación')">Ver</button>` : ''}` : ''}</div>
+                                <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.validacionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'validacion', this.checked)"> Validado / No Sanción</label>${m.validacionActiva ? `<p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Validación: ${m.docs && m.docs.documentoValidacion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-validacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'documentoValidacion', event)"><button type="button" class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-validacion').click()">Subir</button> ${m.docs && m.docs.documentoValidacion ? `<button type="button" class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.documentoValidacion}', 'Validación')">Ver</button>` : ''}` : ''}</div>
                             </div>
                         </div>`;
                     }
                 }
+                // --- NUEVO PANEL DE GESTIÓN DE EQUIPO ---
+                else if (vistaActual === 'usuarios') {
+                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-users-cog"></i> Gestión de Equipo y Roles</div></div>`;
+                    
+                    html += `
+                    <div class="gestion-box">
+                        <h4 style="color:var(--brand-orange); margin-bottom:15px;"><i class="fa-solid fa-user-plus"></i> Crear Nuevo Perfil de Acceso</h4>
+                        <div class="form-row">
+                            <div class="form-group"><label>Nombre de Usuario:</label><input type="text" id="new-user-name" class="form-input" placeholder="Ej. laura_abogada"></div>
+                            <div class="form-group"><label>Contraseña:</label><input type="text" id="new-user-pass" class="form-input" value="45ymas"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Centro de Trabajo (Elige o Escribe Nuevo):</label><input type="text" id="new-user-centro" class="form-input" value="${usuarioActivoObj.centro}" ${usuarioActivoObj.isMaster ? '' : 'readonly'}></div>
+                        </div>
+                        <div class="form-row" style="margin-top:10px; align-items:center;">
+                            <label style="color:var(--text-main); font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="new-user-add"> Dar privilegios para crear más usuarios (Gestor)</label>
+                            ${usuarioActivoObj.isMaster ? `<label style="color:var(--neon-blue); font-size:0.85rem; cursor:pointer; margin-left:15px;"><input type="checkbox" id="new-user-cloud"> Sincronizar en Nube (Firebase)</label>` : ''}
+                        </div>
+                        <button type="button" class="btn-crear" style="margin-top:15px; max-width: 200px;" onclick="crearNuevoUsuario()">Registrar Usuario</button>
+                    </div>
+                    `;
+
+                    html += `<h4 style="color:var(--text-main); margin: 25px 0 15px 0;"><i class="fa-solid fa-address-book"></i> Directorio de Usuarios</h4>`;
+                    html += `<div class="docs-table"><table style="width:100%; border-collapse: collapse; background: var(--bg-panel);"><tr><th>Usuario</th><th>Centro / Entorno</th><th>Nube</th><th>Gestor</th><th>Acciones</th></tr>`;
+                    
+                    bovedaUsers.forEach((u, i) => {
+                        // Un Master ve a todos. Un Gestor normal (como Aldo) solo ve a los de su Centro.
+                        if(usuarioActivoObj.isMaster || u.centro === usuarioActivoObj.centro) {
+                            html += `<tr>
+                                <td><strong>${u.user}</strong></td>
+                                <td><span style="background:rgba(255,115,21,0.2); color:var(--brand-orange); padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold;">${u.centro}</span></td>
+                                <td>${u.cloud ? '<i class="fa-solid fa-cloud" style="color:var(--neon-blue);"></i> Sí' : '<i class="fa-solid fa-hard-drive" style="color:var(--text-muted);"></i> Local'}</td>
+                                <td>${u.addUsers ? '✅ Sí' : '❌ No'}</td>
+                                <td>
+                                    ${u.isMaster ? '<span style="color:var(--danger); font-size:0.75rem; font-weight:bold;">SÚPER ADMIN</span>' : `
+                                    <button type="button" class="btn-upload" style="margin-right: 5px; padding: 4px 8px;" onclick="cambiarPassUsuario(${i})"><i class="fa-solid fa-key"></i></button>
+                                    <button type="button" class="btn-view" style="color:var(--danger); border-color:var(--danger); padding:4px 8px;" onclick="eliminarUsuario(${i})"><i class="fa-solid fa-trash"></i></button>
+                                    `}
+                                </td>
+                            </tr>`;
+                        }
+                    });
+                    html += `</table></div>`;
+                }
+                
                 area.innerHTML = html;
             } catch (error) { area.innerHTML = "<p style='color:red; text-align:center;'>Ocurrió un error interno al mostrar los datos.</p>"; }
         }
 
-        function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
+        // LÓGICA DE USUARIOS Y ROLES
+        window.crearNuevoUsuario = function() {
+            let n = document.getElementById('new-user-name').value.trim().toLowerCase();
+            let p = document.getElementById('new-user-pass').value.trim();
+            let c = document.getElementById('new-user-centro').value.trim();
+            let add = document.getElementById('new-user-add').checked;
+            let cloudElem = document.getElementById('new-user-cloud');
+            let cloud = cloudElem ? cloudElem.checked : false;
+
+            if(!n || !p || !c) { alert("Llena los campos obligatorios"); return; }
+            if(bovedaUsers.find(x => x.user === n)) { alert("El usuario ya existe"); return; }
+
+            bovedaUsers.push({ user: n, pass: p, centro: c, cloud: cloud, addUsers: add, isMaster: false });
+            localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers));
+            
+            alert(`Usuario '${n}' creado con éxito para el entorno '${c}'.`);
+            renderizarVista();
+        };
+
+        window.eliminarUsuario = function(index) {
+            if(confirm("¿Eliminar este perfil permanentemente? Se perderá su acceso, pero los archivos del Centro seguirán seguros.")) {
+                bovedaUsers.splice(index, 1);
+                localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers));
+                renderizarVista();
+            }
+        };
+
+        window.cambiarPassUsuario = function(index) {
+            let newP = prompt("Escribe la nueva contraseña para el usuario " + bovedaUsers[index].user + ":");
+            if(newP && newP.trim() !== "") { 
+                bovedaUsers[index].pass = newP.trim(); 
+                localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); 
+                alert("Contraseña modificada con éxito.");
+            }
+        };
+
+        function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${storageMascKey}_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
         function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); window.location.href = 'visor-expediente.html'; }
         
-        // CORRECCIÓN: Función que conecta la Bóveda con el Visor Inteligente usando localforage
+        function base64ToBlob(base64Data) {
+            try {
+                const arr = base64Data.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+                return new Blob([u8arr], {type: mime});
+            } catch(e) { return null; }
+        }
+
         async function abrirVisorMASC(index) {
-            let m = listaExpedientesMasc[index];
-            let nombreExp = `MASC-${m.numero.replace('/', '-')}`;
-            localStorage.setItem('expediente_abierto', nombreExp);
-            
-            // Mandamos el Convenio cargado al Visor Inteligente
-            if(m.docs && m.docs.convenio) {
-                try {
-                    let res = await fetch(m.docs.convenio);
-                    let blob = await res.blob();
-                    await localforage.setItem('archivo_' + nombreExp, { blob: blob, name: `Convenio_${m.numero.replace('/', '-')}.pdf`, type: 'application/pdf' });
-                } catch(e) {
-                    console.error("Error al transferir el blob MASC", e);
+            try {
+                let m = listaExpedientesMasc[index];
+                let nombreExp = `MASC-${m.numero.replace(/\//g, '-')}`;
+                localStorage.setItem('expediente_abierto', nombreExp);
+                
+                if(m.docs && m.docs.convenio) {
+                    let blob = base64ToBlob(m.docs.convenio);
+                    if(blob) {
+                        await localforage.setItem('archivo_' + nombreExp, { blob: blob, name: `Convenio_${nombreExp}.pdf`, type: 'application/pdf' });
+                    }
                 }
-            }
-            window.location.href = 'visor-expediente.html';
+                window.location.href = 'visor-expediente.html';
+            } catch (e) { console.error("Error iniciando visor:", e); alert("Ocurrió un problema al leer el documento."); }
         }
 
         async function procesarNuevoMASC() { let solicitante = document.getElementById('input-solicitante-masc').value.trim(); if(!solicitante) return; let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); let filtrados = listaExpedientesMasc.filter(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio); let numFinal = `${(filtrados.length + 1).toString().padStart(3, '0')}/${pathMasc.anio.slice(-2)}`; listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, docs: {} }); await guardarEnBDMasc(); document.getElementById('modal-crear-masc').style.display = 'none'; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; renderizarVista(); }
@@ -361,40 +514,27 @@
             reader.readAsDataURL(file); 
         }
         
-        // CORRECCIÓN: Detección de celular para manejar el PDF nativamente y evitar la pantalla gris de error en Android/iOS
         function verDocumento(base64Data, titulo) { 
             document.getElementById('visor-titulo-doc').innerText = titulo; 
             const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-            if (isMobile) {
-                // En celular forzamos la descarga o apertura en app nativa de PDF
-                fetch(base64Data).then(res => res.blob()).then(blob => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = titulo + ".pdf";
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    setTimeout(() => URL.revokeObjectURL(url), 100);
-                }).catch(e => {
-                    window.open(base64Data, '_blank');
-                });
+            let blob = base64ToBlob(base64Data);
+            
+            if (isMobile && blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = titulo + ".pdf";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+            } else if (blob) {
+                const blobUrl = URL.createObjectURL(blob);
+                document.getElementById('iframe-pdf-visor').src = blobUrl;
+                document.getElementById('modal-visor-pdf').style.display = 'flex';
             } else {
-                // En PC el iframe funciona perfectamente
-                try {
-                    fetch(base64Data).then(res => res.blob()).then(blob => {
-                        const blobUrl = URL.createObjectURL(blob);
-                        document.getElementById('iframe-pdf-visor').src = blobUrl;
-                        document.getElementById('modal-visor-pdf').style.display = 'flex';
-                    }).catch(e => {
-                        document.getElementById('iframe-pdf-visor').src = base64Data; 
-                        document.getElementById('modal-visor-pdf').style.display = 'flex';
-                    });
-                } catch (error) {
-                    document.getElementById('iframe-pdf-visor').src = base64Data; 
-                    document.getElementById('modal-visor-pdf').style.display = 'flex';
-                }
+                window.open(base64Data, '_blank');
             }
         }
         function cerrarVisorPDF() { document.getElementById('modal-visor-pdf').style.display = 'none'; document.getElementById('iframe-pdf-visor').src = ''; }
