@@ -262,7 +262,7 @@
         const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
         let db = null; try { if(firebaseConfig.apiKey !== "TU_API_KEY") { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } } catch(e) { console.log("Firebase inactivo"); }
 
-        // --- SISTEMA GOOGLE DRIVE Y GEMINI IA (LLAVE PRIVADA EN NAVEGADOR) ---
+        // --- SISTEMA GOOGLE DRIVE Y GEMINI IA ---
         const GOOGLE_CLIENT_ID = '326577655461-e7s01aoc20tofbgmrplt0bdt6ouhe27o.apps.googleusercontent.com';
         let tokenClient; let gDriveToken = localStorage.getItem('drive_token') || null; let driveStorageInfo = { used: 0, limit: 5242880 }; 
 
@@ -312,13 +312,41 @@
             document.getElementById('input-ia-global').click();
         }
 
+        function marcarDriveEstado(conectado) {
+            let btn = document.getElementById('btn-conectar-drive');
+            if (!btn) return;
+            if (conectado) {
+                btn.style.color = "var(--success)";
+                btn.style.borderColor = "var(--success)";
+                btn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Drive Conectado';
+            } else {
+                gDriveToken = null;
+                localStorage.removeItem('drive_token');
+                btn.style.color = "var(--danger)";
+                btn.style.borderColor = "var(--danger)";
+                btn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Conectar Drive';
+            }
+        }
+
         async function obtenerTelemetriaDrive() {
-            if(!gDriveToken) return;
+            if(!gDriveToken) return false;
             try {
                 let res = await fetch('https://www.googleapis.com/drive/v3/about?fields=storageQuota', { headers: { 'Authorization': 'Bearer ' + gDriveToken } });
                 let data = await res.json();
-                if(data.storageQuota) { driveStorageInfo.used = (data.storageQuota.usage / 1024 / 1024).toFixed(2); driveStorageInfo.limit = (data.storageQuota.limit / 1024 / 1024).toFixed(2); }
-            } catch(e) { console.error("Error leyendo cuota", e); }
+                if (res.status === 401 || data.error) {
+                    marcarDriveEstado(false);
+                    return false;
+                }
+                if(data.storageQuota) {
+                    driveStorageInfo.used = (data.storageQuota.usage / 1024 / 1024).toFixed(2);
+                    driveStorageInfo.limit = (data.storageQuota.limit / 1024 / 1024).toFixed(2);
+                }
+                marcarDriveEstado(true);
+                return true;
+            } catch(e) {
+                console.error("Error leyendo cuota", e);
+                return false;
+            }
         }
 
         function initGoogleDrive() {
@@ -327,72 +355,126 @@
                 scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.metadata.readonly',
                 callback: async (tokenResponse) => {
                     if (tokenResponse && tokenResponse.access_token) {
-                        gDriveToken = tokenResponse.access_token; localStorage.setItem('drive_token', gDriveToken);
-                        let btn = document.getElementById('btn-conectar-drive');
-                        btn.style.color = "var(--success)"; btn.style.borderColor = "var(--success)"; btn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Drive Conectado';
-                        await obtenerTelemetriaDrive(); renderizarVista();
+                        gDriveToken = tokenResponse.access_token;
+                        localStorage.setItem('drive_token', gDriveToken);
+                        await obtenerTelemetriaDrive();
+                        renderizarVista();
                     }
                 },
             });
             if(gDriveToken) {
-                let btn = document.getElementById('btn-conectar-drive');
-                btn.style.color = "var(--success)"; btn.style.borderColor = "var(--success)"; btn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Drive Conectado';
                 obtenerTelemetriaDrive().then(() => renderizarVista());
             }
         }
 
-        function conectarDrive() { if(tokenClient) { tokenClient.requestAccessToken({prompt: 'consent'}); } else { alert("Cargando conexión..."); } }
+        function solicitarTokenDriveAsync() {
+            return new Promise((resolve, reject) => {
+                if (!tokenClient) return reject(new Error("Librería de Google Drive aún no disponible."));
+                tokenClient.callback = async (tokenResponse) => {
+                    if (tokenResponse && tokenResponse.access_token) {
+                        gDriveToken = tokenResponse.access_token;
+                        localStorage.setItem('drive_token', gDriveToken);
+                        await obtenerTelemetriaDrive();
+                        renderizarVista();
+                        resolve(gDriveToken);
+                    } else {
+                        reject(new Error("No se autorizó la conexión con Google Drive."));
+                    }
+                };
+                tokenClient.requestAccessToken({ prompt: '' });
+            });
+        }
+
+        function conectarDrive() {
+            if(tokenClient) {
+                solicitarTokenDriveAsync().catch(e => console.warn(e));
+            } else {
+                alert("Cargando conexión con Google...");
+            }
+        }
         
-        async function subirAGoogleDrive(file) { const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', { method: 'POST', headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type }, body: file }); const data = await res.json(); if(data.error) throw new Error(data.error.message); await fetch(`https://www.googleapis.com/drive/v3/files/${data.id}`, { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: file.name }) }); return 'gdrive:' + data.id; }
+        async function subirAGoogleDrive(file) {
+            if (!gDriveToken) {
+                await solicitarTokenDriveAsync();
+            }
+            let res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type },
+                body: file
+            });
+            let data = await res.json();
+            if (res.status === 401 || (data.error && data.error.code === 401)) {
+                marcarDriveEstado(false);
+                await solicitarTokenDriveAsync();
+                res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type },
+                    body: file
+                });
+                data = await res.json();
+            }
+            if(data.error) throw new Error(data.error.message);
+            await fetch(`https://www.googleapis.com/drive/v3/files/${data.id}`, {
+                method: 'PATCH',
+                headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: file.name })
+            });
+            return 'gdrive:' + data.id;
+        }
         
+        async function guardarLocalForageRespaldo(file) {
+            const base64 = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(file);
+            });
+            let docId = `doc_${Date.now()}_${Math.floor(Math.random()*1000)}`;
+            await localforage.setItem(docId, base64);
+            return `localforage:${docId}`;
+        }
+
         async function subirArchivoSistema(file) {
             if (usuarioActivoObj.cloud) {
-                if(!gDriveToken) throw new Error("Debes conectar tu Google Drive primero (Botón superior).");
-                let fileId = await subirAGoogleDrive(file); return fileId;
+                try {
+                    return await subirAGoogleDrive(file);
+                } catch (driveErr) {
+                    console.warn("Guardando en memoria local como respaldo:", driveErr);
+                    return await guardarLocalForageRespaldo(file);
+                }
             } else {
-                const base64 = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => resolve(e.target.result); reader.readAsDataURL(file); });
-                let docId = `doc_${Date.now()}_${Math.floor(Math.random()*1000)}`; await localforage.setItem(docId, base64); return `localforage:${docId}`;
+                return await guardarLocalForageRespaldo(file);
             }
         }
 
-        // --- MOTOR GEMINI IA CON AUTO-RECUPERACIÓN DE MODELOS ---
+        // --- MOTOR GEMINI IA (MODELO 3.8 FLASH PRIORITARIO) ---
         async function llamarGeminiConAutoRecuperacion(apiKey, body) {
             let modelos = [
-                "models/gemini-3.0-flash",
                 "models/gemini-3.8-flash",
+                "models/gemini-3.0-flash",
                 "models/gemini-flash-latest"
             ];
-            try {
-                let resList = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
-                let dataList = await resList.json();
-                if (dataList.models) {
-                    let disponibles = dataList.models
-                        .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent") && m.name.includes("gemini") && m.name.includes("flash") && !m.name.includes("1.5") && !m.name.includes("2.5"))
-                        .map(m => m.name)
-                        .sort()
-                        .reverse();
-                    modelos = [...new Set([...modelos, ...disponibles])];
-                }
-            } catch (e) { console.warn("No se pudo listar modelos:", e); }
-
-            let ultimoError = "";
+            let primerError = "";
             for (let i = 0; i < modelos.length; i++) {
                 let modelo = modelos[i];
                 let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modelo}:generateContent?key=${encodeURIComponent(apiKey)}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
                 });
                 let data = await res.json();
                 if (!data.error) return data;
 
-                ultimoError = data.error.message;
-                let sugerido = ultimoError.match(/models\/[a-zA-Z0-9.-]+/g);
+                let msg = data.error.message || "";
+                if (!primerError) primerError = msg;
+
+                let sugerido = msg.match(/models\/[a-zA-Z0-9.-]+/g);
                 if (sugerido) {
                     sugerido.forEach(m => {
                         if (!modelos.includes(m)) modelos.splice(i + 1, 0, m);
                     });
                 }
             }
-            throw new Error(ultimoError || "No se encontró un modelo Gemini compatible.");
+            throw new Error(primerError || "No se encontró un modelo Gemini compatible.");
         }
 
         async function analizarConGemini(file) {
@@ -433,11 +515,14 @@
             const file = event.target.files[0];
             if(!file) return;
             
+            document.getElementById('ia-loading-text').innerText = "La IA de Gemini está leyendo el documento...";
             document.getElementById('modal-ia-loading').style.display = 'flex';
             
             try {
                 let json = await analizarConGemini(file);
                 
+                document.getElementById('ia-loading-text').innerText = "Guardando expediente y subiendo archivo...";
+
                 if (json.categoria === 'MASC') {
                     let centroDestino = pathMasc.centro || (centrosMASC.length > 0 ? centrosMASC[0] : "Despacho 45yMas");
                     if(!centrosMASC.includes(centroDestino)) { centrosMASC.push(centroDestino); localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC)); }
@@ -788,8 +873,14 @@
             try {
                 let urlParaVer = ""; let blob = null;
                 if (docData.startsWith('gdrive:')) {
-                    if(!gDriveToken) return alert("Conecta tu Drive.");
-                    let id = docData.split(':')[1]; let res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { 'Authorization': 'Bearer ' + gDriveToken } }); blob = await res.blob(); urlParaVer = URL.createObjectURL(blob);
+                    if(!gDriveToken) await solicitarTokenDriveAsync();
+                    let id = docData.split(':')[1];
+                    let res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { 'Authorization': 'Bearer ' + gDriveToken } });
+                    if (res.status === 401) {
+                        await solicitarTokenDriveAsync();
+                        res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { 'Authorization': 'Bearer ' + gDriveToken } });
+                    }
+                    blob = await res.blob(); urlParaVer = URL.createObjectURL(blob);
                 } else if (docData.startsWith('localforage:')) {
                     let id = docData.split(':')[1]; let base64Data = await localforage.getItem(id); blob = base64ToBlob(base64Data); urlParaVer = URL.createObjectURL(blob);
                 } else { blob = base64ToBlob(docData); urlParaVer = URL.createObjectURL(blob); }
