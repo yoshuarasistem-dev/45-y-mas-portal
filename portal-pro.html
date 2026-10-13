@@ -7,10 +7,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- LIBRERÍAS DE FIREBASE (Agregado Firebase Storage) -->
+    <!-- FIREBASE (Solo para la base de datos de texto/metadatos) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+    <!-- GOOGLE IDENTITY SERVICES (Para conectar Google Drive 5TB) -->
+    <script src="https://accounts.google.com/gsi/client" onload="initGoogleDrive()"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     
     <style>
@@ -129,6 +130,7 @@
                 <span id="badge-modo-sesion" style="font-size: 0.75rem; font-weight: bold; color: var(--success); padding-left: 10px;">Modo Privado</span>
             </div>
             <div style="display:flex; gap: 8px;">
+                <button type="button" class="btn-logout" id="btn-conectar-drive" onclick="conectarDrive()" style="display:none; color:var(--danger); border-color:var(--danger);"><i class="fa-brands fa-google-drive"></i> Conectar Drive</button>
                 <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i></a>
                 <button type="button" class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
             </div>
@@ -246,19 +248,63 @@
     </div>
 
     <script>
-        // ASEGÚRATE DE PONER TU CONFIGURACIÓN DE FIREBASE AQUÍ
+        // CONFIGURACIÓN DE FIREBASE (Mantiene la DB de expedientes y chats activa)
         const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
         let db = null; 
-        let storageFB = null; // Iniciamos la variable de Firebase Storage
+        try { if(firebaseConfig.apiKey !== "TU_API_KEY") { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } } catch(e) { console.log("Firebase inactivo"); }
 
-        try { 
-            if(firebaseConfig.apiKey !== "TU_API_KEY") { 
-                firebase.initializeApp(firebaseConfig); 
-                db = firebase.firestore(); 
-                storageFB = firebase.storage(); // Activamos el módulo Storage
-            } 
-        } catch(e) { console.log("Firebase inactivo"); }
+        // --- SISTEMA GOOGLE DRIVE (5TB) ---
+        const GOOGLE_CLIENT_ID = '326577655461-e7s01aoc20tofbgmrplt0bdt6ouhe27o.apps.googleusercontent.com';
+        let tokenClient;
+        let gDriveToken = localStorage.getItem('drive_token') || null;
 
+        function initGoogleDrive() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: GOOGLE_CLIENT_ID,
+                scope: 'https://www.googleapis.com/auth/drive.file',
+                callback: (tokenResponse) => {
+                    if (tokenResponse && tokenResponse.access_token) {
+                        gDriveToken = tokenResponse.access_token;
+                        localStorage.setItem('drive_token', gDriveToken);
+                        
+                        let btn = document.getElementById('btn-conectar-drive');
+                        btn.style.color = "var(--success)";
+                        btn.style.borderColor = "var(--success)";
+                        btn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Drive Conectado';
+                        alert("Google Drive enlazado con éxito. Ya puedes subir PDFs masivos a tus 5TB.");
+                    }
+                },
+            });
+            // Si ya hay token, marcamos conectado
+            if(gDriveToken) {
+                let btn = document.getElementById('btn-conectar-drive');
+                btn.style.color = "var(--success)";
+                btn.style.borderColor = "var(--success)";
+                btn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Drive Conectado';
+            }
+        }
+
+        function conectarDrive() { if(tokenClient) tokenClient.requestAccessToken({prompt: 'consent'}); }
+
+        async function subirAGoogleDrive(file) {
+            const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type },
+                body: file
+            });
+            const data = await res.json();
+            if(data.error) throw new Error(data.error.message);
+            
+            // Renombrar el archivo en Drive para que no se llame "Untitled"
+            await fetch(`https://www.googleapis.com/drive/v3/files/${data.id}`, {
+                method: 'PATCH',
+                headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: file.name })
+            });
+            return 'gdrive:' + data.id; // Retornamos nuestro esquema ligero
+        }
+
+        // --- ESTRUCTURA BASE ---
         const catJuzgados = {
             "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
             "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Especializado Niños", "Violencia Mujeres"],
@@ -278,6 +324,9 @@
 
         let bovedaUsers = JSON.parse(localStorage.getItem('boveda_usuarios_sistema'));
         if(!bovedaUsers) { bovedaUsers = usuariosDefecto; localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); }
+
+        if(!localStorage.getItem('centros_db_despacho45')) { localStorage.setItem('centros_db_despacho45', JSON.stringify(["Despacho 45yMas", "Centro 065", "Centro 353"])); }
+        if(!localStorage.getItem('centros_db_aldo_indep')) { localStorage.setItem('centros_db_aldo_indep', JSON.stringify([])); }
 
         let usuarioActivoObj = null; let esAdmin = false; let storageMascKey = ''; let storageCentrosKey = '';
         let centrosMASC = []; let aniosMasc = []; let tiposMasc = []; let listaExpedientesMasc = [];
@@ -328,6 +377,9 @@
                     
                     if(foundUser.addUsers) document.getElementById('menu-usuarios').style.display = 'flex'; else document.getElementById('menu-usuarios').style.display = 'none';
                     if(foundUser.isMaster) document.getElementById('menu-almacenamiento').style.display = 'flex'; else document.getElementById('menu-almacenamiento').style.display = 'none';
+                    
+                    // Mostrar botón de Drive solo si el usuario tiene privilegios de Nube
+                    if(foundUser.cloud) document.getElementById('btn-conectar-drive').style.display = 'inline-flex';
 
                     if(!localStorage.getItem('sesion_activa_user_prev')) { registrarActividad("Inició sesión."); localStorage.setItem('sesion_activa_user_prev', 'true'); }
                     if(esAdmin && db) { await sincronizarDesdeNube(); } else { cargarLocalesSeguro(); }
@@ -336,9 +388,10 @@
             } catch (error) { console.error(error); }
         }
 
+        function migrarDatosAntiguos() { listaExpedientesMasc.forEach(m => { if(m.tipo === "ARRENDAMIENTO") m.tipo = "Preventivo Arrendamiento"; if(m.tipo === "ALIMENTOS") m.tipo = "Alimentos y Convivencia"; if(m.tipo === "DIVORCIO") m.tipo = "Divorcio Admtvo. y Mutuo"; }); }
         function cerrarSesion() { registrarActividad("Cerró sesión."); localStorage.removeItem('sesion_activa_user'); localStorage.removeItem('sesion_activa_user_prev'); location.reload(); }
-        function cargarLocalesSeguro() { try { let data = localStorage.getItem(storageMascKey); listaExpedientesMasc = data ? JSON.parse(data) : []; } catch (error) { listaExpedientesMasc = []; } }
-        async function sincronizarDesdeNube() { try { const snapshot = await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).get(); listaExpedientesMasc = []; snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); } catch(e) { cargarLocalesSeguro(); } }
+        function cargarLocalesSeguro() { try { let data = localStorage.getItem(storageMascKey); listaExpedientesMasc = data ? JSON.parse(data) : []; migrarDatosAntiguos(); } catch (error) { listaExpedientesMasc = []; } }
+        async function sincronizarDesdeNube() { try { const snapshot = await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).get(); listaExpedientesMasc = []; snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); migrarDatosAntiguos(); } catch(e) { cargarLocalesSeguro(); } }
         async function guardarEnBDMasc() { if(esAdmin && db) { try { for(let m of listaExpedientesMasc) { let docId = m.centro.replace(/[^a-zA-Z0-9]/g, '') + '_' + m.numero.replace('/', '-'); await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).doc(docId).set(m); } } catch(e) {} } try { localStorage.setItem(storageMascKey, JSON.stringify(listaExpedientesMasc)); } catch (e) { console.warn("Límite LocalStorage", e); } }
 
         function mostrarMenu(menu) { vistaActual = menu; document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById('menu-' + menu).classList.add('active'); renderizarVista(); }
@@ -372,7 +425,6 @@
                         if(centrosMASC.length === 0) html += `<p style="color:var(--text-muted); width:100%; grid-column: 1 / -1;">No tienes centros creados. Usa el botón "Nuevo Centro".</p>`;
                         centrosMASC.forEach((c, index) => { 
                             html += `<div class="carpeta-card" onclick="nivelMasc=1; pathMasc.centro='${c}'; renderizarVista()">`;
-                            // Solución de Event Bubbling: preventDefault()
                             if(usuarioActivoObj.addUsers) html += `<button class="btn-edit-float" onclick="event.preventDefault(); event.stopPropagation(); abrirModalCentro(${index})"><i class="fa-solid fa-pen"></i></button>`;
                             html += `<img src="./assets/logo45.jpeg" class="center-logo" onerror="this.outerHTML='<i class=\\\'fa-solid fa-building folder-icon\\\' style=\\\'color:var(--brand-orange);\\\'></i>'"><div class="titulo">${c}</div><div class="subtitulo">Sede Activa</div></div>`; 
                         });
@@ -460,19 +512,25 @@
                     });
                     html += `</table></div>`;
                 }
+                else if (vistaActual === 'actividad') {
+                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-list-check"></i> Registro de Actividad</div></div>`;
+                    let logKey = 'actividad_log_' + usuarioActivoObj.entornoId; let logs = JSON.parse(localStorage.getItem(logKey)) || [];
+                    html += `<div class="docs-table"><table style="width:100%; border-collapse: collapse; background: var(--bg-panel);"><tr><th>Fecha y Hora</th><th>Usuario</th><th>Acción Registrada</th></tr>`;
+                    if(logs.length === 0) { html += `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No hay actividad reciente en el entorno.</td></tr>`; } else { logs.forEach(l => { html += `<tr class="log-row"><td style="color:var(--text-muted); font-size:0.75rem;">${l.fecha}</td><td><strong style="color:var(--brand-orange); text-transform:uppercase; font-size:0.8rem;">${l.user}</strong></td><td>${l.accion}</td></tr>`; }); }
+                    html += `</table></div>`;
+                }
                 else if (vistaActual === 'almacenamiento') {
                     let mbUsados = calcularUsoMemoria();
                     let pctLocal = Math.min((mbUsados / 5) * 100, 100).toFixed(1); 
-                    let pctNube = Math.min((mbUsados / 5000) * 100, 100).toFixed(2); // 5GB en Firebase Storage son 5000 MB aprox.
+                    let pctNube = Math.min((mbUsados / 5242880) * 100, 100).toFixed(6); 
                     html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-server"></i> Telemetría de Almacenamiento</div></div>`;
-                    html += `<div class="gestion-box" style="display:flex; flex-direction:column; gap: 20px;"><div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);"><h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-solid fa-hard-drive"></i> Memoria Caché Ligera (Local Storage)</h4><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.85rem; color:var(--text-main);">Metadatos: ${mbUsados} MB / 5.00 MB (Límite Seguro)</span><span style="font-size:0.85rem; font-weight:bold; color:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};">${pctLocal}%</span></div><div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;"><div style="width:${pctLocal}%; height:100%; background:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};"></div></div><p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Aquí se guardan solo los nombres de expedientes, carpetas y configuraciones. Los PDFs ya no ocupan este espacio.</p></div><div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);"><h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-solid fa-cloud"></i> Bóveda Documental (Firebase Storage)</h4><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.85rem; color:var(--text-main);">Estimado Sincronizado: ${mbUsados} MB / 5,000.00 MB (Cuota Gratuita)</span><span style="font-size:0.85rem; font-weight:bold; color:var(--success);">${pctNube}%</span></div><div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;"><div style="width:${pctNube}%; height:100%; background:var(--success);"></div></div><p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Capacidad real de Google Cloud / Firebase para almacenar PDFs y documentos pesados de forma segura y permanente.</p></div></div>`;
+                    html += `<div class="gestion-box" style="display:flex; flex-direction:column; gap: 20px;"><div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);"><h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-solid fa-hard-drive"></i> Memoria Caché Ligera (Local Storage)</h4><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.85rem; color:var(--text-main);">Metadatos: ${mbUsados} MB / 5.00 MB (Límite Seguro)</span><span style="font-size:0.85rem; font-weight:bold; color:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};">${pctLocal}%</span></div><div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;"><div style="width:${pctLocal}%; height:100%; background:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};"></div></div><p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Aquí se guardan solo los nombres de expedientes, carpetas y configuraciones. Los PDFs ya no ocupan este espacio.</p></div><div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);"><h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-brands fa-google-drive"></i> Nube Jurídica de 5TB (Google Drive)</h4><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.85rem; color:var(--text-main);">Estimado Sincronizado: ${mbUsados} MB / 5,242,880.00 MB (Google One)</span><span style="font-size:0.85rem; font-weight:bold; color:var(--success);">${pctNube}%</span></div><div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;"><div style="width:${pctNube}%; height:100%; background:var(--success);"></div></div><p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Capacidad real de tu suscripción Google One de 5TB para almacenar PDFs masivos a máxima seguridad.</p></div></div>`;
                 }
                 
                 area.innerHTML = html;
             } catch (error) { area.innerHTML = "<p style='color:red; text-align:center;'>Ocurrió un error interno al mostrar los datos.</p>"; }
         }
 
-        // LÓGICA DE GESTIÓN (Aislamiento de Event Bubbling y Edición Real)
         function abrirModalCentro(index) { document.getElementById('edit-centro-index').value = index; document.getElementById('titulo-modal-centro').innerText = index === -1 ? "Nuevo Centro" : "Editar Centro"; document.getElementById('input-nombre-centro').value = index === -1 ? "" : centrosMASC[index]; document.getElementById('btn-eliminar-centro').style.display = index === -1 ? 'none' : 'flex'; document.getElementById('modal-centro').style.display = 'flex'; }
         function guardarCentro() { let val = document.getElementById('input-nombre-centro').value.trim(); let idx = document.getElementById('edit-centro-index').value; if(!val) return; if(idx == -1) { if(centrosMASC.includes(val)) { alert("El centro ya existe."); return; } centrosMASC.push(val); } else { let viejo = centrosMASC[idx]; centrosMASC[idx] = val; listaExpedientesMasc.forEach(m => { if(m.centro === viejo) m.centro = val; }); guardarEnBDMasc(); } localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC)); document.getElementById('modal-centro').style.display = 'none'; renderizarVista(); }
         function eliminarCentro() { let idx = document.getElementById('edit-centro-index').value; if(idx != -1 && confirm("¿Eliminar este Centro?")) { centrosMASC.splice(idx, 1); localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC)); document.getElementById('modal-centro').style.display = 'none'; renderizarVista(); } }
@@ -485,12 +543,18 @@
         function guardarTipo() { let val = document.getElementById('input-nombre-tipo').value.trim(); let idx = document.getElementById('edit-tipo-index').value; if(!val) return; if(idx == -1) { if(tiposMasc.includes(val)) { alert("La categoría ya existe."); return; } tiposMasc.push(val); } else { let viejo = tiposMasc[idx]; tiposMasc[idx] = val; listaExpedientesMasc.forEach(m => { if(m.tipo === viejo) m.tipo = val; }); guardarEnBDMasc(); } localStorage.setItem('tipos_db_' + usuarioActivoObj.entornoId, JSON.stringify(tiposMasc)); document.getElementById('modal-tipo').style.display = 'none'; renderizarVista(); }
         function eliminarTipo() { let idx = document.getElementById('edit-tipo-index').value; if(idx != -1 && confirm("¿Eliminar esta Categoría?")) { tiposMasc.splice(idx, 1); localStorage.setItem('tipos_db_' + usuarioActivoObj.entornoId, JSON.stringify(tiposMasc)); document.getElementById('modal-tipo').style.display = 'none'; renderizarVista(); } }
 
-        // --- SUBIDA DE DOCUMENTOS (RESOLUCIÓN DE LÍMITE DE 5MB USANDO FIREBASE O INDEXEDDB) ---
+        function abrirModalUsuario(index) { document.getElementById('edit-user-index').value = index; document.getElementById('titulo-modal-usuario').innerText = index === -1 ? "Nuevo Usuario" : "Editar Usuario"; if(index === -1) { document.getElementById('input-user-name').value = ""; document.getElementById('input-user-pass').value = "45ymas"; document.getElementById('input-user-add').checked = false; document.getElementById('input-user-cloud').checked = false; document.getElementById('input-user-name').disabled = false; } else { let u = bovedaUsers[index]; document.getElementById('input-user-name').value = u.user; document.getElementById('input-user-pass').value = u.pass; document.getElementById('input-user-add').checked = u.addUsers; document.getElementById('input-user-cloud').checked = u.cloud; document.getElementById('input-user-name').disabled = true; } if(usuarioActivoObj.isMaster) document.getElementById('cont-user-cloud').style.display = 'inline-flex'; else document.getElementById('cont-user-cloud').style.display = 'none'; document.getElementById('modal-usuario').style.display = 'flex'; }
+        function guardarUsuario() { let n = document.getElementById('input-user-name').value.trim().toLowerCase(); let p = document.getElementById('input-user-pass').value.trim(); let add = document.getElementById('input-user-add').checked; let cloud = usuarioActivoObj.isMaster ? document.getElementById('input-user-cloud').checked : false; let editIndex = document.getElementById('edit-user-index').value; if(!n || !p) { alert("Completa los campos."); return; } if(editIndex == -1) { if(bovedaUsers.find(x => x.user === n)) { alert("Usuario ya existe."); return; } bovedaUsers.push({ user: n, pass: p, entornoId: usuarioActivoObj.entornoId, cloud: cloud, addUsers: add, isMaster: false }); registrarActividad("Creó perfil de usuario: " + n); } else { bovedaUsers[editIndex].pass = p; bovedaUsers[editIndex].cloud = cloud; bovedaUsers[editIndex].addUsers = add; registrarActividad("Editó perfil de usuario: " + bovedaUsers[editIndex].user); } localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); document.getElementById('modal-usuario').style.display = 'none'; renderizarVista(); }
+        window.eliminarUsuario = function(index) { if(confirm("¿Eliminar perfil? Sus expedientes creados quedarán intactos.")) { registrarActividad("Eliminó al usuario: " + bovedaUsers[index].user); bovedaUsers.splice(index, 1); localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); renderizarVista(); } };
+
+        function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${storageMascKey}_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); registrarActividad(`Creó expediente jurídico: ${val}`); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
+        function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); localStorage.setItem('modo_multidoc', 'false'); registrarActividad(`Abrió Visor PDF Jurídico: ${nombreExp}`); window.location.href = 'visor-expediente.html'; }
+
+        // --- SUBIDA INTELIGENTE AL DISCO 5TB DE GOOGLE ---
         async function subirDocMASC(index, tipoDoc, event) { 
             const file = event.target.files[0]; 
             if(!file) return; 
 
-            // Indicador visual de carga
             let targetBtn = event.target.nextElementSibling;
             let originalText = targetBtn.innerHTML;
             targetBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
@@ -499,73 +563,55 @@
             if(!m.docs) m.docs = {}; 
 
             try {
-                if (usuarioActivoObj.cloud && storageFB) {
-                    // MODO NUBE (FIREBASE STORAGE): Capacidad masiva, no agota el navegador.
-                    const fileRef = storageFB.ref(`MASC/${usuarioActivoObj.entornoId}/${m.numero.replace(/\//g, '-')}/${tipoDoc}_${file.name}`);
-                    await fileRef.put(file);
-                    const url = await fileRef.getDownloadURL();
-                    m.docs[tipoDoc] = url; // Solo guardamos el "Enlace", pesa cero bytes.
+                if (usuarioActivoObj.cloud) {
+                    if(!gDriveToken) { alert("Debes conectar tu Google Drive primero. Haz clic en el ícono de Drive rojo en el menú superior."); targetBtn.innerHTML = originalText; return; }
+                    let fileId = await subirAGoogleDrive(file);
+                    m.docs[tipoDoc] = fileId; // Guardamos "gdrive:12345"
                 } else {
-                    // MODO PRIVADO LOCAL (INDEXEDDB): Archivos masivos se van al Disco Duro Virtual.
-                    const base64 = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.readAsDataURL(file);
-                    });
+                    const base64 = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => resolve(e.target.result); reader.readAsDataURL(file); });
                     let docId = `doc_${Date.now()}_${Math.floor(Math.random()*1000)}`;
                     await localforage.setItem(docId, base64);
-                    m.docs[tipoDoc] = `localforage:${docId}`; // Solo guardamos la referencia ID.
+                    m.docs[tipoDoc] = `localforage:${docId}`;
                 }
 
                 await guardarEnBDMasc(); 
                 registrarActividad(`Cargó archivo [${tipoDoc}] al expediente MASC: ${m.numero}`);
                 renderizarVista(); 
-            } catch(e) {
-                console.error("Fallo al subir:", e);
-                alert("Error al cargar el documento.");
-                targetBtn.innerHTML = originalText;
-            }
+            } catch(e) { console.error("Fallo al subir:", e); alert("Error al cargar el documento: " + e.message); targetBtn.innerHTML = originalText; }
         }
-        
+
         function base64ToBlob(base64Data) { try { const arr = base64Data.split(','); const mime = arr[0].match(/:(.*?);/)[1]; const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n); while(n--) { u8arr[n] = bstr.charCodeAt(n); } return new Blob([u8arr], {type: mime}); } catch(e) { return null; } }
 
-        // --- APERTURA DE DOCUMENTOS (RESOLUCIÓN DEL LECTOR) ---
+        // --- LECTOR DE 5TB GOOGLE DRIVE (VISOR INDIVIDUAL) ---
         async function verDocumento(docData, titulo) { 
             document.getElementById('visor-titulo-doc').innerText = titulo; 
             const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            
+            registrarActividad(`Visualizó archivo adjunto: ${titulo}`);
+
             try {
-                let urlParaVer = "";
+                let urlParaVer = ""; let blob = null;
                 
-                if (docData.startsWith('http')) {
-                    // Si es Firebase, simplemente usamos la URL directa.
-                    urlParaVer = docData;
-                } else if (docData.startsWith('localforage:')) {
-                    // Si es LocalForage, lo sacamos del Disco Virtual pesado.
+                if (docData.startsWith('gdrive:')) {
+                    if(!gDriveToken) { alert("Conecta tu Drive para ver este archivo. Haz clic en el botón de la barra superior."); return; }
                     let id = docData.split(':')[1];
-                    let base64Data = await localforage.getItem(id);
-                    let blob = base64ToBlob(base64Data);
-                    urlParaVer = URL.createObjectURL(blob);
+                    let res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { 'Authorization': 'Bearer ' + gDriveToken } });
+                    blob = await res.blob(); urlParaVer = URL.createObjectURL(blob);
+                } else if (docData.startsWith('localforage:')) {
+                    let id = docData.split(':')[1]; let base64Data = await localforage.getItem(id); blob = base64ToBlob(base64Data); urlParaVer = URL.createObjectURL(blob);
                 } else {
-                    // Modo de compatibilidad antiguo por si quedó algún Base64 atascado
-                    let blob = base64ToBlob(docData);
-                    urlParaVer = URL.createObjectURL(blob);
+                    blob = base64ToBlob(docData); urlParaVer = URL.createObjectURL(blob);
                 }
 
-                if (isMobile) { 
+                if (isMobile && blob) { 
                     const a = document.createElement('a'); a.href = urlParaVer; a.download = titulo + ".pdf"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                    if(!docData.startsWith('http')) setTimeout(() => URL.revokeObjectURL(urlParaVer), 100);
-                } else { 
+                } else if (blob) { 
                     document.getElementById('iframe-pdf-visor').src = urlParaVer; 
                     document.getElementById('modal-visor-pdf').style.display = 'flex'; 
                 }
-            } catch (e) {
-                alert("Error al abrir el documento.");
-            }
+            } catch (e) { alert("Error al abrir el documento."); }
         }
         function cerrarVisorPDF() { document.getElementById('modal-visor-pdf').style.display = 'none'; document.getElementById('iframe-pdf-visor').src = ''; }
 
-        // --- VISOR INTELIGENTE MULTIDOCUMENTO ---
         async function abrirVisorMASC(index) {
             try {
                 let btn = document.getElementById('btn-visor-completo');
@@ -574,38 +620,26 @@
                 let m = listaExpedientesMasc[index];
                 let nombreExp = `MASC-${m.numero.replace(/\//g, '-')}`;
                 localStorage.setItem('expediente_abierto', nombreExp);
+                registrarActividad(`Empacó y envió a visor el expediente múltiple: ${m.numero}`);
                 
                 let paqueteDocs = [];
-                // Empacamos solo las referencias ligeras, no la data masiva. Cero crasheo RAM.
+                // Empaca la firma gdrive: o localforage: (Pesan cero bytes en RAM)
                 if(m.docs && m.docs.solicitud) paqueteDocs.push({ name: "1. Solicitud", data: m.docs.solicitud });
                 if(m.docs && m.docs.dictamen) paqueteDocs.push({ name: "2. Dictamen", data: m.docs.dictamen });
                 if(m.docs && m.docs.acuerdo) paqueteDocs.push({ name: "3. Acuerdo", data: m.docs.acuerdo });
                 if(m.docs && m.docs.convenio) paqueteDocs.push({ name: "4. Convenio", data: m.docs.convenio });
                 
-                if(paqueteDocs.length === 0) {
-                    alert("No hay documentos para visualizar. Sube al menos uno.");
-                    btn.innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo';
-                    return;
-                }
+                if(paqueteDocs.length === 0) { alert("No hay documentos para visualizar."); btn.innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo'; return; }
 
                 await localforage.setItem('paquete_masc_' + nombreExp, paqueteDocs);
                 localStorage.setItem('modo_multidoc', 'true');
                 
                 window.location.href = 'visor-expediente.html';
-            } catch (e) { 
-                console.error(e); alert("Error al preparar el visor."); document.getElementById('btn-visor-completo').innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo';
-            }
+            } catch (e) { console.error(e); alert("Error al preparar el visor."); document.getElementById('btn-visor-completo').innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo'; }
         }
 
-        function abrirModalUsuario(index) { document.getElementById('edit-user-index').value = index; document.getElementById('titulo-modal-usuario').innerText = index === -1 ? "Nuevo Usuario" : "Editar Usuario"; if(index === -1) { document.getElementById('input-user-name').value = ""; document.getElementById('input-user-pass').value = "45ymas"; document.getElementById('input-user-add').checked = false; document.getElementById('input-user-cloud').checked = false; document.getElementById('input-user-name').disabled = false; } else { let u = bovedaUsers[index]; document.getElementById('input-user-name').value = u.user; document.getElementById('input-user-pass').value = u.pass; document.getElementById('input-user-add').checked = u.addUsers; document.getElementById('input-user-cloud').checked = u.cloud; document.getElementById('input-user-name').disabled = true; } if(usuarioActivoObj.isMaster) document.getElementById('cont-user-cloud').style.display = 'inline-flex'; else document.getElementById('cont-user-cloud').style.display = 'none'; document.getElementById('modal-usuario').style.display = 'flex'; }
-        function guardarUsuario() { let n = document.getElementById('input-user-name').value.trim().toLowerCase(); let p = document.getElementById('input-user-pass').value.trim(); let add = document.getElementById('input-user-add').checked; let cloud = usuarioActivoObj.isMaster ? document.getElementById('input-user-cloud').checked : false; let editIndex = document.getElementById('edit-user-index').value; if(!n || !p) { alert("Completa los campos."); return; } if(editIndex == -1) { if(bovedaUsers.find(x => x.user === n)) { alert("Usuario ya existe."); return; } bovedaUsers.push({ user: n, pass: p, entornoId: usuarioActivoObj.entornoId, cloud: cloud, addUsers: add, isMaster: false }); registrarActividad("Creó perfil de usuario: " + n); } else { bovedaUsers[editIndex].pass = p; bovedaUsers[editIndex].cloud = cloud; bovedaUsers[editIndex].addUsers = add; registrarActividad("Editó perfil de usuario: " + bovedaUsers[editIndex].user); } localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); document.getElementById('modal-usuario').style.display = 'none'; renderizarVista(); }
-        window.eliminarUsuario = function(index) { if(confirm("¿Eliminar perfil? Sus expedientes creados quedarán intactos.")) { registrarActividad("Eliminó al usuario: " + bovedaUsers[index].user); bovedaUsers.splice(index, 1); localStorage.setItem('boveda_usuarios_sistema', JSON.stringify(bovedaUsers)); renderizarVista(); } };
-
-        function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${storageMascKey}_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); registrarActividad(`Creó expediente jurídico: ${val}`); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
-        function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); localStorage.setItem('modo_multidoc', 'false'); registrarActividad(`Abrió Visor PDF Jurídico: ${nombreExp}`); window.location.href = 'visor-expediente.html'; }
-
-        async function procesarNuevoMASC() { let numFinal = document.getElementById('input-numero-masc').value.trim(); let solicitante = document.getElementById('input-solicitante-masc').value.trim(); let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); if(!numFinal || !solicitante) { alert("Número de expediente y Solicitante son obligatorios."); return; } let existe = listaExpedientesMasc.find(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.numero === numFinal); if(existe) { alert("Este número de expediente ya fue registrado en este año y centro."); return; } listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, docs: {} }); await guardarEnBDMasc(); registrarActividad(`Aperturó nuevo convenio MASC: ${numFinal}`); document.getElementById('modal-crear-masc').style.display = 'none'; document.getElementById('input-numero-masc').value = ''; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; renderizarVista(); }
-        async function guardarCampoMASC(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); }
+        async function procesarNuevoMASC() { let numFinal = document.getElementById('input-numero-masc').value.trim(); let solicitante = document.getElementById('input-solicitante-masc').value.trim(); let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); if(!numFinal || !solicitante) { alert("Número de expediente y Solicitante obligatorios."); return; } let existe = listaExpedientesMasc.find(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.numero === numFinal); if(existe) { alert("Este número de expediente ya fue registrado."); return; } listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, docs: {} }); await guardarEnBDMasc(); registrarActividad(`Aperturó nuevo convenio MASC: ${numFinal}`); document.getElementById('modal-crear-masc').style.display = 'none'; document.getElementById('input-numero-masc').value = ''; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; renderizarVista(); }
+        async function guardarCampoMASC(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); registrarActividad(`Modificó [${campo}] en expediente: ${listaExpedientesMasc[index].numero}`); }
         async function toggleFirmado(index, valor) { listaExpedientesMasc[index].firmadoPartes = valor; await guardarEnBDMasc(); }
         async function toggleResolucion(index, tipo, valor) { if(tipo === 'prevencion') listaExpedientesMasc[index].prevencionActiva = valor; if(tipo === 'validacion') listaExpedientesMasc[index].validacionActiva = valor; await guardarEnBDMasc(); renderizarVista(); }
     </script>
