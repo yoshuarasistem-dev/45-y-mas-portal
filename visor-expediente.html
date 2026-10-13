@@ -114,7 +114,7 @@
             
             <div class="logo-oficial" style="align-items: center; text-align: center; flex: 1;">
                 <div style="font-weight:900; font-size:1rem; color:var(--brand-orange); letter-spacing:-1px;"><i class="fa-solid fa-scale-balanced"></i> 45<span style="color:var(--text-main);">YMÁS</span></div>
-                <div class="sub-brand" id="etiqueta-almacenamiento" style="font-size: 0.55rem;">Bóveda Local</div>
+                <div class="sub-brand" id="etiqueta-almacenamiento" style="font-size: 0.55rem;">Bóveda Inteligente</div>
             </div>
             
             <button class="btn mobile-only" onclick="togglePanel('herramientas')"><i class="fa-solid fa-toolbox"></i></button>
@@ -126,6 +126,7 @@
             
             <span class="expediente-title desktop-only" id="titulo-exp">EXP/000/00</span>
             
+            <!-- Carga libre para PDFs externos no anexos a la bóveda -->
             <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumentoManual(event)">
             <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar</button>
             <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearAlertasInfalible()"><i class="fa-solid fa-brain"></i> IA</button>
@@ -143,7 +144,7 @@
                 <button class="btn-add-foja" style="border-color:var(--neon-blue); color:var(--neon-blue);" onclick="autoOrdenarFojas()"><i class="fa-solid fa-arrow-down-1-9"></i> Ordenar</button>
             </div>
             <div class="fojas-list" id="lista-fojas-container">
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Sube un archivo para comenzar.</p>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Abriendo Expediente...</p>
             </div>
         </div>
 
@@ -197,7 +198,7 @@
         <div class="progreso-card">
             <i class="fa-solid fa-hdd fa-fade" id="icono-progreso" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
             <h3 style="color: white; margin-bottom: 5px; font-size: 1.1rem;" id="titulo-progreso">Procesando Bóveda</h3>
-            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.8rem;">Verificando archivos...</p>
+            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.8rem;">Conectando base de datos...</p>
             <p id="texto-subprogreso" style="color: var(--brand-orange); font-size: 0.7rem; margin-top: 8px; font-weight: bold;"></p>
             <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
             <button class="btn btn-accion" id="btn-cancelar-ia" style="margin-top: 15px; font-size: 0.75rem; padding: 8px 15px; display:none;" onclick="cancelarProcesos()">Detener</button>
@@ -216,7 +217,6 @@
         let zoomGlobal = 1.0; 
         let detenerEjecucion = false;
         
-        // REFACTOR: Ahora soportamos Múltiples PDFs en memoria RAM
         window.pdfDocs = []; 
         
         const categoriasIA = [
@@ -246,7 +246,7 @@
         function cerrarPaneles() { document.getElementById('panel-fojas').classList.remove('open'); document.getElementById('panel-herramientas').classList.remove('open'); document.getElementById('mobile-overlay').classList.remove('active'); }
 
         window.onload = async () => {
-            mostrarProgreso("fa-hdd", "Cargando Bóveda", "Extrayendo expedientes...");
+            mostrarProgreso("fa-cloud-arrow-down", "Cargando Bóveda", "Extrayendo expedientes...");
             try {
                 let isMulti = localStorage.getItem('modo_multidoc') === 'true';
                 
@@ -254,18 +254,46 @@
                     let paquete = await localforage.getItem('paquete_masc_' + nombreExpediente);
                     if (paquete && paquete.length > 0) {
                         await procesarPaqueteMultidoc(paquete);
-                    } else { ocultarProgreso(); }
+                    } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Expediente vacío.</p>";}
                 } else {
                     let archivo = await localforage.getItem('archivo_' + nombreExpediente);
                     if (archivo) {
                         await procesarArchivoInterno(archivo);
-                    } else { ocultarProgreso(); }
+                    } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Sube un archivo para comenzar.</p>";}
                 }
             } catch (error) {
                 console.error("Error al cargar:", error);
                 ocultarProgreso();
             }
         };
+
+        // --- CONVERTIDOR UNIVERSAL (SOPORTA FIREBASE, LOCALFORAGE Y BASE64) ---
+        function base64ToUint8Array(base64) {
+            const arr = base64.split(',');
+            const bstr = atob(arr.length > 1 ? arr[1] : arr[0]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+            return u8arr;
+        }
+
+        async function obtenerBytesDocumento(dataRef) {
+            if (typeof dataRef === 'string') {
+                if (dataRef.startsWith('http')) {
+                    let res = await fetch(dataRef);
+                    return new Uint8Array(await res.arrayBuffer());
+                } else if (dataRef.startsWith('localforage:')) {
+                    let id = dataRef.split(':')[1];
+                    let base64 = await localforage.getItem(id);
+                    return base64ToUint8Array(base64);
+                } else {
+                    return base64ToUint8Array(dataRef);
+                }
+            } else if (dataRef instanceof Blob || dataRef instanceof File) {
+                 return new Uint8Array(await dataRef.arrayBuffer());
+            }
+            return null;
+        }
 
         async function cargarDocumentoManual(event) {
             const file = event.target.files[0];
@@ -291,7 +319,8 @@
                     let docInfo = paquete[d];
                     document.getElementById('texto-subprogreso').innerText = `Integrando: ${docInfo.name}`;
                     
-                    const bytes = new Uint8Array(await docInfo.blob.arrayBuffer());
+                    let bytes = await obtenerBytesDocumento(docInfo.data);
+
                     let pdfInstance = await pdfjsLib.getDocument(bytes).promise;
                     window.pdfDocs.push(pdfInstance);
 
@@ -302,7 +331,7 @@
                             isHtml: false, 
                             numPaginaPdf: i, 
                             pdfIndex: d,
-                            etiquetaDoc: i === 1 ? docInfo.name : null, // Muestra etiqueta solo en la página 1 del doc
+                            etiquetaDoc: i === 1 ? docInfo.name : null, 
                             rotacion: 0 
                         });
                     }
@@ -319,11 +348,11 @@
 
             } catch(e) {
                 console.error("Error paquete", e);
-                ocultarProgreso(); alert("Error al coser el paquete multidocumento.");
+                ocultarProgreso(); alert("Ocurrió un error al descargar el paquete. Verifica tu conexión a internet.");
             }
         }
 
-        // --- MOTOR PARA EXPEDIENTE INDIVIDUAL JURÍDICO ---
+        // --- MOTOR PARA EXPEDIENTE INDIVIDUAL ---
         async function procesarArchivoInterno(archivoData) {
             detenerEjecucion = false;
             document.getElementById('texto-progreso').innerText = "Generando índice...";
@@ -345,7 +374,7 @@
                     arrayFojas.push({ id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, rawText: rawText.value, rotacion: 0 });
                     actualizarBarra(100);
                 } else {
-                    const bytes = new Uint8Array(await blobReal.arrayBuffer());
+                    let bytes = await obtenerBytesDocumento(blobReal);
                     let pdfInstance = await pdfjsLib.getDocument(bytes).promise;
                     window.pdfDocs.push(pdfInstance);
                     for (let i = 1; i <= pdfInstance.numPages; i++) {
@@ -359,12 +388,12 @@
                     renderizarBarraLateralFojas(); renderizarIndiceNotas(); 
                     if(arrayFojas.length > 0) seleccionarFoja(0);
                 }, 500);
-            } catch (error) { console.error("Error al procesar el archivo guardado:", error); ocultarProgreso(); alert("El archivo guardado está dañado o no es válido. Súbelo nuevamente."); localforage.removeItem('archivo_' + nombreExpediente); }
+            } catch (error) { console.error("Error archivo", error); ocultarProgreso(); alert("Archivo dañado."); localforage.removeItem('archivo_' + nombreExpediente); }
         }
 
         async function obtenerCanvasFoja(fojaInfo, scale = 1.0) {
             if(fojaInfo.isHtml) return null;
-            let currentPdf = window.pdfDocs[fojaInfo.pdfIndex]; // Extrae del arreglo de PDFs
+            let currentPdf = window.pdfDocs[fojaInfo.pdfIndex];
             const page = await currentPdf.getPage(fojaInfo.numPaginaPdf);
             const viewport = page.getViewport({ scale: scale });
             const canvas = document.createElement('canvas');
@@ -443,7 +472,7 @@
                 div.className = 'foja-item'; div.id = 'thumb-' + i; div.onclick = () => seleccionarFoja(i);
 
                 let badge = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${f.numeroLogico}`)) ? `<div style="color:var(--brand-orange); font-size:0.75rem; margin-top:6px; font-weight:bold;"><i class="fa-solid fa-pen-to-square"></i></div>` : '';
-                let etiquetaHtml = f.etiquetaDoc ? `<div style="font-size:0.65rem; color:var(--neon-blue); border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom: 8px; font-weight:900;"><i class="fa-solid fa-file-pdf"></i> ${f.etiquetaDoc}</div>` : '';
+                let etiquetaHtml = f.etiquetaDoc ? `<div style="font-size:0.75rem; color:var(--brand-orange); border-bottom:1px dashed rgba(255,255,255,0.2); padding-bottom:5px; margin-bottom: 8px; font-weight:900;"><i class="fa-solid fa-file-pdf"></i> ${f.etiquetaDoc}</div>` : '';
                 
                 div.innerHTML = `${etiquetaHtml}<div class="foja-label">FOJA ${f.numeroLogico}</div><div class="foja-canvas-container" id="cont-canvas-${i}">...</div><div class="foja-controls"><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, -1)"><i class="fa-solid fa-arrow-up"></i></button><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, 1)"><i class="fa-solid fa-arrow-down"></i></button><button class="btn-mini" onclick="event.stopPropagation(); eliminarFojaEnMemoria(${i})"><i class="fa-solid fa-trash"></i></button></div>${badge}`;
                 container.appendChild(div);
