@@ -355,10 +355,32 @@
             }
         }
 
-        // --- MOTOR GEMINI IA ---
+        // --- MOTOR GEMINI IA CON AUTO-DETECCIÓN DE MODELO ---
+        async function obtenerModeloGeminiActivo(apiKey) {
+            try {
+                let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
+                let data = await res.json();
+                if (data.models && data.models.length > 0) {
+                    let validos = data.models.filter(m => 
+                        m.supportedGenerationMethods && 
+                        m.supportedGenerationMethods.includes("generateContent") &&
+                        m.name.includes("gemini")
+                    );
+                    let preferido = validos.find(m => m.name.includes("2.5-flash")) ||
+                                    validos.find(m => m.name.includes("2.0-flash")) ||
+                                    validos.find(m => m.name.includes("flash")) ||
+                                    validos[0];
+                    if (preferido) return preferido.name;
+                }
+            } catch (e) { console.warn("Usando modelo por defecto:", e); }
+            return "models/gemini-2.5-flash";
+        }
+
         async function analizarConGemini(file) {
             const apiKey = obtenerLlaveIA();
             if (!apiKey) throw new Error("No se ingresó Clave de API de Gemini.");
+
+            const modeloActivo = await obtenerModeloGeminiActivo(apiKey);
 
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -367,21 +389,20 @@
                     try {
                         let base64 = reader.result.split(',')[1];
                         let promptTexto = `Eres un asistente legal experto. Analiza este documento PDF mexicano.
-                        Extrae los datos en formato JSON estricto, sin texto adicional, sin markdown ni explicaciones.
-                        Estructura OBLIGATORIA:
+                        Extrae los datos y devuelve ÚNICAMENTE un objeto JSON válido, sin markdown ni explicaciones:
                         {
                           "categoria": "MASC o JURIDICO",
-                          "tipo": "Si es MASC elige: Preventivo Arrendamiento, Alimentos y Convivencia, Divorcio Admtvo. y Mutuo. Si es JURIDICO elige: Civil, Familiar, Mercantil.",
+                          "tipo": "Si es MASC elige exactamente uno: Preventivo Arrendamiento, Alimentos y Convivencia, Divorcio Admtvo. y Mutuo. Si es JURIDICO elige exactamente uno: Civil, Familiar, Mercantil.",
                           "anio": "El año a 4 dígitos, ej. 2026",
                           "numero": "El número de expediente, ej. 001/26",
                           "solicitante": "Nombre completo del solicitante o actor principal",
-                          "fechaInicio": "Fecha de inicio del convenio en formato YYYY-MM-DD",
-                          "fechaVencimiento": "Fecha de vencimiento en formato YYYY-MM-DD"
+                          "fechaInicio": "Fecha de inicio o firma del convenio en formato YYYY-MM-DD (o cadena vacía si no existe)",
+                          "fechaVencimiento": "Fecha de vencimiento o término del convenio en formato YYYY-MM-DD (o cadena vacía si no existe)"
                         }`;
 
                         let body = { contents: [{ parts: [ { text: promptTexto }, { inline_data: { mime_type: file.type, data: base64 } } ] }] };
 
-                        let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+                        let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloActivo}:generateContent?key=${encodeURIComponent(apiKey)}`, {
                             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
                         });
 
@@ -389,8 +410,9 @@
                         if(data.error) throw new Error(data.error.message);
                         
                         let txt = data.candidates[0].content.parts[0].text;
-                        txt = txt.replace(/```json/g, '').replace(/```/g, '').trim();
-                        resolve(JSON.parse(txt));
+                        let match = txt.match(/\{[\s\S]*\}/);
+                        let jsonLimpio = match ? match[0] : txt.replace(/```json/g, '').replace(/```/g, '').trim();
+                        resolve(JSON.parse(jsonLimpio));
                     } catch(e) { reject(e); }
                 };
             });
