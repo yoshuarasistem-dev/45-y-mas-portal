@@ -48,7 +48,7 @@
         .materia-tab { background: var(--glass-bg); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
         .materia-tab.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); }
 
-        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;}
+        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 15px; margin-bottom: 30px;}
         .carpeta-card { position: relative; background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center;}
         .carpeta-card:hover { transform: translateY(-3px); border-color: var(--brand-orange); box-shadow: 0 5px 15px rgba(255, 115, 21, 0.1); }
         .carpeta-card i.folder-icon { font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 12px; }
@@ -66,10 +66,13 @@
         .form-input { background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 10px; border-radius: 6px; font-size: 0.9rem; outline: none; }
         .form-input:focus { border-color: var(--brand-orange); }
 
-        .docs-table { width: 100%; border-collapse: collapse; margin-top: 15px; display: block; overflow-x: auto; white-space: nowrap; }
-        .docs-table th, .docs-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-glass); font-size: 0.85rem; }
-        .docs-table th { color: var(--brand-orange); background: rgba(0,0,0,0.2); }
+        .docs-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; display: block; overflow-x: auto; white-space: nowrap; }
+        .docs-table th, .docs-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-glass); font-size: 0.83rem; vertical-align: middle; }
+        .docs-table th { color: var(--brand-orange); background: rgba(0,0,0,0.25); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
         
+        .input-cant { width: 55px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); color: var(--neon-blue); padding: 4px 6px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 0.8rem; margin-left: 6px; }
+        .chk-fisico { transform: scale(1.2); accent-color: var(--success); cursor: pointer; margin-right: 8px; }
+
         .btn-upload { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px;}
         .btn-upload:hover { background: var(--neon-blue); color: #000; }
         .btn-view { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px;}
@@ -97,7 +100,7 @@
             .menu-item { padding: 12px 15px; border-left: none; border-bottom: 3px solid transparent; font-size: 0.85rem; }
             .menu-item.active { border-left: none; border-bottom-color: var(--neon-blue); }
             .folder-area { padding: 15px; width: 100%; }
-            .grid-carpetas { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+            .grid-carpetas { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
             .carpeta-card { padding: 15px; }
             .form-row { grid-template-columns: 1fr; gap: 10px; }
             .gestion-box { padding: 15px; }
@@ -125,7 +128,7 @@
         <div class="modal-content" style="background: transparent; border: none; box-shadow: none;">
             <i class="fa-solid fa-wand-magic-sparkles fa-beat" style="font-size: 4rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
             <h3 style="color: white; font-size: 1.2rem;" id="ia-loading-text">La IA de Gemini está leyendo el documento...</h3>
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Esto tomará unos segundos.</p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Detectando Centro (065 / 353), expediente, solicitante y fechas.</p>
         </div>
     </div>
 
@@ -195,7 +198,7 @@
             <input type="hidden" id="edit-centro-index" value="-1">
             <div style="text-align:left;">
                 <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">NOMBRE DEL CENTRO / SEDE:</label>
-                <input type="text" id="input-nombre-centro" class="input-login" placeholder="Ej. Centro 123 Alterno">
+                <input type="text" id="input-nombre-centro" class="input-login" placeholder="Ej. Centro 065">
             </div>
             <button type="button" class="btn-crear" onclick="guardarCentro()">Guardar Centro</button>
             <button type="button" class="btn-view" id="btn-eliminar-centro" style="width: 100%; margin-top: 10px; justify-content: center; background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); display:none;" onclick="eliminarCentro()">Eliminar Centro</button>
@@ -223,7 +226,7 @@
             <input type="hidden" id="edit-tipo-index" value="-1">
             <div style="text-align:left;">
                 <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">NOMBRE DE LA CATEGORÍA:</label>
-                <input type="text" id="input-nombre-tipo" class="input-login" placeholder="Ej. Civil - Mercantil">
+                <input type="text" id="input-nombre-tipo" class="input-login" placeholder="Ej. Preventivo Arrendamiento">
             </div>
             <button type="button" class="btn-crear" style="background: var(--brand-orange);" onclick="guardarTipo()">Guardar Categoría</button>
             <button type="button" class="btn-view" id="btn-eliminar-tipo" style="width: 100%; margin-top: 10px; justify-content: center; background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); display:none;" onclick="eliminarTipo()">Eliminar Categoría</button>
@@ -261,6 +264,69 @@
     <script>
         const firebaseConfig = { apiKey: "TU_API_KEY", authDomain: "tu-proyecto.firebaseapp.com", projectId: "tu-proyecto", storageBucket: "tu-proyecto.appspot.com", messagingSenderId: "123456789", appId: "1:123:web:abc" };
         let db = null; try { if(firebaseConfig.apiKey !== "TU_API_KEY") { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } } catch(e) { console.log("Firebase inactivo"); }
+
+        // --- CONFIGURACIÓN DE CHECKLISTS OFICIALES POR TIPO DE CARPETA ---
+        function obtenerEsquemaChecklist(tipo) {
+            const t = (tipo || "").toLowerCase();
+            const base = [
+                { key: 'solicitud', label: t.includes('divorcio') ? '1. Solicitud firmada por ambas partes *' : '1. Solicitud', accept: 'application/pdf' },
+                { key: 'dictamen', label: '2. Dictamen viabilidad', accept: 'application/pdf' },
+                { key: 'acuerdo', label: '3. Acuerdo de confidencialidad', accept: 'application/pdf' },
+                { key: 'convenio', label: '4. Convenio final *', accept: 'application/pdf', extraCheck: true },
+                { key: 'convenio_digital', label: '5. Convenio digital (Word/PDF)', accept: '.doc,.docx,application/pdf', isWord: true }
+            ];
+
+            if (t.includes('arrendamiento')) {
+                return [
+                    { titulo: 'CONTENIDO DE LA CARPETA - PREVENTIVO ARRENDAMIENTO', items: base },
+                    { titulo: 'DOCUMENTOS GENERAL', items: [
+                        { key: 'identificaciones', label: 'Identificaciones *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'contrato_arrendamiento', label: 'Contrato de arrendamiento *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'contrato_administracion', label: 'Contrato de administración *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'escritura_publica', label: 'Escritura pública *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'predial', label: 'Predial *', hasQty: false, accept: 'application/pdf' }
+                    ]}
+                ];
+            } else if (t.includes('alimentos')) {
+                return [
+                    { titulo: 'CONTENIDO DE LA CARPETA - ALIMENTOS Y CONVIVENCIA', items: base },
+                    { titulo: 'DOCUMENTOS GENERAL', items: [
+                        { key: 'identificaciones', label: 'Identificaciones *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'actas_nac_padres', label: 'Actas de nacimiento padres *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'acta_matrimonio', label: 'Acta de matrimonio *', hasQty: false, accept: 'application/pdf' },
+                        { key: 'comprobantes_domicilio', label: 'Comprobantes de domicilio cada parte *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'comprobantes_ingreso', label: 'Comprobantes de ingreso cada parte *', hasQty: true, accept: 'application/pdf' }
+                    ]},
+                    { titulo: 'DOCUMENTOS MENORES', items: [
+                        { key: 'actas_nac_hijos', label: 'Actas de nacimiento de los hijos *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'autorizacion_escucha', label: 'Autorización escucha de menores *', hasQty: false, accept: 'application/pdf' },
+                        { key: 'constancia_escucha', label: 'Constancia escucha de menor *', hasQty: false, accept: 'application/pdf' }
+                    ]}
+                ];
+            } else {
+                // DIVORCIO ADMTVO Y MUTUO
+                return [
+                    { titulo: 'CONTENIDO DE LA CARPETA - DIVORCIO ADMTVO Y MUTUO', items: base },
+                    { titulo: 'DOCUMENTOS GRAL. DIVORCIO', items: [
+                        { key: 'identificaciones', label: 'Identificaciones *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'actas_nac_conyuges', label: 'Actas de nacimiento cónyuges *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'acta_matrimonio', label: 'Acta de matrimonio *', hasQty: false, accept: 'application/pdf' },
+                        { key: 'comprobantes_domicilio', label: 'Comprobantes de domicilio cada parte *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'comprobantes_ingreso', label: 'Comprobantes de ingreso cada parte *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'certificado_no_embarazo', label: 'Certificado no embarazo *', hasQty: true, accept: 'application/pdf' }
+                    ]},
+                    { titulo: 'DOCUMENTOS DIVORCIO MUTUO', items: [
+                        { key: 'actas_nac_hijos', label: 'Actas de nacimiento de los hijos *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'autorizacion_escucha', label: 'Autorización escucha de menores *', hasQty: false, accept: 'application/pdf' },
+                        { key: 'constancia_escucha', label: 'Constancia escucha de menor *', hasQty: false, accept: 'application/pdf' },
+                        { key: 'facturas_muebles', label: 'Facturas bienes muebles *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'escrituras_inmuebles', label: 'Escrituras de los bienes inmuebles *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'certificado_gravamen', label: 'Certificado libertad de gravamen *', hasQty: true, accept: 'application/pdf' },
+                        { key: 'estado_cuenta_credito', label: 'Estado de cuenta del crédito *', hasQty: false, accept: 'application/pdf' }
+                    ]}
+                ];
+            }
+        }
 
         // --- SISTEMA GOOGLE DRIVE Y GEMINI IA ---
         const GOOGLE_CLIENT_ID = '326577655461-e7s01aoc20tofbgmrplt0bdt6ouhe27o.apps.googleusercontent.com';
@@ -344,7 +410,6 @@
                 marcarDriveEstado(true);
                 return true;
             } catch(e) {
-                console.error("Error leyendo cuota", e);
                 return false;
             }
         }
@@ -399,7 +464,7 @@
             }
             let res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
                 method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type },
+                headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type || 'application/octet-stream' },
                 body: file
             });
             let data = await res.json();
@@ -408,7 +473,7 @@
                 await solicitarTokenDriveAsync();
                 res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
                     method: 'POST',
-                    headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type },
+                    headers: { 'Authorization': 'Bearer ' + gDriveToken, 'Content-Type': file.type || 'application/octet-stream' },
                     body: file
                 });
                 data = await res.json();
@@ -446,7 +511,7 @@
             }
         }
 
-        // --- MOTOR GEMINI IA (MODELO 3.8 FLASH PRIORITARIO) ---
+        // --- MOTOR GEMINI IA (MODELO 3.8 FLASH + DETECCIÓN DE CENTRO 065 / 353 Y FECHAS) ---
         async function llamarGeminiConAutoRecuperacion(apiKey, body) {
             let modelos = [
                 "models/gemini-3.8-flash",
@@ -487,16 +552,18 @@
                 reader.onload = async () => {
                     try {
                         let base64 = reader.result.split(',')[1];
-                        let promptTexto = `Eres un asistente legal experto. Analiza este documento PDF mexicano.
+                        let promptTexto = `Eres un asistente legal experto en Jalisco (IJA y Juzgados). Analiza este documento PDF mexicano.
                         Extrae los datos y devuelve ÚNICAMENTE un objeto JSON válido, sin markdown ni explicaciones:
                         {
                           "categoria": "MASC o JURIDICO",
+                          "centro": "Si menciona acreditación o centro 065 devuelve 'Centro 065'. Si menciona acreditación o centro 353 devuelve 'Centro 353'. Si no especifica, devuelve 'Centro 065'.",
                           "tipo": "Si es MASC elige exactamente uno: Preventivo Arrendamiento, Alimentos y Convivencia, Divorcio Admtvo. y Mutuo. Si es JURIDICO elige exactamente uno: Civil, Familiar, Mercantil.",
-                          "anio": "El año a 4 dígitos, ej. 2026",
-                          "numero": "El número de expediente, ej. 001/26",
-                          "solicitante": "Nombre completo del solicitante o actor principal",
-                          "fechaInicio": "Fecha de inicio o firma del convenio en formato YYYY-MM-DD (o cadena vacía si no existe)",
-                          "fechaVencimiento": "Fecha de vencimiento o término del convenio en formato YYYY-MM-DD (o cadena vacía si no existe)"
+                          "tipoDocSubido": "Identifica qué documento es: solicitud, dictamen, acuerdo, convenio, identificaciones, contrato_arrendamiento",
+                          "anio": "El año del expediente o firma a 4 dígitos, ej. 2026",
+                          "numero": "El número de expediente, ej. 001/26 o 001/2026",
+                          "solicitante": "Nombre completo del solicitante o promovente principal",
+                          "fechaInicio": "Fecha en que se firmó o celebró el convenio en formato YYYY-MM-DD (o cadena vacía si no viene)",
+                          "fechaVencimiento": "SOLO si el tipo es 'Preventivo Arrendamiento', extrae la fecha en que finaliza o vence el contrato de arrendamiento en formato YYYY-MM-DD. Si NO es de arrendamiento o no tiene fecha de término, devuelve cadena vacía ''"
                         }`;
 
                         let body = { contents: [{ parts: [ { text: promptTexto }, { inline_data: { mime_type: file.type, data: base64 } } ] }] };
@@ -521,37 +588,78 @@
             try {
                 let json = await analizarConGemini(file);
                 
-                document.getElementById('ia-loading-text').innerText = "Guardando expediente y subiendo archivo...";
+                document.getElementById('ia-loading-text').innerText = "Clasificando en Centro, Expediente y guardando archivo...";
 
                 if (json.categoria === 'MASC') {
-                    let centroDestino = pathMasc.centro || (centrosMASC.length > 0 ? centrosMASC[0] : "Despacho 45yMas");
-                    if(!centrosMASC.includes(centroDestino)) { centrosMASC.push(centroDestino); localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC)); }
-                    if(!aniosMasc.includes(json.anio) && json.anio) { aniosMasc.unshift(json.anio); localStorage.setItem('anios_db_' + usuarioActivoObj.entornoId, JSON.stringify(aniosMasc)); }
-                    if(!tiposMasc.includes(json.tipo) && json.tipo) { tiposMasc.push(json.tipo); localStorage.setItem('tipos_db_' + usuarioActivoObj.entornoId, JSON.stringify(tiposMasc)); }
-                    
-                    let targetAnio = json.anio || aniosMasc[0];
-                    let targetTipo = json.tipo || tiposMasc[0];
-                    let targetIndex = -1;
+                    // Detectar Centro 065 o Centro 353 automáticamente
+                    let centroDetectado = "Centro 065";
+                    if (json.centro && json.centro.includes("353")) centroDetectado = "Centro 353";
+                    else if (json.centro && json.centro.includes("065")) centroDetectado = "Centro 065";
+                    else if (pathMasc.centro) centroDetectado = pathMasc.centro;
 
-                    let existe = listaExpedientesMasc.find(m => m.centro === centroDestino && m.anio === targetAnio && m.numero === json.numero);
+                    if(!centrosMASC.includes(centroDetectado)) {
+                        centrosMASC.push(centroDetectado);
+                        localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC));
+                    }
+                    
+                    let targetAnio = (json.anio && json.anio.length === 4) ? json.anio : (pathMasc.anio || "2026");
+                    if(!aniosMasc.includes(targetAnio)) {
+                        aniosMasc.unshift(targetAnio);
+                        localStorage.setItem('anios_db_' + usuarioActivoObj.entornoId, JSON.stringify(aniosMasc));
+                    }
+
+                    let targetTipo = tiposMasc.includes(json.tipo) ? json.tipo : "Preventivo Arrendamiento";
+                    let esArrendamiento = targetTipo.toLowerCase().includes("arrendamiento");
+                    let numExp = json.numero ? json.numero.trim() : "S/N-" + Math.floor(Math.random()*100);
+                    let solNombre = json.solicitante ? json.solicitante.trim() : "Solicitante Identificado";
+
+                    let targetIndex = -1;
+                    let existe = listaExpedientesMasc.find(m => m.centro === centroDetectado && m.anio === targetAnio && m.numero === numExp);
                     
                     if (existe) {
                         targetIndex = listaExpedientesMasc.indexOf(existe);
-                        listaExpedientesMasc[targetIndex].fechaInicio = json.fechaInicio || listaExpedientesMasc[targetIndex].fechaInicio;
-                        listaExpedientesMasc[targetIndex].fechaVencimiento = json.fechaVencimiento || listaExpedientesMasc[targetIndex].fechaVencimiento;
+                        if (json.solicitante && !listaExpedientesMasc[targetIndex].solicitante) {
+                            listaExpedientesMasc[targetIndex].solicitante = solNombre;
+                        }
+                        if (json.fechaInicio) listaExpedientesMasc[targetIndex].fechaInicio = json.fechaInicio;
+                        if (esArrendamiento && json.fechaVencimiento) {
+                            listaExpedientesMasc[targetIndex].fechaVencimiento = json.fechaVencimiento;
+                        }
                     } else {
-                        let nuevoExp = { numero: json.numero || "IA/S-N", centro: centroDestino, anio: targetAnio, tipo: targetTipo, solicitante: json.solicitante || "", patrocinado: "", firmadoPartes: true, prevencionActiva: false, validacionActiva: false, fechaInicio: json.fechaInicio || "", fechaVencimiento: json.fechaVencimiento || "", docs: {} };
+                        let nuevoExp = {
+                            numero: numExp,
+                            centro: centroDetectado,
+                            anio: targetAnio,
+                            tipo: targetTipo,
+                            solicitante: solNombre,
+                            patrocinado: "",
+                            firmadoPartes: true,
+                            prevencionActiva: false,
+                            validacionActiva: false,
+                            noSancionActiva: false,
+                            fechaInicio: json.fechaInicio || "",
+                            fechaVencimiento: esArrendamiento ? (json.fechaVencimiento || "") : "",
+                            observaciones: "",
+                            docs: {},
+                            checks: {},
+                            cantidades: {}
+                        };
                         listaExpedientesMasc.push(nuevoExp);
                         targetIndex = listaExpedientesMasc.length - 1;
                     }
                     
                     let fileId = await subirArchivoSistema(file);
-                    listaExpedientesMasc[targetIndex].docs.convenio = fileId;
+                    let keyDestino = ['solicitud', 'dictamen', 'acuerdo', 'convenio', 'identificaciones', 'contrato_arrendamiento'].includes(json.tipoDocSubido) ? json.tipoDocSubido : 'convenio';
+                    
+                    if (!listaExpedientesMasc[targetIndex].docs) listaExpedientesMasc[targetIndex].docs = {};
+                    if (!listaExpedientesMasc[targetIndex].checks) listaExpedientesMasc[targetIndex].checks = {};
+                    listaExpedientesMasc[targetIndex].docs[keyDestino] = fileId;
+                    listaExpedientesMasc[targetIndex].checks[keyDestino] = true;
                     
                     await guardarEnBDMasc();
-                    registrarActividad(`IA auto-clasificó convenio MASC: ${json.numero}`);
+                    registrarActividad(`IA clasificó en ${centroDetectado} (${targetTipo}) Exp: ${numExp} - ${solNombre}`);
                     
-                    vistaActual = 'masc'; nivelMasc = 4; pathMasc.centro = centroDestino; pathMasc.anio = targetAnio; pathMasc.tipo = targetTipo; pathMasc.indexExp = targetIndex;
+                    vistaActual = 'masc'; nivelMasc = 4; pathMasc.centro = centroDetectado; pathMasc.anio = targetAnio; pathMasc.tipo = targetTipo; pathMasc.indexExp = targetIndex;
 
                 } else {
                     let jMateria = ["Civil", "Familiar", "Mercantil"].includes(json.tipo) ? json.tipo : "Civil";
@@ -561,7 +669,7 @@
                     
                     let key = `exp_${storageMascKey}_${jJuzgado}_${jAnio}`; 
                     let exps = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : []; 
-                    let num = json.numero || "EXP-IA-" + Math.floor(Math.random()*100);
+                    let num = json.numero ? `${json.numero} - ${json.solicitante || ''}`.trim() : "EXP-IA-" + Math.floor(Math.random()*100);
                     exps.push({ nombre: num }); 
                     localStorage.setItem(key, JSON.stringify(exps));
                     
@@ -573,7 +681,7 @@
                 }
 
                 document.getElementById('modal-ia-loading').style.display = 'none';
-                alert("¡Documento procesado y clasificado con IA exitosamente!");
+                alert("¡Documento analizado y agrupado automáticamente en su carpeta!");
                 renderizarVista();
 
             } catch (error) {
@@ -638,13 +746,34 @@
             } catch (error) { console.error(error); }
         }
 
-        function migrarDatosAntiguos() { listaExpedientesMasc.forEach(m => { if(m.tipo === "ARRENDAMIENTO") m.tipo = "Preventivo Arrendamiento"; if(m.tipo === "ALIMENTOS") m.tipo = "Alimentos y Convivencia"; if(m.tipo === "DIVORCIO") m.tipo = "Divorcio Admtvo. y Mutuo"; }); }
+        function migrarDatosAntiguos() {
+            listaExpedientesMasc.forEach(m => {
+                if(m.tipo === "ARRENDAMIENTO") m.tipo = "Preventivo Arrendamiento";
+                if(m.tipo === "ALIMENTOS") m.tipo = "Alimentos y Convivencia";
+                if(m.tipo === "DIVORCIO") m.tipo = "Divorcio Admtvo. y Mutuo";
+                if(!m.docs) m.docs = {};
+                if(!m.checks) m.checks = {};
+                if(!m.cantidades) m.cantidades = {};
+            });
+        }
         function cerrarSesion() { registrarActividad("Cerró sesión."); localStorage.removeItem('sesion_activa_user'); localStorage.removeItem('sesion_activa_user_prev'); location.reload(); }
         function cargarLocalesSeguro() { try { let data = localStorage.getItem(storageMascKey); listaExpedientesMasc = data ? JSON.parse(data) : []; migrarDatosAntiguos(); } catch (error) { listaExpedientesMasc = []; } }
         async function sincronizarDesdeNube() { try { const snapshot = await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).get(); listaExpedientesMasc = []; snapshot.forEach(doc => { listaExpedientesMasc.push(doc.data()); }); migrarDatosAntiguos(); } catch(e) { cargarLocalesSeguro(); } }
         async function guardarEnBDMasc() { if(esAdmin && db) { try { for(let m of listaExpedientesMasc) { let docId = m.centro.replace(/[^a-zA-Z0-9]/g, '') + '_' + m.numero.replace('/', '-'); await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).doc(docId).set(m); } } catch(e) {} } try { localStorage.setItem(storageMascKey, JSON.stringify(listaExpedientesMasc)); } catch (e) { console.warn("Límite LocalStorage", e); } }
 
         function mostrarMenu(menu) { vistaActual = menu; document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById('menu-' + menu).classList.add('active'); renderizarVista(); }
+
+        function contarProgresoExpediente(m) {
+            let secciones = obtenerEsquemaChecklist(m.tipo);
+            let total = 0; let completados = 0;
+            secciones.forEach(sec => {
+                sec.items.forEach(it => {
+                    total++;
+                    if ((m.docs && m.docs[it.key]) || (m.checks && m.checks[it.key])) completados++;
+                });
+            });
+            return { completados, total, pct: total > 0 ? Math.round((completados / total) * 100) : 0 };
+        }
 
         function renderizarVista() {
             const area = document.getElementById('area-trabajo'); let html = '';
@@ -703,20 +832,27 @@
                         html += `</div>`;
                     }
                     else if (nivelMasc === 3) {
-                        html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Categorías</div><div class="section-header-box"><div class="section-title">${pathMasc.anio} > ${pathMasc.tipo}</div><button type="button" class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'; document.getElementById('input-numero-masc').value='';"><i class="fa-solid fa-plus"></i> Nuevo Expediente</button></div><div class="grid-carpetas">`;
+                        html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Categorías</div><div class="section-header-box"><div class="section-title">${pathMasc.centro} > ${pathMasc.anio} > ${pathMasc.tipo}</div><button type="button" class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'; document.getElementById('input-numero-masc').value='';"><i class="fa-solid fa-plus"></i> Nuevo Expediente</button></div><div class="grid-carpetas">`;
                         listaExpedientesMasc.forEach((m, i) => { 
                             if(m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.tipo === pathMasc.tipo) {
-                                let d = m.docs || {}; let c = (d.solicitud?1:0)+(d.dictamen?1:0)+(d.acuerdo?1:0)+(d.convenio?1:0);
-                                let badge = c === 4 ? '<span style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> Completo</span>' : `<span style="color:var(--brand-orange);"><i class="fa-solid fa-spinner"></i> Docs ${c}/4</span>`;
+                                let infoProg = contarProgresoExpediente(m);
+                                let esArrendamiento = (m.tipo || "").toLowerCase().includes("arrendamiento");
+                                let badge = infoProg.pct === 100 ? '<span style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> Completo</span>' : `<span style="color:var(--brand-orange);"><i class="fa-solid fa-list-check"></i>Avance ${infoProg.completados}/${infoProg.total}</span>`;
                                 
+                                let bloqueFechas = `<div class="subtitulo" style="font-size:0.65rem; color:var(--text-muted); margin-bottom:4px;">
+                                    <i class="fa-regular fa-calendar-check" style="color:var(--neon-blue);"></i> Firma: ${m.fechaInicio ? m.fechaInicio : '--/--/----'}
+                                </div>`;
+                                if (esArrendamiento) {
+                                    bloqueFechas += `<div class="subtitulo" style="font-size:0.65rem; color:var(--text-muted); margin-bottom:8px;">
+                                        <i class="fa-regular fa-calendar-xmark" style="color:var(--brand-orange);"></i> Fin: ${m.fechaVencimiento ? m.fechaVencimiento : '--/--/----'}
+                                    </div>`;
+                                }
+
                                 html += `<div class="carpeta-card" onclick="nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()">
-                                            <i class="fa-solid fa-file-contract folder-icon" style="color:${c===4?'var(--success)':'var(--neon-blue)'};"></i>
+                                            <i class="fa-solid fa-file-contract folder-icon" style="color:${infoProg.pct===100?'var(--success)':'var(--neon-blue)'};"></i>
                                             <div class="titulo">${m.numero}</div>
-                                            <div class="subtitulo" style="margin-bottom:2px;">${m.solicitante || 'Sin Solicitante'}</div>
-                                            <div class="subtitulo" style="font-size:0.65rem; color:var(--text-muted); margin-bottom:8px;">
-                                                <i class="fa-regular fa-calendar-plus" style="color:var(--neon-blue);"></i> ${m.fechaInicio ? m.fechaInicio : '--/--/----'} | 
-                                                <i class="fa-regular fa-calendar-xmark" style="color:var(--brand-orange);"></i> ${m.fechaVencimiento ? m.fechaVencimiento : '--/--/----'}
-                                            </div>
+                                            <div class="subtitulo" style="margin-bottom:5px; font-weight:700; color:var(--text-main);">${m.solicitante || 'Sin Solicitante'}</div>
+                                            ${bloqueFechas}
                                             <div style="font-size:0.75rem; font-weight:bold;">${badge}</div>
                                          </div>`; 
                             }
@@ -725,65 +861,142 @@
                     }
                     else if (nivelMasc === 4) {
                         let m = listaExpedientesMasc[pathMasc.indexExp];
-                        let d = m.docs || {}; let count = (d.solicitud?1:0)+(d.dictamen?1:0)+(d.acuerdo?1:0)+(d.convenio?1:0);
-                        let prog = count * 25; let colorProg = count === 4 ? 'var(--success)' : 'var(--brand-orange)';
+                        if(!m.docs) m.docs = {}; if(!m.checks) m.checks = {}; if(!m.cantidades) m.cantidades = {};
+                        let infoProg = contarProgresoExpediente(m);
+                        let colorProg = infoProg.pct === 100 ? 'var(--success)' : 'var(--brand-orange)';
+                        let esArrendamiento = (m.tipo || "").toLowerCase().includes("arrendamiento");
+                        let seccionesChecklist = obtenerEsquemaChecklist(m.tipo);
 
-                        html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Expedientes</div>
-                        <div class="section-header-box" style="align-items: center;"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> MASC: ${m.numero}</div><button type="button" id="btn-visor-completo" class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.8rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})"><i class="fa-solid fa-eye"></i> Visor Completo</button></div>
+                        html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a ${pathMasc.tipo}</div>
+                        <div class="section-header-box" style="align-items: center;">
+                            <div class="section-title"><i class="fa-solid fa-folder-tree"></i> ${m.centro} • Exp: ${m.numero} — ${m.solicitante || ''}</div>
+                            <button type="button" id="btn-visor-completo" class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.8rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})"><i class="fa-solid fa-eye"></i> Visor Completo (Todo el Expediente)</button>
+                        </div>
                         
                         <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                                <span style="font-size:0.85rem; font-weight:bold; color:var(--text-main);"><i class="fa-solid fa-list-check"></i> Integración del Expediente</span>
-                                <span style="font-size:0.85rem; font-weight:bold; color:${colorProg};">${prog}% Completado</span>
+                                <span style="font-size:0.85rem; font-weight:bold; color:var(--text-main);"><i class="fa-solid fa-list-check"></i> Check-List de Carpeta (${m.tipo})</span>
+                                <span style="font-size:0.85rem; font-weight:bold; color:${colorProg};">${infoProg.completados} de ${infoProg.total} (${infoProg.pct}%)</span>
                             </div>
                             <div style="width:100%; height:10px; background:#1e293b; border-radius:5px; overflow:hidden;">
-                                <div style="width:${prog}%; height:100%; background:${colorProg}; transition:width 0.5s ease-in-out;"></div>
+                                <div style="width:${infoProg.pct}%; height:100%; background:${colorProg}; transition:width 0.5s ease-in-out;"></div>
                             </div>
                         </div>
 
                         <div class="gestion-box">
                             <div class="form-row" style="margin-bottom: 15px;">
-                                <div class="form-group"><label>Solicitante:</label><input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo"></div>
-                                <div class="form-group"><label>Patrocinado por:</label><input type="text" class="form-input" value="${m.patrocinado || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'patrocinado', this.value)" placeholder="Ej. Eduviges"></div>
+                                <div class="form-group"><label>Solicitante / Promovente:</label><input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo"></div>
+                                <div class="form-group"><label>Recomendado / Patrocinado por:</label><input type="text" class="form-input" value="${m.patrocinado || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'patrocinado', this.value)" placeholder="Ej. Eduviges"></div>
                             </div>
-                            <div class="form-row" style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.3);">
-                                <div class="form-group"><label style="color:var(--neon-blue);"><i class="fa-regular fa-calendar-plus"></i> Fecha de Inicio:</label><input type="date" class="form-input" value="${m.fechaInicio || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'fechaInicio', this.value)"></div>
-                                <div class="form-group"><label style="color:var(--brand-orange);"><i class="fa-regular fa-calendar-xmark"></i> Fecha de Vencimiento:</label><input type="date" class="form-input" value="${m.fechaVencimiento || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'fechaVencimiento', this.value)"></div>
-                            </div>
+                            <div class="form-row" style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.3);">
+                                <div class="form-group">
+                                    <label style="color:var(--neon-blue);"><i class="fa-regular fa-calendar-check"></i> Fecha de Firma del Convenio:</label>
+                                    <input type="date" class="form-input" value="${m.fechaInicio || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'fechaInicio', this.value)">
+                                </div>
+                                ${esArrendamiento ? `
+                                <div class="form-group">
+                                    <label style="color:var(--brand-orange);"><i class="fa-regular fa-calendar-xmark"></i> Fecha en que Finaliza el Arrendamiento:</label>
+                                    <input type="date" class="form-input" value="${m.fechaVencimiento \vert{}\vert{} ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'fechaVencimiento', this.value)">
+                                </div>` : `
+                                <div class="form-group">
+                                    <label style="color:var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Vigencia de Contrato:</label>
+                                    <div style="font-size:0.8rem; color:var(--text-muted); padding-top:8px;">Convenio familiar definitivo (sin fecha de vencimiento de arrendamiento).</div>
+                                </div>`}
+                            </div>`;
 
-                            <h4 style="color:var(--brand-orange); margin: 20px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-file-pdf"></i> Documentación Obligatoria</h4>
+                        // RENDERIZAR CADA SECCIÓN DEL CHECKLIST OFICIAL
+                        seccionesChecklist.forEach(sec => {
+                            html += `<h4 style="color:var(--brand-orange); margin: 22px 0 8px 0; font-size:0.9rem;"><i class="fa-solid fa-clipboard-check"></i> ${sec.titulo}</h4>
                             <div class="docs-table">
                                 <table style="width:100%; border-collapse: collapse;">
-                                <tr><th>Documento Requerido</th><th>Estado</th><th>Acción Manual</th></tr>
-                                <tr><td><strong>1. Solicitud firmada</strong></td><td>${m.docs && m.docs.solicitud ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-solicitud" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'solicitud', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-solicitud').click()">Subir</button> ${m.docs && m.docs.solicitud ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.solicitud}', 'Solicitud')">Ver</button>` : ''}</td></tr>
-                                <tr><td><strong>2. Dictamen de viabilidad</strong></td><td>${m.docs && m.docs.dictamen ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-dictamen" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'dictamen', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-dictamen').click()">Subir</button> ${m.docs && m.docs.dictamen ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.dictamen}', 'Dictamen')">Ver</button>` : ''}</td></tr>
-                                <tr><td><strong>3. Acuerdo confidencial</strong></td><td>${m.docs && m.docs.acuerdo ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-acuerdo" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'acuerdo', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-acuerdo').click()">Subir</button> ${m.docs && m.docs.acuerdo ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.acuerdo}', 'Acuerdo')">Ver</button>` : ''}</td></tr>
-                                <tr><td><strong>4. Convenio final</strong><br><label style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;"><input type="checkbox" ${m.firmadoPartes ? 'checked' : ''} onchange="toggleFirmado(${pathMasc.indexExp}, this.checked)"> Firmado partes</label></td><td>${m.docs && m.docs.convenio ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-convenio" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'convenio', event)"><button type="button" class="btn-upload" onclick="document.getElementById('file-convenio').click()">Subir</button> ${m.docs && m.docs.convenio ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.convenio}', 'Convenio')">Ver</button>` : ''}</td></tr>
-                                </table>
-                            </div>
-                            <h4 style="color:var(--brand-orange); margin: 30px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-gavel"></i> Resoluciones y Tiempos del IJA</h4>
-                            <div class="form-row">
-                                <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;">
-                                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" ${m.prevencionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'prevencion', this.checked)"> MARCAR PREVENCIÓN</label>
-                                    ${m.prevencionActiva ? `
-                                        <div style="margin-top:10px; margin-bottom:10px; font-size:0.75rem; color:var(--text-muted);">Contestación: ${m.docs && m.docs.contestacionPrevencion ? '<span style="color:var(--success); font-weight:bold;">✅ Sí</span>' : '❌ No'}</div>
-                                        <div style="display:flex; gap:10px; align-items:center;">
-                                            <input type="file" id="file-contestacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'contestacionPrevencion', event)">
-                                            <button type="button" class="btn-upload" onclick="document.getElementById('file-contestacion').click()">Subir</button> 
-                                            ${m.docs && m.docs.contestacionPrevencion ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.contestacionPrevencion}', 'Contestación')">Ver</button>` : ''}
-                                        </div>` : ''}
+                                <tr><th style="width:45%;">Requisito en Carpeta</th><th style="width:20%;">Cantidad / Estado</th><th style="width:35%;">Archivo Digital</th></tr>`;
+                            sec.items.forEach(it => {
+                                let tieneArchivo = m.docs && m.docs[it.key];
+                                let estaMarcado = (m.checks && m.checks[it.key]) || tieneArchivo;
+                                let cantVal = (m.cantidades && m.cantidades[it.key]) || '';
+                                let inputFileId = `file-${it.key}`;
+
+                                html += `<tr>
+                                    <td>
+                                        <label style="cursor:pointer; display:flex; align-items:center;">
+                                            <input type="checkbox" class="chk-fisico" ${estaMarcado ? 'checked' : ''} onchange="toggleCheckItem(${pathMasc.indexExp}, '${it.key}', this.checked)">
+                                            <strong>${it.label}</strong>
+                                        </label>
+                                        ${it.extraCheck ? `<div style="margin-left:24px; margin-top:4px;"><label style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;"><input type="checkbox" ${m.firmadoPartes ? 'checked' : ''} onchange="toggleFirmado(${pathMasc.indexExp}, this.checked)"> Firmado por ambas partes</label></div>` : ''}
+                                    </td>
+                                    <td>
+                                        ${tieneArchivo ? '<span style="color:var(--success); font-weight:bold;">✅ Digital</span>' : (estaMarcado ? '<span style="color:var(--neon-blue); font-weight:bold;">☑️ Físico</span>' : '<span style="color:var(--text-muted);">❌ Pendiente</span>')}
+                                        ${it.hasQty ? `<input type="text" class="input-cant" placeholder="( )" title="Cantidad entre paréntesis" value="${cantVal}" onchange="guardarCantidadItem(${pathMasc.indexExp}, '${it.key}', this.value)">` : ''}
+                                    </td>
+                                    <td>
+                                        <input type="file" id="${inputFileId}" accept="${it.accept}" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, '${it.key}', event)">
+                                        <button type="button" class="btn-upload" onclick="document.getElementById('${inputFileId}').click()"><i class="fa-solid fa-upload"></i> Subir</button>
+                                        ${tieneArchivo ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs[it.key]}', '${it.label.replace(/[^a-zA-Z0-9 ]/g, '')}${it.isWord ? '.docx' : ''}')"><i class="fa-solid fa-eye"></i> ${it.isWord ? 'Descargar' : 'Ver'}</button>` : ''}
+                                    </td>
+                                </tr>`;
+                            });
+                            html += `</table></div>`;
+                        });
+
+                        // OBSERVACIONES DE LA HOJA DE CHECKLIST
+                        html += `<h4 style="color:var(--neon-blue); margin: 20px 0 8px 0; font-size:0.85rem;"><i class="fa-solid fa-pen-clip"></i> Notas y Observaciones de Carpeta</h4>
+                        <textarea class="form-input" style="width:100%; min-height:70px; margin-bottom:20px;" placeholder="Anotaciones adicionales del expediente..." onchange="guardarCampoMASC(${pathMasc.indexExp}, 'observaciones', this.value)">${m.observaciones || ''}</textarea>`;
+
+                        // SECCIÓN INFERIOR OFICIAL: PREVENCIÓN, CONTESTACIÓN A LA PREVENCIÓN, NO SANCIÓN, VALIDACIÓN
+                        html += `<h4 style="color:var(--brand-orange); margin: 20px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-gavel"></i> Resoluciones y Estatus del IJA (Parte Inferior del Check-List)</h4>
+                        <div class="form-row">
+                            <!-- 1. PREVENCIÓN -->
+                            <div class="form-group" style="background:rgba(0,0,0,0.25); padding:15px; border-radius:8px; border:1px solid var(--border-glass);">
+                                <label style="display:flex; align-items:center; gap:8px; color:var(--text-main);">
+                                    <input type="checkbox" class="chk-fisico" ${m.prevencionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'prevencionActiva', this.checked)"> 1. PREVENCIÓN (Acuerdo IJA)
+                                </label>
+                                <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                                    <span style="font-size:0.75rem; color:var(--text-muted);">${m.docs && m.docs.docPrevencion ? '✅ Cargado' : 'Sin PDF'}</span>
+                                    <input type="file" id="file-docPrevencion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'docPrevencion', event)">
+                                    <button type="button" class="btn-upload" onclick="document.getElementById('file-docPrevencion').click()">Subir PDF</button>
+                                    ${m.docs && m.docs.docPrevencion ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.docPrevencion}', 'Prevencion IJA')">Ver</button>` : ''}
                                 </div>
-                                <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;">
-                                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" ${m.validacionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'validacion', this.checked)"> VALIDADO / NO SANCIÓN</label>
-                                    ${m.validacionActiva ? `
-                                        <div style="margin-top:10px; margin-bottom:10px; font-size:0.75rem; color:var(--text-muted);">Validación: ${m.docs && m.docs.documentoValidacion ? '<span style="color:var(--success); font-weight:bold;">✅ Sí</span>' : '❌ No'}</div>
-                                        <div style="display:flex; gap:10px; align-items:center;">
-                                            <input type="file" id="file-validacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'documentoValidacion', event)">
-                                            <button type="button" class="btn-upload" onclick="document.getElementById('file-validacion').click()">Subir</button> 
-                                            ${m.docs && m.docs.documentoValidacion ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.documentoValidacion}', 'Validación')">Ver</button>` : ''}
-                                        </div>` : ''}
+                            </div>
+
+                            <!-- 2. CONTESTACIÓN A LA PREVENCIÓN -->
+                            <div class="form-group" style="background:rgba(0,0,0,0.25); padding:15px; border-radius:8px; border:1px solid var(--border-glass);">
+                                <label style="display:flex; align-items:center; gap:8px; color:var(--text-main);">
+                                    <input type="checkbox" class="chk-fisico" ${m.contestacionActiva || (m.docs && m.docs.contestacionPrevencion) ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'contestacionActiva', this.checked)"> 2. CONTESTACIÓN A LA PREVENCIÓN
+                                </label>
+                                <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                                    <span style="font-size:0.75rem; color:var(--text-muted);">${m.docs && m.docs.contestacionPrevencion ? '✅ Cargado' : 'Sin PDF'}</span>
+                                    <input type="file" id="file-contestacionPrevencion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'contestacionPrevencion', event)">
+                                    <button type="button" class="btn-upload" onclick="document.getElementById('file-contestacionPrevencion').click()">Subir PDF</button>
+                                    ${m.docs && m.docs.contestacionPrevencion ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.contestacionPrevencion}', 'Contestacion a la Prevencion')">Ver</button>` : ''}
                                 </div>
                             </div>
+
+                            <!-- 3. NO SANCIÓN -->
+                            <div class="form-group" style="background:rgba(0,0,0,0.25); padding:15px; border-radius:8px; border:1px solid var(--border-glass);">
+                                <label style="display:flex; align-items:center; gap:8px; color:var(--text-main);">
+                                    <input type="checkbox" class="chk-fisico" ${m.noSancionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'noSancionActiva', this.checked)"> 3. NO SANCIÓN
+                                </label>
+                                <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                                    <span style="font-size:0.75rem; color:var(--text-muted);">${m.docs && m.docs.docNoSancion ? '✅ Cargado' : 'Sin PDF'}</span>
+                                    <input type="file" id="file-docNoSancion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'docNoSancion', event)">
+                                    <button type="button" class="btn-upload" onclick="document.getElementById('file-docNoSancion').click()">Subir PDF</button>
+                                    ${m.docs && m.docs.docNoSancion ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.docNoSancion}', 'Acuerdo No Sancion')">Ver</button>` : ''}
+                                </div>
+                            </div>
+
+                            <!-- 4. VALIDACIÓN -->
+                            <div class="form-group" style="background:rgba(0,0,0,0.25); padding:15px; border-radius:8px; border:1px solid var(--border-glass);">
+                                <label style="display:flex; align-items:center; gap:8px; color:var(--text-main);">
+                                    <input type="checkbox" class="chk-fisico" ${m.validacionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'validacionActiva', this.checked)"> 4. VALIDACIÓN (Sancionado)
+                                </label>
+                                <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                                    <span style="font-size:0.75rem; color:var(--text-muted);">${m.docs && m.docs.documentoValidacion ? '✅ Cargado' : 'Sin PDF'}</span>
+                                    <input type="file" id="file-documentoValidacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'documentoValidacion', event)">
+                                    <button type="button" class="btn-upload" onclick="document.getElementById('file-documentoValidacion').click()">Subir PDF</button>
+                                    ${m.docs && m.docs.documentoValidacion ? `<button type="button" class="btn-view" onclick="verDocumento('${m.docs.documentoValidacion}', 'Validacion IJA')">Ver</button>` : ''}
+                                </div>
+                            </div>
+                        </div>
                         </div>`;
                     }
                 }
@@ -817,7 +1030,7 @@
                     html += `<div class="gestion-box" style="display:flex; flex-direction:column; gap: 20px;"><div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);"><h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-solid fa-hard-drive"></i> Memoria Caché Ligera (Local Storage)</h4><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.85rem; color:var(--text-main);">Metadatos de la Web: ${mbUsados} MB / 5.00 MB (Límite Seguro)</span><span style="font-size:0.85rem; font-weight:bold; color:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};">${pctLocal}%</span></div><div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;"><div style="width:${pctLocal}%; height:100%; background:${pctLocal > 80 ? 'var(--danger)' : 'var(--neon-blue)'};"></div></div><p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Aquí se guardan solo los nombres de expedientes, carpetas y configuraciones. Los PDFs ya no ocupan este espacio.</p></div><div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid var(--border-glass);"><h4 style="color:var(--brand-orange); margin-bottom: 10px;"><i class="fa-brands fa-google-drive"></i> Nube Jurídica de 5TB (Google Drive)</h4><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.85rem; color:var(--text-main);">${statusNube} | ${nubeUsado} MB / ${nubeLimite} MB</span><span style="font-size:0.85rem; font-weight:bold; color:var(--success);">${pctNube}%</span></div><div style="width:100%; height:12px; background:#1e293b; border-radius:6px; overflow:hidden;"><div style="width:${pctNube}%; height:100%; background:var(--success);"></div></div><p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Capacidad real de tu suscripción Google One. Los PDFs se guardan aquí garantizando seguridad de grado corporativo.</p></div></div>`;
                 }
                 area.innerHTML = html;
-            } catch (error) { area.innerHTML = "<p style='color:red; text-align:center;'>Ocurrió un error interno al mostrar los datos.</p>"; }
+            } catch (error) { console.error(error); area.innerHTML = "<p style='color:red; text-align:center;'>Ocurrió un error interno al mostrar los datos.</p>"; }
         }
 
         function abrirModalCentro(index) { document.getElementById('edit-centro-index').value = index; document.getElementById('titulo-modal-centro').innerText = index === -1 ? "Nuevo Centro" : "Editar Centro"; document.getElementById('input-nombre-centro').value = index === -1 ? "" : centrosMASC[index]; document.getElementById('btn-eliminar-centro').style.display = index === -1 ? 'none' : 'flex'; document.getElementById('modal-centro').style.display = 'flex'; }
@@ -839,21 +1052,44 @@
         function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${storageMascKey}_${pathJuridico.juzgado}_${pathJuridico.anio}`; let dataStr = localStorage.getItem(key); let exps = dataStr ? JSON.parse(dataStr) : []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); registrarActividad(`Creó exp jurídico: ${val}`); document.getElementById('modal-crear').style.display = 'none'; renderizarVista(); }
         function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); localStorage.setItem('modo_multidoc', 'false'); window.location.href = 'visor-expediente.html'; }
 
+        async function toggleCheckItem(index, itemKey, checked) {
+            let m = listaExpedientesMasc[index];
+            if(!m.checks) m.checks = {};
+            m.checks[itemKey] = checked;
+            await guardarEnBDMasc();
+            renderizarVista();
+        }
+
+        async function guardarCantidadItem(index, itemKey, valor) {
+            let m = listaExpedientesMasc[index];
+            if(!m.cantidades) m.cantidades = {};
+            m.cantidades[itemKey] = valor;
+            await guardarEnBDMasc();
+        }
+
         async function subirDocMASC(index, tipoDoc, event) { 
             const file = event.target.files[0]; 
             if(!file) return; 
             let targetBtn = event.target.nextElementSibling; let originalText = targetBtn.innerHTML; targetBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
-            let m = listaExpedientesMasc[index]; if(!m.docs) m.docs = {}; 
+            let m = listaExpedientesMasc[index];
+            if(!m.docs) m.docs = {};
+            if(!m.checks) m.checks = {};
 
             try {
                 m.docs[tipoDoc] = await subirArchivoSistema(file);
+                m.checks[tipoDoc] = true;
                 
-                if(tipoDoc === 'convenio' && localStorage.getItem('boveda_gemini_key')) {
+                // Si sube el Convenio Final o Contrato de Arrendamiento y tiene llave IA, lee fechas automáticamente
+                if((tipoDoc === 'convenio' || tipoDoc === 'contrato_arrendamiento') && localStorage.getItem('boveda_gemini_key')) {
                     targetBtn.innerHTML = '<i class="fa-solid fa-brain fa-fade"></i> Leyendo Fechas...';
                     try {
                         let json = await analizarConGemini(file);
                         if(json.fechaInicio) m.fechaInicio = json.fechaInicio;
-                        if(json.fechaVencimiento) m.fechaVencimiento = json.fechaVencimiento;
+                        let esArrendamiento = (m.tipo || "").toLowerCase().includes("arrendamiento");
+                        if(esArrendamiento && json.fechaVencimiento) {
+                            m.fechaVencimiento = json.fechaVencimiento;
+                        }
+                        if(json.solicitante && !m.solicitante) m.solicitante = json.solicitante;
                         registrarActividad(`IA extrajo fechas del exp: ${m.numero}`);
                     } catch(e) { console.warn("IA no extrajo fechas", e); }
                 }
@@ -862,10 +1098,43 @@
             } catch(e) { alert("Error: " + e.message); targetBtn.innerHTML = originalText; }
         }
 
-        async function procesarNuevoMASC() { let numFinal = document.getElementById('input-numero-masc').value.trim(); let solicitante = document.getElementById('input-solicitante-masc').value.trim(); let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); if(!numFinal || !solicitante) { alert("Número de expediente y Solicitante obligatorios."); return; } let existe = listaExpedientesMasc.find(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.numero === numFinal); if(existe) { alert("Este número de expediente ya fue registrado."); return; } listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, fechaInicio: "", fechaVencimiento: "", docs: {} }); await guardarEnBDMasc(); registrarActividad(`Aperturó convenio: ${numFinal}`); document.getElementById('modal-crear-masc').style.display = 'none'; document.getElementById('input-numero-masc').value = ''; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; renderizarVista(); }
+        async function procesarNuevoMASC() {
+            let numFinal = document.getElementById('input-numero-masc').value.trim();
+            let solicitante = document.getElementById('input-solicitante-masc').value.trim();
+            let patrocinado = document.getElementById('input-patrocinado-masc').value.trim();
+            if(!numFinal || !solicitante) { alert("Número de expediente y Solicitante obligatorios."); return; }
+            let existe = listaExpedientesMasc.find(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.numero === numFinal);
+            if(existe) { alert("Este número de expediente ya fue registrado."); return; }
+            listaExpedientesMasc.push({
+                numero: numFinal,
+                centro: pathMasc.centro,
+                anio: pathMasc.anio,
+                tipo: pathMasc.tipo,
+                solicitante: solicitante,
+                patrocinado: patrocinado || "",
+                firmadoPartes: false,
+                prevencionActiva: false,
+                contestacionActiva: false,
+                noSancionActiva: false,
+                validacionActiva: false,
+                fechaInicio: "",
+                fechaVencimiento: "",
+                observaciones: "",
+                docs: {},
+                checks: {},
+                cantidades: {}
+            });
+            await guardarEnBDMasc();
+            registrarActividad(`Aperturó convenio: ${numFinal}`);
+            document.getElementById('modal-crear-masc').style.display = 'none';
+            document.getElementById('input-numero-masc').value = '';
+            document.getElementById('input-solicitante-masc').value = '';
+            document.getElementById('input-patrocinado-masc').value = '';
+            renderizarVista();
+        }
         async function guardarCampoMASC(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); registrarActividad(`Modificó [${campo}] en expediente: ${listaExpedientesMasc[index].numero}`); renderizarVista(); }
         async function toggleFirmado(index, valor) { listaExpedientesMasc[index].firmadoPartes = valor; await guardarEnBDMasc(); }
-        async function toggleResolucion(index, tipo, valor) { if(tipo === 'prevencion') listaExpedientesMasc[index].prevencionActiva = valor; if(tipo === 'validacion') listaExpedientesMasc[index].validacionActiva = valor; await guardarEnBDMasc(); renderizarVista(); }
+        async function toggleResolucion(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); renderizarVista(); }
 
         function base64ToBlob(base64Data) { try { const arr = base64Data.split(','); const mime = arr[0].match(/:(.*?);/)[1]; const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n); while(n--) { u8arr[n] = bstr.charCodeAt(n); } return new Blob([u8arr], {type: mime}); } catch(e) { return null; } }
         async function verDocumento(docData, titulo) { 
@@ -884,8 +1153,13 @@
                 } else if (docData.startsWith('localforage:')) {
                     let id = docData.split(':')[1]; let base64Data = await localforage.getItem(id); blob = base64ToBlob(base64Data); urlParaVer = URL.createObjectURL(blob);
                 } else { blob = base64ToBlob(docData); urlParaVer = URL.createObjectURL(blob); }
-                if (isMobile && blob) { const a = document.createElement('a'); a.href = urlParaVer; a.download = titulo + ".pdf"; document.body.appendChild(a); a.click(); document.body.removeChild(a); } 
-                else if (blob) { document.getElementById('iframe-pdf-visor').src = urlParaVer; document.getElementById('modal-visor-pdf').style.display = 'flex'; }
+
+                let isWord = titulo.toLowerCase().includes('.doc');
+                if ((isMobile || isWord) && blob) {
+                    const a = document.createElement('a'); a.href = urlParaVer; a.download = isWord ? titulo : (titulo + ".pdf"); document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                } else if (blob) {
+                    document.getElementById('iframe-pdf-visor').src = urlParaVer; document.getElementById('modal-visor-pdf').style.display = 'flex';
+                }
             } catch (e) { alert("Error al abrir documento."); }
         }
         function cerrarVisorPDF() { document.getElementById('modal-visor-pdf').style.display = 'none'; document.getElementById('iframe-pdf-visor').src = ''; }
@@ -895,12 +1169,20 @@
                 let btn = document.getElementById('btn-visor-completo'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Empacando...';
                 let m = listaExpedientesMasc[index]; let nombreExp = `MASC-${m.numero.replace(/\//g, '-')}`; localStorage.setItem('expediente_abierto', nombreExp); registrarActividad(`Abrió Visor Múltiple: ${m.numero}`);
                 let paqueteDocs = [];
-                if(m.docs && m.docs.solicitud) paqueteDocs.push({ name: "1. Solicitud", data: m.docs.solicitud });
-                if(m.docs && m.docs.dictamen) paqueteDocs.push({ name: "2. Dictamen", data: m.docs.dictamen });
-                if(m.docs && m.docs.acuerdo) paqueteDocs.push({ name: "3. Acuerdo", data: m.docs.acuerdo });
-                if(m.docs && m.docs.convenio) paqueteDocs.push({ name: "4. Convenio", data: m.docs.convenio });
-                if(m.docs && m.docs.contestacionPrevencion) paqueteDocs.push({ name: "5. Prevención", data: m.docs.contestacionPrevencion });
-                if(m.docs && m.docs.documentoValidacion) paqueteDocs.push({ name: "6. Resolución IJA", data: m.docs.documentoValidacion });
+                let secciones = obtenerEsquemaChecklist(m.tipo);
+                secciones.forEach(sec => {
+                    sec.items.forEach(it => {
+                        if (!it.isWord && m.docs && m.docs[it.key]) {
+                            paqueteDocs.push({ name: it.label.replace('*', '').trim(), data: m.docs[it.key] });
+                        }
+                    });
+                });
+                // Incluir los 4 documentos de resoluciones IJA en el Visor Completo
+                if(m.docs && m.docs.docPrevencion) paqueteDocs.push({ name: "Prevención IJA", data: m.docs.docPrevencion });
+                if(m.docs && m.docs.contestacionPrevencion) paqueteDocs.push({ name: "Contestación Prevención", data: m.docs.contestacionPrevencion });
+                if(m.docs && m.docs.docNoSancion) paqueteDocs.push({ name: "Acuerdo No Sanción", data: m.docs.docNoSancion });
+                if(m.docs && m.docs.documentoValidacion) paqueteDocs.push({ name: "Validación IJA", data: m.docs.documentoValidacion });
+
                 if(paqueteDocs.length === 0) { alert("No hay documentos PDF para visualizar."); btn.innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo'; return; }
                 await localforage.setItem('paquete_masc_' + nombreExp, paqueteDocs); localStorage.setItem('modo_multidoc', 'true'); window.location.href = 'visor-expediente.html';
             } catch (e) { alert("Error al abrir."); document.getElementById('btn-visor-completo').innerHTML = '<i class="fa-solid fa-eye"></i> Visor Completo'; }
