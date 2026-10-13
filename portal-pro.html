@@ -205,10 +205,31 @@
         try { if(firebaseConfig.apiKey !== "TU_API_KEY") { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } } catch(e) { console.log("Firebase inactivo"); }
 
         // LISTA DE JUZGADOS RESTAURADA COMPLETA
-        const catJuzgados = {
-            "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
-            "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Especializado Niños", "Violencia Mujeres"],
-            "Mercantil": ["Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil"]
+      const catJuzgados = {
+            "Civil": [
+                "Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", 
+                "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", 
+                "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", 
+                "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", 
+                "Juzgado 13° de lo Civil", "Juzgado 14° de lo Civil"
+            ],
+            "Familiar": [
+                "Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", 
+                "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", 
+                "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", 
+                "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", 
+                "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", 
+                "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Juzgado 18° de lo Familiar",
+                "Juzgado 19° de lo Familiar", "Juzgado 20° de lo Familiar",
+                "Especializado Niños", "Violencia Mujeres"
+            ],
+            "Mercantil": [
+                "Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", 
+                "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", 
+                "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", 
+                "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil", 
+                "Juzgado 13° Mercantil", "Juzgado 14° Mercantil", "Juzgado 15° Mercantil"
+            ]
         };
         const anios = ["2026", "2025", "2024", "2023", "2022"];
         
