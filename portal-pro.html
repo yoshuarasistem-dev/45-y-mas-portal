@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bóveda Pro | Sistema Jurídico y MASC Híbrido</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -14,82 +14,95 @@
         :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.85); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --success: #10b981; --danger: #ef4444; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
         .logo-oficial { display: flex; flex-direction: column; align-items: flex-start;}
-        .logo-oficial img { max-height: 45px; object-fit: contain; margin-bottom: 2px; display:block;}
-        .logo-oficial .sub-brand { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .logo-oficial img { max-height: 40px; object-fit: contain; margin-bottom: 2px; display:block;}
+        .logo-oficial .sub-brand { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
         #login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; z-index: 50; position: absolute; background: var(--bg-deep); }
-        .login-box { background: var(--glass-bg); padding: 50px 40px; border-radius: 16px; border: 1px solid var(--border-glass); text-align: center; width: 100%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .login-box { background: var(--glass-bg); padding: 40px 30px; border-radius: 16px; border: 1px solid var(--border-glass); text-align: center; width: 90%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         .input-login { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; }
         .input-login:focus { border-color: var(--brand-orange); }
         .btn-login { width: 100%; background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; padding: 15px; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: transform 0.2s; margin-top: 10px; }
-        .btn-login:hover { transform: translateY(-2px); }
         
         #dashboard-screen { display: none; height: 100vh; flex-direction: column; }
-        .topbar { background: rgba(15, 23, 42, 0.9); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
-        .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
-        .btn-home { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; text-decoration: none; display: flex; align-items: center; gap: 8px;}
-        .btn-home:hover { background: rgba(56, 189, 248, 0.1); }
+        .topbar { background: rgba(15, 23, 42, 0.9); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; }
+        .btn-logout { background: transparent; border: 1px solid var(--danger); color: #ef4444; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem;}
+        .btn-home { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem;}
 
-        .main-content { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 20px 0; }
-        .menu-item { padding: 15px 25px; color: var(--text-muted); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; border-left: 3px solid transparent; }
+        .main-content { display: flex; flex: 1; overflow: hidden; flex-direction: row; } /* Row por defecto para PC */
+        
+        .sidebar { width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 15px 0; flex-shrink: 0;}
+        .menu-item { padding: 15px 20px; color: var(--text-muted); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s; border-left: 3px solid transparent; font-size: 0.9rem;}
         .menu-item:hover, .menu-item.active { background: rgba(56, 189, 248, 0.1); color: var(--neon-blue); border-left-color: var(--neon-blue); }
         
-        .folder-area { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-deep); display: flex; flex-direction: column;}
-        .section-header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px;}
-        .section-title { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0; }
+        .folder-area { flex: 1; padding: 30px; overflow-y: auto; background: var(--bg-deep); display: flex; flex-direction: column; width: 100%;}
+        .section-header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+        .section-title { font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0; }
         
-        .materia-tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;}
-        .materia-tab { background: var(--glass-bg); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.3s; }
+        .materia-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;}
+        .materia-tab { background: var(--glass-bg); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
         .materia-tab.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); }
 
-        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 30px;}
-        .carpeta-card { background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative;}
-        .carpeta-card:hover { transform: translateY(-5px); border-color: var(--brand-orange); box-shadow: 0 10px 20px rgba(255, 115, 21, 0.1); }
-        .carpeta-card i.folder-icon { font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px; }
-        .carpeta-card img.center-logo { height: 50px; margin-bottom: 10px; object-fit: contain; border-radius: 4px; }
-        .carpeta-card .titulo { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 1rem;}
-        .carpeta-card .subtitulo { font-size: 0.75rem; color: var(--text-muted); }
+        .grid-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;}
+        .carpeta-card { background: var(--glass-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center;}
+        .carpeta-card:hover { transform: translateY(-3px); border-color: var(--brand-orange); box-shadow: 0 5px 15px rgba(255, 115, 21, 0.1); }
+        .carpeta-card i.folder-icon { font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 12px; }
+        .carpeta-card img.center-logo { height: 40px; margin-bottom: 10px; object-fit: contain; border-radius: 4px; }
+        .carpeta-card .titulo { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 0.95rem;}
+        .carpeta-card .subtitulo { font-size: 0.7rem; color: var(--text-muted); }
         
-        .gestion-box { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 30px; margin-bottom: 30px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; text-align: left; }
-        .form-group label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
-        .form-input { background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 12px; border-radius: 8px; font-size: 0.95rem; outline: none; }
+        /* Contenedor de Detalles (MASC) adaptado */
+        .gestion-box { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+        .form-group label { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
+        .form-input { background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; padding: 10px; border-radius: 6px; font-size: 0.9rem; outline: none; }
         .form-input:focus { border-color: var(--brand-orange); }
 
-        .docs-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .docs-table th, .docs-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-glass); font-size: 0.9rem; }
+        .docs-table { width: 100%; border-collapse: collapse; margin-top: 15px; display: block; overflow-x: auto; white-space: nowrap; }
+        .docs-table th, .docs-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-glass); font-size: 0.85rem; }
         .docs-table th { color: var(--brand-orange); background: rgba(0,0,0,0.2); }
         
-        .btn-upload { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px;}
+        .btn-upload { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px;}
         .btn-upload:hover { background: var(--neon-blue); color: #000; }
-        .btn-view { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: 0.3s; }
+        .btn-view { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; }
         .btn-view:hover { background: var(--success); color: #fff; }
 
-        /* MODALES LIMPIOS */
-        .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--bg-panel); padding: 35px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid var(--border-glass); text-align: center; }
-        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.3s;}
-        .btn-crear:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
+        /* MODALES */
+        .modal { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px;}
+        .modal-content { background: var(--bg-panel); padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid var(--border-glass); text-align: center; }
+        .btn-crear { background: var(--neon-blue); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.3s;}
         
-        .modal-visor-content { background: var(--bg-panel); border: 1px solid var(--border-glass); width: 85vw; height: 85vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
-        .modal-visor-header { padding: 15px 25px; background: rgba(0,0,0,0.4); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
-        .modal-visor-body { flex: 1; background: #1e293b; display: flex; justify-content: center; align-items: center; overflow: auto; padding: 20px; }
+        .modal-visor-content { background: var(--bg-panel); border: 1px solid var(--border-glass); width: 95vw; height: 90vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-visor-header { padding: 12px 20px; background: rgba(0,0,0,0.4); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); }
+        .modal-visor-body { flex: 1; background: #1e293b; display: flex; justify-content: center; align-items: center; padding: 10px; }
         .modal-visor-body iframe { width: 100%; height: 100%; border: none; border-radius: 6px; background: white; }
 
-        .actividad-container { margin-top: auto; background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; }
-        .actividad-header { font-size: 1rem; font-weight: bold; color: var(--brand-orange); margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;}
-        .actividad-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); padding: 10px 15px; border-radius: 8px; border-left: 3px solid var(--neon-blue); font-size: 0.85rem;}
-        .actividad-item i { color: var(--text-muted); font-size: 1.2rem; width: 25px; text-align: center;}
-        .actividad-item .detalles { flex: 1; }
-        .actividad-item .titulo-act { color: var(--text-main); font-weight: 600; }
-        .actividad-item .fecha-act { color: var(--text-muted); font-size: 0.75rem; }
-
-        .breadcrumb { display: flex; gap: 10px; color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+        .breadcrumb { display: flex; gap: 8px; color: var(--text-muted); margin-bottom: 15px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
         .breadcrumb span:hover { color: var(--brand-orange); }
+
+        /* RESPONSIVE DESIGN (MÓVILES) - SOLUCIÓN A BÓVEDA INUSABLE */
+        @media (max-width: 768px) {
+            .topbar { padding: 10px 15px; flex-wrap: wrap; }
+            .logo-oficial { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+            #badge-modo-sesion { font-size: 0.65rem; border: none; padding: 0; }
+            
+            /* El menú lateral se convierte en pestañas superiores */
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-glass); flex-direction: row; padding: 0; overflow-x: auto; white-space: nowrap; }
+            .menu-item { padding: 12px 15px; border-left: none; border-bottom: 3px solid transparent; font-size: 0.85rem; }
+            .menu-item.active { border-left: none; border-bottom-color: var(--neon-blue); }
+
+            .folder-area { padding: 15px; }
+            .grid-carpetas { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+            .carpeta-card { padding: 15px; }
+            
+            .section-header-box { flex-direction: column; align-items: flex-start; }
+            .btn-upload { margin-top: 10px; width: 100%; justify-content: center; }
+
+            .form-row { grid-template-columns: 1fr; gap: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -101,22 +114,22 @@
                 <div class="sub-brand">Acreditación 065 • IJA Jalisco</div>
             </div>
             <p style="color:var(--brand-orange); font-weight:bold; margin-bottom: 10px;">Bóveda Confidencial</p>
-            <p style="font-size: 0.75rem; color:var(--text-muted); margin-bottom: 20px;">Usa usuario <strong>admin</strong> (para guardar local y en la nube) o cualquier otro nombre para modo 100% local privado.</p>
-            <input type="text" id="user" class="input-login" placeholder="Usuario (ej. admin o local)">
+            <p style="font-size: 0.75rem; color:var(--text-muted); margin-bottom: 20px;">Usa usuario <strong>admin</strong> (para guardar local y nube) o modo privado.</p>
+            <input type="text" id="user" class="input-login" placeholder="Usuario (ej. admin)">
             <input type="password" id="pass" class="input-login" placeholder="Contraseña (45ymas)">
             <button class="btn-login" onclick="iniciarSesion()">INGRESAR</button>
-            <p id="error-msg" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold;">Contraseña incorrecta.</p>
+            <p id="error-msg" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold; font-size: 0.85rem;">Contraseña incorrecta.</p>
         </div>
     </div>
 
     <div id="dashboard-screen">
         <div class="topbar">
-            <div class="logo-oficial" style="flex-direction: row; align-items: center; gap:15px;">
-                <img src="./assets/LOGO.png" onerror="this.outerHTML='<h1 style=\\\'font-weight:900; font-size:1.2rem; color:var(--brand-orange); margin:0;\\\'>45 Y MÁS</h1>'" alt="45 Y MÁS" style="max-height: 40px; margin:0;">
-                <span id="badge-modo-sesion" style="font-size: 0.85rem; font-weight: bold; color: var(--success); border-left: 1px solid var(--border-glass); padding-left: 15px;">Modo Privado (Almacenamiento Local)</span>
+            <div class="logo-oficial">
+                <img src="./assets/LOGO.png" onerror="this.outerHTML='<h1 style=\\\'font-weight:900; font-size:1.1rem; color:var(--brand-orange); margin:0;\\\'>45 Y MÁS</h1>'" alt="45 Y MÁS" style="max-height: 35px; margin:0;">
+                <span id="badge-modo-sesion" style="font-size: 0.75rem; font-weight: bold; color: var(--success); padding-left: 10px;">Modo Privado</span>
             </div>
-            <div style="display:flex; gap: 15px;">
-                <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i> Volver a Inicio</a>
+            <div style="display:flex; gap: 8px;">
+                <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i></a>
                 <button class="btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
             </div>
         </div>
@@ -130,40 +143,40 @@
         </div>
     </div>
 
-    <!-- MODAL PARA CREAR NUEVO EXPEDIENTE JURÍDICO -->
+    <!-- MODAL CREAR EXPEDIENTE JURÍDICO -->
     <div class="modal" id="modal-crear">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px; color: var(--neon-blue);">Nuevo Expediente Jurídico</h3>
+            <h3 style="margin-bottom: 15px; color: var(--neon-blue); font-size: 1.1rem;">Nuevo Expediente Jurídico</h3>
             <div style="text-align:left;">
-                <label style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">NÚMERO DE EXPEDIENTE:</label>
+                <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">NÚMERO DE EXPEDIENTE:</label>
                 <input type="text" id="input-nuevo-juridico" class="input-login" placeholder="Ej. EXP/340/26">
             </div>
             <button class="btn-crear" onclick="guardarExpedienteJuridico()">Crear Carpeta Segura</button>
-            <button class="btn-logout" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('modal-crear').style.display='none'">Cancelar</button>
+            <button class="btn-logout" style="width: 100%; margin-top: 10px; justify-content: center;" onclick="document.getElementById('modal-crear').style.display='none'">Cancelar</button>
         </div>
     </div>
 
-    <!-- MODAL PARA CREAR NUEVO CONVENIO MASC -->
+    <!-- MODAL CREAR CONVENIO MASC -->
     <div class="modal" id="modal-crear-masc">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px; color: var(--brand-orange);">Apertura de Convenio MASC</h3>
+            <h3 style="margin-bottom: 15px; color: var(--brand-orange); font-size: 1.1rem;">Apertura Convenio MASC</h3>
             <div style="text-align:left;">
-                <label style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">NOMBRE DEL SOLICITANTE:</label>
+                <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">NOMBRE DEL SOLICITANTE:</label>
                 <input type="text" id="input-solicitante-masc" class="input-login" placeholder="Nombre completo">
                 
-                <label style="color:var(--text-muted); font-size:0.8rem; font-weight:bold; margin-bottom:5px; display:block;">RECOMENDADO POR (OPCIONAL):</label>
+                <label style="color:var(--text-muted); font-size:0.75rem; font-weight:bold; margin-bottom:5px; display:block;">RECOMENDADO POR (OPCIONAL):</label>
                 <input type="text" id="input-patrocinado-masc" class="input-login" placeholder="Ej. Eduviges">
             </div>
             <button class="btn-crear" style="background: var(--brand-orange);" onclick="procesarNuevoMASC()">Guardar Convenio</button>
-            <button class="btn-logout" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('modal-crear-masc').style.display='none'">Cancelar</button>
+            <button class="btn-logout" style="width: 100%; margin-top: 10px; justify-content: center;" onclick="document.getElementById('modal-crear-masc').style.display='none'">Cancelar</button>
         </div>
     </div>
 
-    <!-- MODAL VISOR PDF INDIVIDUAL MASC -->
+    <!-- MODAL VISOR PDF MASC -->
     <div class="modal" id="modal-visor-pdf">
         <div class="modal-visor-content">
             <div class="modal-visor-header">
-                <h3 id="visor-titulo-doc" style="color: var(--neon-blue); font-size: 1.1rem;">Visualizando Documento</h3>
+                <h3 id="visor-titulo-doc" style="color: var(--neon-blue); font-size: 1rem;">Visualizando Doc</h3>
                 <button class="btn-logout" onclick="cerrarVisorPDF()"><i class="fa-solid fa-xmark"></i> Cerrar</button>
             </div>
             <div class="modal-visor-body">
@@ -179,9 +192,9 @@
         try { if(firebaseConfig.apiKey !== "TU_API_KEY") { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } } catch(e) { console.log("Modo local"); }
 
         const catJuzgados = {
-            "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
-            "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Juzgado Especializado Niños", "Violencia Mujeres"],
-            "Mercantil": ["Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil", "Juzgado 11° Mercantil", "Juzgado 12° Mercantil"]
+            "Civil": ["Juzgado 1° Civil", "Juzgado 2° Civil", "Juzgado 3° Civil", "Juzgado 4° Civil", "Juzgado 5° Civil", "Juzgado 6° Civil"],
+            "Familiar": ["Juzgado 1° Familiar", "Juzgado 2° Familiar", "Juzgado 3° Familiar", "Juzgado 4° Familiar", "Especializado Niños", "Violencia Mujeres"],
+            "Mercantil": ["Juzgado 1° Mercantil", "Juzgado 2° Mercantil", "Juzgado 3° Mercantil", "Juzgado 4° Mercantil", "Juzgado 5° Mercantil"]
         };
         const anios = ["2026", "2025", "2024", "2023", "2022"];
         
@@ -190,34 +203,19 @@
         let nivelMasc = 0; let pathMasc = { centro: '', anio: '', tipo: '', indexExp: null };
         const tiposMascObj = { "ARRENDAMIENTO": "Preventivo Arrendamiento", "ALIMENTOS": "Alimentos y Convivencia", "DIVORCIO": "Divorcio Admtvo. y Mutuo" };
 
-        function registrarActividad(accion, detalle) {
-            let act = JSON.parse(localStorage.getItem('actividad_reciente')) || [];
-            act.unshift({ accion: accion, detalle: detalle, fecha: new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }), icon: 'fa-folder-open' });
-            if(act.length > 5) act.pop(); localStorage.setItem('actividad_reciente', JSON.stringify(act));
-        }
-
-        function generarHTMLActividad() {
-            let act = JSON.parse(localStorage.getItem('actividad_reciente')) || [];
-            if(act.length === 0) return '';
-            return `<div class="actividad-container" style="margin-top:40px;"><div class="actividad-header"><i class="fa-solid fa-clock-rotate-left"></i> Actividad Reciente</div><div class="actividad-list">${act.map(a => `<div class="actividad-item"><i class="fa-solid ${a.icon}"></i><div class="detalles"><div class="titulo-act">${a.accion}</div><div class="fecha-act">${a.detalle} -${a.fecha}</div></div></div>`).join('')}</div></div>`;
-        }
-
         async function iniciarSesion() {
             const u = document.getElementById('user').value.trim(); const p = document.getElementById('pass').value;
             if(p === '45ymas') {
                 esAdmin = (u.toLowerCase() === 'admin');
-                localStorage.setItem('usuario_admin', esAdmin); // GUARDA ESTADO PARA EL VISOR HÍBRIDO
-                
+                localStorage.setItem('usuario_admin', esAdmin);
                 document.getElementById('login-screen').style.display = 'none'; 
                 document.getElementById('dashboard-screen').style.display = 'flex';
                 
                 if(esAdmin && db) {
-                    document.getElementById('badge-modo-sesion').innerHTML = "☁️ Modo Admin (Sincronizado a Nube Híbrida)";
+                    document.getElementById('badge-modo-sesion').innerHTML = "☁️ Admin";
                     document.getElementById('badge-modo-sesion').style.color = "var(--neon-blue)";
                     await sincronizarDesdeNube();
-                } else {
-                    cargarLocales();
-                }
+                } else { cargarLocales(); }
                 mostrarMenu('juridico');
             } else { document.getElementById('error-msg').style.display = 'block'; }
         }
@@ -234,19 +232,19 @@
 
             if (vistaActual === 'juridico') {
                 if (nivelJuridico === 0) {
-                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Base de Juzgados</div></div><div class="materia-tabs"><div class="materia-tab ${materiaActiva === 'Civil' ? 'active' : ''}" onclick="materiaActiva='Civil'; renderizarVista()">Materia Civil</div><div class="materia-tab ${materiaActiva === 'Familiar' ? 'active' : ''}" onclick="materiaActiva='Familiar'; renderizarVista()">Materia Familiar</div><div class="materia-tab ${materiaActiva === 'Mercantil' ? 'active' : ''}" onclick="materiaActiva='Mercantil'; renderizarVista()">Materia Mercantil</div></div><div class="grid-carpetas">`;
+                    html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Base de Juzgados</div></div><div class="materia-tabs"><div class="materia-tab ${materiaActiva === 'Civil' ? 'active' : ''}" onclick="materiaActiva='Civil'; renderizarVista()">Civil</div><div class="materia-tab ${materiaActiva === 'Familiar' ? 'active' : ''}" onclick="materiaActiva='Familiar'; renderizarVista()">Familiar</div><div class="materia-tab ${materiaActiva === 'Mercantil' ? 'active' : ''}" onclick="materiaActiva='Mercantil'; renderizarVista()">Mercantil</div></div><div class="grid-carpetas">`;
                     catJuzgados[materiaActiva].forEach(j => { html += `<div class="carpeta-card" onclick="nivelJuridico=1; pathJuridico.juzgado='${j}'; renderizarVista()"><i class="fa-solid fa-folder folder-icon"></i><div class="titulo">${j}</div><div class="subtitulo">Expedientes locales</div></div>`; });
-                    html += `</div>${generarHTMLActividad()}`;
+                    html += `</div>`;
                 } 
                 else if (nivelJuridico === 1) {
-                    html += `<div class="breadcrumb" onclick="nivelJuridico=0; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Juzgados</div><div class="section-title" style="margin-bottom:20px;">${pathJuridico.juzgado} > Año de Inicio</div><div class="grid-carpetas">`;
+                    html += `<div class="breadcrumb" onclick="nivelJuridico=0; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Juzgados</div><div class="section-title" style="margin-bottom:20px;">${pathJuridico.juzgado} > Año de Inicio</div><div class="grid-carpetas">`;
                     anios.forEach(a => { html += `<div class="carpeta-card" onclick="nivelJuridico=2; pathJuridico.anio='${a}'; renderizarVista()"><i class="fa-solid fa-calendar folder-icon" style="color:var(--brand-orange);"></i><div class="titulo">${a}</div><div class="subtitulo">Año judicial</div></div>`; });
                     html += `</div>`;
                 }
                 else if (nivelJuridico === 2) {
-                    html += `<div class="breadcrumb" onclick="nivelJuridico=1; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Años</div><div class="section-header-box"><div class="section-title">${pathJuridico.juzgado} > ${pathJuridico.anio} > Expedientes</div><button class="btn-upload" onclick="document.getElementById('modal-crear').style.display='flex'"><i class="fa-solid fa-plus"></i> Añadir Expediente</button></div><div class="grid-carpetas">`;
+                    html += `<div class="breadcrumb" onclick="nivelJuridico=1; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Años</div><div class="section-header-box"><div class="section-title">${pathJuridico.anio} > Expedientes</div><button class="btn-upload" onclick="document.getElementById('modal-crear').style.display='flex'"><i class="fa-solid fa-plus"></i> Añadir</button></div><div class="grid-carpetas">`;
                     let exps = JSON.parse(localStorage.getItem(`exp_${pathJuridico.juzgado}_${pathJuridico.anio}`)) || [];
-                    exps.forEach(e => { html += `<div class="carpeta-card" onclick="abrirVisorCentral('${e.nombre}')"><i class="fa-solid fa-file-pdf folder-icon" style="color:var(--success);"></i><div class="titulo">${e.nombre}</div><div class="subtitulo">Gestión Digital Permanente</div></div>`; });
+                    exps.forEach(e => { html += `<div class="carpeta-card" onclick="abrirVisorCentral('${e.nombre}')"><i class="fa-solid fa-file-pdf folder-icon" style="color:var(--success);"></i><div class="titulo">${e.nombre}</div><div class="subtitulo">Gestión Digital</div></div>`; });
                     html += `</div>`;
                 }
             } 
@@ -254,20 +252,20 @@
                 if (nivelMasc === 0) {
                     html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-handshake"></i> Centros de Mediación MASC</div></div><div class="grid-carpetas">`;
                     ["Centro 065", "Centro 353"].forEach(c => { html += `<div class="carpeta-card" onclick="nivelMasc=1; pathMasc.centro='${c}'; renderizarVista()"><img src="./assets/logo45.jpeg" class="center-logo" onerror="this.outerHTML='<i class=\\\'fa-solid fa-building folder-icon\\\' style=\\\'color:var(--brand-orange);\\\'></i>'"><div class="titulo">${c}</div><div class="subtitulo">Sede Activa</div></div>`; });
-                    html += `</div>${generarHTMLActividad()}`;
+                    html += `</div>`;
                 }
                 else if (nivelMasc === 1) {
-                    html += `<div class="breadcrumb" onclick="nivelMasc=0; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Centros</div><div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > Años</div><div class="grid-carpetas">`;
+                    html += `<div class="breadcrumb" onclick="nivelMasc=0; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Centros</div><div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > Años</div><div class="grid-carpetas">`;
                     anios.forEach(a => { html += `<div class="carpeta-card" onclick="nivelMasc=2; pathMasc.anio='${a}'; renderizarVista()"><i class="fa-solid fa-calendar folder-icon" style="color:var(--brand-orange);"></i><div class="titulo">${a}</div><div class="subtitulo">Registro MASC</div></div>`; });
                     html += `</div>`;
                 }
                 else if (nivelMasc === 2) {
-                    html += `<div class="breadcrumb" onclick="nivelMasc=1; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Años</div><div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > ${pathMasc.anio} > Tipo de Convenio</div><div class="grid-carpetas">`;
+                    html += `<div class="breadcrumb" onclick="nivelMasc=1; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Años</div><div class="section-title" style="margin-bottom:20px;">${pathMasc.centro} > ${pathMasc.anio} > Tipo de Convenio</div><div class="grid-carpetas">`;
                     for(let key in tiposMascObj) { html += `<div class="carpeta-card" onclick="nivelMasc=3; pathMasc.tipo='${key}'; renderizarVista()"><i class="fa-solid fa-folder-open folder-icon" style="color:var(--brand-orange);"></i><div class="titulo">${tiposMascObj[key]}</div><div class="subtitulo">Categoría MASC</div></div>`; }
                     html += `</div>`;
                 }
                 else if (nivelMasc === 3) {
-                    html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Tipos</div><div class="section-header-box"><div class="section-title">${pathMasc.centro} > ${pathMasc.anio} > ${tiposMascObj[pathMasc.tipo]}</div><button class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'"><i class="fa-solid fa-plus"></i> Nuevo Convenio</button></div><div class="grid-carpetas">`;
+                    html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Tipos</div><div class="section-header-box"><div class="section-title">${pathMasc.anio} > ${tiposMascObj[pathMasc.tipo]}</div><button class="btn-upload" onclick="document.getElementById('modal-crear-masc').style.display='flex'"><i class="fa-solid fa-plus"></i> Nuevo</button></div><div class="grid-carpetas">`;
                     listaExpedientesMasc.forEach((m, i) => { if(m.centro === pathMasc.centro && m.anio === pathMasc.anio && m.tipo === pathMasc.tipo) {
                         html += `<div class="carpeta-card" onclick="nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()"><i class="fa-solid fa-file-contract folder-icon" style="color:var(--success);"></i><div class="titulo">${m.numero}</div><div class="subtitulo">${m.solicitante || 'Sin Solicitante'}</div></div>`; 
                     }});
@@ -275,25 +273,23 @@
                 }
                 else if (nivelMasc === 4) {
                     let m = listaExpedientesMasc[pathMasc.indexExp];
-                    html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Expedientes</div>
-                    <div class="section-header-box" style="align-items: center;"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> Expediente MASC: ${m.numero}</div><button class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.9rem;" onclick="abrirVisorCentral('MASC-${m.numero}')"><i class="fa-solid fa-eye"></i> Ver Expediente Completo (Bóveda Profunda)</button></div>
+                    html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Expedientes</div>
+                    <div class="section-header-box" style="align-items: center;"><div class="section-title"><i class="fa-solid fa-folder-tree"></i> MASC: ${m.numero}</div><button class="btn-upload" style="background: var(--neon-blue); color: #000; font-size: 0.8rem;" onclick="abrirVisorCentral('MASC-${m.numero}')"><i class="fa-solid fa-eye"></i> Visor Completo</button></div>
                     <div class="gestion-box">
-                        <div class="form-row"><div class="form-group"><label>Nombre del Solicitante:</label><input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo"></div><div class="form-group"><label>Recomendado o Patrocinado por:</label><input type="text" class="form-input" value="${m.patrocinado || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'patrocinado', this.value)" placeholder="Ej. Eduviges"></div></div>
-                        <h4 style="color:var(--brand-orange); margin: 20px 0 10px 0; font-size:1rem;"><i class="fa-solid fa-file-pdf"></i> Documentación Obligatoria MASC</h4>
+                        <div class="form-row"><div class="form-group"><label>Solicitante:</label><input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo"></div><div class="form-group"><label>Patrocinado por:</label><input type="text" class="form-input" value="${m.patrocinado || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'patrocinado', this.value)" placeholder="Ej. Eduviges"></div></div>
+                        <h4 style="color:var(--brand-orange); margin: 20px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-file-pdf"></i> Documentación Obligatoria</h4>
                         <table class="docs-table">
                             <tr><th>Documento Requerido</th><th>Estado</th><th>Acción Manual</th></tr>
-                            <tr><td><strong>1. Solicitud firmada</strong></td><td>${m.docs && m.docs.solicitud ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-solicitud" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'solicitud', event)"><button class="btn-upload" onclick="document.getElementById('file-solicitud').click()">Súbela</button> ${m.docs && m.docs.solicitud ? `<button class="btn-view" onclick="verDocumento('${m.docs.solicitud}', 'Solicitud')">Ver</button>` : ''}</td></tr>
-                            <tr><td><strong>2. Dictamen de viabilidad</strong></td><td>${m.docs && m.docs.dictamen ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-dictamen" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'dictamen', event)"><button class="btn-upload" onclick="document.getElementById('file-dictamen').click()">Cargue el PDF</button> ${m.docs && m.docs.dictamen ? `<button class="btn-view" onclick="verDocumento('${m.docs.dictamen}', 'Dictamen')">Ver</button>` : ''}</td></tr>
-                            <tr><td><strong>3. Acuerdo de confidencialidad</strong></td><td>${m.docs && m.docs.acuerdo ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-acuerdo" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'acuerdo', event)"><button class="btn-upload" onclick="document.getElementById('file-acuerdo').click()">Cargar PDF</button> ${m.docs && m.docs.acuerdo ? `<button class="btn-view" onclick="verDocumento('${m.docs.acuerdo}', 'Acuerdo')">Ver</button>` : ''}</td></tr>
-                            <tr><td><strong>4. Convenio final</strong><br><label style="font-size:0.75rem; color:var(--text-muted); cursor:pointer;"><input type="checkbox" ${m.firmadoPartes ? 'checked' : ''} onchange="toggleFirmado(${pathMasc.indexExp}, this.checked)"> Firmado partes</label></td><td>${m.docs && m.docs.convenio ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-convenio" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'convenio', event)"><button class="btn-upload" onclick="document.getElementById('file-convenio').click()">Cargar PDF</button> ${m.docs && m.docs.convenio ? `<button class="btn-view" onclick="verDocumento('${m.docs.convenio}', 'Convenio')">Ver</button>` : ''}</td></tr>
-                            <tr><td><strong>5. Convenio digital (Word)</strong></td><td>${m.docs && m.docs.word ? '✅ Almacenado' : '❌ Pendiente'}</td><td><input type="file" id="file-word" accept=".doc, .docx" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'word', event)"><button class="btn-upload" onclick="document.getElementById('file-word').click()">Cargar Word</button></td></tr>
-                            <tr><td><strong>6. Identificaciones</strong></td><td>${m.docs && m.docs.identificaciones ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-ident" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'identificaciones', event)"><button class="btn-upload" onclick="document.getElementById('file-ident').click()">Cárgalas</button> ${m.docs && m.docs.identificaciones ? `<button class="btn-view" onclick="verDocumento('${m.docs.identificaciones}', 'Identificaciones')">Ver</button>` : ''}</td></tr>
-                            <tr><td><strong>7. Actas de nacimiento</strong></td><td>${m.docs && m.docs.actas ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-actas" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'actas', event)"><button class="btn-upload" onclick="document.getElementById('file-actas').click()">Cárgalas</button> ${m.docs && m.docs.actas ? `<button class="btn-view" onclick="verDocumento('${m.docs.actas}', 'Actas')">Ver</button>` : ''}</td></tr>
+                            <tr><td><strong>1. Solicitud firmada</strong></td><td>${m.docs && m.docs.solicitud ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-solicitud" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'solicitud', event)"><button class="btn-upload" onclick="document.getElementById('file-solicitud').click()">Subir</button> ${m.docs && m.docs.solicitud ? `<button class="btn-view" onclick="verDocumento('${m.docs.solicitud}', 'Solicitud')">Ver</button>` : ''}</td></tr>
+                            <tr><td><strong>2. Dictamen de viabilidad</strong></td><td>${m.docs && m.docs.dictamen ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-dictamen" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'dictamen', event)"><button class="btn-upload" onclick="document.getElementById('file-dictamen').click()">Subir</button> ${m.docs && m.docs.dictamen ? `<button class="btn-view" onclick="verDocumento('${m.docs.dictamen}', 'Dictamen')">Ver</button>` : ''}</td></tr>
+                            <tr><td><strong>3. Acuerdo de confidencialidad</strong></td><td>${m.docs && m.docs.acuerdo ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-acuerdo" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'acuerdo', event)"><button class="btn-upload" onclick="document.getElementById('file-acuerdo').click()">Subir</button> ${m.docs && m.docs.acuerdo ? `<button class="btn-view" onclick="verDocumento('${m.docs.acuerdo}', 'Acuerdo')">Ver</button>` : ''}</td></tr>
+                            <tr><td><strong>4. Convenio final</strong><br><label style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;"><input type="checkbox" ${m.firmadoPartes ? 'checked' : ''} onchange="toggleFirmado(${pathMasc.indexExp}, this.checked)"> Firmado partes</label></td><td>${m.docs && m.docs.convenio ? '✅ Cargado' : '❌ Pendiente'}</td><td><input type="file" id="file-convenio" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'convenio', event)"><button class="btn-upload" onclick="document.getElementById('file-convenio').click()">Subir</button> ${m.docs && m.docs.convenio ? `<button class="btn-view" onclick="verDocumento('${m.docs.convenio}', 'Convenio')">Ver</button>` : ''}</td></tr>
+                            <tr><td><strong>5. Convenio digital (Word)</strong></td><td>${m.docs && m.docs.word ? '✅ Almacenado' : '❌ Pendiente'}</td><td><input type="file" id="file-word" accept=".doc, .docx" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'word', event)"><button class="btn-upload" onclick="document.getElementById('file-word').click()">Subir</button></td></tr>
                         </table>
-                        <h4 style="color:var(--brand-orange); margin: 30px 0 10px 0; font-size:1rem;"><i class="fa-solid fa-gavel"></i> Resoluciones y Tiempos del IJA</h4>
+                        <h4 style="color:var(--brand-orange); margin: 30px 0 10px 0; font-size:0.9rem;"><i class="fa-solid fa-gavel"></i> Resoluciones y Tiempos del IJA</h4>
                         <div class="form-row">
-                            <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.prevencionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'prevencion', this.checked)"> Marcar Prevención</label>${m.prevencionActiva ? `<p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">Contestación: ${m.docs && m.docs.contestacionPrevencion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-contestacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'contestacionPrevencion', event)"><button class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-contestacion').click()">Cárgala en PDF</button> ${m.docs && m.docs.contestacionPrevencion ? `<button class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.contestacionPrevencion}', 'Contestación')">Ver</button>` : ''}` : ''}</div>
-                            <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.validacionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'validacion', this.checked)"> Validado / No Sanción</label>${m.validacionActiva ? `<p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">Validación: ${m.docs && m.docs.documentoValidacion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-validacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'documentoValidacion', event)"><button class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-validacion').click()">Cárgala en PDF</button> ${m.docs && m.docs.documentoValidacion ? `<button class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.documentoValidacion}', 'Validación')">Ver</button>` : ''}` : ''}</div>
+                            <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.prevencionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'prevencion', this.checked)"> Marcar Prevención</label>${m.prevencionActiva ? `<p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Contestación: ${m.docs && m.docs.contestacionPrevencion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-contestacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'contestacionPrevencion', event)"><button class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-contestacion').click()">Subir</button> ${m.docs && m.docs.contestacionPrevencion ? `<button class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.contestacionPrevencion}', 'Contestación')">Ver</button>` : ''}` : ''}</div>
+                            <div class="form-group" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;"><label><input type="checkbox" ${m.validacionActiva ? 'checked' : ''} onchange="toggleResolucion(${pathMasc.indexExp}, 'validacion', this.checked)"> Validado / No Sanción</label>${m.validacionActiva ? `<p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Validación: ${m.docs && m.docs.documentoValidacion ? '✅ Sí' : '❌ No'}</p><input type="file" id="file-validacion" accept="application/pdf" style="display:none" onchange="subirDocMASC(${pathMasc.indexExp}, 'documentoValidacion', event)"><button class="btn-upload" style="margin-top:8px;" onclick="document.getElementById('file-validacion').click()">Subir</button> ${m.docs && m.docs.documentoValidacion ? `<button class="btn-view" style="margin-top:8px;" onclick="verDocumento('${m.docs.documentoValidacion}', 'Validación')">Ver</button>` : ''}` : ''}</div>
                         </div>
                     </div>`;
                 }
@@ -301,24 +297,14 @@
             area.innerHTML = html;
         }
 
-        function guardarExpedienteJuridico() {
-            let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return;
-            let key = `exp_${pathJuridico.juzgado}_${pathJuridico.anio}`; let exps = JSON.parse(localStorage.getItem(key)) || []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); registrarActividad("Expediente Creado", `Creado ${val} en ${pathJuridico.juzgado}`); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista();
-        }
-
-        // REDIRECCIONA AL VISOR DONDE SE HARÁ LA MAGIA DE GUARDADO
-        function abrirVisorCentral(nombreExp) {
-            localStorage.setItem('expediente_abierto', nombreExp);
-            registrarActividad("Auditoría", `Abriendo en Visor Inteligente: ${nombreExp}`);
-            window.location.href = 'visor-expediente.html';
-        }
-
-        async function procesarNuevoMASC() { let solicitante = document.getElementById('input-solicitante-masc').value.trim(); if(!solicitante) return; let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); let filtrados = listaExpedientesMasc.filter(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio); let numFinal = `${(filtrados.length + 1).toString().padStart(3, '0')}/${pathMasc.anio.slice(-2)}`; listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, docs: {} }); await guardarEnBDMasc(); registrarActividad("Nuevo MASC", `Apertura de expediente ${numFinal}`); document.getElementById('modal-crear-masc').style.display = 'none'; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; renderizarVista(); }
+        function guardarExpedienteJuridico() { let val = document.getElementById('input-nuevo-juridico').value.trim(); if(!val) return; let key = `exp_${pathJuridico.juzgado}_${pathJuridico.anio}`; let exps = JSON.parse(localStorage.getItem(key)) || []; exps.push({ nombre: val }); localStorage.setItem(key, JSON.stringify(exps)); document.getElementById('modal-crear').style.display = 'none'; document.getElementById('input-nuevo-juridico').value = ''; renderizarVista(); }
+        function abrirVisorCentral(nombreExp) { localStorage.setItem('expediente_abierto', nombreExp); window.location.href = 'visor-expediente.html'; }
+        async function procesarNuevoMASC() { let solicitante = document.getElementById('input-solicitante-masc').value.trim(); if(!solicitante) return; let patrocinado = document.getElementById('input-patrocinado-masc').value.trim(); let filtrados = listaExpedientesMasc.filter(m => m.centro === pathMasc.centro && m.anio === pathMasc.anio); let numFinal = `${(filtrados.length + 1).toString().padStart(3, '0')}/${pathMasc.anio.slice(-2)}`; listaExpedientesMasc.push({ numero: numFinal, centro: pathMasc.centro, anio: pathMasc.anio, tipo: pathMasc.tipo, solicitante: solicitante, patrocinado: patrocinado || "", firmadoPartes: false, prevencionActiva: false, validacionActiva: false, docs: {} }); await guardarEnBDMasc(); document.getElementById('modal-crear-masc').style.display = 'none'; document.getElementById('input-solicitante-masc').value = ''; document.getElementById('input-patrocinado-masc').value = ''; renderizarVista(); }
         async function guardarCampoMASC(index, campo, valor) { listaExpedientesMasc[index][campo] = valor; await guardarEnBDMasc(); }
         async function toggleFirmado(index, valor) { listaExpedientesMasc[index].firmadoPartes = valor; await guardarEnBDMasc(); }
         async function toggleResolucion(index, tipo, valor) { if(tipo === 'prevencion') listaExpedientesMasc[index].prevencionActiva = valor; if(tipo === 'validacion') listaExpedientesMasc[index].validacionActiva = valor; await guardarEnBDMasc(); renderizarVista(); }
-        function subirDocMASC(index, tipoDoc, event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = async function(e) { if(!listaExpedientesMasc[index].docs) listaExpedientesMasc[index].docs = {}; listaExpedientesMasc[index].docs[tipoDoc] = e.target.result; await guardarEnBDMasc(); registrarActividad("Documento MASC", `Adjuntado ${tipoDoc} en ${listaExpedientesMasc[index].numero}`); renderizarVista(); }; reader.readAsDataURL(file); }
-        function verDocumento(base64Data, titulo) { document.getElementById('visor-titulo-doc').innerText = "Visualizando: " + titulo; document.getElementById('iframe-pdf-visor').src = base64Data; document.getElementById('modal-visor-pdf').style.display = 'flex'; }
+        function subirDocMASC(index, tipoDoc, event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = async function(e) { if(!listaExpedientesMasc[index].docs) listaExpedientesMasc[index].docs = {}; listaExpedientesMasc[index].docs[tipoDoc] = e.target.result; await guardarEnBDMasc(); renderizarVista(); }; reader.readAsDataURL(file); }
+        function verDocumento(base64Data, titulo) { document.getElementById('visor-titulo-doc').innerText = titulo; document.getElementById('iframe-pdf-visor').src = base64Data; document.getElementById('modal-visor-pdf').style.display = 'flex'; }
         function cerrarVisorPDF() { document.getElementById('modal-visor-pdf').style.display = 'none'; document.getElementById('iframe-pdf-visor').src = ''; }
     </script>
 </body>
