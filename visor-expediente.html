@@ -17,10 +17,7 @@
         :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.95); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --danger: #ef4444; --success: #10b981; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        ::-webkit-scrollbar { width: 6px; height: 6px; } 
-        ::-webkit-scrollbar-track { background: var(--bg-deep); } 
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: var(--bg-deep); } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         
         .topbar { background: var(--bg-panel); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 100; position: relative; }
         .logo-oficial { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
@@ -32,7 +29,6 @@
         .btn-accion { border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); } .btn-accion:hover { background: var(--neon-blue); color: #000; }
 
         .workspace { display: flex; flex: 1; overflow: hidden; position: relative; width: 100%; }
-
         .sidebar-fojas { width: 250px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; z-index: 50; flex-shrink: 0; }
         .sidebar-herramientas { width: 320px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; z-index: 50; flex-shrink: 0; }
         
@@ -71,7 +67,7 @@
         .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: var(--bg-deep); width: 100%; }
         #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute; transform-origin: top center; transition: transform 0.2s ease;}
         #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5; transform-origin: top center; transition: transform 0.2s ease;} 
-        #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 850px; min-height: 100%; padding: 20px; font-family: 'Arial', sans-serif; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
+        #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 850px; min-height: 100%; padding: 20px; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
         
         .zoom-controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 40; backdrop-filter: blur(5px);}
 
@@ -79,29 +75,18 @@
         .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 30px; border-radius: 12px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);}
         .barra-fondo { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; margin: 20px 0; overflow: hidden; }
         .barra-llena { width: 0%; height: 100%; background: var(--neon-blue); transition: width 0.3s ease; }
-
         .mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 45; }
-
-        .mobile-only { display: none; }
-        .desktop-only { display: flex; }
+        .mobile-only { display: none; } .desktop-only { display: flex; }
 
         @media (max-width: 992px) {
-            .mobile-only { display: flex; }
-            .desktop-only { display: none; }
-            
+            .mobile-only { display: flex; } .desktop-only { display: none; }
             .topbar { padding: 10px; flex-wrap: wrap; }
             .topbar-branding { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
             .topbar-actions { width: 100%; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-            
-            .expediente-title { max-width: 100px; font-size: 0.7rem; }
-            .btn { font-size: 0.75rem; padding: 8px 10px; }
-
             .sidebar-fojas { position: absolute; left: 0; top: 0; height: 100%; transform: translateX(-100%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); width: 280px; max-width: 80vw; }
             .sidebar-fojas.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.7); }
-            
             .sidebar-herramientas { position: absolute; right: 0; top: 0; height: 100%; transform: translateX(100%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); width: 300px; max-width: 85vw; }
             .sidebar-herramientas.open { transform: translateX(0); box-shadow: -10px 0 30px rgba(0,0,0,0.7); }
-
             .mobile-overlay.active { display: block; }
         }
     </style>
@@ -111,22 +96,17 @@
     <div class="topbar">
         <div class="topbar-branding">
             <button class="btn mobile-only" onclick="togglePanel('fojas')"><i class="fa-solid fa-bars"></i> Fojas</button>
-            
             <div class="logo-oficial" style="align-items: center; text-align: center; flex: 1;">
                 <div style="font-weight:900; font-size:1rem; color:var(--brand-orange); letter-spacing:-1px;"><i class="fa-solid fa-scale-balanced"></i> 45<span style="color:var(--text-main);">YMÁS</span></div>
-                <div class="sub-brand" id="etiqueta-almacenamiento" style="font-size: 0.55rem;">Bóveda Inteligente</div>
+                <div class="sub-brand" style="font-size: 0.55rem;">Bóveda Inteligente</div>
             </div>
-            
             <button class="btn mobile-only" onclick="togglePanel('herramientas')"><i class="fa-solid fa-toolbox"></i></button>
         </div>
 
         <div class="topbar-actions">
             <a href="index.html" class="btn"><i class="fa-solid fa-house"></i> <span class="desktop-only">Inicio</span></a>
             <a href="portal-pro.html" class="btn"><i class="fa-solid fa-vault"></i> <span class="desktop-only">Bóveda</span></a>
-            
             <span class="expediente-title desktop-only" id="titulo-exp">EXP/000/00</span>
-            
-            <!-- Carga libre para PDFs externos no anexos a la bóveda -->
             <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumentoManual(event)">
             <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar</button>
             <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearAlertasInfalible()"><i class="fa-solid fa-brain"></i> IA</button>
@@ -151,15 +131,12 @@
         <div class="visor-central" id="contenedor-visor-zoom">
             <canvas id="canvas-principal" style="display:none;"></canvas>
             <canvas id="canvas-dibujo" style="display:none;"></canvas>
-            
             <div id="html-visor"></div>
-            
             <div style="text-align:center; color:var(--text-muted); margin-top: 30%;" id="msg-vacio">
                 <i class="fa-solid fa-folder-open" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
                 <h4>Visor Inactivo</h4>
                 <p style="font-size: 0.8rem;">Carga o selecciona una foja.</p>
             </div>
-
             <div class="zoom-controls" id="controles-zoom" style="display: none;">
                 <button class="btn btn-mini" style="width:35px; height:35px; font-size: 1rem;" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
                 <button class="btn btn-mini" style="width:35px; height:35px; font-size: 1rem;" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
@@ -196,9 +173,9 @@
 
     <div id="pantalla-progreso">
         <div class="progreso-card">
-            <i class="fa-solid fa-hdd fa-fade" id="icono-progreso" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+            <i class="fa-solid fa-cloud-arrow-down fa-fade" id="icono-progreso" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
             <h3 style="color: white; margin-bottom: 5px; font-size: 1.1rem;" id="titulo-progreso">Procesando Bóveda</h3>
-            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.8rem;">Conectando base de datos...</p>
+            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.8rem;">Conectando a la Nube...</p>
             <p id="texto-subprogreso" style="color: var(--brand-orange); font-size: 0.7rem; margin-top: 8px; font-weight: bold;"></p>
             <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
             <button class="btn btn-accion" id="btn-cancelar-ia" style="margin-top: 15px; font-size: 0.75rem; padding: 8px 15px; display:none;" onclick="cancelarProcesos()">Detener</button>
@@ -212,12 +189,9 @@
         document.getElementById('titulo-exp').innerText = nombreExpediente;
         if(window.innerWidth > 1024) document.getElementById('titulo-exp').style.display = 'inline-block';
 
-        let arrayFojas = []; 
-        let fojaSeleccionadaIndex = 0;
-        let zoomGlobal = 1.0; 
-        let detenerEjecucion = false;
-        
+        let arrayFojas = []; let fojaSeleccionadaIndex = 0; let zoomGlobal = 1.0; let detenerEjecucion = false;
         window.pdfDocs = []; 
+        let gDriveToken = localStorage.getItem('drive_token') || null; // Llave heredada de Bóveda
         
         const categoriasIA = [
             { nombre: "Resolución", palabras: ['sentencia', 'resuelve', 'resolutivo', 'acuerdo', 'convenio'], colorFondo: 'rgba(231, 76, 60, 0.4)', colorBorde: '#e74c3c' },
@@ -227,249 +201,126 @@
         ];
 
         let resultadosKeywords = {}; window.mapaAlertasPorFoja = {}; 
-
-        function togglePanel(panelName) {
-            const fojas = document.getElementById('panel-fojas');
-            const herr = document.getElementById('panel-herramientas');
-            const overlay = document.getElementById('mobile-overlay');
-
-            if(panelName === 'fojas') {
-                herr.classList.remove('open');
-                fojas.classList.toggle('open');
-            } else if (panelName === 'herramientas') {
-                fojas.classList.remove('open');
-                herr.classList.toggle('open');
-            }
-            overlay.classList.toggle('active', fojas.classList.contains('open') || herr.classList.contains('open'));
-        }
-
+        function togglePanel(panelName) { const fojas = document.getElementById('panel-fojas'); const herr = document.getElementById('panel-herramientas'); const overlay = document.getElementById('mobile-overlay'); if(panelName === 'fojas') { herr.classList.remove('open'); fojas.classList.toggle('open'); } else if (panelName === 'herramientas') { fojas.classList.remove('open'); herr.classList.toggle('open'); } overlay.classList.toggle('active', fojas.classList.contains('open') || herr.classList.contains('open')); }
         function cerrarPaneles() { document.getElementById('panel-fojas').classList.remove('open'); document.getElementById('panel-herramientas').classList.remove('open'); document.getElementById('mobile-overlay').classList.remove('active'); }
 
         window.onload = async () => {
-            mostrarProgreso("fa-cloud-arrow-down", "Cargando Bóveda", "Extrayendo expedientes...");
+            mostrarProgreso("fa-cloud-arrow-down", "Cargando Expediente", "Contactando servidores...");
             try {
                 let isMulti = localStorage.getItem('modo_multidoc') === 'true';
-                
                 if(isMulti) {
                     let paquete = await localforage.getItem('paquete_masc_' + nombreExpediente);
-                    if (paquete && paquete.length > 0) {
-                        await procesarPaqueteMultidoc(paquete);
-                    } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Expediente vacío.</p>";}
+                    if (paquete && paquete.length > 0) { await procesarPaqueteMultidoc(paquete); } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Expediente vacío.</p>";}
                 } else {
                     let archivo = await localforage.getItem('archivo_' + nombreExpediente);
-                    if (archivo) {
-                        await procesarArchivoInterno(archivo);
-                    } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Sube un archivo para comenzar.</p>";}
+                    if (archivo) { await procesarArchivoInterno(archivo); } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Sube un archivo para comenzar.</p>";}
                 }
-            } catch (error) {
-                console.error("Error al cargar:", error);
-                ocultarProgreso();
-            }
+            } catch (error) { console.error("Error al cargar:", error); ocultarProgreso(); }
         };
 
-        // --- CONVERTIDOR UNIVERSAL (SOPORTA FIREBASE, LOCALFORAGE Y BASE64) ---
         function base64ToUint8Array(base64) {
-            const arr = base64.split(',');
-            const bstr = atob(arr.length > 1 ? arr[1] : arr[0]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while(n--) { u8arr[n] = bstr.charCodeAt(n); }
-            return u8arr;
+            const arr = base64.split(','); const bstr = atob(arr.length > 1 ? arr[1] : arr[0]); let n = bstr.length; const u8arr = new Uint8Array(n);
+            while(n--) { u8arr[n] = bstr.charCodeAt(n); } return u8arr;
         }
 
         async function obtenerBytesDocumento(dataRef) {
             if (typeof dataRef === 'string') {
-                if (dataRef.startsWith('http')) {
-                    let res = await fetch(dataRef);
+                if (dataRef.startsWith('gdrive:')) {
+                    if(!gDriveToken) throw new Error("Falta autenticación de Google Drive");
+                    let id = dataRef.split(':')[1];
+                    let res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { 'Authorization': 'Bearer ' + gDriveToken } });
                     return new Uint8Array(await res.arrayBuffer());
                 } else if (dataRef.startsWith('localforage:')) {
-                    let id = dataRef.split(':')[1];
-                    let base64 = await localforage.getItem(id);
-                    return base64ToUint8Array(base64);
-                } else {
-                    return base64ToUint8Array(dataRef);
-                }
-            } else if (dataRef instanceof Blob || dataRef instanceof File) {
-                 return new Uint8Array(await dataRef.arrayBuffer());
-            }
+                    let id = dataRef.split(':')[1]; let base64 = await localforage.getItem(id); return base64ToUint8Array(base64);
+                } else { return base64ToUint8Array(dataRef); }
+            } else if (dataRef instanceof Blob || dataRef instanceof File) { return new Uint8Array(await dataRef.arrayBuffer()); }
             return null;
         }
 
-        async function cargarDocumentoManual(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            mostrarProgreso("fa-save", "Guardando Documento", "Asegurando archivo...");
-            const archivoData = { blob: file, name: file.name, type: file.type };
-            localStorage.setItem('modo_multidoc', 'false');
-            await localforage.setItem('archivo_' + nombreExpediente, archivoData);
-            await procesarArchivoInterno(archivoData);
-        }
+        async function cargarDocumentoManual(event) { const file = event.target.files[0]; if (!file) return; mostrarProgreso("fa-save", "Guardando Documento", "Asegurando archivo..."); const archivoData = { blob: file, name: file.name, type: file.type }; localStorage.setItem('modo_multidoc', 'false'); await localforage.setItem('archivo_' + nombreExpediente, archivoData); await procesarArchivoInterno(archivoData); }
 
-        // --- MOTOR PARA EXPEDIENTES MÚLTIPLES MASC ---
         async function procesarPaqueteMultidoc(paquete) {
-            detenerEjecucion = false;
-            document.getElementById('texto-progreso').innerText = "Cosiendo expediente múltiple...";
-            document.getElementById('btn-cancelar-ia').style.display = 'none';
-            
+            detenerEjecucion = false; document.getElementById('texto-progreso').innerText = "Cosiendo expediente múltiple..."; document.getElementById('btn-cancelar-ia').style.display = 'none';
             arrayFojas = []; window.mapaAlertasPorFoja = {}; window.pdfDocs = [];
             categoriasIA.forEach(c => { c.palabras.forEach(p => resultadosKeywords[p] = []); });
 
             try {
                 for(let d = 0; d < paquete.length; d++) {
-                    let docInfo = paquete[d];
-                    document.getElementById('texto-subprogreso').innerText = `Integrando: ${docInfo.name}`;
-                    
+                    let docInfo = paquete[d]; document.getElementById('texto-subprogreso').innerText = `Descargando: ${docInfo.name}`;
                     let bytes = await obtenerBytesDocumento(docInfo.data);
-
-                    let pdfInstance = await pdfjsLib.getDocument(bytes).promise;
-                    window.pdfDocs.push(pdfInstance);
+                    let pdfInstance = await pdfjsLib.getDocument(bytes).promise; window.pdfDocs.push(pdfInstance);
 
                     for (let i = 1; i <= pdfInstance.numPages; i++) {
-                        arrayFojas.push({ 
-                            id: Date.now() + Math.random(), 
-                            numeroLogico: arrayFojas.length + 1, 
-                            isHtml: false, 
-                            numPaginaPdf: i, 
-                            pdfIndex: d,
-                            etiquetaDoc: i === 1 ? docInfo.name : null, 
-                            rotacion: 0 
-                        });
+                        arrayFojas.push({ id: Date.now() + Math.random(), numeroLogico: arrayFojas.length + 1, isHtml: false, numPaginaPdf: i, pdfIndex: d, etiquetaDoc: i === 1 ? docInfo.name : null, rotacion: 0 });
                     }
                     actualizarBarra(Math.round(((d+1)/paquete.length)*100));
                 }
                 
-                setTimeout(() => {
-                    ocultarProgreso();
-                    document.getElementById('btn-analizar').style.display = 'inline-flex';
-                    renderizarBarraLateralFojas();
-                    renderizarIndiceNotas(); 
-                    if(arrayFojas.length > 0) seleccionarFoja(0);
-                }, 500);
-
-            } catch(e) {
-                console.error("Error paquete", e);
-                ocultarProgreso(); alert("Ocurrió un error al descargar el paquete. Verifica tu conexión a internet.");
-            }
+                setTimeout(() => { ocultarProgreso(); document.getElementById('btn-analizar').style.display = 'inline-flex'; renderizarBarraLateralFojas(); renderizarIndiceNotas(); if(arrayFojas.length > 0) seleccionarFoja(0); }, 500);
+            } catch(e) { console.error(e); ocultarProgreso(); alert("Error al conectar con la Nube. Asegúrate de haber iniciado sesión en Drive."); }
         }
 
-        // --- MOTOR PARA EXPEDIENTE INDIVIDUAL ---
         async function procesarArchivoInterno(archivoData) {
-            detenerEjecucion = false;
-            document.getElementById('texto-progreso').innerText = "Generando índice...";
-            document.getElementById('texto-subprogreso').innerText = "";
-            document.getElementById('btn-cancelar-ia').style.display = 'none';
-            
+            detenerEjecucion = false; document.getElementById('texto-progreso').innerText = "Generando índice..."; document.getElementById('texto-subprogreso').innerText = ""; document.getElementById('btn-cancelar-ia').style.display = 'none';
             arrayFojas = []; window.mapaAlertasPorFoja = {}; window.pdfDocs = [];
             categoriasIA.forEach(c => { c.palabras.forEach(p => resultadosKeywords[p] = []); });
             
-            let blobReal = archivoData.blob || archivoData;
-            let nombreArchivo = archivoData.name || '';
-            let isWord = nombreArchivo.endsWith('.docx') || nombreArchivo.endsWith('.doc');
+            let blobReal = archivoData.blob || archivoData; let nombreArchivo = archivoData.name || ''; let isWord = nombreArchivo.endsWith('.docx') || nombreArchivo.endsWith('.doc');
 
             try {
                 if(isWord) {
-                    const arrayBuffer = await blobReal.arrayBuffer();
-                    const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
-                    const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
-                    arrayFojas.push({ id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, rawText: rawText.value, rotacion: 0 });
-                    actualizarBarra(100);
+                    const arrayBuffer = await blobReal.arrayBuffer(); const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer}); const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                    arrayFojas.push({ id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, rawText: rawText.value, rotacion: 0 }); actualizarBarra(100);
                 } else {
-                    let bytes = await obtenerBytesDocumento(blobReal);
-                    let pdfInstance = await pdfjsLib.getDocument(bytes).promise;
-                    window.pdfDocs.push(pdfInstance);
-                    for (let i = 1; i <= pdfInstance.numPages; i++) {
-                        arrayFojas.push({ id: Date.now() + i, numeroLogico: i, isHtml: false, numPaginaPdf: i, pdfIndex: 0, rotacion: 0 });
-                    }
-                    actualizarBarra(100);
+                    let bytes = await obtenerBytesDocumento(blobReal); let pdfInstance = await pdfjsLib.getDocument(bytes).promise; window.pdfDocs.push(pdfInstance);
+                    for (let i = 1; i <= pdfInstance.numPages; i++) { arrayFojas.push({ id: Date.now() + i, numeroLogico: i, isHtml: false, numPaginaPdf: i, pdfIndex: 0, rotacion: 0 }); } actualizarBarra(100);
                 }
-
-                setTimeout(() => {
-                    ocultarProgreso(); document.getElementById('btn-analizar').style.display = 'inline-flex';
-                    renderizarBarraLateralFojas(); renderizarIndiceNotas(); 
-                    if(arrayFojas.length > 0) seleccionarFoja(0);
-                }, 500);
-            } catch (error) { console.error("Error archivo", error); ocultarProgreso(); alert("Archivo dañado."); localforage.removeItem('archivo_' + nombreExpediente); }
+                setTimeout(() => { ocultarProgreso(); document.getElementById('btn-analizar').style.display = 'inline-flex'; renderizarBarraLateralFojas(); renderizarIndiceNotas(); if(arrayFojas.length > 0) seleccionarFoja(0); }, 500);
+            } catch (error) { console.error(error); ocultarProgreso(); alert("Archivo dañado."); localforage.removeItem('archivo_' + nombreExpediente); }
         }
 
-        async function obtenerCanvasFoja(fojaInfo, scale = 1.0) {
-            if(fojaInfo.isHtml) return null;
-            let currentPdf = window.pdfDocs[fojaInfo.pdfIndex];
-            const page = await currentPdf.getPage(fojaInfo.numPaginaPdf);
-            const viewport = page.getViewport({ scale: scale });
-            const canvas = document.createElement('canvas');
-            canvas.width = viewport.width; canvas.height = viewport.height;
-            const ctx = canvas.getContext('2d');
-            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-            return canvas;
-        }
+        async function obtenerCanvasFoja(fojaInfo, scale = 1.0) { if(fojaInfo.isHtml) return null; let currentPdf = window.pdfDocs[fojaInfo.pdfIndex]; const page = await currentPdf.getPage(fojaInfo.numPaginaPdf); const viewport = page.getViewport({ scale: scale }); const canvas = document.createElement('canvas'); canvas.width = viewport.width; canvas.height = viewport.height; const ctx = canvas.getContext('2d'); await page.render({ canvasContext: ctx, viewport: viewport }).promise; return canvas; }
 
         async function escanearAlertasInfalible() {
             if(arrayFojas.length === 0) return;
-            detenerEjecucion = false; cerrarPaneles(); 
-            mostrarProgreso("fa-brain", "IA Analizando", "Iniciando Motor de Lectura...");
-            document.getElementById('btn-cancelar-ia').style.display = 'inline-block';
-            
+            detenerEjecucion = false; cerrarPaneles(); mostrarProgreso("fa-brain", "IA Analizando", "Iniciando Motor de Lectura..."); document.getElementById('btn-cancelar-ia').style.display = 'inline-block';
             resultadosKeywords = {}; window.mapaAlertasPorFoja = {}; 
             categoriasIA.forEach(c => { c.palabras.forEach(p => resultadosKeywords[p] = []); });
 
             try {
                 for (let i = 0; i < arrayFojas.length; i++) {
-                    if (detenerEjecucion) break;
-                    let f = arrayFojas[i];
-                    actualizarBarra(Math.round(((i) / arrayFojas.length) * 100));
-                    document.getElementById('texto-progreso').innerText = `Leyendo Foja ${f.numeroLogico} de ${arrayFojas.length}`;
-                    
+                    if (detenerEjecucion) break; let f = arrayFojas[i]; actualizarBarra(Math.round(((i) / arrayFojas.length) * 100)); document.getElementById('texto-progreso').innerText = `Leyendo Foja ${f.numeroLogico} de ${arrayFojas.length}`;
                     if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
 
                     if(f.isHtml) {
-                        let textoWord = f.rawText.toLowerCase();
-                        categoriasIA.forEach(cat => { cat.palabras.forEach(p => { if(textoWord.includes(p)) { if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico); } }); });
+                        let textoWord = f.rawText.toLowerCase(); categoriasIA.forEach(cat => { cat.palabras.forEach(p => { if(textoWord.includes(p)) { if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico); } }); });
                     } else {
                         try {
-                            const canvasOCR = await obtenerCanvasFoja(f, 1.0); 
-                            const { data } = await Tesseract.recognize(canvasOCR, 'spa');
+                            const canvasOCR = await obtenerCanvasFoja(f, 1.0); const { data } = await Tesseract.recognize(canvasOCR, 'spa');
                             data.words.forEach(palabra => {
-                                let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
-                                if (txtLimpio.length < 3) return;
-                                for (let cat of categoriasIA) {
-                                    if (cat.palabras.includes(txtLimpio)) {
-                                        if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico);
-                                        window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorFondo: cat.colorFondo, colorBorde: cat.colorBorde });
-                                    }
-                                }
-                            });
-                            canvasOCR.width = 0; canvasOCR.height = 0; 
+                                let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, ''); if (txtLimpio.length < 3) return;
+                                for (let cat of categoriasIA) { if (cat.palabras.includes(txtLimpio)) { if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico); window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorFondo: cat.colorFondo, colorBorde: cat.colorBorde }); } }
+                            }); canvasOCR.width = 0; canvasOCR.height = 0; 
                         } catch (e) { console.warn("Error OCR", e); }
                     }
                 }
             } catch (error) { console.error("Error IA", error); }
 
-            ocultarProgreso();
-            if(!detenerEjecucion) { switchTab('tab-palabras', document.querySelectorAll('.tab')[0]); mostrarResultadosKeywords(); renderizarVisorCentral(); if(window.innerWidth <= 992) togglePanel('herramientas'); }
+            ocultarProgreso(); if(!detenerEjecucion) { switchTab('tab-palabras', document.querySelectorAll('.tab')[0]); mostrarResultadosKeywords(); renderizarVisorCentral(); if(window.innerWidth <= 992) togglePanel('herramientas'); }
         }
 
         function cancelarProcesos() { detenerEjecucion = true; ocultarProgreso(); }
 
         function mostrarResultadosKeywords() {
             const cont = document.getElementById('contenedor-keywords'); cont.innerHTML = ''; let encontroAlgo = false;
-            for(let key in resultadosKeywords) {
-                let fojas = resultadosKeywords[key];
-                if(fojas.length > 0) {
-                    encontroAlgo = true;
-                    let badges = fojas.map(num => `<span class="badge-foja" onclick="buscarFojaPorNumero(${num})">F-${num}</span>`).join('');
-                    cont.innerHTML += `<div class="keyword-card"><div class="keyword-header"><span class="keyword-word">${key}</span><span class="keyword-count">${fojas.length}</span></div><div class="keyword-fojas">En: ${badges}</div></div>`;
-                }
-            }
+            for(let key in resultadosKeywords) { let fojas = resultadosKeywords[key]; if(fojas.length > 0) { encontroAlgo = true; let badges = fojas.map(num => `<span class="badge-foja" onclick="buscarFojaPorNumero(${num})">F-${num}</span>`).join(''); cont.innerHTML += `<div class="keyword-card"><div class="keyword-header"><span class="keyword-word">${key}</span><span class="keyword-count">${fojas.length}</span></div><div class="keyword-fojas">En: ${badges}</div></div>`; } }
             if(!encontroAlgo) cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:20px;">No se detectaron alertas.</p>`;
         }
 
         async function renderizarBarraLateralFojas() {
-            const container = document.getElementById('lista-fojas-container');
-            container.innerHTML = '';
+            const container = document.getElementById('lista-fojas-container'); container.innerHTML = '';
             for (let i = 0; i < arrayFojas.length; i++) {
-                const f = arrayFojas[i];
-                const div = document.createElement('div');
-                div.className = 'foja-item'; div.id = 'thumb-' + i; div.onclick = () => seleccionarFoja(i);
+                const f = arrayFojas[i]; const div = document.createElement('div'); div.className = 'foja-item'; div.id = 'thumb-' + i; div.onclick = () => seleccionarFoja(i);
 
                 let badge = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${f.numeroLogico}`)) ? `<div style="color:var(--brand-orange); font-size:0.75rem; margin-top:6px; font-weight:bold;"><i class="fa-solid fa-pen-to-square"></i></div>` : '';
                 let etiquetaHtml = f.etiquetaDoc ? `<div style="font-size:0.75rem; color:var(--brand-orange); border-bottom:1px dashed rgba(255,255,255,0.2); padding-bottom:5px; margin-bottom: 8px; font-weight:900;"><i class="fa-solid fa-file-pdf"></i> ${f.etiquetaDoc}</div>` : '';
@@ -477,42 +328,19 @@
                 div.innerHTML = `${etiquetaHtml}<div class="foja-label">FOJA ${f.numeroLogico}</div><div class="foja-canvas-container" id="cont-canvas-${i}">...</div><div class="foja-controls"><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, -1)"><i class="fa-solid fa-arrow-up"></i></button><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, 1)"><i class="fa-solid fa-arrow-down"></i></button><button class="btn-mini" onclick="event.stopPropagation(); eliminarFojaEnMemoria(${i})"><i class="fa-solid fa-trash"></i></button></div>${badge}`;
                 container.appendChild(div);
 
-                if(!f.isHtml && window.pdfDocs[f.pdfIndex]) {
-                    obtenerCanvasFoja(f, 0.2).then(canvasMini => {
-                        const contCanvas = document.getElementById('cont-canvas-'+i);
-                        if(contCanvas) { contCanvas.innerHTML = ''; contCanvas.appendChild(canvasMini); }
-                    });
-                }
+                if(!f.isHtml && window.pdfDocs[f.pdfIndex]) { obtenerCanvasFoja(f, 0.2).then(canvasMini => { const contCanvas = document.getElementById('cont-canvas-'+i); if(contCanvas) { contCanvas.innerHTML = ''; contCanvas.appendChild(canvasMini); } }); }
             }
         }
 
         async function renderizarVisorCentral() {
-            if(arrayFojas.length === 0) return;
-            const foja = arrayFojas[fojaSeleccionadaIndex];
-            const canvasP = document.getElementById('canvas-principal');
-            const canvasD = document.getElementById('canvas-dibujo'); 
-            const divHtml = document.getElementById('html-visor');
-
-            if(foja.isHtml) {
-                canvasP.style.display = 'none'; canvasD.style.display = 'none'; divHtml.style.display = 'block';
-                divHtml.innerHTML = foja.htmlContent; divHtml.style.transform = `scale(${zoomGlobal})`;
+            if(arrayFojas.length === 0) return; const foja = arrayFojas[fojaSeleccionadaIndex]; const canvasP = document.getElementById('canvas-principal'); const canvasD = document.getElementById('canvas-dibujo'); const divHtml = document.getElementById('html-visor');
+            if(foja.isHtml) { canvasP.style.display = 'none'; canvasD.style.display = 'none'; divHtml.style.display = 'block'; divHtml.innerHTML = foja.htmlContent; divHtml.style.transform = `scale(${zoomGlobal})`;
             } else {
                 divHtml.style.display = 'none'; canvasP.style.display = 'block'; canvasD.style.display = 'block';
-                const canvasAltaRes = await obtenerCanvasFoja(foja, zoomGlobal);
-                const ctxP = canvasP.getContext('2d'); const ctxD = canvasD.getContext('2d');
-                canvasP.width = canvasAltaRes.width; canvasP.height = canvasAltaRes.height;
-                canvasD.width = canvasAltaRes.width; canvasD.height = canvasAltaRes.height;
-                ctxP.drawImage(canvasAltaRes, 0, 0);
-
-                ctxD.clearRect(0, 0, canvasD.width, canvasD.height);
+                const canvasAltaRes = await obtenerCanvasFoja(foja, zoomGlobal); const ctxP = canvasP.getContext('2d'); const ctxD = canvasD.getContext('2d');
+                canvasP.width = canvasAltaRes.width; canvasP.height = canvasAltaRes.height; canvasD.width = canvasAltaRes.width; canvasD.height = canvasAltaRes.height; ctxP.drawImage(canvasAltaRes, 0, 0); ctxD.clearRect(0, 0, canvasD.width, canvasD.height);
                 const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
-                if (alertas && alertas.length > 0) {
-                    alertas.forEach(a => {
-                        const b = a.bbox;
-                        ctxD.fillStyle = a.colorFondo; ctxD.fillRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
-                        ctxD.strokeStyle = a.colorBorde; ctxD.lineWidth = 2; ctxD.strokeRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal);
-                    });
-                }
+                if (alertas && alertas.length > 0) { alertas.forEach(a => { const b = a.bbox; ctxD.fillStyle = a.colorFondo; ctxD.fillRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal); ctxD.strokeStyle = a.colorBorde; ctxD.lineWidth = 2; ctxD.strokeRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal); }); }
             }
         }
 
@@ -526,7 +354,6 @@
         function cargarNotasDeFojaActual() { if(arrayFojas.length === 0) return; let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico; document.getElementById('titulo-nota-foja').innerText = `Apunte Foja ${num}`; let dataNota = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${num}`)) || {texto: '', fecha: ''}; document.getElementById('texto-notas').value = dataNota.texto; document.getElementById('info-nota-fecha').innerText = dataNota.fecha ? `Modificado: ${dataNota.fecha}` : ''; }
         function guardarNotas() { if(arrayFojas.length === 0) return; let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico; let texto = document.getElementById('texto-notas').value; let fechaActual = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }); if(texto.trim() === '') localStorage.removeItem(`notas_${nombreExpediente}_f${num}`); else localStorage.setItem(`notas_${nombreExpediente}_f${num}`, JSON.stringify({ texto: texto, fecha: fechaActual })); document.getElementById('info-nota-fecha').innerText = `Modificado: ${fechaActual}`; const msg = document.getElementById('nota-guardada'); msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 3000); renderizarBarraLateralFojas(); renderizarIndiceNotas(); }
         function renderizarIndiceNotas() { const list = document.getElementById('lista-resumen-notas'); list.innerHTML = ''; let hayNotas = false; let notasArray = []; for(let i=0; i<localStorage.length; i++) { let key = localStorage.key(i); if(key.startsWith(`notas_${nombreExpediente}_f`)) { let numFoja = parseInt(key.split('_f')[1]); let dataNota = JSON.parse(localStorage.getItem(key)); notasArray.push({ foja: numFoja, texto: dataNota.texto }); } } notasArray.sort((a,b) => a.foja - b.foja); notasArray.forEach(nota => { hayNotas = true; let extracto = nota.texto.substring(0, 35) + (nota.texto.length > 35 ? '...' : ''); list.innerHTML += `<div class="nota-preview" onclick="buscarFojaPorNumero(${nota.foja}); if(window.innerWidth <= 1024) togglePanel('herramientas');"><strong style="color:var(--neon-blue); font-size:0.75rem;">Foja ${nota.foja}</strong><p style="font-size:0.7rem; color:var(--text-main); margin:3px 0;">"${extracto}"</p></div>`; }); if(!hayNotas) list.innerHTML = `<p style="font-size:0.7rem; color:var(--text-muted); text-align:center;">No hay notas.</p>`; }
-
         function mostrarProgreso(icono, titulo, texto) { document.getElementById('icono-progreso').className = `fa-solid ${icono} fa-fade`; document.getElementById('titulo-progreso').innerText = titulo; document.getElementById('texto-progreso').innerText = texto; document.getElementById('barra-llena').style.width = '0%'; document.getElementById('btn-cancelar-ia').style.display = 'none'; document.getElementById('pantalla-progreso').style.display = 'flex'; }
         function actualizarBarra(porcentaje) { document.getElementById('barra-llena').style.width = `${porcentaje}%`; }
         function ocultarProgreso() { document.getElementById('pantalla-progreso').style.display = 'none'; }
