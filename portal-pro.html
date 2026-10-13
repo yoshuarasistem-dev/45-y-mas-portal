@@ -355,32 +355,49 @@
             }
         }
 
-        // --- MOTOR GEMINI IA CON AUTO-DETECCIÓN DE MODELO ---
-        async function obtenerModeloGeminiActivo(apiKey) {
+        // --- MOTOR GEMINI IA CON AUTO-RECUPERACIÓN DE MODELOS ---
+        async function llamarGeminiConAutoRecuperacion(apiKey, body) {
+            let modelos = [
+                "models/gemini-3.0-flash",
+                "models/gemini-3.8-flash",
+                "models/gemini-flash-latest"
+            ];
             try {
-                let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
-                let data = await res.json();
-                if (data.models && data.models.length > 0) {
-                    let validos = data.models.filter(m => 
-                        m.supportedGenerationMethods && 
-                        m.supportedGenerationMethods.includes("generateContent") &&
-                        m.name.includes("gemini")
-                    );
-                    let preferido = validos.find(m => m.name.includes("2.5-flash")) ||
-                                    validos.find(m => m.name.includes("2.0-flash")) ||
-                                    validos.find(m => m.name.includes("flash")) ||
-                                    validos[0];
-                    if (preferido) return preferido.name;
+                let resList = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
+                let dataList = await resList.json();
+                if (dataList.models) {
+                    let disponibles = dataList.models
+                        .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent") && m.name.includes("gemini") && m.name.includes("flash") && !m.name.includes("1.5") && !m.name.includes("2.5"))
+                        .map(m => m.name)
+                        .sort()
+                        .reverse();
+                    modelos = [...new Set([...modelos, ...disponibles])];
                 }
-            } catch (e) { console.warn("Usando modelo por defecto:", e); }
-            return "models/gemini-2.5-flash";
+            } catch (e) { console.warn("No se pudo listar modelos:", e); }
+
+            let ultimoError = "";
+            for (let i = 0; i < modelos.length; i++) {
+                let modelo = modelos[i];
+                let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modelo}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+                });
+                let data = await res.json();
+                if (!data.error) return data;
+
+                ultimoError = data.error.message;
+                let sugerido = ultimoError.match(/models\/[a-zA-Z0-9.-]+/g);
+                if (sugerido) {
+                    sugerido.forEach(m => {
+                        if (!modelos.includes(m)) modelos.splice(i + 1, 0, m);
+                    });
+                }
+            }
+            throw new Error(ultimoError || "No se encontró un modelo Gemini compatible.");
         }
 
         async function analizarConGemini(file) {
             const apiKey = obtenerLlaveIA();
             if (!apiKey) throw new Error("No se ingresó Clave de API de Gemini.");
-
-            const modeloActivo = await obtenerModeloGeminiActivo(apiKey);
 
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -402,13 +419,7 @@
 
                         let body = { contents: [{ parts: [ { text: promptTexto }, { inline_data: { mime_type: file.type, data: base64 } } ] }] };
 
-                        let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloActivo}:generateContent?key=${encodeURIComponent(apiKey)}`, {
-                            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-                        });
-
-                        let data = await res.json();
-                        if(data.error) throw new Error(data.error.message);
-                        
+                        let data = await llamarGeminiConAutoRecuperacion(apiKey, body);
                         let txt = data.candidates[0].content.parts[0].text;
                         let match = txt.match(/\{[\s\S]*\}/);
                         let jsonLimpio = match ? match[0] : txt.replace(/```json/g, '').replace(/```/g, '').trim();
