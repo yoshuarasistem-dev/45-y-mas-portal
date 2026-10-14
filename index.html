@@ -3,328 +3,1349 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Centro Privado Movimiento 45 y Más A.C. | Mediación y Conciliación (IJA 065 y 353)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Movimiento 45 y Más A.C. | Centro Privado de Mediación y Conciliación (IJA 065 y 353)</title>
+
+  <!-- Google Fonts: Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <!-- Hoja de estilos local opcional -->
+  <link rel="stylesheet" href="style.css" />
+
   <style>
+    :root {
+      --bg-primary: #070b14;
+      --bg-secondary: #0f172a;
+      --bg-card: rgba(18, 27, 48, 0.88);
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --accent-gold: #d4af37;
+      --accent-orange: #f59e0b;
+      --border-color: rgba(212, 175, 55, 0.25);
+      --header-bg: rgba(7, 11, 20, 0.92);
+      --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Modo Claro (Botón Camaleón) */
+    body.light-mode {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #eef2f6;
+      --bg-card: rgba(255, 255, 255, 0.95);
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --accent-gold: #b45309;
+      --accent-orange: #d97706;
+      --border-color: rgba(180, 83, 9, 0.25);
+      --header-bg: rgba(255, 255, 255, 0.94);
+      --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #060b16;
-      color: #f8fafc;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
       overflow-x: hidden;
+      transition: background-color 0.35s ease, color 0.35s ease;
     }
-    .serif-title {
-      font-family: 'Playfair Display', serif;
+
+    /* Barra Superior Institucional */
+    .top-bar-institucional {
+      background: linear-gradient(90deg, #0b132b 0%, #1c2541 50%, #0b132b 100%);
+      color: #f8fafc;
+      font-size: 0.78rem;
+      padding: 8px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
     }
-    .gold-gradient {
-      background: linear-gradient(135deg, #d4af37 0%, #f3e5ab 50%, #aa7c11 100%);
+
+    .top-bar-info {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
     }
-    .gold-text {
-      background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 60%, #aa7c11 100%);
+
+    .top-bar-info span,
+    .top-bar-info a {
+      color: #e2e8f0;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .top-bar-info i {
+      color: #f59e0b;
+    }
+
+    .top-bar-redes {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top-bar-redes a {
+      color: #ffffff;
+      font-size: 0.95rem;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .top-bar-redes a:hover {
+      color: #f59e0b;
+      transform: scale(1.15);
+    }
+
+    /* Header Principal */
+    .header-principal {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--header-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .brand-logos {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-logos img {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 4px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .brand-titles h1 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #f59e0b 0%, #d4af37 60%, #fef08a 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .glass-card {
+
+    body.light-mode .brand-titles h1 {
+      background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-titles p {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-orange);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Botón Camaleón (Modo Claro / Oscuro) */
+    .btn-camaleon {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.25s ease;
+    }
+
+    .btn-camaleon:hover {
+      border-color: var(--accent-orange);
+      transform: rotate(18deg) scale(1.08);
+    }
+
+    .btn-portal-pro {
+      background: linear-gradient(135deg, #f59e0b 0%, #d4af37 50%, #b45309 100%);
+      color: #070b14 !important;
+      font-weight: 800 !important;
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-portal-pro:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(245, 158, 11, 0.5);
+    }
+
+    .menu-toggle-mobile {
+      display: none;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       HERO PRINCIPAL CON CARRUSEL DINÁMICO DE FONDO (ija1 a ija4)
+       ========================================================================== */
+    .hero {
+      position: relative;
+      min-height: 82vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 5%;
+      overflow: hidden;
+    }
+
+    .hero-carousel-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.1s ease-in-out, transform 6s ease;
+      transform: scale(1.04);
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .hero-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(7, 11, 20, 0.90) 0%, rgba(15, 23, 42, 0.78) 50%, rgba(7, 11, 20, 0.92) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1180px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 40px;
+      align-items: center;
+      color: #ffffff;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fde68a;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 18px;
+    }
+
+    .hero-text h2 {
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+
+    .hero-text h2 span {
+      background: linear-gradient(135deg, #fde68a 0%, #f59e0b 55%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-text p {
+      font-size: 1.02rem;
+      color: #e2e8f0;
+      margin-bottom: 26px;
+      max-width: 640px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .btn-secundario {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 11px 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-secundario:hover {
+      background: rgba(255, 255, 255, 0.22);
+      border-color: #f59e0b;
+    }
+
+    .hero-card-logos {
       background: rgba(15, 23, 42, 0.82);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(212, 175, 55, 0.25);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 24px;
+      padding: 26px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .hero-logos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+
+    .hero-logos-grid img {
+      width: 100%;
+      height: 68px;
+      object-fit: contain;
+    }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .carousel-dot.active {
+      width: 28px;
+      border-radius: 999px;
+      background: #f59e0b;
+    }
+
+    /* ==========================================================================
+       SECCIONES BASE
+       ========================================================================== */
+    .seccion-base {
+      padding: 75px 5%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .seccion-header {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 48px auto;
+    }
+
+    .seccion-header span {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-orange);
+      margin-bottom: 8px;
+    }
+
+    .seccion-header h2 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .seccion-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* ==========================================================================
+       TARJETAS DE SERVICIOS JURÍDICOS Y MASC
+       ========================================================================== */
+    .grid-servicios {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 26px;
+    }
+
+    .servicio-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .servicio-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent-orange);
+    }
+
+    .servicio-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 18px;
+    }
+
+    .servicio-card h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .servicio-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .servicio-lista {
+      list-style: none;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .servicio-lista li {
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .servicio-lista i {
+      color: #10b981;
+      font-size: 0.8rem;
+    }
+
+    /* ==========================================================================
+       SECCIÓN CÁPSULAS Y REDES SOCIALES (.seccion-capsulas, .grid-redes, .video-card)
+       ========================================================================== */
+    .seccion-capsulas {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 75px 5%;
+    }
+
+    .contenedor-capsulas {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .grid-redes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .video-card,
+    .card-video {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 22px;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .video-card:hover,
+    .card-video:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-orange);
+    }
+
+    .video-thumb {
+      width: 92px;
+      height: 92px;
+      border-radius: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.3rem;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .thumb-tiktok {
+      background: linear-gradient(135deg, #000000 0%, #25f4ee 50%, #fe2c55 100%);
+    }
+
+    .thumb-facebook {
+      background: linear-gradient(135deg, #1877f2 0%, #0a4694 100%);
+    }
+
+    .thumb-instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    .info-video {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .info-video .tag-red {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.16);
+      color: var(--accent-orange);
+      margin-bottom: 6px;
+    }
+
+    .info-video h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .info-video p {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .btn-ver-red {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-decoration: none;
+      color: var(--accent-orange);
+      transition: gap 0.2s;
+    }
+
+    .btn-ver-red:hover {
+      gap: 11px;
+    }
+
+    .instagram-banner {
+      background: linear-gradient(135deg, rgba(18, 27, 48, 0.95) 0%, rgba(49, 16, 66, 0.88) 50%, rgba(18, 27, 48, 0.95) 100%);
+      border: 1px solid rgba(225, 48, 108, 0.4);
+      border-radius: 22px;
+      padding: 26px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: #ffffff;
+      box-shadow: var(--shadow-card);
+    }
+
+    .instagram-banner-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-red-oficial {
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-decoration: none;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .btn-red-oficial:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    /* ==========================================================================
+       GALERÍA INSTITUCIONAL COMPLETA (FOTOS DE ./assets/: ija1-ija5, portada1-2)
+       ========================================================================== */
+    .galeria-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .galeria-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .galeria-item:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-orange);
+    }
+
+    .galeria-img-wrap {
+      height: 220px;
+      width: 100%;
+      overflow: hidden;
+      background: #0b132b;
+      position: relative;
+    }
+
+    .galeria-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s ease;
+    }
+
+    .galeria-item:hover .galeria-img-wrap img {
+      transform: scale(1.06);
+    }
+
+    .galeria-caption {
+      padding: 16px 18px;
+    }
+
+    .galeria-caption span {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--accent-orange);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .galeria-caption h4 {
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    /* ==========================================================================
+       SECCIÓN ACADEMIA Y DIPLOMADO EN MEDIACIÓN
+       ========================================================================== */
+    .academia-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 26px;
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 36px;
+      align-items: center;
+      box-shadow: var(--shadow-card);
+    }
+
+    .academia-flyer {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid var(--border-color);
+      background: #070b14;
+      max-height: 460px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .academia-flyer img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .academia-logos-colegio {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    .academia-logos-colegio img {
+      height: 54px;
+      width: auto;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 6px 12px;
+      border-radius: 12px;
+    }
+
+    /* ==========================================================================
+       FOOTER Y CONTACTO
+       ========================================================================== */
+    .footer-principal {
+      background: #04070e;
+      color: #cbd5e1;
+      border-top: 1px solid rgba(212, 175, 55, 0.25);
+      padding: 60px 5% 30px 5%;
+    }
+
+    .footer-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+
+    .footer-col h4 {
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      border-left: 3px solid #f59e0b;
+      padding-left: 10px;
+    }
+
+    .footer-col p,
+    .footer-col a {
+      font-size: 0.86rem;
+      color: #94a3b8;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .footer-col a:hover {
+      color: #f59e0b;
+    }
+
+    /* ==========================================================================
+       VISTA EN CELULAR (RESPONSIVE DESIGN)
+       ========================================================================== */
+    @media (max-width: 960px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-text p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero-buttons {
+        justify-content: center;
+      }
+      .academia-box {
+        grid-template-columns: 1fr;
+        padding: 24px;
+      }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--header-bg);
+        flex-direction: column;
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        gap: 16px;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .menu-toggle-mobile {
+        display: inline-flex;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .top-bar-institucional {
+        justify-content: center;
+        text-align: center;
+        font-size: 0.72rem;
+      }
+      .brand-logos img {
+        height: 42px;
+      }
+      .brand-titles h1 {
+        font-size: 0.9rem;
+      }
+      .video-card,
+      .card-video {
+        flex-direction: column;
+        text-align: center;
+      }
+      .grid-redes {
+        grid-template-columns: 1fr;
+      }
+      .instagram-banner {
+        padding: 20px;
+        text-align: center;
+        justify-content: center;
+      }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
   <!-- =========================================================================
-       NAVEGACIÓN PRINCIPAL (ADAPTADA A CELULAR Y ESCRITORIO)
+       1. BARRA SUPERIOR DE CONTACTO Y REDES SOCIALES
        ========================================================================= -->
-  <header class="glass-card sticky top-0 z-40 border-b border-amber-500/20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3">
-        <img data-asset="centrologo" src="./assets/centrologo.png" alt="Centro Privado 45 y Más" class="h-11 w-11 sm:h-12 sm:w-12 object-contain rounded-xl bg-white p-1 shadow" />
-        <div>
-          <span class="font-extrabold text-sm sm:text-lg gold-text block leading-tight">MOVIMIENTO 45 Y MÁS A.C.</span>
-          <span class="text-[11px] text-slate-400 block">Centro Privado de Mediación y Conciliación • IJA 065 y 353</span>
-        </div>
-      </a>
-
-      <!-- Enlaces Escritorio -->
-      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
-        <a href="#inicio" class="hover:text-amber-400 transition">Inicio</a>
-        <a href="#servicios" class="hover:text-amber-400 transition">Servicios MASC</a>
-        <a href="#carrusel-ija" class="hover:text-amber-400 transition">Acreditación IJA</a>
-        <a href="#galeria" class="hover:text-amber-400 transition">Galería y Diplomado</a>
-        <a href="portal-pro.html" class="gold-gradient text-slate-950 font-extrabold px-4 py-2.5 rounded-xl shadow hover:opacity-95 transition flex items-center gap-1.5">
-          <i class="fa-solid fa-vault"></i> Bóveda Pro + IA
-        </a>
-      </nav>
-
-      <!-- Botón Menú Celular -->
-      <div class="flex items-center gap-2 md:hidden">
-        <a href="portal-pro.html" class="gold-gradient text-slate-950 font-extrabold px-3 py-2 rounded-xl text-xs shadow">
-          <i class="fa-solid fa-vault"></i> Bóveda
-        </a>
-        <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-slate-900 border border-slate-700 text-amber-300">
-          <i class="fa-solid fa-bars text-lg"></i>
-        </button>
-      </div>
+  <div class="top-bar-institucional">
+    <div class="top-bar-info">
+      <span><i class="fa-solid fa-location-dot"></i> Hilarión Romero Gil #935, Col. Alcalde Barranquitas, Guadalajara, Jal.</span>
+      <a href="tel:3321870711"><i class="fa-solid fa-phone"></i> (33) 2187-0711</a>
+      <a href="tel:3333305471"><i class="fa-solid fa-mobile-screen"></i> (33) 3330-5471</a>
     </div>
+    <div class="top-bar-redes">
+      <a href="https://www.tiktok.com/@45ymas_oficial?lang=es-419" target="_blank" rel="noopener" title="TikTok Oficial @45ymas_oficial"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://www.facebook.com/M.45yMas/?locale=es_LA" target="_blank" rel="noopener" title="Facebook Oficial M.45yMas"><i class="fa-brands fa-facebook"></i></a>
+      <a href="https://www.instagram.com/m.45ymas/" target="_blank" rel="noopener" title="Instagram Oficial @m.45ymas"><i class="fa-brands fa-instagram"></i></a>
+    </div>
+  </div>
 
-    <!-- Menú Desplegable para Celular -->
-    <div id="mobileMenu" class="hidden md:hidden bg-slate-950/95 border-t border-slate-800 px-4 py-3 space-y-2 text-xs font-semibold">
-      <a href="#inicio" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-amber-400">Inicio</a>
-      <a href="#servicios" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-amber-400">Servicios de Mediación</a>
-      <a href="#carrusel-ija" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-amber-400">Carrusel Oficial IJA</a>
-      <a href="#galeria" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-amber-400">Galería Institucional</a>
-      <div class="pt-2 border-t border-slate-800 grid grid-cols-2 gap-2">
-        <a href="portal-pro.html" class="gold-gradient text-slate-950 font-bold py-2 rounded-lg text-center">Bóveda Pro</a>
-        <a href="visor-expediente.html" class="bg-slate-800 text-amber-300 py-2 rounded-lg text-center">Visor IA</a>
+  <!-- =========================================================================
+       2. HEADER PRINCIPAL (SIN VISOR NI ÁRBOL — SOLO SECCIONES Y PORTAL PRO)
+       ========================================================================= -->
+  <header class="header-principal">
+    <a href="#inicio" class="brand-logos">
+      <img data-asset="centrologo" src="./assets/centrologo.png" alt="Logo Centro Mediación 45yMás" />
+      <img data-asset="logo45" src="./assets/logo45.png" alt="Logo Movimiento 45 y Más" />
+      <div class="brand-titles">
+        <h1>MOVIMIENTO 45 Y MÁS A.C.</h1>
+        <p>Centro Privado de Mediación y Conciliación • IJA 065 y 353</p>
       </div>
+    </a>
+
+    <ul class="nav-links" id="navLinksMenu">
+      <li><a href="#inicio" onclick="cerrarMenuMovil()">Inicio</a></li>
+      <li><a href="#servicios" onclick="cerrarMenuMovil()">Servicios</a></li>
+      <li><a href="#capsulas" onclick="cerrarMenuMovil()">Cápsulas y Redes</a></li>
+      <li><a href="#galeria" onclick="cerrarMenuMovil()">Galería IJA</a></li>
+      <li><a href="#academia" onclick="cerrarMenuMovil()">Academia</a></li>
+      <li><a href="#contacto" onclick="cerrarMenuMovil()">Contacto</a></li>
+    </ul>
+
+    <div class="header-actions">
+      <button class="btn-camaleon" onclick="alternarModoCamaleon()" title="Cambiar Modo Claro / Oscuro">
+        <i id="iconoCamaleon" class="fa-solid fa-sun"></i>
+      </button>
+      <a href="portal-pro.html" class="btn-portal-pro">
+        <i class="fa-solid fa-shield-halved"></i> Portal Pro
+      </a>
+      <button class="menu-toggle-mobile" onclick="alternarMenuMovil()" aria-label="Menú">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </div>
   </header>
 
   <!-- =========================================================================
-       HERO PRINCIPAL
+       3. HERO CON CARRUSEL AUTOMÁTICO (FOTOS ija1 A ija4)
        ========================================================================= -->
-  <section id="inicio" class="relative py-10 sm:py-16 px-4 sm:px-6 overflow-hidden">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-      <div class="lg:col-span-7 space-y-5 text-center lg:text-left">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
-          <i class="fa-solid fa-scale-balanced"></i> Justicia Alternativa con Valor de Sentencia Ejecutoriada
+  <section id="inicio" class="hero">
+    <div class="hero-carousel-bg">
+      <div class="hero-slide active"><img data-asset="ija1" src="./assets/ija1.jpg" alt="Acreditación IJA 1" /></div>
+      <div class="hero-slide"><img data-asset="ija2" src="./assets/ija2.jpg" alt="Acreditación IJA 2" /></div>
+      <div class="hero-slide"><img data-asset="ija3" src="./assets/ija3.jpg" alt="Acreditación IJA 3" /></div>
+      <div class="hero-slide"><img data-asset="ija4" src="./assets/ija4.jpg" alt="Acreditación IJA 4" /></div>
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <i class="fa-solid fa-scale-balanced"></i> Centros Acreditados IJA 065 y 353 • Jalisco
         </div>
-        <h1 class="serif-title text-3xl sm:text-5xl font-extrabold leading-tight">
-          Soluciones Jurídicas Pacíficas y <span class="gold-text">Convenios Sancionados por el IJA</span>
-        </h1>
-        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-          En el <strong>Centro Privado Movimiento 45 y Más A.C.</strong> (Acreditaciones Oficiales <strong>065 y 353</strong> ante el Instituto de Justicia Alternativa del Estado de Jalisco) brindamos certeza jurídica en Preventivos de Arrendamiento, Convenios de Alimentos y Convivencia, y Divorcio Administrativo o por Mutuo Consentimiento.
+        <h2>
+          Justicia Alternativa, Mediación y <span>Certeza Jurídica con Valor de Sentencia</span>
+        </h2>
+        <p>
+          Resolvemos conflictos civiles, familiares y preventivos de arrendamiento sin juicios largos ni desgastantes. Nuestros convenios finales sancionados por el Instituto de Justicia Alternativa tienen fuerza de cosa juzgada.
         </p>
-        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
-          <a href="portal-pro.html" class="gold-gradient text-slate-950 font-extrabold px-6 py-3.5 rounded-xl text-sm shadow-xl hover:opacity-95 transition flex items-center gap-2">
-            <i class="fa-solid fa-shield-halved"></i> Acceder a Bóveda Pro + Visor IA
+        <div class="hero-buttons">
+          <a href="#capsulas" class="btn-portal-pro">
+            <i class="fa-solid fa-play"></i> Ver Cápsulas y Redes
           </a>
-          <a href="visor-expediente.html" class="bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 font-bold px-5 py-3.5 rounded-xl text-sm transition flex items-center gap-2">
-            <i class="fa-solid fa-book-open"></i> Visor de Expedientes
+          <a href="#contacto" class="btn-secundario">
+            <i class="fa-solid fa-location-dot"></i> Agendar Cita en Guadalajara
           </a>
         </div>
       </div>
 
-      <!-- Logos e Identidad Institucional -->
-      <div class="lg:col-span-5">
-        <div class="glass-card rounded-3xl p-5 sm:p-6 border border-amber-500/30 shadow-2xl space-y-4">
-          <div class="grid grid-cols-3 gap-3 items-center bg-white/95 rounded-2xl p-4">
-            <img data-asset="centrologo" src="./assets/centrologo.png" alt="Logo Centro" class="h-16 sm:h-20 w-full object-contain" />
-            <img data-asset="logo45" src="./assets/logo45.png" alt="Logo 45 y Más" class="h-16 sm:h-20 w-full object-contain" />
-            <img data-asset="logocirculotransparente1" src="./assets/logocirculotransparente1.png" alt="Logo Círculo" class="h-16 sm:h-20 w-full object-contain" />
-          </div>
-          <div class="grid grid-cols-2 gap-3 text-center">
-            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
-              <span class="text-xl sm:text-2xl font-extrabold gold-text">Centro 065</span>
-              <p class="text-[11px] text-slate-400 mt-0.5">Acreditación Oficial IJA</p>
-            </div>
-            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
-              <span class="text-xl sm:text-2xl font-extrabold gold-text">Centro 353</span>
-              <p class="text-[11px] text-slate-400 mt-0.5">Acreditación Oficial IJA</p>
-            </div>
-          </div>
+      <!-- Tarjeta de Identidad Oficial -->
+      <div class="hero-card-logos">
+        <div class="hero-logos-grid">
+          <img data-asset="centrologo" src="./assets/centrologo.png" alt="Centro Privado 45yMás" />
+          <img data-asset="LOGO" src="./assets/LOGO.png" alt="Logo Oficial" />
+          <img data-asset="logocirculotransparente1" src="./assets/logocirculotransparente1.png" alt="Círculo 45yMás" />
+        </div>
+        <h3 style="font-size: 1.05rem; font-weight: 800; color: #fde68a;">CENTRO PRIVADO MOVIMIENTO 45 Y MÁS A.C.</h3>
+        <p style="font-size: 0.82rem; color: #cbd5e1; margin-top: 4px;">
+          Acreditaciones Oficiales <strong>065 y 353</strong> ante el Instituto de Justicia Alternativa del Estado de Jalisco.
+        </p>
+        <div class="carousel-dots" id="heroDots">
+          <button class="carousel-dot active" onclick="irASlideHero(0)"></button>
+          <button class="carousel-dot" onclick="irASlideHero(1)"></button>
+          <button class="carousel-dot" onclick="irASlideHero(2)"></button>
+          <button class="carousel-dot" onclick="irASlideHero(3)"></button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================================
-       CARRUSEL OFICIAL IJA (CONSERVA ESTRICTAMENTE LAS FOTOS ija1 A ija4)
+       4. SECCIÓN DE SERVICIOS JURÍDICOS Y MEDIACIÓN
        ========================================================================= -->
-  <section id="carrusel-ija" class="py-10 px-4 sm:px-6 bg-slate-950/60 border-y border-slate-900">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-6">
-        <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Instituto de Justicia Alternativa</span>
-        <h2 class="serif-title text-2xl sm:text-3xl font-bold text-white mt-1">Convenios y Acreditaciones en el IJA Jalisco</h2>
+  <section id="servicios" class="seccion-base">
+    <div class="seccion-header">
+      <span>Soluciones Legales Efectivas</span>
+      <h2>Nuestros Servicios de Mediación y Conciliación</h2>
+      <p>Convenios con plena validez legal sancionados ante el Instituto de Justicia Alternativa del Estado de Jalisco (IJA).</p>
+    </div>
+
+    <div class="grid-servicios">
+      <!-- 1. Blindaje Contractual y Arrendamiento -->
+      <div class="servicio-card">
+        <div class="servicio-icon"><i class="fa-solid fa-building-shield"></i></div>
+        <h3>Blindaje Contractual y Preventivo de Arrendamiento</h3>
+        <p>Protege tu patrimonio inmobiliario mediante convenios preventivos de arrendamiento y comodato con ejecución directa.</p>
+        <ul class="servicio-lista">
+          <li><i class="fa-solid fa-check"></i> Convenios Preventivos de Arrendamiento</li>
+          <li><i class="fa-solid fa-check"></i> Contratos de Administración e Inmuebles</li>
+          <li><i class="fa-solid fa-check"></i> Desocupación y Entrega Voluntaria Sancionada</li>
+        </ul>
       </div>
 
-      <div class="relative glass-card rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl">
-        <div class="relative h-64 sm:h-96 md:h-[440px] w-full bg-slate-950 flex items-center justify-center">
-          <img id="carouselMainImage" data-asset="ija1" src="./assets/ija1.jpg" alt="Ceremonia IJA" class="w-full h-full object-cover transition-all duration-500" />
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
-          <div class="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 flex items-end justify-between">
-            <div>
-              <span id="carouselBadge" class="text-[11px] font-bold uppercase px-2.5 py-1 rounded-full gold-gradient text-slate-950">Fotografía Oficial 1 / 4</span>
-              <h3 id="carouselCaption" class="text-sm sm:text-lg font-bold text-white mt-1.5">Entrega y Firma de Acreditación Oficial ante el IJA Jalisco</h3>
-            </div>
-          </div>
-        </div>
-
-        <!-- Controles Carrusel -->
-        <button onclick="changeSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-slate-950/80 hover:bg-amber-500 text-white hover:text-slate-950 flex items-center justify-center transition">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <button onclick="changeSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-slate-950/80 hover:bg-amber-500 text-white hover:text-slate-950 flex items-center justify-center transition">
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
+      <!-- 2. Materia Familiar -->
+      <div class="servicio-card">
+        <div class="servicio-icon"><i class="fa-solid fa-people-roof"></i></div>
+        <h3>Materia Familiar y Acuerdos Parentales</h3>
+        <p>Privilegiamos el diálogo y el interés superior de la niñez para alcanzar acuerdos duraderos en el entorno familiar.</p>
+        <ul class="servicio-lista">
+          <li><i class="fa-solid fa-check"></i> Convenios de Alimentos, Guarda y Custodia</li>
+          <li><i class="fa-solid fa-check"></i> Régimen de Convivencia Familiar</li>
+          <li><i class="fa-solid fa-check"></i> Divorcio Administrativo y por Mutuo Consentimiento</li>
+        </ul>
       </div>
 
-      <!-- Miniaturas ija1 a ija4 -->
-      <div class="grid grid-cols-4 gap-2 sm:gap-4 mt-4">
-        <button onclick="setSlide(0)" class="rounded-xl overflow-hidden border-2 border-amber-400 h-16 sm:h-24">
-          <img data-asset="ija1" src="./assets/ija1.jpg" class="w-full h-full object-cover" alt="IJA 1" />
-        </button>
-        <button onclick="setSlide(1)" class="rounded-xl overflow-hidden border-2 border-slate-800 hover:border-amber-400 h-16 sm:h-24">
-          <img data-asset="ija2" src="./assets/ija2.jpg" class="w-full h-full object-cover" alt="IJA 2" />
-        </button>
-        <button onclick="setSlide(2)" class="rounded-xl overflow-hidden border-2 border-slate-800 hover:border-amber-400 h-16 sm:h-24">
-          <img data-asset="ija3" src="./assets/ija3.jpg" class="w-full h-full object-cover" alt="IJA 3" />
-        </button>
-        <button onclick="setSlide(3)" class="rounded-xl overflow-hidden border-2 border-slate-800 hover:border-amber-400 h-16 sm:h-24">
-          <img data-asset="ija4" src="./assets/ija4.jpg" class="w-full h-full object-cover" alt="IJA 4" />
-        </button>
+      <!-- 3. Justicia Alternativa MASC -->
+      <div class="servicio-card">
+        <div class="servicio-icon"><i class="fa-solid fa-handshake"></i></div>
+        <h3>Justicia Alternativa y Mediación Civil-Mercantil</h3>
+        <p>Evita litigios prolongados resolviendo adeudos, incumplimientos y controversias particulares mediante mecanismos alternos.</p>
+        <ul class="servicio-lista">
+          <li><i class="fa-solid fa-check"></i> Reconocimiento de Adeudo y Convenios de Pago</li>
+          <li><i class="fa-solid fa-check"></i> Mediación Vecinal, Civil y Comunitaria</li>
+          <li><i class="fa-solid fa-check"></i> Valor de Sentencia Ejecutoriada ante el IJA</li>
+        </ul>
       </div>
     </div>
   </section>
 
   <!-- =========================================================================
-       GALERÍA INSTITUCIONAL AMPLIADA (INTEGRA LAS FOTOS EXTRAS DE ./assets/)
+       5. SECCIÓN CÁPSULAS JURÍDICAS Y REDES SOCIALES (DISEÑO HORIZONTAL)
        ========================================================================= -->
-  <section id="galeria" class="py-12 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-8">
-        <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Actividades, Mesas de Trabajo y Formación</span>
-        <h2 class="serif-title text-2xl sm:text-3xl font-bold text-white mt-1">Galería Institucional y Diplomado en Mediación</h2>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">Conoce nuestras sesiones de mediación, convenios con el IJA y programas académicos.</p>
+  <section id="capsulas" class="seccion-capsulas">
+    <div class="contenedor-capsulas">
+      <div class="seccion-header">
+        <span>Contenido Digital y Cultura de Paz</span>
+        <h2>Cápsulas de Mediación y Redes Sociales Oficiales</h2>
+        <p>Síguenos en nuestras plataformas oficiales y aprende con las cápsulas jurídicas de <strong>El Abogato Mediador</strong> y nuestro equipo de especialistas.</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- Foto extra 1: portada1 -->
-        <div class="glass-card rounded-2xl overflow-hidden group border border-slate-800 hover:border-amber-500/40 transition flex flex-col">
-          <div class="h-52 overflow-hidden bg-slate-900">
-            <img data-asset="portada1" src="./assets/portada1.jpg" alt="Mesa Directiva y Mediación" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+      <div class="grid-redes">
+        <!-- Tarjeta 1: TikTok El Abogato Mediador -->
+        <div class="video-card">
+          <div class="video-thumb thumb-tiktok">
+            <i class="fa-brands fa-tiktok"></i>
           </div>
-          <div class="p-4">
-            <span class="text-[10px] font-bold uppercase text-amber-400">Sesión Plenaria</span>
-            <h3 class="text-sm font-bold text-white mt-0.5">Mesa de Trabajo y Acuerdos MASC</h3>
-          </div>
-        </div>
-
-        <!-- Foto extra 2: portada2 -->
-        <div class="glass-card rounded-2xl overflow-hidden group border border-slate-800 hover:border-amber-500/40 transition flex flex-col">
-          <div class="h-52 overflow-hidden bg-slate-900">
-            <img data-asset="portada2" src="./assets/portada2.jpg" alt="Comitiva Oficial 45 y Más" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-          </div>
-          <div class="p-4">
-            <span class="text-[10px] font-bold uppercase text-amber-400">Reconocimiento Oficial</span>
-            <h3 class="text-sm font-bold text-white mt-0.5">Comitiva Centro Privado 45 y Más A.C.</h3>
+          <div class="info-video">
+            <span class="tag-red">TikTok Oficial • @45ymas_oficial</span>
+            <h3>El Abogato Mediador y Cápsulas MASC</h3>
+            <p>Consejos prácticos sobre contratos de arrendamiento, comodato, pensiones alimenticias y cómo evitar juicios largos mediante la mediación.</p>
+            <a href="https://www.tiktok.com/@45ymas_oficial?lang=es-419" target="_blank" rel="noopener" class="btn-ver-red">
+              Ver videos en TikTok <i class="fa-solid fa-arrow-right"></i>
+            </a>
           </div>
         </div>
 
-        <!-- Foto extra 3: ija5 -->
-        <div class="glass-card rounded-2xl overflow-hidden group border border-slate-800 hover:border-amber-500/40 transition flex flex-col">
-          <div class="h-52 overflow-hidden bg-slate-900">
-            <img data-asset="ija5" src="./assets/ija5.jpg" alt="Ceremonia de Acreditación IJA 5" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+        <!-- Tarjeta 2: Facebook Oficial -->
+        <div class="video-card">
+          <div class="video-thumb thumb-facebook">
+            <i class="fa-brands fa-facebook-f"></i>
           </div>
-          <div class="p-4">
-            <span class="text-[10px] font-bold uppercase text-amber-400">Cultura de Paz</span>
-            <h3 class="text-sm font-bold text-white mt-0.5">Vinculación Institucional en Jalisco</h3>
+          <div class="info-video">
+            <span class="tag-red">Facebook • Movimiento 45 y Más</span>
+            <h3>Cápsulas de Mediación y Transmisiones</h3>
+            <p>Análisis legales, eventos con el Instituto de Justicia Alternativa (IJA), jornadas comunitarias y orientación jurídica gratuita.</p>
+            <a href="https://www.facebook.com/M.45yMas/?locale=es_LA" target="_blank" rel="noopener" class="btn-ver-red">
+              Visitar Página de Facebook <i class="fa-solid fa-arrow-right"></i>
+            </a>
           </div>
         </div>
 
-        <!-- Foto extra 4: mediaciondiplomado -->
-        <div class="glass-card rounded-2xl overflow-hidden group border border-slate-800 hover:border-amber-500/40 transition flex flex-col">
-          <div class="h-52 overflow-hidden bg-slate-900">
-            <img data-asset="mediaciondiplomado" src="./assets/mediaciondiplomado.jpg" alt="Diplomado en Mediación" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+        <!-- Tarjeta 3: Instagram Oficial -->
+        <div class="video-card">
+          <div class="video-thumb thumb-instagram">
+            <i class="fa-brands fa-instagram"></i>
           </div>
-          <div class="p-4">
-            <span class="text-[10px] font-bold uppercase text-emerald-400">Capacitación Continua</span>
-            <h3 class="text-sm font-bold text-white mt-0.5">Diplomado en Mediación y Conciliación</h3>
+          <div class="info-video">
+            <span class="tag-red">Instagram • @m.45ymas</span>
+            <h3>Reels Jurídicos e Infografías</h3>
+            <p>Guías visuales sobre requisitos de convenios finales, prevención de conflictos inmobiliarios y actividades de nuestro Centro Privado.</p>
+            <a href="https://www.instagram.com/m.45ymas/" target="_blank" rel="noopener" class="btn-ver-red">
+              Seguir en Instagram <i class="fa-solid fa-arrow-right"></i>
+            </a>
           </div>
+        </div>
+      </div>
+
+      <!-- Banner Directo de Redes Sociales -->
+      <div class="instagram-banner">
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 4px;">
+            <i class="fa-solid fa-share-nodes" style="color: #f59e0b; margin-right: 8px;"></i>
+            Conecta con Movimiento 45 y Más A.C. en Todas Nuestras Redes
+          </h3>
+          <p style="font-size: 0.86rem; color: #e2e8f0;">
+            Consulta nuestras cápsulas informativas, horarios de atención y convocatorias académicas.
+          </p>
+        </div>
+        <div class="instagram-banner-links">
+          <a href="https://www.tiktok.com/@45ymas_oficial?lang=es-419" target="_blank" rel="noopener" class="btn-red-oficial" style="background: #000000; border: 1px solid #25f4ee;">
+            <i class="fa-brands fa-tiktok"></i> TikTok
+          </a>
+          <a href="https://www.facebook.com/M.45yMas/?locale=es_LA" target="_blank" rel="noopener" class="btn-red-oficial" style="background: #1877f2;">
+            <i class="fa-brands fa-facebook-f"></i> Facebook
+          </a>
+          <a href="https://www.instagram.com/m.45ymas/" target="_blank" rel="noopener" class="btn-red-oficial" style="background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);">
+            <i class="fa-brands fa-instagram"></i> Instagram
+          </a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================================
-       SERVICIOS Y HERRAMIENTAS DEL ECOSISTEMA JURÍDICO
+       6. GALERÍA INSTITUCIONAL CON TODAS LAS FOTOS DE ./assets/
+          (ija1, ija2, ija3, ija4, ija5, portada1, portada2)
        ========================================================================= -->
-  <section id="servicios" class="py-10 px-4 sm:px-6 bg-slate-900/40 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <a href="portal-pro.html" class="glass-card p-5 rounded-2xl hover:border-amber-400 transition">
-          <i class="fa-solid fa-vault text-2xl text-amber-400 mb-3"></i>
-          <h3 class="text-sm font-extrabold text-white">Bóveda Pro + Clasificador IA</h3>
-          <p class="text-xs text-slate-400 mt-1">Ingesta masiva, control judicial por fojas y generador de Oficios al IJA.</p>
-        </a>
-        <a href="visor-expediente.html" class="glass-card p-5 rounded-2xl hover:border-amber-400 transition">
-          <i class="fa-solid fa-book-open text-2xl text-emerald-400 mb-3"></i>
-          <h3 class="text-sm font-extrabold text-white">Visor Digital de Expedientes</h3>
-          <p class="text-xs text-slate-400 mt-1">Empaquetado completo de PDFs, Prevenciones, Contestaciones y Validaciones.</p>
-        </a>
-        <a href="arbol-genealogico.html" class="glass-card p-5 rounded-2xl hover:border-amber-400 transition">
-          <i class="fa-solid fa-sitemap text-2xl text-sky-400 mb-3"></i>
-          <h3 class="text-sm font-extrabold text-white">Árbol Genealógico Familiar</h3>
-          <p class="text-xs text-slate-400 mt-1">Esquema visual para convenios de Alimentos, Custodia y Divorcio por Mutuo.</p>
-        </a>
-        <a href="linea-tiempo-alertas.html" class="glass-card p-5 rounded-2xl hover:border-amber-400 transition">
-          <i class="fa-solid fa-bell text-2xl text-rose-400 mb-3"></i>
-          <h3 class="text-sm font-extrabold text-white">Línea de Tiempo y Alertas</h3>
-          <p class="text-xs text-slate-400 mt-1">Monitoreo de vencimientos de Preventivos de Arrendamiento y términos IJA.</p>
-        </a>
+  <section id="galeria" class="seccion-base">
+    <div class="seccion-header">
+      <span>Nuestra Trayectoria Institucional</span>
+      <h2>Galería del Centro Privado y Convenios con el IJA</h2>
+      <p>Sesiones de trabajo, firma de convenios y acreditaciones oficiales de nuestro Centro Privado en el Estado de Jalisco.</p>
+    </div>
+
+    <div class="galeria-grid">
+      <div class="galeria-item">
+        <div class="galeria-img-wrap">
+          <img data-asset="portada1" src="./assets/portada1.jpg" alt="Mesa de Trabajo MASC" />
+        </div>
+        <div class="galeria-caption">
+          <span>Mesas de Trabajo</span>
+          <h4>Sesión Institucional de Mediación y Conciliación</h4>
+        </div>
+      </div>
+
+      <div class="galeria-item">
+        <div class="galeria-img-wrap">
+          <img data-asset="portada2" src="./assets/portada2.jpg" alt="Comitiva 45 y Más A.C." />
+        </div>
+        <div class="galeria-caption">
+          <span>Acreditación Oficial</span>
+          <h4>Comitiva del Centro Privado Movimiento 45 y Más A.C.</h4>
+        </div>
+      </div>
+
+      <div class="galeria-item">
+        <div class="galeria-img-wrap">
+          <img data-asset="ija1" src="./assets/ija1.jpg" alt="Ceremonia IJA 1" />
+        </div>
+        <div class="galeria-caption">
+          <span>IJA Jalisco</span>
+          <h4>Entrega de Constancia de Acreditación Oficial</h4>
+        </div>
+      </div>
+
+      <div class="galeria-item">
+        <div class="galeria-img-wrap">
+          <img data-asset="ija2" src="./assets/ija2.jpg" alt="Firma de Convenios IJA 2" />
+        </div>
+        <div class="galeria-caption">
+          <span>Convenios Oficiales</span>
+          <h4>Suscripción de Acuerdos ante el Instituto de Justicia Alternativa</h4>
+        </div>
+      </div>
+
+      <div class="galeria-item">
+        <div class="galeria-img-wrap">
+          <img data-asset="ija3" src="./assets/ija3.jpg" alt="Sala de Juntas IJA 3" />
+        </div>
+        <div class="galeria-caption">
+          <span>Colaboración Institucional</span>
+          <h4>Alianza por la Cultura de Paz en Jalisco</h4>
+        </div>
+      </div>
+
+      <div class="galeria-item">
+        <div class="galeria-img-wrap">
+          <img data-asset="ija4" src="./assets/ija4.jpg" alt="Develación de Placa IJA 4" />
+        </div>
+        <div class="galeria-caption">
+          <span>Reconocimiento</span>
+          <h4>Ceremonia Protocolaria en el IJA</h4>
+        </div>
+      </div>
+
+      <div class="galeria-item">
+        <div class="galeria-img-wrap">
+          <img data-asset="ija5" src="./assets/ija5.jpg" alt="Evento Institucional IJA 5" />
+        </div>
+        <div class="galeria-caption">
+          <span>Justicia Alternativa</span>
+          <h4>Fortalecimiento de los Centros Privados Acreditados</h4>
+        </div>
+      </div>
+
+      <div class="galeria-item">
+        <div class="galeria-img-wrap" style="background: #ffffff; padding: 18px;">
+          <img data-asset="centrologo" src="./assets/centrologo.png" alt="Identidad Centro Privado 45yMás" style="object-fit: contain;" />
+        </div>
+        <div class="galeria-caption">
+          <span>Centros 065 y 353</span>
+          <h4>Identidad Oficial del Centro Privado en Mediación</h4>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="mt-auto py-6 px-4 border-t border-slate-900 text-center text-xs text-slate-500">
-    <p>© 2026 Centro Privado Movimiento 45 y Más A.C. (Acreditaciones IJA 065 y 353) • Guadalajara, Jalisco, México.</p>
+  <!-- =========================================================================
+       7. SECCIÓN ACADEMIA Y DIPLOMADO EN MEDIACIÓN (mediaciondiplomado)
+       ========================================================================= -->
+  <section id="academia" class="seccion-base" style="padding-top: 20px;">
+    <div class="academia-box">
+      <div class="academia-flyer">
+        <img data-asset="mediaciondiplomado" src="./assets/mediaciondiplomado.jpg" alt="Diplomado en Mediación y Conciliación" />
+      </div>
+      <div>
+        <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--accent-orange); letter-spacing: 1.2px;">
+          Formación y Certificación Continua
+        </span>
+        <h2 style="font-size: clamp(1.5rem, 2.8vw, 2.2rem); font-weight: 900; margin: 8px 0 14px 0;">
+          Academia y Diplomado en Mediación y Mecanismos Alternativos
+        </h2>
+        <p style="color: var(--text-secondary); font-size: 0.94rem; margin-bottom: 18px;">
+          Impulsamos la profesionalización jurídica y la formación de Personas Facilitadoras con aval académico e institucional, en coordinación con el Colegio de Abogados Movimiento 45 y Más del Estado de Jalisco A.C.
+        </p>
+        <ul class="servicio-lista" style="margin-bottom: 22px;">
+          <li><i class="fa-solid fa-graduation-cap"></i> Diplomados con valor curricular para certificación en MASC</li>
+          <li><i class="fa-solid fa-book-open-reader"></i> Talleres prácticos de redacción de Convenios Finales ante el IJA</li>
+          <li><i class="fa-solid fa-award"></i> Ponentes certificados y especialistas en Justicia Alternativa</li>
+        </ul>
+        <div class="academia-logos-colegio">
+          <img data-asset="centrologo" src="./assets/centrologo.png" alt="Logo Centro" />
+          <img data-asset="logo45" src="./assets/logo45.png" alt="Logo 45 y Más" />
+          <img data-asset="LOGO" src="./assets/LOGO.png" alt="Logo Oficial" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       8. FOOTER Y CONTACTO OFICIAL
+       ========================================================================= -->
+  <footer id="contacto" class="footer-principal">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Movimiento 45 y Más A.C.</h4>
+        <p>Centro Privado de Mediación y Conciliación acreditado ante el Instituto de Justicia Alternativa del Estado de Jalisco (Acreditaciones 065 y 353).</p>
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
+          <img data-asset="centrologo" src="./assets/centrologo.png" alt="Centro" style="height: 46px; background: #fff; padding: 4px; border-radius: 8px;" />
+          <img data-asset="logo45" src="./assets/logo45.png" alt="45yMás" style="height: 46px; background: #fff; padding: 4px; border-radius: 8px;" />
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Ubicación y Teléfonos</h4>
+        <p><i class="fa-solid fa-location-dot" style="color: #f59e0b; margin-right: 6px;"></i> Hilarión Romero Gil #935, Colonia Alcalde Barranquitas, Guadalajara, Jalisco, México.</p>
+        <a href="tel:3321870711"><i class="fa-solid fa-phone" style="color: #f59e0b; margin-right: 6px;"></i> Teléfono: (33) 2187-0711</a>
+        <a href="tel:3333305471"><i class="fa-solid fa-phone" style="color: #f59e0b; margin-right: 6px;"></i> Teléfono: (33) 3330-5471</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Redes Sociales Oficiales</h4>
+        <a href="https://www.tiktok.com/@45ymas_oficial?lang=es-419" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok" style="color: #f59e0b; margin-right: 6px;"></i> TikTok: @45ymas_oficial</a>
+        <a href="https://www.facebook.com/M.45yMas/?locale=es_LA" target="_blank" rel="noopener"><i class="fa-brands fa-facebook" style="color: #f59e0b; margin-right: 6px;"></i> Facebook: Movimiento 45 y Más</a>
+        <a href="https://www.instagram.com/m.45ymas/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram" style="color: #f59e0b; margin-right: 6px;"></i> Instagram: @m.45ymas</a>
+        <a href="portal-pro.html" style="color: #fde68a; font-weight: 700; margin-top: 8px;"><i class="fa-solid fa-lock" style="margin-right: 6px;"></i> Acceso Interno: Bóveda Pro</a>
+      </div>
+    </div>
+
+    <div style="text-align: center; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.78rem; color: #64748b;">
+      © 2026 Centro Privado Movimiento 45 y Más A.C. Todos los derechos reservados. Guadalajara, Jalisco, México.
+    </div>
   </footer>
 
   <!-- =========================================================================
-       SCRIPTS DE RESOLUCIÓN AUTOMÁTICA DE EXTENSIÓN DE IMÁGENES Y CARRUSEL
+       SCRIPTS: AUTODETECCIÓN DE IMÁGENES EN ./assets/, CARRUSEL Y MODO CAMALEÓN
        ========================================================================= -->
   <script>
-    // Autodetector de extensiones (.jpg, .png, .jpeg, .webp) para que ninguna imagen de ./assets/ falle en Windows o GitHub Pages
-    const ASSET_EXTENSIONS = ['jpg', 'png', 'jpeg', 'webp', 'JPG', 'PNG'];
+    // 1. Autodetector de extensión (.jpg, .png, .jpeg, .webp) para todas las fotos de ./assets/
+    const EXTENSIONES_ASSETS = ['jpg', 'png', 'jpeg', 'webp', 'JPG', 'PNG'];
 
-    function resolveAssetImage(imgEl, baseName) {
-      let idx = 0;
-      const tryNext = () => {
-        if (idx >= ASSET_EXTENSIONS.length) return;
-        const ext = ASSET_EXTENSIONS[idx++];
-        imgEl.src = `./assets/${baseName}.${ext}`;
+    function cargarImagenSegura(imgElement, nombreArchivo) {
+      let intento = 0;
+      const probarSiguiente = () => {
+        if (intento >= EXTENSIONES_ASSETS.length) return;
+        const ext = EXTENSIONES_ASSETS[intento++];
+        imgElement.src = `./assets/${nombreArchivo}.${ext}`;
       };
-      imgEl.onerror = tryNext;
-      tryNext();
+      imgElement.onerror = probarSiguiente;
+      probarSiguiente();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('img[data-asset]').forEach(img => {
-        resolveAssetImage(img, img.getAttribute('data-asset'));
+        cargarImagenSegura(img, img.getAttribute('data-asset'));
       });
+
+      // Restaurar preferencia de Modo Claro / Oscuro
+      if (localStorage.getItem('tema_portal_45ymas') === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('iconoCamaleon').className = 'fa-solid fa-moon';
+      }
     });
 
-    // Carrusel Oficial (ija1 a ija4)
-    const slides = [
-      { asset: 'ija1', caption: 'Entrega y Firma de Acreditación Oficial ante el IJA Jalisco' },
-      { asset: 'ija2', caption: 'Suscripción de Convenios de Colaboración Institucional' },
-      { asset: 'ija3', caption: 'Mesa de Trabajo con Autoridades del Instituto de Justicia Alternativa' },
-      { asset: 'ija4', caption: 'Develación de Placa y Reconocimiento al Centro Privado 45 y Más A.C.' }
-    ];
-    let currentSlideIndex = 0;
+    // 2. Carrusel Automático Hero (ija1 a ija4)
+    let indiceSlideHero = 0;
+    const slidesHero = document.querySelectorAll('.hero-slide');
+    const dotsHero = document.querySelectorAll('.carousel-dot');
 
-    function setSlide(index) {
-      currentSlideIndex = (index + slides.length) % slides.length;
-      const img = document.getElementById('carouselMainImage');
-      const badge = document.getElementById('carouselBadge');
-      const caption = document.getElementById('carouselCaption');
-
-      resolveAssetImage(img, slides[currentSlideIndex].asset);
-      badge.textContent = `Fotografía Oficial ${currentSlideIndex + 1} / 4`;
-      caption.textContent = slides[currentSlideIndex].caption;
+    function irASlideHero(n) {
+      slidesHero[indiceSlideHero].classList.remove('active');
+      dotsHero[indiceSlideHero].classList.remove('active');
+      indiceSlideHero = (n + slidesHero.length) % slidesHero.length;
+      slidesHero[indiceSlideHero].classList.add('active');
+      dotsHero[indiceSlideHero].classList.add('active');
     }
 
-    function changeSlide(delta) {
-      setSlide(currentSlideIndex + delta);
+    setInterval(() => {
+      irASlideHero(indiceSlideHero + 1);
+    }, 5500);
+
+    // 3. Botón Camaleón (Modo Oscuro / Modo Claro)
+    function alternarModoCamaleon() {
+      document.body.classList.toggle('light-mode');
+      const esClaro = document.body.classList.contains('light-mode');
+      localStorage.setItem('tema_portal_45ymas', esClaro ? 'light' : 'dark');
+      document.getElementById('iconoCamaleon').className = esClaro ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     }
 
-    setInterval(() => changeSlide(1), 6000);
+    // 4. Menú Responsivo para Celular
+    function alternarMenuMovil() {
+      document.getElementById('navLinksMenu').classList.toggle('active');
+    }
 
-    function toggleMobileMenu() {
-      document.getElementById('mobileMenu').classList.toggle('hidden');
+    function cerrarMenuMovil() {
+      document.getElementById('navLinksMenu').classList.remove('active');
     }
   </script>
 </body>
