@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bóveda Pro | Gestión Jurídica & MASC</title>
+    <title>Bóveda Pro | Gestión Jurídica, MASC & Oficios IJA</title>
     <!-- Iconos FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- LocalForage para almacenamiento masivo local -->
+    <!-- LocalForage para almacenamiento local masivo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    <!-- Mammoth.js para leer machotes Word (.docx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -18,7 +20,7 @@
         :root {
             --bg-dark: #090d16;
             --bg-panel: #111827;
-            --bg-card: rgba(30, 41, 59, 0.75);
+            --bg-card: rgba(30, 41, 59, 0.78);
             --border-glass: rgba(255, 255, 255, 0.1);
             --neon-blue: #00f2fe;
             --brand-orange: #ff7315;
@@ -27,6 +29,7 @@
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --purple-ai: #a855f7;
         }
 
         * {
@@ -118,16 +121,18 @@
         }
 
         .topbar {
-            height: 64px;
+            min-height: 64px;
             background: var(--bg-panel);
             border-bottom: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
+            padding: 10px 24px;
             position: sticky;
             top: 0;
             z-index: 100;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .brand-logo {
@@ -147,21 +152,42 @@
         .topbar-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .cloud-badge {
-            background: rgba(0, 242, 254, 0.1);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            color: var(--neon-blue);
-            padding: 6px 12px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--success);
+            padding: 6px 13px;
             border-radius: 20px;
             font-size: 0.78rem;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-topbar-batch {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 242, 254, 0.2));
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+        }
+
+        .btn-topbar-batch:hover {
+            background: var(--neon-blue);
+            color: #090d16;
         }
 
         .main-layout {
@@ -171,31 +197,46 @@
         }
 
         .sidebar {
-            width: 250px;
+            width: 260px;
             background: var(--bg-panel);
             border-right: 1px solid var(--border-glass);
             padding: 20px 12px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .menu-item {
-            padding: 12px 16px;
+            padding: 11px 15px;
             border-radius: 8px;
             color: var(--text-muted);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 0.92rem;
+            justify-content: space-between;
+            font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.2s;
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 11px;
         }
 
         .menu-item:hover, .menu-item.active {
             background: rgba(255, 115, 21, 0.15);
             color: var(--brand-orange);
+        }
+
+        .badge-count {
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 2px 7px;
+            border-radius: 10px;
         }
 
         .btn-ia-scanner {
@@ -267,6 +308,7 @@
             color: var(--text-muted);
             font-weight: 600;
             font-size: 0.88rem;
+            transition: all 0.2s;
         }
 
         .materia-tab.active {
@@ -277,7 +319,7 @@
 
         .grid-carpetas {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
             gap: 16px;
         }
 
@@ -287,7 +329,7 @@
             border-radius: 12px;
             padding: 18px;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -297,6 +339,7 @@
         .carpeta-card:hover {
             transform: translateY(-3px);
             border-color: var(--neon-blue);
+            box-shadow: 0 8px 24px rgba(0, 242, 254, 0.12);
         }
 
         .folder-icon {
@@ -326,7 +369,7 @@
         }
 
         .btn-icon-card {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.85);
             border: 1px solid var(--border-glass);
             color: var(--text-muted);
             width: 26px;
@@ -374,7 +417,7 @@
 
         .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
         }
 
@@ -410,12 +453,131 @@
             font-weight: 600;
         }
 
+        /* TARJETA DE VISTA PREVIA FLOTANTE (HOVER PREVIEW CARD / POPOVER) */
+        #hover-preview-card {
+            display: none;
+            position: fixed;
+            z-index: 3500;
+            width: 350px;
+            background: rgba(15, 23, 42, 0.97);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--neon-blue);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 0 0 20px rgba(0, 242, 254, 0.18);
+            color: var(--text-main);
+            pointer-events: auto;
+            animation: fadeInHover 0.16s ease-out;
+        }
+
+        @keyframes fadeInHover {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hover-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        /* ZONA DRAG & DROP INGESTA MASIVA */
+        .dropzone-masiva {
+            border: 2px dashed var(--neon-blue);
+            background: rgba(0, 242, 254, 0.04);
+            border-radius: 14px;
+            padding: 38px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-bottom: 20px;
+        }
+
+        .dropzone-masiva:hover, .dropzone-masiva.dragover {
+            background: rgba(0, 242, 254, 0.12);
+            border-color: var(--brand-orange);
+        }
+
+        /* ESTILOS DE HOJA DE OFICIO IJA (PANTALLA E IMPRESIÓN) */
+        .oficio-preview-wrapper {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            overflow-x: auto;
+        }
+
+        .hoja-oficio-ija {
+            background: #ffffff;
+            color: #000000;
+            width: 21.59cm;
+            min-height: 27.94cm;
+            margin: 0 auto 28px auto;
+            padding: 2.2cm 2.4cm 2.0cm 2.4cm;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.55);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-family: 'Arial', 'Calibri', sans-serif;
+            font-size: 11pt;
+            line-height: 1.42;
+            position: relative;
+            page-break-after: always;
+        }
+
+        .hoja-oficio-ija * {
+            font-family: 'Arial', 'Calibri', sans-serif;
+            color: #000000;
+        }
+
+        .oficio-asunto-top {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 18px;
+            line-height: 1.3;
+        }
+
+        .oficio-destinatario {
+            font-weight: bold;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .oficio-parrafo {
+            text-align: justify;
+            text-indent: 1.2cm;
+            margin-bottom: 16px;
+        }
+
+        .tabla-oficio-ija {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 18px 0;
+        }
+
+        .tabla-oficio-ija th, .tabla-oficio-ija td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            vertical-align: top;
+            font-size: 10.5pt;
+        }
+
+        .oficio-pie-firma {
+            margin-top: auto;
+            padding-top: 20px;
+            page-break-inside: avoid;
+        }
+
         /* MODALES */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.78);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -428,10 +590,12 @@
             border-radius: 12px;
             padding: 24px;
             width: 100%;
-            max-width: 460px;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
             gap: 14px;
+            max-height: 92vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -466,7 +630,7 @@
         <div class="login-box">
             <i class="fa-solid fa-scale-balanced" style="font-size: 2.6rem; color: var(--brand-orange); margin-bottom: 12px;"></i>
             <h2>BÓVEDA PRO</h2>
-            <p>Sistema Inteligente de Gestión Jurídica y MASC</p>
+            <p>Sistema Inteligente de Gestión Jurídica, MASC y Oficios IJA</p>
             <div style="display: flex; flex-direction: column; gap: 14px;">
                 <input type="text" id="user" class="form-input" placeholder="Usuario" autocomplete="username">
                 <input type="password" id="pass" class="form-input" placeholder="Contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter') iniciarSesion()">
@@ -478,17 +642,22 @@
         </div>
     </div>
 
+    <!-- TARJETA FLOTANTE HOVER PREVIEW (POPOVER TIPO WIKIPEDIA) -->
+    <div id="hover-preview-card" onmouseenter="mantenerHoverCard()" onmouseleave="ocultarHoverCard()"></div>
+
     <!-- MODAL DE CARGA DEL ESCÁNER IA -->
-    <div id="modal-ia-loading" class="modal-overlay" style="z-index: 2000;">
-        <div class="modal-content" style="text-align: center; max-width: 360px;">
+    <div id="modal-ia-loading" class="modal-overlay" style="z-index: 2500;">
+        <div class="modal-content" style="text-align: center; max-width: 380px;">
             <i class="fa-solid fa-brain fa-bounce" style="font-size: 2.8rem; color: var(--neon-blue); margin-bottom: 10px;"></i>
-            <h3 style="color: var(--text-main);">Analizando Documento con IA...</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Extrayendo expediente, partes, fecha de firma, fecha de vencimiento y respaldando en la nube.</p>
+            <h3 style="color: var(--text-main);">Analizando con IA y Aprendizaje...</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Extrayendo expediente, partes, fechas de inicio y vencimiento, predial, escrituras y respaldando en Drive.</p>
         </div>
     </div>
 
-    <!-- INPUT OCULTO PARA ESCÁNER GLOBAL IA -->
+    <!-- INPUTS OCULTOS PARA ESCÁNER GLOBAL, CARGA MASIVA Y MACHOTE -->
     <input type="file" id="input-ia-global" accept="application/pdf,.doc,.docx" style="display: none;" onchange="procesarDocGlobalIA(event)">
+    <input type="file" id="input-masivo-files" accept="application/pdf,.doc,.docx" multiple style="display: none;" onchange="agregarArchivosAColaMasiva(event.target.files)">
+    <input type="file" id="input-subir-machote" accept=".docx,application/pdf" style="display: none;" onchange="procesarMachoteSubido(event)">
 
     <!-- PANTALLA PRINCIPAL DEL DASHBOARD -->
     <div id="dashboard-screen">
@@ -499,9 +668,15 @@
                 <span id="badge-entorno" style="font-size: 0.72rem; background: rgba(255,115,21,0.2); color: var(--brand-orange); padding: 3px 8px; border-radius: 6px;"></span>
             </div>
             <div class="topbar-actions">
+                <button type="button" class="btn-topbar-batch" onclick="mostrarMenu('masiva')" title="Subir múltiples convenios o expedientes en lote">
+                    <i class="fa-solid fa-bolt"></i> Ingesta Masiva IA
+                </button>
+                <button type="button" class="btn-topbar-batch" style="border-color: var(--brand-orange); color: var(--brand-orange);" onclick="mostrarMenu('oficios')" title="Generador Oficial de Oficios para el IJA">
+                    <i class="fa-solid fa-file-Lines"></i> Oficios IJA
+                </button>
                 <div id="cloud-status-box" class="cloud-badge" onclick="conectarDrive()" title="Estado de sincronización automática con Google Drive">
                     <i class="fa-solid fa-cloud"></i>
-                    <span id="cloud-status-text">Nube Automática</span>
+                    <span id="cloud-status-text">Drive Automático</span>
                 </div>
                 <button type="button" class="btn-upload" onclick="configurarLlaveIAManual()" title="Configurar o cambiar API Key de Gemini">
                     <i class="fa-solid fa-key"></i> IA Key
@@ -514,17 +689,27 @@
 
         <div class="main-layout">
             <aside class="sidebar">
-                <div id="menu-juridico" class="menu-item active" onclick="mostrarMenu('juridico')">
-                    <i class="fa-solid fa-gavel"></i> Expedientes Jurídicos
+                <div id="menu-juridico" class="menu-item" onclick="mostrarMenu('juridico')">
+                    <div class="menu-item-left"><i class="fa-solid fa-gavel"></i> Expedientes Jurídicos</div>
                 </div>
-                <div id="menu-masc" class="menu-item" onclick="mostrarMenu('masc')">
-                    <i class="fa-solid fa-handshake"></i> Convenios MASC
+                <div id="menu-masc" class="menu-item active" onclick="mostrarMenu('masc')">
+                    <div class="menu-item-left"><i class="fa-solid fa-handshake"></i> Convenios MASC</div>
+                </div>
+                <div id="menu-oficios" class="menu-item" onclick="mostrarMenu('oficios')">
+                    <div class="menu-item-left"><i class="fa-solid fa-file-signature"></i> Oficios IJA</div>
+                </div>
+                <div id="menu-masiva" class="menu-item" onclick="mostrarMenu('masiva')">
+                    <div class="menu-item-left"><i class="fa-solid fa-boxes-packing"></i> Ingesta Masiva IA</div>
+                </div>
+                <div id="menu-sinreconocer" class="menu-item" onclick="mostrarMenu('sinreconocer')">
+                    <div class="menu-item-left"><i class="fa-solid fa-folder-Tree"></i> Archivos sin Reconocer</div>
+                    <span id="badge-sin-reconocer" class="badge-count" style="display:none;">0</span>
                 </div>
                 <div id="menu-usuarios" class="menu-item" onclick="mostrarMenu('usuarios')">
-                    <i class="fa-solid fa-users-gear"></i> Gestión de Equipo
+                    <div class="menu-item-left"><i class="fa-solid fa-users-gear"></i> Gestión de Equipo</div>
                 </div>
                 <div id="menu-actividad" class="menu-item" onclick="mostrarMenu('actividad')">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Actividad
+                    <div class="menu-item-left"><i class="fa-solid fa-clock-rotate-left"></i> Actividad</div>
                 </div>
 
                 <button type="button" class="btn-ia-scanner" onclick="document.getElementById('input-ia-global').click()">
@@ -533,6 +718,120 @@
             </aside>
 
             <main id="workspace" class="workspace"></main>
+        </div>
+    </div>
+
+    <!-- MODAL: ORGANIZAR ARCHIVO SIN RECONOCER (VISTA DIVIDIDA) -->
+    <div id="modal-organizar-archivo" class="modal-overlay" style="z-index: 2200;">
+        <div class="modal-content" style="max-width: 1100px; height: 88vh; flex-direction: row; gap: 20px;">
+            <div style="flex: 1.2; display: flex; flex-direction: column; border-right: 1px solid var(--border-glass); padding-right: 15px;">
+                <div class="modal-header" style="margin-bottom: 10px;">
+                    <span id="org-file-title">Vista Previa del Archivo</span>
+                </div>
+                <iframe id="org-iframe-preview" style="width: 100%; flex: 1; border: none; border-radius: 8px; background: #fff;"></iframe>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto;">
+                <div class="modal-header">
+                    <span>Asignar Ubicación Exacta</span>
+                    <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="cerrarModales()"></i>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">El archivo ya está respaldado en tu nube. Elige a qué carpeta pertenece para organizarlo y enseñar al sistema:</p>
+
+                <div class="form-group">
+                    <label>1. Área de Destino:</label>
+                    <select id="org-destino" class="form-input" onchange="cambiarDestinoOrganizador()">
+                        <option value="MASC">Convenios MASC</option>
+                        <option value="JURIDICO">Expedientes Jurídicos (Juzgados)</option>
+                    </select>
+                </div>
+
+                <div id="org-panel-masc" style="display:flex; flex-direction:column; gap:10px;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Centro MASC:</label>
+                            <select id="org-centro-masc" class="form-input"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Año:</label>
+                            <select id="org-anio-masc" class="form-input"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría MASC:</label>
+                        <select id="org-tipo-masc" class="form-input"></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Número de Expediente:</label>
+                            <input type="text" id="org-num-masc" class="form-input" placeholder="Ej. 327/2026">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Documento:</label>
+                            <select id="org-slot-masc" class="form-input">
+                                <option value="convenio">4. Convenio final</option>
+                                <option value="solicitud">1. Solicitud</option>
+                                <option value="dictamen">2. Dictamen viabilidad</option>
+                                <option value="acuerdo">3. Acuerdo confidencialidad</option>
+                                <option value="identificaciones">Identificaciones de las partes</option>
+                                <option value="contrato_arrendamiento">Contrato de arrendamiento</option>
+                                <option value="contrato_administracion">Contrato de administración</option>
+                                <option value="escritura_publica">Escritura pública</option>
+                                <option value="predial">Comprobante Predial</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombres de las Partes / Solicitante:</label>
+                        <input type="text" id="org-partes-masc" class="form-input" placeholder="Ej. MARCO ANTONIO CERVANTES LÓPEZ Y KARLA CAMPOS">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha Inicio / Firma:</label>
+                            <input type="date" id="org-fechaini-masc" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Vencimiento:</label>
+                            <input type="date" id="org-fechavenc-masc" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="org-panel-juridico" style="display:none; flex-direction:column; gap:10px;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Materia:</label>
+                            <select id="org-materia-jur" class="form-input" onchange="actualizarJuzgadosOrganizador()">
+                                <option value="Civil">Civil</option>
+                                <option value="Familiar">Familiar</option>
+                                <option value="Mercantil">Mercantil</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Año:</label>
+                            <select id="org-anio-jur" class="form-input">
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Juzgado:</label>
+                        <select id="org-juzgado-jur" class="form-input"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número y Partes del Expediente:</label>
+                        <input type="text" id="org-nombre-jur" class="form-input" placeholder="Ej. 1240/2026 - Actor vs Demandado">
+                    </div>
+                </div>
+
+                <div style="margin-top: auto; display: flex; gap: 10px; padding-top: 12px;">
+                    <button type="button" class="btn-primary" onclick="confirmarReubicacionArchivo()">
+                        <i class="fa-solid fa-folder-plus"></i> Guardar y Mover a su Carpeta
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -553,16 +852,22 @@
     <div id="modal-crear-masc" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <span>Nuevo Expediente MASC</span>
+                <span>Nuevo Expediente / Convenio MASC</span>
                 <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="cerrarModales()"></i>
             </div>
-            <div class="form-group">
-                <label>Número de Expediente:</label>
-                <input type="text" id="input-numero-masc" class="form-input" placeholder="Ej. 045/2026">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Número de Expediente:</label>
+                    <input type="text" id="input-numero-masc" class="form-input" placeholder="Ej. 327/2026">
+                </div>
+                <div class="form-group">
+                    <label>Cant. Partes / IDs:</label>
+                    <input type="number" id="input-numpartes-masc" class="form-input" value="2" min="1">
+                </div>
             </div>
             <div class="form-group">
-                <label>Solicitante / Promovente:</label>
-                <input type="text" id="input-solicitante-masc" class="form-input" placeholder="Nombre completo">
+                <label>Partes que celebran el Convenio (Nombres completos):</label>
+                <input type="text" id="input-solicitante-masc" class="form-input" placeholder="Ej. MARCO ANTONIO CERVANTES LÓPEZ Y KARLA CAMPOS">
             </div>
             <div class="form-group">
                 <label>Patrocinado por:</label>
@@ -577,6 +882,24 @@
                     <label>Fecha de Vencimiento:</label>
                     <input type="date" id="input-fechavenc-masc" class="form-input">
                 </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Folio Predial (si aplica):</label>
+                    <input type="text" id="input-predial-masc" class="form-input" placeholder="Ej. 8070194">
+                </div>
+                <div class="form-group">
+                    <label>N° Escritura(s) Pública(s):</label>
+                    <input type="text" id="input-escritura-masc" class="form-input" placeholder="Ej. 27,830">
+                </div>
+            </div>
+            <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:4px;">
+                <label style="display:flex; align-items:center; gap:6px; font-size:0.82rem; cursor:pointer; color:var(--brand-orange);">
+                    <input type="checkbox" id="input-mayor60-masc"> Participa Mayor de 60 años (Procuraduría Social P.S.)
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; font-size:0.82rem; cursor:pointer; color:var(--neon-blue);">
+                    <input type="checkbox" id="input-menores-masc"> Involucra Derechos de Menores (PNNA)
+                </label>
             </div>
             <button type="button" class="btn-primary" onclick="procesarNuevoMASC()">Crear Expediente MASC</button>
         </div>
@@ -648,7 +971,7 @@
     </div>
 
     <!-- MODAL: VISOR RÁPIDO PDF -->
-    <div id="modal-visor-pdf" class="modal-overlay">
+    <div id="modal-visor-pdf" class="modal-overlay" style="z-index: 3000;">
         <div class="modal-content" style="max-width: 90vw; height: 88vh;">
             <div class="modal-header">
                 <span id="visor-titulo-doc">Visor de Documento</span>
@@ -695,7 +1018,7 @@
         let bovedaUsers = JSON.parse(localStorage.getItem('boveda_usuarios_sistema')) || usuariosDefecto;
         let usuarioActivoObj = null;
         let esAdmin = false;
-        let vistaActual = 'juridico';
+        let vistaActual = 'masc';
 
         // Estado Jurídico
         const catJuzgados = {
@@ -711,12 +1034,38 @@
         // Estado MASC
         let storageMascKey = 'boveda_masc_despacho45';
         let storageCentrosKey = 'centros_db_despacho45';
+        let storageSinReconocerKey = 'sin_reconocer_despacho45';
+        let storageMachotesKey = 'machotes_ija_despacho45';
+        let storageAprendizajeKey = 'aprendizaje_ia_despacho45';
+
         let centrosMASC = [];
         let aniosMasc = [];
         let tiposMasc = [];
         let listaExpedientesMasc = [];
+        let listaSinReconocer = [];
+        let configMachotesCentro = {};
+        let memoriaAprendizajeIA = [];
+
         let nivelMasc = 0;
         let pathMasc = { centro: '', anio: '', tipo: '', indexExp: -1 };
+
+        // Estado Módulo Oficios IJA
+        let tabOficioActiva = 'individual'; // 'individual' | 'lote' | 'machote'
+        let indexExpOficioSeleccionado = 0;
+        let modoLoteOficio = 'general10'; // 'general10' (Hoja 5) | 'agentes60' (Hoja 4)
+        let filtroCentroLote = 'TODOS';
+        let expedientesLoteSeleccionados = [];
+
+        // Estado Módulo Ingesta Masiva IA
+        let colaMasiva = [];
+        let procesandoColaMasiva = false;
+        let colaMasivaPausada = false;
+        let statsMasiva = { total: 0, procesados: 0, masc: 0, juridico: 0, sinReconocer: 0 };
+        let indexArchivoOrganizando = -1;
+
+        // Estado Hover Preview Card
+        let hoverTimeoutId = null;
+        let hideHoverTimeoutId = null;
 
         // Índices de edición para modales
         let editCentroIdx = -1;
@@ -727,7 +1076,7 @@
         // Estado Google Drive
         let tokenClient = null;
         let gDriveToken = localStorage.getItem('drive_token') || null;
-        let telemetriaDrive = { usadoGB: "0.00", totalGB: "5000" };
+        let telemetriaDrive = { usadoGB: "4.95", totalGB: "5120" };
 
         // =========================================================================
         // 2. MOTOR DE NUBE 100% AUTOMÁTICO (GOOGLE DRIVE API)
@@ -741,7 +1090,7 @@
                 box.style.borderColor = 'var(--success)';
                 box.style.color = 'var(--success)';
             } else {
-                txt.innerText = 'Conectar Drive Automático';
+                txt.innerText = 'Drive Automático';
                 box.style.borderColor = 'rgba(0, 242, 254, 0.3)';
                 box.style.color = 'var(--neon-blue)';
             }
@@ -765,7 +1114,6 @@
                         localStorage.setItem('drive_auto_connect', 'true');
                         await obtenerTelemetriaDrive();
                         actualizarBadgeNubeUI(true);
-                        if (usuarioActivoObj) renderizarVista();
                     }
                 }
             });
@@ -776,10 +1124,7 @@
 
             if (tokenGuardado && Date.now() < expiraGuardado) {
                 gDriveToken = tokenGuardado;
-                obtenerTelemetriaDrive().then((ok) => {
-                    actualizarBadgeNubeUI(ok);
-                    if (usuarioActivoObj) renderizarVista();
-                });
+                obtenerTelemetriaDrive().then((ok) => actualizarBadgeNubeUI(ok));
             } else if (autoConnect || (usuarioActivoObj && usuarioActivoObj.cloud)) {
                 try {
                     tokenClient.requestAccessToken({ prompt: '' });
@@ -832,7 +1177,7 @@
                 let data = await res.json();
                 if (data && data.storageQuota) {
                     let usado = (parseInt(data.storageQuota.usage || '0', 10) / (1024 ** 3)).toFixed(2);
-                    let limite = data.storageQuota.limit ? Math.round(parseInt(data.storageQuota.limit, 10) / (1024 ** 3)) : 5000;
+                    let limite = data.storageQuota.limit ? Math.round(parseInt(data.storageQuota.limit, 10) / (1024 ** 3)) : 5120;
                     telemetriaDrive = { usadoGB: usado, totalGB: limite.toString() };
                     actualizarBadgeNubeUI(true);
                     return true;
@@ -908,8 +1253,23 @@
         }
 
         // =========================================================================
-        // 3. AUTENTICACIÓN, SESIÓN Y SINCRONIZACIÓN DE DATOS
+        // 3. AUTENTICACIÓN, SESIÓN Y PERSISTENCIA
         // =========================================================================
+        function obtenerConfigMachoteDefecto(nombreCentro) {
+            let acred = "065";
+            if (String(nombreCentro).includes("353")) acred = "353";
+            return {
+                nombreAsociacion: "Centro Privado Movimiento 45yMás A.C.",
+                acreditacion: acred,
+                directorNombre: "José Antonio Ramos López",
+                directorCargo: "DIRECTOR GENERAL",
+                destinatarioIJANombre: "Dr. Guillermo Raúl Zepeda Lecuona",
+                destinatarioIJACargo: "DIRECTOR GENERAL\nINSTITUTO DE JUSTICIA ALTERNATIVA\nDEL ESTADO DE JALISCO",
+                correoDigitalIJA: "documentos.digitales@ija.gob.mx",
+                ciudadFecha: "Guadalajara, Jalisco, México; Al día de su presentación"
+            };
+        }
+
         window.iniciarSesion = async function() {
             try {
                 const uInput = document.getElementById('user');
@@ -940,6 +1300,9 @@
 
                     storageMascKey = 'boveda_masc_' + foundUser.entornoId;
                     storageCentrosKey = 'centros_db_' + foundUser.entornoId;
+                    storageSinReconocerKey = 'sin_reconocer_' + foundUser.entornoId;
+                    storageMachotesKey = 'machotes_ija_' + foundUser.entornoId;
+                    storageAprendizajeKey = 'aprendizaje_ia_' + foundUser.entornoId;
 
                     let cGuardados = localStorage.getItem(storageCentrosKey);
                     centrosMASC = cGuardados ? JSON.parse(cGuardados) : (foundUser.entornoId === 'despacho45' ? ["Despacho 45yMas", "Centro 065", "Centro 353"] : ["Centro Principal"]);
@@ -949,6 +1312,14 @@
 
                     let tGuardados = localStorage.getItem('tipos_db_' + foundUser.entornoId);
                     tiposMasc = tGuardados ? JSON.parse(tGuardados) : ["Preventivo Arrendamiento", "Alimentos y Convivencia", "Divorcio Admtvo. y Mutuo"];
+
+                    listaSinReconocer = JSON.parse(localStorage.getItem(storageSinReconocerKey) || '[]');
+                    configMachotesCentro = JSON.parse(localStorage.getItem(storageMachotesKey) || '{}');
+                    memoriaAprendizajeIA = JSON.parse(localStorage.getItem(storageAprendizajeKey) || '[]');
+
+                    centrosMASC.forEach(c => {
+                        if (!configMachotesCentro[c]) configMachotesCentro[c] = obtenerConfigMachoteDefecto(c);
+                    });
 
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('dashboard-screen').style.display = 'flex';
@@ -961,6 +1332,7 @@
                         cargarLocalesSeguro();
                     }
 
+                    actualizarContadorSinReconocer();
                     registrarActividad('Inició sesión en el sistema');
                     mostrarMenu('masc');
                 } else {
@@ -978,12 +1350,56 @@
             document.getElementById('login-screen').style.display = 'flex';
         }
 
+        function actualizarContadorSinReconocer() {
+            const b = document.getElementById('badge-sin-reconocer');
+            if (!b) return;
+            if (listaSinReconocer.length > 0) {
+                b.style.display = 'inline-block';
+                b.innerText = listaSinReconocer.length;
+            } else {
+                b.style.display = 'none';
+            }
+        }
+
+        function guardarSinReconocer() {
+            localStorage.setItem(storageSinReconocerKey, JSON.stringify(listaSinReconocer));
+            actualizarContadorSinReconocer();
+        }
+
+        function registrarAprendizajeConvenio(expObj) {
+            if (!expObj || !expObj.numero) return;
+            let entrada = {
+                centro: expObj.centro || 'Centro 065',
+                tipo: expObj.tipo || 'Preventivo Arrendamiento',
+                ejemploNumero: expObj.numero,
+                partes: expObj.solicitante || '',
+                numPartes: expObj.numPartes || 2,
+                mayor60: Boolean(expObj.mayor60),
+                involucraMenores: Boolean(expObj.involucraMenores),
+                cuentaPredial: expObj.cuentaPredial || '',
+                numerosEscritura: expObj.numerosEscritura || '',
+                cantEscrituras: expObj.cantEscrituras || 1
+            };
+            memoriaAprendizajeIA.unshift(entrada);
+            if (memoriaAprendizajeIA.length > 35) memoriaAprendizajeIA = memoriaAprendizajeIA.slice(0, 35);
+            localStorage.setItem(storageAprendizajeKey, JSON.stringify(memoriaAprendizajeIA));
+        }
+
         function migrarDatosAntiguos() {
             listaExpedientesMasc.forEach(m => {
                 if (m.tipo === "ARRENDAMIENTO") m.tipo = "Preventivo Arrendamiento";
                 if (m.tipo === "ALIMENTOS") m.tipo = "Alimentos y Convivencia";
                 if (m.tipo === "DIVORCIO") m.tipo = "Divorcio Admtvo. y Mutuo";
+                if (!m.numPartes) m.numPartes = contarPartesEnTexto(m.solicitante);
             });
+        }
+
+        function contarPartesEnTexto(texto) {
+            if (!texto) return 2;
+            let limpio = String(texto).trim();
+            if (!limpio) return 2;
+            let partes = limpio.split(/,|\s+Y\s+|\s+y\s+|\s+E\s+/i).map(s => s.trim()).filter(Boolean);
+            return partes.length >= 2 ? partes.length : 2;
         }
 
         async function sincronizarDesdeNube() {
@@ -1017,7 +1433,7 @@
                         await db.collection('expedientes_masc_' + usuarioActivoObj.entornoId).doc(docId).set(m);
                     }
                 } catch (e) {
-                    console.warn("Guardado en localStorage activo:", e);
+                    console.warn("Guardado local activo:", e);
                 }
             }
             localStorage.setItem(storageMascKey, JSON.stringify(listaExpedientesMasc));
@@ -1032,12 +1448,12 @@
                 accion: accion,
                 fecha: new Date().toLocaleString('es-MX')
             });
-            if (logs.length > 200) logs = logs.slice(0, 200);
+            if (logs.length > 250) logs = logs.slice(0, 250);
             localStorage.setItem(keyLogs, JSON.stringify(logs));
         }
 
         // =========================================================================
-        // 4. MOTOR IA GEMINI CON DETECCIÓN Y CÁLCULO DE FECHA DE VENCIMIENTO
+        // 4. MOTOR IA GEMINI CON FECHA DE VENCIMIENTO, OFICIOS Y APRENDIZAJE
         // =========================================================================
         function obtenerLlaveIA() {
             let key = localStorage.getItem('boveda_gemini_key');
@@ -1062,7 +1478,6 @@
             }
         }
 
-        // Convierte cualquier formato de fecha a YYYY-MM-DD para que los inputs type="date" siempre la muestren
         function normalizarFechaISO(valorFecha) {
             if (!valorFecha || typeof valorFecha !== 'string') return '';
             let limpia = valorFecha.trim();
@@ -1080,7 +1495,6 @@
             if (matchSlashISO) {
                 return `${matchSlashISO[1]}-${matchSlashISO[2].padStart(2, '0')}-${matchSlashISO[3].padStart(2, '0')}`;
             }
-
             return '';
         }
 
@@ -1112,33 +1526,56 @@
             const apiKey = obtenerLlaveIA();
             if (!apiKey) throw new Error("No se ingresó Clave de API de Gemini.");
 
+            // Inyectamos ejemplos aprendidos por el centro para mayor precisión
+            let contextoAprendido = "";
+            if (memoriaAprendizajeIA.length > 0) {
+                let ultimos = memoriaAprendizajeIA.slice(0, 5).map(x =>
+                    `Exp ${x.ejemploNumero} (${x.centro}, ${x.tipo}): Partes="${x.partes}", IDs=${x.numPartes}, Mayor60=${x.mayor60}, Predial="${x.cuentaPredial}", Escritura="${x.numerosEscritura}"`
+                ).join(" | ");
+                contextoAprendido = `\nPATRONES APRENDIDOS EN ESTE CENTRO DE MEDIACIÓN:\n${ultimos}\n`;
+            }
+
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = async () => {
                     try {
                         let base64 = reader.result.split(',')[1];
-                        let promptTexto = `Eres un asistente jurídico experto en convenios MASC y expedientes judiciales.
-Analiza el documento adjunto y devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta:
+                        let promptTexto = `Eres un asistente jurídico experto en convenios MASC del IJA Jalisco y expedientes judiciales.${contextoAprendido}
+Analiza el documento adjunto (y su nombre de archivo "${file.name}") y devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta:
 {
+  "reconocido": true,
   "categoria": "MASC o JURIDICO",
   "centro": "Centro 065 | Centro 353 | Despacho 45yMas",
-  "numero": "Número de expediente o convenio (ej. 045/2026)",
-  "solicitante": "Nombres de las partes o promovente principal",
-  "patrocinado": "Nombre del abogado o patrocinador si aparece, o vacío",
+  "numero": "Número de expediente o convenio (ej. 327/2026). Si no tiene ninguno y es irreconocible pon ''",
+  "solicitante": "Nombres completos en MAYÚSCULAS de TODAS las partes que celebran el convenio (ej. MARCO ANTONIO CERVANTES LÓPEZ, HÉCTOR GERARDO OROZCO ÁVILA Y KARLA FABIOLA CAMPOS MÉNDEZ)",
+  "numPartes": 2,
+  "patrocinado": "Nombre del abogado o patrocinador si aparece, o ''",
   "tipo": "Preventivo Arrendamiento | Alimentos y Convivencia | Divorcio Admtvo. y Mutuo | Civil | Familiar | Mercantil",
   "anio": "Año en 4 dígitos (ej. 2026)",
-  "tipoDocClasificado": "solicitud | dictamen | acuerdo | convenio | identificaciones | contrato_arrendamiento",
+  "tipoDocClasificado": "solicitud | dictamen | acuerdo | convenio | identificaciones | contrato_arrendamiento | contrato_administracion | escritura_publica | predial",
   "fechaInicio": "YYYY-MM-DD",
   "fechaVencimiento": "YYYY-MM-DD",
-  "resumen": "Breve resumen del convenio o acuerdo"
+  "mayor60": false,
+  "involucraMenores": false,
+  "cuentaPredial": "Número de cuenta o recibo predial si se menciona en el convenio (ej. 8070194 o 1133176792), o ''",
+  "numerosEscritura": "Número(s) de escritura pública mencionados en el convenio (ej. 27,830), o ''",
+  "cantEscrituras": 0,
+  "tieneContratoAdmin": false,
+  "numHijosMenores": 0,
+  "resumen": "Breve resumen del convenio o documento"
 }
 
-REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
-1. "fechaInicio": Extrae la fecha de firma, celebración o inicio del convenio y conviértela a formato "YYYY-MM-DD" (incluso si está escrita con letras).
-2. "fechaVencimiento": Busca cualquier fecha de vencimiento, término de vigencia, conclusión del convenio, entrega/desocupación del inmueble o fecha del último pago/cumplimiento.
-3. CÁLCULO AUTOMÁTICO SI HAY PLAZO: Si el convenio no tiene escrita una fecha de vencimiento con día/mes/año explícitos, pero menciona un plazo de vigencia (por ejemplo: "vigencia de 1 año", "12 meses", "6 meses forzosos a partir de la firma"), CALCULA la fecha de vencimiento sumando ese plazo a "fechaInicio" y devuélvela en "fechaVencimiento" en formato "YYYY-MM-DD".
-4. Solo si el documento no tiene absolutamente ninguna fecha de término ni plazo de vigencia, devuelve "".`;
+REGLAS ESTRICTAS:
+1. FECHA DE INICIO Y FECHA DE VENCIMIENTO:
+   - "fechaInicio": Extrae la fecha de firma o inicio de vigencia en formato "YYYY-MM-DD".
+   - "fechaVencimiento": Busca la fecha de vencimiento, término del arrendamiento/convenio, desocupación o último pago. Si el convenio menciona un plazo (ej. "1 año", "12 meses", "6 meses"), CALCULA la fecha exacta sumando ese plazo a "fechaInicio" y devuélvela en "YYYY-MM-DD".
+2. DATOS PARA OFICIO IJA:
+   - "mayor60": Pon true si alguna de las partes tiene 60 años o más (tercera edad / adulto mayor) o si menciona traslado a Procuraduría Social (P.S.).
+   - "involucraMenores": Pon true si hay hijos menores de edad o traslado a Procuraduría de Niñas, Niños y Adolescentes.
+   - "numPartes": Cuenta cuántas personas físicas/partes firman el convenio (para saber cuántas identificaciones cotejadas son: 2, 3, 4...).
+   - "cuentaPredial" y "numerosEscritura": Extrae del texto de declaraciones/antecedentes del convenio el número de cuenta/recibo predial y el número de escritura pública si se citan.
+3. Si el documento está completamente en blanco, ilegible o no se puede identificar si es jurídico o MASC ni sus partes, pon "reconocido": false.`;
 
                         let body = {
                             contents: [{
@@ -1167,6 +1604,149 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             });
         }
 
+        // Integra un documento ya analizado y subido dentro de su carpeta MASC, Jurídica o Sin Reconocer
+        async function integrarDocumentoAnalizadoEnSistema(file, refArchivo, json, permitirSinReconocer = true) {
+            const sinDatosMinimos = !json || json.reconocido === false || (!json.numero && !json.solicitante);
+            if (sinDatosMinimos && permitirSinReconocer) {
+                listaSinReconocer.unshift({
+                    id: 'sr_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                    fileName: file.name,
+                    fileType: file.type || 'application/pdf',
+                    fechaSubida: new Date().toLocaleString('es-MX'),
+                    ref: refArchivo,
+                    sugerenciaIA: json || {}
+                });
+                guardarSinReconocer();
+                return { destino: 'SIN_RECONOCER', numero: file.name };
+            }
+
+            if (json.categoria === 'MASC' || vistaActual === 'masc') {
+                let centroDetectado = centrosMASC[0] || "Centro 065";
+                if (json.centro && String(json.centro).includes("353")) centroDetectado = "Centro 353";
+                else if (json.centro && String(json.centro).includes("065")) centroDetectado = "Centro 065";
+                else if (json.centro && String(json.centro).toLowerCase().includes("despacho")) centroDetectado = "Despacho 45yMas";
+                else if (pathMasc.centro) centroDetectado = pathMasc.centro;
+
+                if (!centrosMASC.includes(centroDetectado)) {
+                    centrosMASC.push(centroDetectado);
+                    localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC));
+                }
+
+                let anioDetectado = (json.anio && String(json.anio).length === 4) ? String(json.anio) : new Date().getFullYear().toString();
+                if (!aniosMasc.includes(anioDetectado)) {
+                    aniosMasc.unshift(anioDetectado);
+                    localStorage.setItem('anios_db_' + usuarioActivoObj.entornoId, JSON.stringify(aniosMasc));
+                }
+
+                let tRaw = (json.tipo || "").toLowerCase();
+                let tipoFinal = tiposMasc[0] || "Preventivo Arrendamiento";
+                if (tRaw.includes("alimento") || tRaw.includes("convivencia")) tipoFinal = "Alimentos y Convivencia";
+                else if (tRaw.includes("divorcio") || tRaw.includes("mutuo")) tipoFinal = "Divorcio Admtvo. y Mutuo";
+                else if (tRaw.includes("arrendamiento") || tRaw.includes("comodato")) tipoFinal = "Preventivo Arrendamiento";
+
+                let numExp = (json.numero && json.numero !== 'S/N') ? String(json.numero).replace(/^EXP\.?\s*/i, '').trim() : `EXP-${Date.now().toString().slice(-4)}`;
+                let keyDoc = json.tipoDocClasificado || 'convenio';
+
+                let idxExistente = listaExpedientesMasc.findIndex(
+                    e => e.centro === centroDetectado && String(e.numero).toLowerCase() === numExp.toLowerCase()
+                );
+
+                if (idxExistente !== -1) {
+                    let exp = listaExpedientesMasc[idxExistente];
+                    if (!exp.docs) exp.docs = {};
+                    if (!exp.checks) exp.checks = {};
+                    if (!exp.cantidades) exp.cantidades = {};
+                    exp.docs[keyDoc] = refArchivo;
+                    exp.checks[keyDoc] = true;
+                    if (json.fechaInicio) exp.fechaInicio = json.fechaInicio;
+                    if (json.fechaVencimiento) exp.fechaVencimiento = json.fechaVencimiento;
+                    if (json.solicitante && (!exp.solicitante || exp.solicitante.length < json.solicitante.length)) exp.solicitante = json.solicitante;
+                    if (json.numPartes) {
+                        exp.numPartes = json.numPartes;
+                        exp.cantidades['identificaciones'] = json.numPartes;
+                    }
+                    if (json.mayor60) exp.mayor60 = true;
+                    if (json.involucraMenores) exp.involucraMenores = true;
+                    if (json.cuentaPredial) {
+                        exp.cuentaPredial = json.cuentaPredial;
+                        exp.checks['predial'] = true;
+                    }
+                    if (json.numerosEscritura) {
+                        exp.numerosEscritura = json.numerosEscritura;
+                        exp.cantEscrituras = json.cantEscrituras || 1;
+                        exp.checks['escritura_publica'] = true;
+                        exp.cantidades['escritura_publica'] = exp.cantEscrituras;
+                    }
+                    if (json.tieneContratoAdmin) exp.tieneContratoAdmin = true;
+                    pathMasc = { centro: exp.centro, anio: exp.anio, tipo: exp.tipo, indexExp: idxExistente };
+                    registrarAprendizajeConvenio(exp);
+                } else {
+                    let nPartes = json.numPartes || contarPartesEnTexto(json.solicitante);
+                    let cantEsc = json.numerosEscritura ? (json.cantEscrituras || 1) : 0;
+                    let nuevoMASC = {
+                        centro: centroDetectado,
+                        anio: anioDetectado,
+                        tipo: tipoFinal,
+                        numero: numExp,
+                        solicitante: (json.solicitante || file.name.replace(/\.[^/.]+$/, "")).toUpperCase(),
+                        numPartes: nPartes,
+                        patrocinado: json.patrocinado || '',
+                        fechaInicio: json.fechaInicio || '',
+                        fechaVencimiento: json.fechaVencimiento || '',
+                        mayor60: Boolean(json.mayor60),
+                        involucraMenores: Boolean(json.involucraMenores),
+                        cuentaPredial: json.cuentaPredial || '',
+                        numerosEscritura: json.numerosEscritura || '',
+                        cantEscrituras: cantEsc,
+                        tieneContratoAdmin: Boolean(json.tieneContratoAdmin),
+                        numHijosMenores: json.numHijosMenores || 2,
+                        observaciones: json.resumen || '',
+                        firmadoPartes: keyDoc === 'convenio',
+                        docs: { [keyDoc]: refArchivo },
+                        checks: {
+                            [keyDoc]: true,
+                            identificaciones: true,
+                            contrato_arrendamiento: tipoFinal.toLowerCase().includes('arrendamiento'),
+                            predial: Boolean(json.cuentaPredial),
+                            escritura_publica: Boolean(json.numerosEscritura),
+                            contrato_administracion: Boolean(json.tieneContratoAdmin)
+                        },
+                        cantidades: {
+                            identificaciones: nPartes,
+                            contrato_arrendamiento: 1,
+                            escritura_publica: cantEsc || ''
+                        }
+                    };
+                    listaExpedientesMasc.push(nuevoMASC);
+                    pathMasc = {
+                        centro: centroDetectado,
+                        anio: anioDetectado,
+                        tipo: tipoFinal,
+                        indexExp: listaExpedientesMasc.length - 1
+                    };
+                    registrarAprendizajeConvenio(nuevoMASC);
+                }
+
+                await guardarEnBDMasc();
+                return { destino: 'MASC', numero: numExp, centro: centroDetectado, anio: anioDetectado, tipo: tipoFinal };
+            } else {
+                let jMateria = ["Civil", "Familiar", "Mercantil"].includes(json.tipo) ? json.tipo : "Civil";
+                materiaActiva = jMateria;
+                let jJuzgado = catJuzgados[jMateria][0];
+                let jAnio = json.anio || new Date().getFullYear().toString();
+                let key = 'exp_' + storageMascKey + '_' + jJuzgado + '_' + jAnio;
+                let exps = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : [];
+                let num = json.numero ? (json.numero + ' - ' + (json.solicitante || '')).trim() : "EXP-IA-" + Math.floor(Math.random() * 100);
+                exps.push({ nombre: num, ref: refArchivo });
+                localStorage.setItem(key, JSON.stringify(exps));
+                let fileData = { blob: file, name: file.name, type: file.type };
+                await localforage.setItem('archivo_' + num, fileData);
+                pathJuridico.juzgado = jJuzgado;
+                pathJuridico.anio = jAnio;
+                return { destino: 'JURIDICO', numero: num, centro: jJuzgado, anio: jAnio };
+            }
+        }
+
         async function procesarDocGlobalIA(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1178,100 +1758,29 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                     subirArchivoSistema(file)
                 ]);
 
-                if (json.categoria === 'MASC' || vistaActual === 'masc') {
-                    let centroDetectado = centrosMASC[0] || "Centro 065";
-                    if (json.centro && String(json.centro).includes("353")) centroDetectado = "Centro 353";
-                    else if (json.centro && String(json.centro).includes("065")) centroDetectado = "Centro 065";
-                    else if (pathMasc.centro) centroDetectado = pathMasc.centro;
+                const res = await integrarDocumentoAnalizadoEnSistema(file, refArchivo, json, true);
+                document.getElementById('modal-ia-loading').style.display = 'none';
 
-                    if (!centrosMASC.includes(centroDetectado)) {
-                        centrosMASC.push(centroDetectado);
-                        localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC));
-                    }
-
-                    let anioDetectado = (json.anio && String(json.anio).length === 4) ? String(json.anio) : new Date().getFullYear().toString();
-                    if (!aniosMasc.includes(anioDetectado)) {
-                        aniosMasc.unshift(anioDetectado);
-                        localStorage.setItem('anios_db_' + usuarioActivoObj.entornoId, JSON.stringify(aniosMasc));
-                    }
-
-                    let tRaw = (json.tipo || "").toLowerCase();
-                    let tipoFinal = tiposMasc[0] || "Preventivo Arrendamiento";
-                    if (tRaw.includes("alimento") || tRaw.includes("convivencia")) tipoFinal = "Alimentos y Convivencia";
-                    else if (tRaw.includes("divorcio") || tRaw.includes("mutuo")) tipoFinal = "Divorcio Admtvo. y Mutuo";
-                    else if (tRaw.includes("arrendamiento") || tRaw.includes("comodato")) tipoFinal = "Preventivo Arrendamiento";
-
-                    let numExp = (json.numero && json.numero !== 'S/N') ? json.numero.trim() : `EXP-${Date.now().toString().slice(-4)}`;
-                    let keyDoc = json.tipoDocClasificado || 'convenio';
-
-                    let idxExistente = listaExpedientesMasc.findIndex(
-                        e => e.centro === centroDetectado && String(e.numero).toLowerCase() === numExp.toLowerCase()
-                    );
-
-                    if (idxExistente !== -1) {
-                        let exp = listaExpedientesMasc[idxExistente];
-                        if (!exp.docs) exp.docs = {};
-                        exp.docs[keyDoc] = refArchivo;
-                        if (json.fechaInicio) exp.fechaInicio = json.fechaInicio;
-                        if (json.fechaVencimiento) exp.fechaVencimiento = json.fechaVencimiento;
-                        if (json.solicitante && !exp.solicitante) exp.solicitante = json.solicitante;
-                        pathMasc = { centro: exp.centro, anio: exp.anio, tipo: exp.tipo, indexExp: idxExistente };
-                    } else {
-                        let nuevoMASC = {
-                            centro: centroDetectado,
-                            anio: anioDetectado,
-                            tipo: tipoFinal,
-                            numero: numExp,
-                            solicitante: json.solicitante || file.name.replace(/\.[^/.]+$/, ""),
-                            patrocinado: json.patrocinado || '',
-                            fechaInicio: json.fechaInicio || '',
-                            fechaVencimiento: json.fechaVencimiento || '',
-                            observaciones: json.resumen || '',
-                            firmadoPartes: keyDoc === 'convenio',
-                            docs: { [keyDoc]: refArchivo },
-                            checks: { [keyDoc]: true },
-                            cantidades: {}
-                        };
-                        listaExpedientesMasc.push(nuevoMASC);
-                        pathMasc = {
-                            centro: centroDetectado,
-                            anio: anioDetectado,
-                            tipo: tipoFinal,
-                            indexExp: listaExpedientesMasc.length - 1
-                        };
-                    }
-
-                    await guardarEnBDMasc();
-                    registrarActividad(`IA clasificó convenio MASC ${numExp} (Inicio: ${json.fechaInicio || '--'} | Vence: ${json.fechaVencimiento || '--'})`);
+                if (res.destino === 'SIN_RECONOCER') {
+                    mostrarMenu('sinreconocer');
+                    alert("⚠️ El archivo se respaldó en Drive pero le faltan datos claros. Fue enviado a 'Archivos sin Reconocer' para que elijas su carpeta.");
+                } else if (res.destino === 'MASC') {
                     vistaActual = 'masc';
                     nivelMasc = 4;
+                    renderizarVista();
+                    alert(
+                        `✅ ¡Convenio clasificado y respaldado!\n\n` +
+                        `📁 Expediente: EXP. ${res.numero} (${res.centro})\n` +
+                        `📅 Fecha Firma: ${json.fechaInicio || 'No especificada'}\n` +
+                        `⏳ Fecha Vencimiento: ${json.fechaVencimiento || 'No especificada'}\n` +
+                        `🏛️ Predial: ${json.cuentaPredial || 'N/A'} | Escritura: ${json.numerosEscritura || 'N/A'}`
+                    );
                 } else {
-                    let jMateria = ["Civil", "Familiar", "Mercantil"].includes(json.tipo) ? json.tipo : "Civil";
-                    materiaActiva = jMateria;
-                    let jJuzgado = catJuzgados[jMateria][0];
-                    let jAnio = json.anio || new Date().getFullYear().toString();
-                    let key = 'exp_' + storageMascKey + '_' + jJuzgado + '_' + jAnio;
-                    let exps = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : [];
-                    let num = json.numero ? (json.numero + ' - ' + (json.solicitante || '')).trim() : "EXP-IA-" + Math.floor(Math.random() * 100);
-                    exps.push({ nombre: num, ref: refArchivo });
-                    localStorage.setItem(key, JSON.stringify(exps));
-                    let fileData = { blob: file, name: file.name, type: file.type };
-                    await localforage.setItem('archivo_' + num, fileData);
-                    registrarActividad('IA auto-clasificó exp jurídico: ' + num);
                     vistaActual = 'juridico';
                     nivelJuridico = 2;
-                    pathJuridico.juzgado = jJuzgado;
-                    pathJuridico.anio = jAnio;
+                    renderizarVista();
+                    alert(`✅ Expediente Jurídico clasificado: ${res.numero}`);
                 }
-
-                document.getElementById('modal-ia-loading').style.display = 'none';
-                renderizarVista();
-                alert(
-                    `¡Documento procesado y clasificado con IA!\n\n` +
-                    `📌 Expediente: ${json.numero || 'Detectado'}\n` +
-                    `📅 Fecha de Inicio/Firma: ${json.fechaInicio || 'No especificada'}\n` +
-                    `⏳ Fecha de Vencimiento: ${json.fechaVencimiento || 'No especificada'}`
-                );
             } catch (error) {
                 document.getElementById('modal-ia-loading').style.display = 'none';
                 alert("Error en el Escáner IA: " + error.message);
@@ -1280,7 +1789,825 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
         }
 
         // =========================================================================
-        // 5. ESTRUCTURA DEL CHECKLIST Y PROGRESO DE EXPEDIENTES MASC
+        // 5. MÓDULO DE INGESTA MASIVA IA (COLA DE 400+ CONVENIOS) Y REUBICACIÓN
+        // =========================================================================
+        function agregarArchivosAColaMasiva(fileList) {
+            if (!fileList || fileList.length === 0) return;
+            for (let i = 0; i < fileList.length; i++) {
+                let f = fileList[i];
+                colaMasiva.push({
+                    id: 'batch_' + Date.now() + '_' + i,
+                    file: f,
+                    nombre: f.name,
+                    estado: 'EN COLA', // 'EN COLA' | 'PROCESANDO' | 'CLASIFICADO' | 'SIN RECONOCER'
+                    detalleUbicacion: 'Pendiente de análisis...'
+                });
+            }
+            statsMasiva.total = colaMasiva.length;
+            if (vistaActual === 'masiva') renderizarVista();
+            if (!procesandoColaMasiva && !colaMasivaPausada) {
+                ejecutarColaMasivaSecuencial();
+            }
+        }
+
+        async function ejecutarColaMasivaSecuencial() {
+            if (procesandoColaMasiva) return;
+            procesandoColaMasiva = true;
+
+            while (colaMasiva.some(x => x.estado === 'EN COLA') && !colaMasivaPausada) {
+                let item = colaMasiva.find(x => x.estado === 'EN COLA');
+                if (!item) break;
+
+                item.estado = 'PROCESANDO';
+                item.detalleUbicacion = 'Subiendo a Drive y leyendo con IA...';
+                if (vistaActual === 'masiva') renderizarVista();
+
+                try {
+                    let refArchivo = await subirArchivoSistema(item.file);
+                    let json = null;
+                    try {
+                        json = await analizarConGemini(item.file);
+                    } catch (iaErr) {
+                        console.warn("IA no pudo leer en lote, enviando a Sin Reconocer:", iaErr);
+                    }
+
+                    let resultado = await integrarDocumentoAnalizadoEnSistema(item.file, refArchivo, json, true);
+                    statsMasiva.procesados++;
+
+                    if (resultado.destino === 'SIN_RECONOCER') {
+                        statsMasiva.sinReconocer++;
+                        item.estado = 'SIN RECONOCER';
+                        item.detalleUbicacion = 'Enviado a carpeta "Archivos sin Reconocer"';
+                    } else if (resultado.destino === 'MASC') {
+                        statsMasiva.masc++;
+                        item.estado = 'CLASIFICADO';
+                        item.detalleUbicacion = `MASC • ${resultado.centro} • ${resultado.anio} • Exp. ${resultado.numero}`;
+                    } else {
+                        statsMasiva.juridico++;
+                        item.estado = 'CLASIFICADO';
+                        item.detalleUbicacion = `Jurídico • ${resultado.centro} (${resultado.anio}) • ${resultado.numero}`;
+                    }
+                } catch (errFatal) {
+                    statsMasiva.procesados++;
+                    item.estado = 'SIN RECONOCER';
+                    item.detalleUbicacion = 'Error: ' + errFatal.message;
+                }
+
+                if (vistaActual === 'masiva') renderizarVista();
+                // Pequeña pausa de 650ms entre archivos para cuidar cuotas de API en cargas de 400+ convenios
+                await new Promise(r => setTimeout(r, 650));
+            }
+
+            procesandoColaMasiva = false;
+            if (vistaActual === 'masiva') renderizarVista();
+        }
+
+        function pausarReanudarColaMasiva() {
+            colaMasivaPausada = !colaMasivaPausada;
+            if (!colaMasivaPausada) ejecutarColaMasivaSecuencial();
+            renderizarVista();
+        }
+
+        function limpiarCompletadosColaMasiva() {
+            colaMasiva = colaMasiva.filter(x => x.estado === 'EN COLA' || x.estado === 'PROCESANDO');
+            statsMasiva = {
+                total: colaMasiva.length,
+                procesados: 0,
+                masc: 0,
+                juridico: 0,
+                sinReconocer: 0
+            };
+            renderizarVista();
+        }
+
+        // Funciones del Organizador de "Archivos sin Reconocer"
+        async function abrirModalOrganizarSinReconocer(idx) {
+            indexArchivoOrganizando = idx;
+            let item = listaSinReconocer[idx];
+            if (!item) return;
+
+            document.getElementById('org-file-title').innerText = item.fileName;
+            document.getElementById('org-centro-masc').innerHTML = centrosMASC.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('org-anio-masc').innerHTML = aniosMasc.map(a => `<option value="${a}">${a}</option>`).join('');
+            document.getElementById('org-tipo-masc').innerHTML = tiposMasc.map(t => `<option value="${t}">${t}</option>`).join('');
+            actualizarJuzgadosOrganizador();
+
+            let sug = item.sugerenciaIA || {};
+            document.getElementById('org-num-masc').value = sug.numero || '';
+            document.getElementById('org-partes-masc').value = sug.solicitante || item.fileName.replace(/\.[^/.]+$/, "").toUpperCase();
+            document.getElementById('org-fechaini-masc').value = sug.fechaInicio || '';
+            document.getElementById('org-fechavenc-masc').value = sug.fechaVencimiento || '';
+            document.getElementById('org-nombre-jur').value = sug.numero ? `${sug.numero} - ${sug.solicitante || ''}` : item.fileName.replace(/\.[^/.]+$/, "");
+
+            document.getElementById('modal-organizar-archivo').style.display = 'flex';
+
+            // Cargar vista previa en el iframe izquierdo
+            try {
+                let url = await obtenerUrlBlobDocumento(item.ref);
+                document.getElementById('org-iframe-preview').src = url;
+            } catch (e) {
+                document.getElementById('org-iframe-preview').src = 'about:blank';
+            }
+        }
+
+        function cambiarDestinoOrganizador() {
+            let dest = document.getElementById('org-destino').value;
+            document.getElementById('org-panel-masc').style.display = dest === 'MASC' ? 'flex' : 'none';
+            document.getElementById('org-panel-juridico').style.display = dest === 'JURIDICO' ? 'flex' : 'none';
+        }
+
+        function actualizarJuzgadosOrganizador() {
+            let mat = document.getElementById('org-materia-jur').value || 'Civil';
+            let lista = catJuzgados[mat] || [];
+            document.getElementById('org-juzgado-jur').innerHTML = lista.map(j => `<option value="${j}">${j}</option>`).join('');
+        }
+
+        async function confirmarReubicacionArchivo() {
+            if (indexArchivoOrganizando < 0 || !listaSinReconocer[indexArchivoOrganizando]) return;
+            let item = listaSinReconocer[indexArchivoOrganizando];
+            let dest = document.getElementById('org-destino').value;
+
+            if (dest === 'MASC') {
+                let centro = document.getElementById('org-centro-masc').value;
+                let anio = document.getElementById('org-anio-masc').value;
+                let tipo = document.getElementById('org-tipo-masc').value;
+                let num = document.getElementById('org-num-masc').value.trim() || `EXP-${Date.now().toString().slice(-4)}`;
+                let slot = document.getElementById('org-slot-masc').value;
+                let partes = document.getElementById('org-partes-masc').value.trim().toUpperCase();
+                let fIni = document.getElementById('org-fechaini-masc').value;
+                let fVenc = document.getElementById('org-fechavenc-masc').value;
+
+                let idxExist = listaExpedientesMasc.findIndex(e => e.centro === centro && String(e.numero).toLowerCase() === num.toLowerCase());
+                if (idxExist !== -1) {
+                    let exp = listaExpedientesMasc[idxExist];
+                    if (!exp.docs) exp.docs = {};
+                    if (!exp.checks) exp.checks = {};
+                    exp.docs[slot] = item.ref;
+                    exp.checks[slot] = true;
+                    if (partes) exp.solicitante = partes;
+                    if (fIni) exp.fechaInicio = fIni;
+                    if (fVenc) exp.fechaVencimiento = fVenc;
+                    registrarAprendizajeConvenio(exp);
+                } else {
+                    let nPartes = contarPartesEnTexto(partes);
+                    let nuevo = {
+                        centro, anio, tipo,
+                        numero: num,
+                        solicitante: partes || item.fileName,
+                        numPartes: nPartes,
+                        patrocinado: '',
+                        fechaInicio: fIni || '',
+                        fechaVencimiento: fVenc || '',
+                        mayor60: false,
+                        involucraMenores: false,
+                        cuentaPredial: '',
+                        numerosEscritura: '',
+                        cantEscrituras: 1,
+                        observaciones: 'Organizado desde Archivos sin Reconocer',
+                        firmadoPartes: slot === 'convenio',
+                        docs: { [slot]: item.ref },
+                        checks: { [slot]: true },
+                        cantidades: { identificaciones: nPartes }
+                    };
+                    listaExpedientesMasc.push(nuevo);
+                    registrarAprendizajeConvenio(nuevo);
+                }
+                await guardarEnBDMasc();
+                registrarActividad(`Organizó archivo [${item.fileName}] en MASC Exp. ${num}`);
+            } else {
+                let jMat = document.getElementById('org-materia-jur').value;
+                let jAnio = document.getElementById('org-anio-jur').value;
+                let jJuz = document.getElementById('org-juzgado-jur').value;
+                let jNom = document.getElementById('org-nombre-jur').value.trim() || item.fileName;
+                let key = 'exp_' + storageMascKey + '_' + jJuz + '_' + jAnio;
+                let exps = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : [];
+                exps.push({ nombre: jNom, ref: item.ref });
+                localStorage.setItem(key, JSON.stringify(exps));
+                registrarActividad(`Organizó archivo [${item.fileName}] en ${jJuz} (${jAnio})`);
+            }
+
+            listaSinReconocer.splice(indexArchivoOrganizando, 1);
+            guardarSinReconocer();
+            cerrarModales();
+            renderizarVista();
+        }
+
+        function eliminarSinReconocer(idx) {
+            if (!confirm("¿Eliminar este archivo de la bandeja de pendientes?")) return;
+            listaSinReconocer.splice(idx, 1);
+            guardarSinReconocer();
+            renderizarVista();
+        }
+
+        // =========================================================================
+        // 6. VISTA PREVIA FLOTANTE (HOVER PREVIEW CARD / POPOVER)
+        // =========================================================================
+        function mostrarHoverPreviewMASC(event, indexExp) {
+            clearTimeout(hideHoverTimeoutId);
+            clearTimeout(hoverTimeoutId);
+
+            const targetRect = event.currentTarget.getBoundingClientRect();
+            hoverTimeoutId = setTimeout(() => {
+                const m = listaExpedientesMasc[indexExp];
+                if (!m) return;
+                const card = document.getElementById('hover-preview-card');
+                if (!card) return;
+
+                let infoProg = contarProgresoExpediente(m);
+                let semaforoTxt = 'Sin fecha de vencimiento';
+                let semaforoColor = 'var(--text-muted)';
+                if (m.fechaVencimiento) {
+                    let dias = Math.ceil((new Date(m.fechaVencimiento) - new Date()) / (1000 * 60 * 60 * 24));
+                    if (dias < 0) {
+                        semaforoTxt = `Vencido hace ${Math.abs(dias)} días`;
+                        semaforoColor = 'var(--danger)';
+                    } else if (dias <= 30) {
+                        semaforoTxt = `Por vencer en ${dias} días`;
+                        semaforoColor = 'var(--warning)';
+                    } else {
+                        semaforoTxt = `Vigente (${dias} días restantes)`;
+                        semaforoColor = 'var(--success)';
+                    }
+                }
+
+                let docPrincipal = (m.docs && (m.docs.convenio || m.docs.solicitud || Object.values(m.docs)[0])) || null;
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; border-bottom:1px solid var(--border-glass); padding-bottom:8px; margin-bottom:10px;">
+                        <div>
+                            <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:700;">${m.centro} • ${m.tipo}</div>
+                            <div style="font-size:1.05rem; font-weight:800; color:#fff;">EXP. ${m.numero}</div>
+                        </div>
+                        <div style="display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end;">
+                            ${m.mayor60 ? `<span class="hover-tag" style="background:rgba(255,115,21,0.22); color:var(--brand-orange);">👴 +60 P.S.</span>` : ''}
+                            ${m.involucraMenores ? `<span class="hover-tag" style="background:rgba(0,242,254,0.18); color:var(--neon-blue);">👶 Menores</span>` : ''}
+                            <span class="hover-tag" style="background:rgba(16,185,129,0.2); color:var(--success);">${infoProg.pct}%</span>
+                        </div>
+                    </div>
+
+                    <div style="font-size:0.78rem; margin-bottom:8px;">
+                        <div style="color:var(--text-muted); font-size:0.7rem;">PARTES QUE CELEBRAN:</div>
+                        <div style="font-weight:700; color:var(--text-main); line-height:1.3;">${m.solicitante || 'Sin especificar'}</div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:rgba(0,0,0,0.35); padding:8px 10px; border-radius:8px; font-size:0.75rem; margin-bottom:8px;">
+                        <div>
+                            <span style="color:var(--text-muted); display:block; font-size:0.68rem;">Fecha Firma:</span>
+                            <strong style="color:var(--neon-blue);">${m.fechaInicio || '--/--/----'}</strong>
+                        </div>
+                        <div>
+                            <span style="color:var(--text-muted); display:block; font-size:0.68rem;">Fecha Vencimiento:</span>
+                            <strong style="color:var(--brand-orange);">${m.fechaVencimiento || '--/--/----'}</strong>
+                        </div>
+                        <div style="grid-column: 1 / -1; border-top:1px solid rgba(255,255,255,0.06); padding-top:4px; color:${semaforoColor}; font-weight:700; font-size:0.72rem;">
+                            <i class="fa-solid fa-clock"></i> ${semaforoTxt}
+                        </div>
+                    </div>
+
+                    <div style="font-size:0.74rem; color:var(--text-muted); margin-bottom:10px; display:flex; flex-direction:column; gap:3px;">
+                        <div><i class="fa-solid fa-id-card" style="width:16px; color:var(--neon-blue);"></i> IDs Partes: <strong style="color:#fff;">(${m.numPartes || contarPartesEnTexto(m.solicitante)})</strong></div>
+                        ${m.cuentaPredial ? `<div><i class="fa-solid fa-file-invoice" style="width:16px; color:var(--brand-orange);"></i> Predial: <strong style="color:#fff;">${m.cuentaPredial}</strong></div>` : ''}
+                        ${m.numerosEscritura ? `<div><i class="fa-solid fa-scroll" style="width:16px; color:var(--success);"></i> Escritura Pública: <strong style="color:#fff;">${m.numerosEscritura} (${m.cantEscrituras || 1})</strong></div>` : ''}
+                    </div>
+
+                    <div style="display:flex; gap:6px; justify-content:space-between;">
+                        <button type="button" class="btn-upload" style="flex:1; justify-content:center; padding:6px; font-size:0.74rem;" onclick="ocultarHoverCardInmediato(); abrirOficioDeExpediente(${indexExp})">
+                            <i class="fa-solid fa-file-signature"></i> Oficio IJA
+                        </button>
+                        ${docPrincipal ? `
+                            <button type="button" class="btn-upload" style="flex:1; justify-content:center; padding:6px; font-size:0.74rem; border-color:var(--neon-blue); color:var(--neon-blue);" onclick="ocultarHoverCardInmediato(); verDocumento('${docPrincipal}', 'EXP. ${m.numero}')">
+                                <i class="fa-solid fa-eye"></i> Vista Rápida
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+
+                card.style.display = 'block';
+                let leftPos = targetRect.right + 12;
+                if (leftPos + 360 > window.innerWidth) {
+                    leftPos = Math.max(12, targetRect.left - 362);
+                }
+                let topPos = Math.min(window.innerHeight - card.offsetHeight - 15, Math.max(70, targetRect.top));
+                card.style.left = leftPos + 'px';
+                card.style.top = topPos + 'px';
+            }, 240);
+        }
+
+        function mantenerHoverCard() {
+            clearTimeout(hideHoverTimeoutId);
+        }
+
+        function programarOcultarHoverCard() {
+            clearTimeout(hoverTimeoutId);
+            hideHoverTimeoutId = setTimeout(() => {
+                const card = document.getElementById('hover-preview-card');
+                if (card) card.style.display = 'none';
+            }, 220);
+        }
+
+        function ocultarHoverCard() {
+            programarOcultarHoverCard();
+        }
+
+        function ocultarHoverCardInmediato() {
+            clearTimeout(hoverTimeoutId);
+            clearTimeout(hideHoverTimeoutId);
+            const card = document.getElementById('hover-preview-card');
+            if (card) card.style.display = 'none';
+        }
+
+        // =========================================================================
+        // 7. GENERADOR DE OFICIOS IJA (LAS 5 HOJAS DEL MACHOTE + APRENDIZAJE)
+        // =========================================================================
+        function abrirOficioDeExpediente(indexExp) {
+            indexExpOficioSeleccionado = indexExp;
+            tabOficioActiva = 'individual';
+            mostrarMenu('oficios');
+        }
+
+        function construirFilasAnexosTablaIJA(m) {
+            const cfg = configMachotesCentro[m.centro] || obtenerConfigMachoteDefecto(m.centro);
+            const t = (m.tipo || "").toLowerCase();
+            const numIDs = (m.cantidades && m.cantidades['identificaciones']) || m.numPartes || contarPartesEnTexto(m.solicitante);
+            let lineas = [];
+
+            lineas.push(`Constancia que el convenio se envió a ${cfg.correoDigitalIJA}.`);
+
+            if (t.includes('divorcio') || t.includes('alimentos') || m.involucraMenores) {
+                lineas.push(`Solicitud de servicio firmado por las partes. (1)`);
+                lineas.push(`Convenio final firmado por las partes. (1)`);
+                lineas.push(`Copias cotejadas identificaciones de las partes. (${numIDs})`);
+                if (t.includes('divorcio')) {
+                    lineas.push(`Actas de nacimiento Cónyuges. (2)`);
+                    lineas.push(`Acta de matrimonio de las partes. (1)`);
+                    lineas.push(`Copia cotejada Comprobantes de Domicilio. (${numIDs})`);
+                    lineas.push(`Certificado de no embarazo. (1)`);
+                } else {
+                    lineas.push(`Actas de nacimiento padres. (2)`);
+                    lineas.push(`Copia cotejada Comprobantes de Domicilio. (${numIDs})`);
+                }
+                let cantHijos = (m.cantidades && m.cantidades['actas_nac_hijos']) || m.numHijosMenores || 2;
+                lineas.push(`Acta de nacimiento Hijos (${cantHijos})`);
+                lineas.push(`Autorización escucha de menores (1)`);
+                lineas.push(`Constancia escucha de menor (${cantHijos})`);
+            } else {
+                // Preventivo de Arrendamiento (Hoja 1 y Hoja 2)
+                lineas.push(`Convenio final firmado por las partes. (1)`);
+                lineas.push(`Copias cotejadas identificaciones de las partes. (${numIDs})`);
+
+                let cantArr = (m.cantidades && m.cantidades['contrato_arrendamiento']) || 1;
+                lineas.push(`Copia cotejada del contrato de arrendamiento. (${cantArr})`);
+
+                if (m.tieneContratoAdmin || (m.docs && m.docs['contrato_administracion']) || (m.checks && m.checks['contrato_administracion'])) {
+                    let cantAdm = (m.cantidades && m.cantidades['contrato_administracion']) || 1;
+                    lineas.push(`Copia cotejada del contrato de administración. (${cantAdm})`);
+                }
+
+                if (m.cuentaPredial && String(m.cuentaPredial).trim() !== "") {
+                    lineas.push(`Copia cotejada del comprobante predial ${m.cuentaPredial.trim()}. (1)`);
+                } else if ((m.docs && m.docs['predial']) || (m.checks && m.checks['predial'])) {
+                    lineas.push(`Copia cotejada del comprobante predial. (1)`);
+                }
+
+                if (m.numerosEscritura && String(m.numerosEscritura).trim() !== "") {
+                    let cantEsc = m.cantEscrituras || (m.cantidades && m.cantidades['escritura_publica']) || 1;
+                    lineas.push(`Copia cotejada de la escritura pública ${m.numerosEscritura.trim()}. (${cantEsc})`);
+                } else if ((m.docs && m.docs['escritura_publica']) || (m.checks && m.checks['escritura_publica'])) {
+                    let cantEsc = (m.cantidades && m.cantidades['escritura_publica']) || 1;
+                    lineas.push(`Copia cotejada de la escritura pública. (${cantEsc})`);
+                }
+            }
+
+            return lineas.map(l => `<div style="margin-bottom:2px;">${l}</div>`).join('');
+        }
+
+        function generarHTMLHojaOficioIndividual(m) {
+            if (!m) return '<div style="padding:20px;">Selecciona un expediente válido.</div>';
+            const cfg = configMachotesCentro[m.centro] || obtenerConfigMachoteDefecto(m.centro);
+            const t = (m.tipo || "").toLowerCase();
+            const partesMayus = (m.solicitante || "NOMBRE DE LAS PARTES").toUpperCase();
+            const numExpFormat = String(m.numero || "S/N").toUpperCase().startsWith("EXP") ? m.numero.toUpperCase() : `EXP. ${m.numero}`;
+            const anexosHTML = construirFilasAnexosTablaIJA(m);
+
+            const bloqueFirmaPie = `
+                <div class="oficio-pie-firma">
+                    <p style="text-indent: 1.2cm; margin-bottom: 24px;">Sin más por el momento y agradecidos por su atención y apoyo. Quedo como su atento y seguro servidor.</p>
+                    <div style="font-weight: bold; margin-bottom: 58px;">
+                        <div>ATENTAMENTE</div>
+                        <div>${cfg.ciudadFecha}</div>
+                    </div>
+                    <div style="font-weight: bold;">
+                        <div>${cfg.directorNombre}</div>
+                        <div>${cfg.directorCargo}</div>
+                    </div>
+                </div>
+            `;
+
+            // CASO A: DIVORCIO POR MUTUO / ALIMENTOS CON MENORES (HOJA 3 DEL MACHOTE)
+            if (t.includes('divorcio') || t.includes('alimentos') || m.involucraMenores) {
+                let asuntoTitulo = t.includes('divorcio') ? 'Convenio Final<br>DIVORCIO POR MUTUO.' : 'Convenio Final<br>ALIMENTOS Y CONVIVENCIA.';
+                return `
+                <div class="hoja-oficio-ija">
+                    <div>
+                        <div class="oficio-asunto-top">
+                            Asunto: Validación y Sanción<br>${asuntoTitulo}
+                        </div>
+                        <div class="oficio-destinatario">
+                            Procuraduría de Niños, Niñas y Adolescentes<br>
+                            del Estado de Jalisco.<br>
+                            PRESENTE
+                        </div>
+                        <p class="oficio-parrafo">
+                            El que suscribe y en mi carácter de represéntate legal del ${cfg.nombreAsociacion} (acreditación ${cfg.acreditacion}), toda vez que entre las partes que celebraron el Convenio Final de Mecanismo Alterno, se desprende que están involucrados derechos de menores, Manifieste en lo que a derecho le corresponda y se continue con el proceso de Validación y Sanción del CONVENIO FINAL que celebraron las partes. <strong>${partesMayus}</strong>.
+                        </p>
+                        <table class="tabla-oficio-ija">
+                            <tr>
+                                <td style="width: 34%;"><strong>Expediente Centro Privado:</strong></td>
+                                <td><strong>${numExpFormat}</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:center; font-weight:bold;">DOCUMENTOS QUE SE ADJUNTAN:</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Traslados:</strong></td>
+                                <td>Traslado Procuraduría Social del Estado de Jalisco.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Convenio y documentos relacionados:</strong></td>
+                                <td>${anexosHTML}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    ${bloqueFirmaPie}
+                </div>`;
+            }
+
+            // CASO B: PREVENTIVO DE ARRENDAMIENTO CON ADULTO MAYOR +60 AÑOS (GENERA LAS 2 HOJAS: IJA + PROCURADURÍA SOCIAL)
+            if (m.mayor60) {
+                const tablaCompartidaMayor60 = `
+                    <table class="tabla-oficio-ija">
+                        <tr>
+                            <td style="width: 34%;"><strong>Expediente Centro Privado:</strong></td>
+                            <td><strong>${numExpFormat}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center; font-weight:bold;">DOCUMENTOS QUE SE ADJUNTAN:</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Traslados:</strong></td>
+                            <td>Traslado a Procuraduría social del Estado de Jalisco</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Convenio y documentos relacionados:</strong></td>
+                            <td>${anexosHTML}</td>
+                        </tr>
+                    </table>
+                `;
+
+                return `
+                <!-- HOJA 1: DIRIGIDA AL DIRECTOR GENERAL DEL IJA CON LA MISMA TABLA DE TRASLADO -->
+                <div class="hoja-oficio-ija">
+                    <div>
+                        <div class="oficio-asunto-top">
+                            Asunto: Validación y Sanción<br>Preventivo de Arrendamiento
+                        </div>
+                        <div class="oficio-destinatario">
+                            ${cfg.destinatarioIJANombre}<br>
+                            ${cfg.destinatarioIJACargo.replace(/\n/g, '<br>')}<br>
+                            PRESENTE
+                        </div>
+                        <p class="oficio-parrafo">
+                            El que suscribe y en mi carácter de represéntate legal del ${cfg.nombreAsociacion} (acreditación ${cfg.acreditacion}), comparezco ante Usted a solicitar la Validación y Sanción del CONVENIO FINAL que celebraron las partes. <strong>${partesMayus}</strong>.
+                        </p>
+                        ${tablaCompartidaMayor60}
+                    </div>
+                    ${bloqueFirmaPie}
+                </div>
+
+                <!-- HOJA 2: DIRIGIDA A PROCURADURÍA SOCIAL DEL ESTADO DE JALISCO -->
+                <div class="hoja-oficio-ija">
+                    <div>
+                        <div class="oficio-asunto-top">
+                            Asunto: Validación y Sanción<br>Preventivo de Arrendamiento
+                        </div>
+                        <div class="oficio-destinatario">
+                            Procuraduría Social del Estado de Jalisco.<br>
+                            PRESENTE
+                        </div>
+                        <p class="oficio-parrafo">
+                            El que suscribe y en mi carácter de represéntate legal del ${cfg.nombreAsociacion} (acreditación ${cfg.acreditacion}), toda vez que entre las partes que celebraron el Convenio Final de Mecanismo Alterno, se desprende que está involucrada una persona de la tercera edad, MANIFIESTE EN LO QUE A DERECHO LE CORRESPONDA y se continue con el proceso de Validación y Sanción del CONVENIO FINAL que celebraron las partes. <strong>${partesMayus}</strong>.
+                        </p>
+                        ${tablaCompartidaMayor60}
+                    </div>
+                    ${bloqueFirmaPie}
+                </div>`;
+            }
+
+            // CASO C: PREVENTIVO DE ARRENDAMIENTO NORMAL SIN MAYORES DE 60 (1 SOLA HOJA)
+            return `
+            <div class="hoja-oficio-ija">
+                <div>
+                    <div class="oficio-asunto-top">
+                        Asunto: Validación y Sanción<br>Preventivo de Arrendamiento
+                    </div>
+                    <div class="oficio-destinatario">
+                        ${cfg.destinatarioIJANombre}<br>
+                        ${cfg.destinatarioIJACargo.replace(/\n/g, '<br>')}<br>
+                        PRESENTE
+                    </div>
+                    <p class="oficio-parrafo">
+                        El que suscribe y en mi carácter de represéntate legal del ${cfg.nombreAsociacion} (acreditación ${cfg.acreditacion}), comparezco ante Usted a solicitar la Validación y Sanción del CONVENIO FINAL que celebraron las partes. <strong>${partesMayus}</strong>.
+                    </p>
+                    <table class="tabla-oficio-ija">
+                        <tr>
+                            <td style="width: 34%;"><strong>Expediente Centro Privado:</strong></td>
+                            <td><strong>${numExpFormat}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center; font-weight:bold;">DOCUMENTOS QUE SE ADJUNTAN:</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Traslados:</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Convenio y documentos relacionados:</strong></td>
+                            <td>${anexosHTML}</td>
+                        </tr>
+                    </table>
+                </div>
+                ${bloqueFirmaPie}
+            </div>`;
+        }
+
+        // Genera Hojas 4 y 5 (Listas de hasta 10 convenios máximo por hoja)
+        function generarHTMLHojasOficioLote() {
+            let seleccionados = expedientesLoteSeleccionados.map(idx => listaExpedientesMasc[idx]).filter(Boolean);
+            if (seleccionados.length === 0) {
+                return `<div style="padding:30px; text-align:center; color:var(--text-muted);">Selecciona al menos un convenio en la lista de la izquierda para generar el oficio colectivo.</div>`;
+            }
+
+            let centroRef = seleccionados[0].centro || centrosMASC[0] || "Centro 065";
+            let cfg = configMachotesCentro[centroRef] || obtenerConfigMachoteDefecto(centroRef);
+
+            // Dividimos en bloques de MÁXIMO 10 convenios por hoja
+            let gruposDe10 = [];
+            for (let i = 0; i < seleccionados.length; i += 10) {
+                gruposDe10.push(seleccionados.slice(i, i + 10));
+            }
+
+            const bloqueFirmaPie = `
+                <div class="oficio-pie-firma">
+                    <p style="text-indent: 1.2cm; margin-bottom: 24px;">Sin más por el momento y agradecidos por su atención y apoyo. Quedo como su atento y seguro servidor.</p>
+                    <div style="font-weight: bold; margin-bottom: 58px;">
+                        <div>ATENTAMENTE</div>
+                        <div>${cfg.ciudadFecha}</div>
+                    </div>
+                    <div style="font-weight: bold;">
+                        <div>${cfg.directorNombre}</div>
+                        <div>${cfg.directorCargo}</div>
+                    </div>
+                </div>
+            `;
+
+            return gruposDe10.map((grupo) => {
+                if (modoLoteOficio === 'agentes60') {
+                    // HOJA 4: CONVENIOS CON TRASLADO AGENTES SOCIALES (+60 AÑOS)
+                    let filas = grupo.map(exp => `
+                        <tr>
+                            <td style="text-align:center; font-weight:bold; padding:8px;">${exp.numero}</td>
+                            <td style="text-align:center; font-weight:bold; padding:8px;">P.S.</td>
+                        </tr>
+                    `).join('');
+
+                    return `
+                    <div class="hoja-oficio-ija">
+                        <div>
+                            <div class="oficio-asunto-top">
+                                Asunto: Validación y Sanción<br>Asunto: CONVENIOS CON TRASLADO<br>AGENTES SOCIALES
+                            </div>
+                            <div class="oficio-destinatario">
+                                ${cfg.destinatarioIJANombre}<br>
+                                ${cfg.destinatarioIJACargo.replace(/\n/g, '<br>')}<br>
+                                PRESENTE
+                            </div>
+                            <p class="oficio-parrafo">
+                                El que suscribe y en mi carácter de represéntate legal del ${cfg.nombreAsociacion} (acreditación ${cfg.acreditacion}), comparezco ante Usted a solicitar la Validación y Sanción de los siguientes CONVENIOS FINALES:
+                            </p>
+                            <div style="text-align:center; font-weight:bold; margin: 14px 0 8px 0;">
+                                CONVENIOS DONDE PARTICIPAN PERSONAS MAYORES A 60 AÑOS
+                            </div>
+                            <table class="tabla-oficio-ija" style="width: 75%; margin: 0 auto 20px auto;">
+                                <tr>
+                                    <th style="text-align:center; width:60%;">EXPEDIENTE</th>
+                                    <th style="text-align:center; width:40%;">TRASLADO</th>
+                                </tr>
+                                ${filas}
+                            </table>
+                        </div>
+                        ${bloqueFirmaPie}
+                    </div>`;
+                } else {
+                    // HOJA 5: LISTA GENERAL DE CONVENIOS PARA SANCIÓN Y VALIDACIÓN (MÁX. 10 POR HOJA)
+                    let filas = grupo.map(exp => `
+                        <tr>
+                            <td style="text-align:center; font-weight:bold; padding:9px;">
+                                ${exp.numero}${exp.mayor60 ? ' P.S.' : ''}
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    return `
+                    <div class="hoja-oficio-ija">
+                        <div>
+                            <div class="oficio-asunto-top">
+                                Asunto: CONVENIOS PARA SANCIÓN<br>Y VALIDACIÓN
+                            </div>
+                            <div class="oficio-destinatario">
+                                ${cfg.destinatarioIJANombre}<br>
+                                ${cfg.destinatarioIJACargo.replace(/\n/g, '<br>')}<br>
+                                PRESENTE
+                            </div>
+                            <p class="oficio-parrafo">
+                                El que suscribe y en mi carácter de represéntate legal del ${cfg.nombreAsociacion} (acreditación ${cfg.acreditacion}), comparezco ante Usted a solicitar la Validación y Sanción de los siguientes CONVENIOS FINALES:
+                            </p>
+                            <table class="tabla-oficio-ija" style="width: 55%; margin: 16px auto 20px auto;">
+                                <tr>
+                                    <th style="text-align:center;">EXPEDIENTE</th>
+                                </tr>
+                                ${filas}
+                            </table>
+                        </div>
+                        ${bloqueFirmaPie}
+                    </div>`;
+                }
+            }).join('');
+        }
+
+        function imprimirOficioActual() {
+            const area = document.getElementById('contenedor-hojas-oficio');
+            if (!area) return;
+            const ventana = window.open('', '_blank', 'width=900,height=800');
+            ventana.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Oficio IJA - Impresión Oficial</title>
+                    <style>
+                        @page { size: letter; margin: 0; }
+                        body { margin: 0; padding: 0; background: #fff; color: #000; font-family: Arial, sans-serif; }
+                        .hoja-oficio-ija {
+                            width: 21.59cm;
+                            height: 27.94cm;
+                            padding: 2.2cm 2.4cm 2.0cm 2.4cm;
+                            box-sizing: border-box;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            page-break-after: always;
+                            font-size: 11pt;
+                            line-height: 1.42;
+                        }
+                        .oficio-asunto-top { text-align: right; font-weight: bold; margin-bottom: 18px; }
+                        .oficio-destinatario { font-weight: bold; margin-bottom: 16px; }
+                        .oficio-parrafo { text-align: justify; text-indent: 1.2cm; margin-bottom: 16px; }
+                        .tabla-oficio-ija { width: 100%; border-collapse: collapse; margin: 10px 0 18px 0; }
+                        .tabla-oficio-ija th, .tabla-oficio-ija td { border: 1px solid #000; padding: 6px 10px; vertical-align: top; font-size: 10.5pt; }
+                        .oficio-pie-firma { margin-top: auto; padding-top: 20px; page-break-inside: avoid; }
+                    </style>
+                </head>
+                <body>${area.innerHTML}</body>
+                </html>
+            `);
+            ventana.document.close();
+            ventana.focus();
+            setTimeout(() => ventana.print(), 350);
+        }
+
+        function descargarOficioWord() {
+            const area = document.getElementById('contenedor-hojas-oficio');
+            if (!area) return;
+            const htmlWord = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>Oficio IJA</title>
+                <style>
+                    body { font-family: Arial, sans-serif; font-size: 11pt; color: #000; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid #000; padding: 6px 10px; }
+                    .oficio-asunto-top { text-align: right; font-weight: bold; }
+                    .oficio-destinatario { font-weight: bold; }
+                    .oficio-parrafo { text-align: justify; text-indent: 36pt; }
+                </style>
+                </head>
+                <body>${area.innerHTML}</body>
+                </html>
+            `;
+            const blob = new Blob(['\ufeff', htmlWord], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Oficio_IJA_${Date.now()}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        async function procesarMachoteSubido(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const centroTarget = document.getElementById('select-centro-machote') ? document.getElementById('select-centro-machote').value : (centrosMASC[0] || 'Centro 065');
+
+            document.getElementById('modal-ia-loading').style.display = 'flex';
+            try {
+                let textoExtraido = "";
+                if (file.name.toLowerCase().endsWith('.docx') && typeof mammoth !== 'undefined') {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const resMammoth = await mammoth.extractRawText({ arrayBuffer });
+                    textoExtraido = resMammoth.value || "";
+                }
+
+                const apiKey = obtenerLlaveIA();
+                if (apiKey) {
+                    let parts = [];
+                    let promptMachote = `Analiza este documento machote de Oficio para el IJA y extrae los datos institucionales del Centro para replicar siempre su formato exacto. Devuelve ÚNICAMENTE un JSON válido:
+{
+  "nombreAsociacion": "Ej. Centro Privado Movimiento 45yMás A.C.",
+  "acreditacion": "Ej. 065",
+  "directorNombre": "Nombre de quien firma al final como Director General (ej. José Antonio Ramos López)",
+  "directorCargo": "Ej. DIRECTOR GENERAL",
+  "destinatarioIJANombre": "Ej. Dr. Guillermo Raúl Zepeda Lecuona",
+  "correoDigitalIJA": "Ej. documentos.digitales@ija.gob.mx",
+  "ciudadFecha": "Ej. Guadalajara, Jalisco, México; Al día de su presentación"
+}`;
+                    if (textoExtraido) {
+                        parts.push({ text: promptMachote + "\n\nTEXTO DEL MACHOTE:\n" + textoExtraido });
+                    } else {
+                        let base64 = await new Promise((res) => {
+                            let r = new FileReader();
+                            r.onload = () => res(r.result.split(',')[1]);
+                            r.readAsDataURL(file);
+                        });
+                        parts.push({ text: promptMachote });
+                        parts.push({ inline_data: { mime_type: file.type || 'application/pdf', data: base64 } });
+                    }
+
+                    let data = await llamarGeminiConAutoRecuperacion(apiKey, { contents: [{ parts }] });
+                    let txt = data.candidates[0].content.parts[0].text;
+                    let match = txt.match(/\{[\s\S]*\}/);
+                    if (match) {
+                        let aprendido = JSON.parse(match[0]);
+                        let actual = configMachotesCentro[centroTarget] || obtenerConfigMachoteDefecto(centroTarget);
+                        configMachotesCentro[centroTarget] = {
+                            ...actual,
+                            nombreAsociacion: aprendido.nombreAsociacion || actual.nombreAsociacion,
+                            acreditacion: aprendido.acreditacion || actual.acreditacion,
+                            directorNombre: aprendido.directorNombre || actual.directorNombre,
+                            directorCargo: aprendido.directorCargo || actual.directorCargo,
+                            destinatarioIJANombre: aprendido.destinatarioIJANombre || actual.destinatarioIJANombre,
+                            correoDigitalIJA: aprendido.correoDigitalIJA || actual.correoDigitalIJA,
+                            ciudadFecha: aprendido.ciudadFecha || actual.ciudadFecha
+                        };
+                        localStorage.setItem(storageMachotesKey, JSON.stringify(configMachotesCentro));
+                    }
+                }
+                document.getElementById('modal-ia-loading').style.display = 'none';
+                registrarActividad(`Subió y entrenó nuevo Machote de Oficio IJA para ${centroTarget}`);
+                renderizarVista();
+                alert(`✅ ¡Machote aprendido con éxito para ${centroTarget}! El encabezado, acreditación y firma del Director General al pie han quedado configurados.`);
+            } catch (e) {
+                document.getElementById('modal-ia-loading').style.display = 'none';
+                alert("Error al analizar el machote: " + e.message);
+            }
+            event.target.value = '';
+        }
+
+        function guardarConfigMachoteManual(centro) {
+            let cfg = configMachotesCentro[centro] || obtenerConfigMachoteDefecto(centro);
+            cfg.nombreAsociacion = document.getElementById('mach-asociacion').value.trim();
+            cfg.acreditacion = document.getElementById('mach-acreditacion').value.trim();
+            cfg.directorNombre = document.getElementById('mach-director').value.trim();
+            cfg.directorCargo = document.getElementById('mach-cargo').value.trim();
+            cfg.destinatarioIJANombre = document.getElementById('mach-destinatario').value.trim();
+            cfg.correoDigitalIJA = document.getElementById('mach-correo').value.trim();
+            cfg.ciudadFecha = document.getElementById('mach-ciudad').value.trim();
+
+            configMachotesCentro[centro] = cfg;
+            localStorage.setItem(storageMachotesKey, JSON.stringify(configMachotesCentro));
+            alert(`✅ Configuración de machote guardada para ${centro}.`);
+            renderizarVista();
+        }
+
+        function toggleSeleccionExpLote(idx, checked) {
+            if (checked) {
+                if (!expedientesLoteSeleccionados.includes(idx)) expedientesLoteSeleccionados.push(idx);
+            } else {
+                expedientesLoteSeleccionados = expedientesLoteSeleccionados.filter(x => x !== idx);
+            }
+            renderizarVista();
+        }
+
+        // =========================================================================
+        // 8. ESTRUCTURA DEL CHECKLIST Y PROGRESO DE EXPEDIENTES MASC
         // =========================================================================
         function obtenerEsquemaChecklist(tipo) {
             const t = (tipo || "").toLowerCase();
@@ -1351,7 +2678,7 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
         }
 
         // =========================================================================
-        // 6. SUBIDA Y GESTIÓN DE DOCUMENTOS EN EXPEDIENTES MASC
+        // 9. SUBIDA Y GESTIÓN DE DOCUMENTOS EN EXPEDIENTES MASC
         // =========================================================================
         async function subirDocMASC(index, tipoDoc, event) {
             const file = event.target.files[0];
@@ -1368,14 +2695,18 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                 m.docs[tipoDoc] = await subirArchivoSistema(file);
                 m.checks[tipoDoc] = true;
 
-                // Si se sube el convenio o contrato de arrendamiento, extrae fechaInicio y fechaVencimiento con IA
                 if (tipoDoc === 'convenio' || tipoDoc === 'contrato_arrendamiento') {
-                    if (targetBtn) targetBtn.innerHTML = '<i class="fa-solid fa-brain fa-fade"></i> Leyendo Fechas...';
+                    if (targetBtn) targetBtn.innerHTML = '<i class="fa-solid fa-brain fa-fade"></i> Leyendo Convenio...';
                     try {
                         let json = await analizarConGemini(file);
                         if (json.fechaInicio) m.fechaInicio = json.fechaInicio;
                         if (json.fechaVencimiento) m.fechaVencimiento = json.fechaVencimiento;
-                        registrarActividad(`IA extrajo fechas (Firma: ${m.fechaInicio || '--'} | Vence: ${m.fechaVencimiento || '--'}) en exp: ${m.numero}`);
+                        if (json.cuentaPredial) m.cuentaPredial = json.cuentaPredial;
+                        if (json.numerosEscritura) m.numerosEscritura = json.numerosEscritura;
+                        if (json.numPartes) m.numPartes = json.numPartes;
+                        if (json.mayor60) m.mayor60 = true;
+                        registrarAprendizajeConvenio(m);
+                        registrarActividad(`IA extrajo fechas y datos de oficio en exp: ${m.numero}`);
                     } catch (e) {
                         console.warn("IA no extrajo fechas:", e);
                     }
@@ -1392,6 +2723,7 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
 
         async function guardarCampoMASC(index, campo, valor) {
             listaExpedientesMasc[index][campo] = valor;
+            registrarAprendizajeConvenio(listaExpedientesMasc[index]);
             await guardarEnBDMasc();
             renderizarVista();
         }
@@ -1420,6 +2752,9 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             let m = listaExpedientesMasc[index];
             if (!m.cantidades) m.cantidades = {};
             m.cantidades[itemKey] = valor;
+            if (itemKey === 'identificaciones' && valor) m.numPartes = parseInt(valor, 10) || 2;
+            if (itemKey === 'escritura_publica' && valor) m.cantEscrituras = parseInt(valor, 10) || 1;
+            registrarAprendizajeConvenio(m);
             await guardarEnBDMasc();
         }
 
@@ -1435,31 +2770,32 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             return new Blob([uInt8Array], { type: contentType });
         }
 
+        async function obtenerUrlBlobDocumento(docData) {
+            if (docData.startsWith('gdrive:')) {
+                await solicitarTokenDriveAsync();
+                let id = docData.split(':')[1];
+                let res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
+                    headers: { 'Authorization': 'Bearer ' + gDriveToken }
+                });
+                let blob = await res.blob();
+                return URL.createObjectURL(blob);
+            } else if (docData.startsWith('localforage:')) {
+                let id = docData.split(':')[1];
+                let base64Data = await localforage.getItem(id);
+                let blob = base64ToBlob(base64Data);
+                return URL.createObjectURL(blob);
+            } else {
+                let blob = base64ToBlob(docData);
+                return URL.createObjectURL(blob);
+            }
+        }
+
         async function verDocumento(docData, titulo) {
             document.getElementById('visor-titulo-doc').innerText = titulo;
             try {
-                let urlParaVer = "";
-                let blob = null;
-                if (docData.startsWith('gdrive:')) {
-                    await solicitarTokenDriveAsync();
-                    let id = docData.split(':')[1];
-                    let res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
-                        headers: { 'Authorization': 'Bearer ' + gDriveToken }
-                    });
-                    blob = await res.blob();
-                    urlParaVer = URL.createObjectURL(blob);
-                } else if (docData.startsWith('localforage:')) {
-                    let id = docData.split(':')[1];
-                    let base64Data = await localforage.getItem(id);
-                    blob = base64ToBlob(base64Data);
-                    urlParaVer = URL.createObjectURL(blob);
-                } else {
-                    blob = base64ToBlob(docData);
-                    urlParaVer = URL.createObjectURL(blob);
-                }
-
+                let urlParaVer = await obtenerUrlBlobDocumento(docData);
                 let isWord = titulo.toLowerCase().includes('.doc') || titulo.toLowerCase().includes('word');
-                if (isWord && blob.type !== 'application/pdf') {
+                if (isWord) {
                     const a = document.createElement('a');
                     a.href = urlParaVer;
                     a.download = titulo + '.docx';
@@ -1520,9 +2856,10 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
         }
 
         // =========================================================================
-        // 7. RENDERIZADO PRINCIPAL DEL ÁREA DE TRABAJO
+        // 10. RENDERIZADO PRINCIPAL DEL ÁREA DE TRABAJO
         // =========================================================================
         function mostrarMenu(menu) {
+            ocultarHoverCardInmediato();
             vistaActual = menu;
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const activeItem = document.getElementById('menu-' + menu);
@@ -1550,7 +2887,7 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                         html += `<div class="carpeta-card" onclick="nivelJuridico=1; pathJuridico.juzgado='${j}'; renderizarVista()">
                             <i class="fa-solid fa-folder folder-icon"></i>
                             <div class="titulo">${j}</div>
-                            <div class="subtitulo">Expedientes locales</div>
+                            <div class="subtitulo">Expedientes judiciales</div>
                         </div>`;
                     });
                     html += `</div>`;
@@ -1591,7 +2928,7 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             }
 
             // ---------------------------------------------------------------------
-            // VISTA 2: CONVENIOS MASC
+            // VISTA 2: CONVENIOS MASC (CON HOVER PREVIEW CARDS)
             // ---------------------------------------------------------------------
             else if (vistaActual === 'masc') {
                 if (nivelMasc === 0) {
@@ -1651,7 +2988,10 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                     html += `<div class="breadcrumb" onclick="nivelMasc=2; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a Categorías</div>`;
                     html += `<div class="section-header-box">
                         <div class="section-title"><i class="fa-solid fa-file-signature"></i> ${pathMasc.centro} • ${pathMasc.anio} • ${pathMasc.tipo}</div>
-                        <button type="button" class="btn-upload" onclick="abrirModalCrearMASC()"><i class="fa-solid fa-plus"></i> Nuevo Convenio / Expediente</button>
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" class="btn-upload" style="border-color:var(--neon-blue); color:var(--neon-blue);" onclick="tabOficioActiva='lote'; mostrarMenu('oficios')"><i class="fa-solid fa-list-ol"></i> Oficio por Lista (Máx 10)</button>
+                            <button type="button" class="btn-upload" onclick="abrirModalCrearMASC()"><i class="fa-solid fa-plus"></i> Nuevo Convenio</button>
+                        </div>
                     </div><div class="grid-carpetas">`;
 
                     let encontrados = 0;
@@ -1670,13 +3010,14 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                                 <i class="fa-regular fa-calendar-xmark" style="color:var(--brand-orange);"></i> Vence: ${m.fechaVencimiento ? m.fechaVencimiento : '--/--/----'}
                             </div>`;
 
-                            html += `<div class="carpeta-card" onclick="nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()">
+                            html += `<div class="carpeta-card" onmouseenter="mostrarHoverPreviewMASC(event, ${i})" onmouseleave="programarOcultarHoverCard()" onclick="ocultarHoverCardInmediato(); nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()">
                                 <div class="card-actions-top" onclick="event.stopPropagation()">
+                                    <button class="btn-icon-card" onclick="abrirOficioDeExpediente(${i})" title="Generar Oficio IJA"><i class="fa-solid fa-file-Lines"></i></button>
                                     <button class="btn-icon-card" onclick="eliminarExpedienteMASC(${i})" title="Eliminar expediente"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                                 <i class="fa-solid fa-file-contract folder-icon" style="color:${infoProg.pct === 100 ? 'var(--success)' : 'var(--neon-blue)'};"></i>
-                                <div class="titulo">${m.numero}</div>
-                                <div class="subtitulo" style="color:var(--text-main); font-weight:600;">${m.solicitante || 'Sin nombre'}</div>
+                                <div class="titulo">${m.numero} ${m.mayor60 ? '<span style="font-size:0.68rem; color:var(--brand-orange);">(P.S.)</span>' : ''}</div>
+                                <div class="subtitulo" style="color:var(--text-main); font-weight:600; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${m.solicitante || 'Sin nombre'}</div>
                                 ${bloqueFechas}
                                 <div style="font-size:0.75rem; margin-top:auto;">${badge}</div>
                             </div>`;
@@ -1684,7 +3025,7 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                     });
 
                     if (encontrados === 0) {
-                        html += `<div style="color:var(--text-muted); grid-column: 1 / -1;">No hay convenios en esta carpeta. Usa "Nuevo Convenio" o el "Escáner IA Global".</div>`;
+                        html += `<div style="color:var(--text-muted); grid-column: 1 / -1;">No hay convenios en esta carpeta. Usa "Nuevo Convenio" o "Ingesta Masiva IA".</div>`;
                     }
                     html += `</div>`;
                 } else if (nivelMasc === 4) {
@@ -1698,10 +3039,15 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
 
                     html += `<div class="breadcrumb" onclick="nivelMasc=3; renderizarVista()"><i class="fa-solid fa-arrow-left"></i> Volver a ${pathMasc.tipo}</div>`;
                     html += `<div class="section-header-box" style="align-items: center;">
-                        <div class="section-title"><i class="fa-solid fa-folder-tree"></i> ${m.centro} • Exp: ${m.numero} — ${m.solicitante || ''}</div>
-                        <button type="button" id="btn-visor-completo" class="btn-upload" style="background: var(--neon-blue); color: #000; border-color: var(--neon-blue); font-size: 0.82rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})">
-                            <i class="fa-solid fa-eye"></i> Visor Completo (Todo el Expediente)
-                        </button>
+                        <div class="section-title"><i class="fa-solid fa-folder-tree"></i> ${m.centro} • Exp: ${m.numero}</div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button type="button" class="btn-upload" style="background: var(--brand-orange); color: #fff; font-size: 0.82rem;" onclick="abrirOficioDeExpediente(${pathMasc.indexExp})">
+                                <i class="fa-solid fa-file-signature"></i> Generar Oficio IJA
+                            </button>
+                            <button type="button" id="btn-visor-completo" class="btn-upload" style="background: var(--neon-blue); color: #000; border-color: var(--neon-blue); font-size: 0.82rem;" onclick="abrirVisorMASC(${pathMasc.indexExp})">
+                                <i class="fa-solid fa-eye"></i> Visor Completo (Todo el Expediente)
+                            </button>
+                        </div>
                     </div>`;
 
                     html += `<div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
@@ -1720,24 +3066,46 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                                 <label>Número de Expediente:</label>
                                 <input type="text" class="form-input" value="${m.numero || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'numero', this.value)">
                             </div>
-                            <div class="form-group">
-                                <label>Solicitante / Promovente:</label>
-                                <input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value)" placeholder="Nombre completo">
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Partes que celebran el Convenio (Nombres completos para Oficio IJA):</label>
+                                <input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value.toUpperCase())" placeholder="MARCO ANTONIO CERVANTES LÓPEZ Y KARLA FABIOLA CAMPOS MÉNDEZ">
                             </div>
                             <div class="form-group">
                                 <label>Patrocinado por:</label>
                                 <input type="text" class="form-input" value="${m.patrocinado || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'patrocinado', this.value)" placeholder="Ej. Eduviges">
                             </div>
                         </div>
-                        <div class="form-row">
+                        <div class="form-row" style="margin-bottom: 15px;">
                             <div class="form-group">
-                                <label style="color:var(--neon-blue);"><i class="fa-regular fa-calendar-plus"></i> Fecha de Inicio / Firma del Convenio:</label>
+                                <label style="color:var(--neon-blue);"><i class="fa-regular fa-calendar-plus"></i> Fecha de Inicio / Firma:</label>
                                 <input type="date" class="form-input" value="${m.fechaInicio || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'fechaInicio', this.value)">
                             </div>
                             <div class="form-group">
                                 <label style="color:var(--brand-orange);"><i class="fa-regular fa-calendar-xmark"></i> Fecha de Vencimiento del Convenio:</label>
                                 <input type="date" class="form-input" value="${m.fechaVencimiento || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'fechaVencimiento', this.value)">
                             </div>
+                            <div class="form-group">
+                                <label>Folio / Cuenta Predial (Oficio IJA):</label>
+                                <input type="text" class="form-input" value="${m.cuentaPredial || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'cuentaPredial', this.value)" placeholder="Ej. 8070194">
+                            </div>
+                            <div class="form-group">
+                                <label>N° Escritura(s) Pública(s) (Oficio IJA):</label>
+                                <input type="text" class="form-input" value="${m.numerosEscritura || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'numerosEscritura', this.value)" placeholder="Ej. 27,830">
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:20px; flex-wrap:wrap; padding-top:6px; border-top:1px solid var(--border-glass);">
+                            <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--brand-orange); cursor:pointer; font-weight:600;">
+                                <input type="checkbox" ${m.mayor60 ? 'checked' : ''} onchange="guardarCampoMASC(${pathMasc.indexExp}, 'mayor60', this.checked)">
+                                👴 Participa Persona Mayor de 60 años (Agrega Hoja Procuraduría Social y P.S.)
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--neon-blue); cursor:pointer; font-weight:600;">
+                                <input type="checkbox" ${m.involucraMenores ? 'checked' : ''} onchange="guardarCampoMASC(${pathMasc.indexExp}, 'involucraMenores', this.checked)">
+                                👶 Involucra Derechos de Menores (Oficio PNNA)
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--text-main); cursor:pointer;">
+                                <input type="checkbox" ${m.tieneContratoAdmin ? 'checked' : ''} onchange="guardarCampoMASC(${pathMasc.indexExp}, 'tieneContratoAdmin', this.checked)">
+                                Incluye Contrato de Administración en Oficio
+                            </label>
                         </div>
                     </div>`;
 
@@ -1786,7 +3154,6 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
                         html += `</table></div>`;
                     });
 
-                    // SECCIÓN DE OBSERVACIONES Y RESOLUCIONES IJA
                     html += `<div class="gestion-box" style="margin-top: 24px;">
                         <h4 style="color:var(--neon-blue); margin-bottom:12px;"><i class="fa-solid fa-stamp"></i> Seguimiento y Resoluciones IJA</h4>
                         <div class="form-group" style="margin-bottom:16px;">
@@ -1828,7 +3195,347 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             }
 
             // ---------------------------------------------------------------------
-            // VISTA 3: GESTIÓN DE EQUIPO (USUARIOS)
+            // VISTA 3: GENERADOR DE OFICIOS IJA (LAS 5 HOJAS + MACHOTE Y APRENDIZAJE)
+            // ---------------------------------------------------------------------
+            else if (vistaActual === 'oficios') {
+                html += `<div class="section-header-box">
+                    <div class="section-title"><i class="fa-solid fa-file-signature"></i> Generador Oficial de Oficios para el IJA</div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button type="button" class="btn-upload" style="background:var(--neon-blue); color:#000; border-color:var(--neon-blue);" onclick="imprimirOficioActual()">
+                            <i class="fa-solid fa-print"></i> Imprimir / Guardar PDF Oficial
+                        </button>
+                        <button type="button" class="btn-upload" onclick="descargarOficioWord()">
+                            <i class="fa-solid fa-file-word"></i> Descargar en Word (.doc)
+                        </button>
+                    </div>
+                </div>`;
+
+                html += `<div class="materia-tabs">
+                    <div class="materia-tab ${tabOficioActiva === 'individual' ? 'active' : ''}" onclick="tabOficioActiva='individual'; renderizarVista()">
+                        <i class="fa-solid fa-file-contract"></i> 1. Oficio por Expediente (Hojas 1, 2 y 3)
+                    </div>
+                    <div class="materia-tab ${tabOficioActiva === 'lote' ? 'active' : ''}" onclick="tabOficioActiva='lote'; renderizarVista()">
+                        <i class="fa-solid fa-list-check"></i> 2. Oficio por Lista Máx. 10 (Hojas 4 y 5)
+                    </div>
+                    <div class="materia-tab ${tabOficioActiva === 'machote' ? 'active' : ''}" onclick="tabOficioActiva='machote'; renderizarVista()">
+                        <i class="fa-solid fa-brain"></i> 3. Subir Machote y Memoria IA por Centro
+                    </div>
+                </div>`;
+
+                if (tabOficioActiva === 'individual') {
+                    if (listaExpedientesMasc.length === 0) {
+                        html += `<div class="gestion-box">Aún no hay convenios MASC registrados. Crea uno o súbelos en "Ingesta Masiva IA".</div>`;
+                    } else {
+                        if (indexExpOficioSeleccionado >= listaExpedientesMasc.length) indexExpOficioSeleccionado = 0;
+                        let expActual = listaExpedientesMasc[indexExpOficioSeleccionado];
+
+                        html += `<div style="display:grid; grid-template-columns: 360px 1fr; gap:20px; align-items:start;">
+                            <div class="gestion-box" style="margin-bottom:0;">
+                                <h4 style="color:var(--neon-blue); margin-bottom:12px;"><i class="fa-solid fa-sliders"></i> Configurar Datos del Oficio</h4>
+                                <div class="form-group" style="margin-bottom:12px;">
+                                    <label>Seleccionar Expediente / Convenio:</label>
+                                    <select class="form-input" onchange="indexExpOficioSeleccionado=parseInt(this.value,10); renderizarVista()">
+                                        ${listaExpedientesMasc.map((e, idx) => `<option value="${idx}" ${idx === indexExpOficioSeleccionado ? 'selected' : ''}>[${e.centro}] EXP. ${e.numero} — ${(e.solicitante || '').slice(0, 28)}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:10px;">
+                                    <label>Expediente Centro Privado:</label>
+                                    <input type="text" class="form-input" value="${expActual.numero || ''}" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'numero', this.value)">
+                                </div>
+                                <div class="form-group" style="margin-bottom:10px;">
+                                    <label>Partes que celebran (Mayúsculas):</label>
+                                    <textarea class="form-input" rows="3" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'solicitante', this.value.toUpperCase())">${expActual.solicitante || ''}</textarea>
+                                </div>
+                                <div class="form-row" style="margin-bottom:10px;">
+                                    <div class="form-group">
+                                        <label>Cant. Partes / IDs:</label>
+                                        <input type="number" min="1" class="form-input" value="${(expActual.cantidades && expActual.cantidades['identificaciones']) || expActual.numPartes || contarPartesEnTexto(expActual.solicitante)}" onchange="guardarCantidadItem(${indexExpOficioSeleccionado}, 'identificaciones', this.value); renderizarVista()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Folio Predial:</label>
+                                        <input type="text" class="form-input" value="${expActual.cuentaPredial || ''}" placeholder="Ej. 8070194" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'cuentaPredial', this.value)">
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-bottom:12px;">
+                                    <div class="form-group">
+                                        <label>N° Escritura(s):</label>
+                                        <input type="text" class="form-input" value="${expActual.numerosEscritura || ''}" placeholder="Ej. 27,830" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'numerosEscritura', this.value)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Cant. Escrituras:</label>
+                                        <input type="number" min="1" class="form-input" value="${expActual.cantEscrituras || 1}" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'cantEscrituras', parseInt(this.value,10)||1)">
+                                    </div>
+                                </div>
+                                <div style="display:flex; flex-direction:column; gap:8px; padding-top:8px; border-top:1px solid var(--border-glass);">
+                                    <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--brand-orange); cursor:pointer; font-weight:600;">
+                                        <input type="checkbox" ${expActual.mayor60 ? 'checked' : ''} onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'mayor60', this.checked)">
+                                        👴 Mayor de 60 años (Genera 2 Hojas: IJA + Procuraduría Social)
+                                    </label>
+                                    <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--neon-blue); cursor:pointer; font-weight:600;">
+                                        <input type="checkbox" ${expActual.involucraMenores ? 'checked' : ''} onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'involucraMenores', this.checked)">
+                                        👶 Derechos de Menores (Oficio Procuraduría Niñas, Niños y Adolescentes)
+                                    </label>
+                                    <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; cursor:pointer;">
+                                        <input type="checkbox" ${expActual.tieneContratoAdmin ? 'checked' : ''} onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'tieneContratoAdmin', this.checked)">
+                                        Incluir Contrato de Administración (1)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="contenedor-hojas-oficio" class="oficio-preview-wrapper">
+                                ${generarHTMLHojaOficioIndividual(expActual)}
+                            </div>
+                        </div>`;
+                    }
+                } else if (tabOficioActiva === 'lote') {
+                    html += `<div style="display:grid; grid-template-columns: 370px 1fr; gap:20px; align-items:start;">
+                        <div class="gestion-box" style="margin-bottom:0;">
+                            <h4 style="color:var(--neon-blue); margin-bottom:10px;"><i class="fa-solid fa-layer-group"></i> Selección de Convenios (Tope 10 por hoja)</h4>
+                            <div class="form-group" style="margin-bottom:10px;">
+                                <label>Formato de Oficio Colectivo:</label>
+                                <select class="form-input" onchange="modoLoteOficio=this.value; renderizarVista()">
+                                    <option value="general10" ${modoLoteOficio === 'general10' ? 'selected' : ''}>Hoja 5: Convenios para Sanción y Validación (Lista General máx. 10)</option>
+                                    <option value="agentes60" ${modoLoteOficio === 'agentes60' ? 'selected' : ''}>Hoja 4: Convenios con Traslado Agentes Sociales (Mayores a 60 años)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:10px;">
+                                <label>Filtrar por Centro:</label>
+                                <select class="form-input" onchange="filtroCentroLote=this.value; renderizarVista()">
+                                    <option value="TODOS" ${filtroCentroLote === 'TODOS' ? 'selected' : ''}>Todos los Centros</option>
+                                    ${centrosMASC.map(c => `<option value="${c}" ${filtroCentroLote === c ? 'selected' : ''}>${c}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:0.78rem;">
+                                <span style="color:var(--brand-orange); font-weight:bold;">Seleccionados: ${expedientesLoteSeleccionados.length} (${Math.ceil(expedientesLoteSeleccionados.length / 10) || 1} hoja[s])</span>
+                                <button type="button" class="btn-upload" style="padding:3px 8px; font-size:0.72rem;" onclick="expedientesLoteSeleccionados=[]; renderizarVista()">Limpiar</button>
+                            </div>
+                            <div style="max-height: 420px; overflow-y:auto; border:1px solid var(--border-glass); border-radius:8px; padding:8px;">
+                                ${listaExpedientesMasc.map((m, idx) => {
+                                    if (filtroCentroLote !== 'TODOS' && m.centro !== filtroCentroLote) return '';
+                                    if (modoLoteOficio === 'agentes60' && !m.mayor60) return '';
+                                    let sel = expedientesLoteSeleccionados.includes(idx);
+                                    return `<label style="display:flex; align-items:center; justify-content:space-between; padding:7px 8px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; font-size:0.8rem;">
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleSeleccionExpLote(${idx}, this.checked)">
+                                            <span><strong>${m.numero}</strong> — ${(m.solicitante || '').slice(0, 22)}</span>
+                                        </div>
+                                        ${m.mayor60 ? `<span style="color:var(--brand-orange); font-weight:bold; font-size:0.72rem;">P.S.</span>` : ''}
+                                    </label>`;
+                                }).join('')}
+                            </div>
+                        </div>
+
+                        <div id="contenedor-hojas-oficio" class="oficio-preview-wrapper">
+                            ${generarHTMLHojasOficioLote()}
+                        </div>
+                    </div>`;
+                } else {
+                    let centroSel = centrosMASC[0] || 'Centro 065';
+                    let cfg = configMachotesCentro[centroSel] || obtenerConfigMachoteDefecto(centroSel);
+
+                    html += `<div class="gestion-box">
+                        <div class="section-header-box">
+                            <div>
+                                <h3 style="color:var(--neon-blue);"><i class="fa-solid fa-file-import"></i> Aprendizaje de Machote Oficial por Centro</h3>
+                                <p style="font-size:0.82rem; color:var(--text-muted);">Sube tu archivo Word (.docx) o PDF de machote para que la IA extraiga y mantenga el diseño, acreditación y el Director General que firma siempre al pie de la hoja.</p>
+                            </div>
+                            <button type="button" class="btn-ia-scanner" style="margin-top:0;" onclick="document.getElementById('input-subir-machote').click()">
+                                <i class="fa-solid fa-upload"></i> Subir Machote (.docx / .pdf)
+                            </button>
+                        </div>
+
+                        <div class="form-row" style="margin-top:15px;">
+                            <div class="form-group">
+                                <label>Centro MASC a Configurar:</label>
+                                <select id="select-centro-machote" class="form-input" onchange="cargarDatosMachoteCentroUI(this.value)">
+                                    ${centrosMASC.map(c => `<option value="${c}">${c}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nombre Oficial del Centro en el Oficio:</label>
+                                <input type="text" id="mach-asociacion" class="form-input" value="${cfg.nombreAsociacion}">
+                            </div>
+                            <div class="form-group">
+                                <label>Número de Acreditación IJA:</label>
+                                <input type="text" id="mach-acreditacion" class="form-input" value="${cfg.acreditacion}">
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-top:12px;">
+                            <div class="form-group">
+                                <label>Director General (Firma al pie de hoja):</label>
+                                <input type="text" id="mach-director" class="form-input" value="${cfg.directorNombre}">
+                            </div>
+                            <div class="form-group">
+                                <label>Cargo al pie de firma:</label>
+                                <input type="text" id="mach-cargo" class="form-input" value="${cfg.directorCargo}">
+                            </div>
+                            <div class="form-group">
+                                <label>Destinatario Titular IJA:</label>
+                                <input type="text" id="mach-destinatario" class="form-input" value="${cfg.destinatarioIJANombre}">
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-top:12px;">
+                            <div class="form-group">
+                                <label>Correo de Envío Digital IJA:</label>
+                                <input type="text" id="mach-correo" class="form-input" value="${cfg.correoDigitalIJA}">
+                            </div>
+                            <div class="form-group">
+                                <label>Lugar y Leyenda de Fecha al Pie:</label>
+                                <input type="text" id="mach-ciudad" class="form-input" value="${cfg.ciudadFecha}">
+                            </div>
+                        </div>
+
+                        <div style="margin-top:16px;">
+                            <button type="button" class="btn-upload" onclick="guardarConfigMachoteManual(document.getElementById('select-centro-machote').value)">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar Formato del Centro
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="gestion-box">
+                        <h4 style="color:var(--brand-orange); margin-bottom:10px;"><i class="fa-solid fa-graduation-cap"></i> Memoria de Aprendizaje IA (${memoriaAprendizajeIA.length} patrones de convenios aprendidos)</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Cada vez que escaneas o editas un convenio, el sistema aprende cómo redactas folios de predial, escrituras públicas, número de partes y traslados P.S.:</p>
+                        <div class="docs-table">
+                            <table style="width:100%; border-collapse:collapse;">
+                                <tr><th>Centro</th><th>Expediente</th><th>Tipo</th><th>IDs</th><th>Predial</th><th>Escritura Pública</th><th>Mayor +60</th></tr>
+                                ${memoriaAprendizajeIA.length === 0 ? `<tr><td colspan="7" style="color:var(--text-muted);">Aún no hay patrones registrados. Se irán agregando conforme subas o edites convenios.</td></tr>` : ''}
+                                ${memoriaAprendizajeIA.slice(0, 12).map(ap => `
+                                    <tr>
+                                        <td>${ap.centro}</td>
+                                        <td><strong>${ap.ejemploNumero}</strong></td>
+                                        <td>${ap.tipo}</td>
+                                        <td>(${ap.numPartes})</td>
+                                        <td>${ap.cuentaPredial || '--'}</td>
+                                        <td>${ap.numerosEscritura || '--'}</td>
+                                        <td>${ap.mayor60 ? '<span style="color:var(--brand-orange); font-weight:bold;">Sí (P.S.)</span>' : 'No'}</td>
+                                    </tr>
+                                `).join('')}
+                            </table>
+                        </div>
+                    </div>`;
+                }
+            }
+
+            // ---------------------------------------------------------------------
+            // VISTA 4: INGESTA MASIVA IA (PARA LOS 407 CONVENIOS Y EXPEDIENTES)
+            // ---------------------------------------------------------------------
+            else if (vistaActual === 'masiva') {
+                let pctCola = statsMasiva.total > 0 ? Math.round((statsMasiva.procesados / statsMasiva.total) * 100) : 0;
+
+                html += `<div class="section-header-box">
+                    <div class="section-title"><i class="fa-solid fa-boxes-packing"></i> Centro de Ingesta Masiva IA (Resguardo Inteligente por Lotes)</div>
+                    <div style="display:flex; gap:8px;">
+                        ${colaMasiva.length > 0 ? `
+                            <button type="button" class="btn-upload" onclick="pausarReanudarColaMasiva()">
+                                <i class="fa-solid ${colaMasivaPausada ? 'fa-play' : 'fa-pause'}"></i> ${colaMasivaPausada ? 'Reanudar Lote' : 'Pausar Lote'}
+                            </button>
+                            <button type="button" class="btn-upload" style="border-color:var(--text-muted); color:var(--text-muted);" onclick="limpiarCompletadosColaMasiva()">
+                                <i class="fa-solid fa-broom"></i> Limpiar Terminados
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>`;
+
+                html += `<div class="dropzone-masiva"
+                    ondragover="event.preventDefault(); this.classList.add('dragover')"
+                    ondragleave="this.classList.remove('dragover')"
+                    ondrop="event.preventDefault(); this.classList.remove('dragover'); agregarArchivosAColaMasiva(event.dataTransfer.files)"
+                    onclick="document.getElementById('input-masivo-files').click()">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3.2rem; color: var(--neon-blue); margin-bottom: 12px;"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 6px;">Arrastra aquí tus Convenios MASC o Expedientes Jurídicos (o haz clic para seleccionar)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.86rem;">Puedes cargar decenas o tus 407 convenios por lotes. El sistema los subirá a tu Google Drive (5TB), extraerá fechas de inicio y vencimiento, predial y escrituras, y si alguno no se reconoce lo enviará a <strong>"Archivos sin Reconocer"</strong>.</p>
+                </div>`;
+
+                html += `<div class="form-row" style="margin-bottom:20px;">
+                    <div class="gestion-box" style="margin-bottom:0; text-align:center;">
+                        <div style="font-size:0.78rem; color:var(--text-muted);">PROGRESO DEL LOTE</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:var(--neon-blue);">${statsMasiva.procesados} / ${statsMasiva.total}</div>
+                    </div>
+                    <div class="gestion-box" style="margin-bottom:0; text-align:center;">
+                        <div style="font-size:0.78rem; color:var(--text-muted);">CONVENIOS MASC UBICADOS</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:var(--success);">${statsMasiva.masc}</div>
+                    </div>
+                    <div class="gestion-box" style="margin-bottom:0; text-align:center;">
+                        <div style="font-size:0.78rem; color:var(--text-muted);">EXPEDIENTES JURÍDICOS</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:var(--brand-orange);">${statsMasiva.juridico}</div>
+                    </div>
+                    <div class="gestion-box" style="margin-bottom:0; text-align:center; cursor:pointer;" onclick="mostrarMenu('sinreconocer')">
+                        <div style="font-size:0.78rem; color:var(--text-muted);">ARCHIVOS SIN RECONOCER</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:var(--danger);">${listaSinReconocer.length}</div>
+                    </div>
+                </div>`;
+
+                if (statsMasiva.total > 0) {
+                    html += `<div style="background:rgba(0,0,0,0.35); border:1px solid var(--border-glass); border-radius:8px; padding:12px; margin-bottom:20px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:6px;">
+                            <span>Estado de la Cola Inteligente: <strong>${procesandoColaMasiva ? 'Procesando secuencialmente...' : (colaMasivaPausada ? 'En Pausa' : 'Lote Completado')}</strong></span>
+                            <span style="color:var(--neon-blue); font-weight:bold;">${pctCola}%</span>
+                        </div>
+                        <div style="width:100%; height:10px; background:#1e293b; border-radius:5px; overflow:hidden;">
+                            <div style="width:${pctCola}%; height:100%; background:linear-gradient(90deg, var(--neon-blue), var(--success)); transition:width 0.4s;"></div>
+                        </div>
+                    </div>`;
+                }
+
+                html += `<div class="docs-table">
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr><th>Archivo</th><th>Estado</th><th>Carpeta / Destino Asignado por IA</th></tr>
+                        ${colaMasiva.length === 0 ? `<tr><td colspan="3" style="color:var(--text-muted); text-align:center; padding:24px;">No hay archivos en la cola actual. Arrastra tus PDFs o documentos arriba para comenzar.</td></tr>` : ''}
+                        ${colaMasiva.map(item => {
+                            let badgeColor = 'var(--text-muted)';
+                            if (item.estado === 'PROCESANDO') badgeColor = 'var(--neon-blue)';
+                            else if (item.estado === 'CLASIFICADO') badgeColor = 'var(--success)';
+                            else if (item.estado === 'SIN RECONOCER') badgeColor = 'var(--danger)';
+                            return `<tr>
+                                <td><strong>${item.nombre}</strong></td>
+                                <td><span style="color:${badgeColor}; font-weight:bold;">${item.estado === 'PROCESANDO' ? '<i class="fa-solid fa-spinner fa-spin"></i> ' : ''}${item.estado}</span></td>
+                                <td>${item.detalleUbicacion}</td>
+                            </tr>`;
+                        }).join('')}
+                    </table>
+                </div>`;
+            }
+
+            // ---------------------------------------------------------------------
+            // VISTA 5: CARPETA DE ARCHIVOS SIN RECONOCER (REUBICACIÓN EN 1 CLIC)
+            // ---------------------------------------------------------------------
+            else if (vistaActual === 'sinreconocer') {
+                html += `<div class="section-header-box">
+                    <div>
+                        <div class="section-title"><i class="fa-solid fa-folder-tree" style="color:var(--warning);"></i> Carpeta: Archivos sin Reconocer (${listaSinReconocer.length})</div>
+                        <p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">Todos estos documentos ya están respaldados en tu nube. Haz clic en cualquier tarjeta para ver el documento y asignarle su carpeta exacta.</p>
+                    </div>
+                </div>`;
+
+                if (listaSinReconocer.length === 0) {
+                    html += `<div class="gestion-box" style="text-align:center; padding:40px;">
+                        <i class="fa-solid fa-circle-check" style="font-size:3rem; color:var(--success); margin-bottom:12px;"></i>
+                        <h3>¡Bandeja Limpia!</h3>
+                        <p style="color:var(--text-muted); font-size:0.88rem; margin-top:6px;">No tienes ningún archivo pendiente de clasificar.</p>
+                    </div>`;
+                } else {
+                    html += `<div class="grid-carpetas">`;
+                    listaSinReconocer.forEach((item, idx) => {
+                        html += `<div class="carpeta-card" style="border-color:rgba(245,158,11,0.4);" onclick="abrirModalOrganizarSinReconocer(${idx})">
+                            <div class="card-actions-top" onclick="event.stopPropagation()">
+                                <button class="btn-icon-card" onclick="eliminarSinReconocer(${idx})" title="Descartar"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            <i class="fa-solid fa-file-circle-question folder-icon" style="color:var(--warning);"></i>
+                            <div class="titulo">${item.fileName}</div>
+                            <div class="subtitulo">Subido: ${item.fechaSubida}</div>
+                            <div style="margin-top:auto; padding-top:8px; font-size:0.76rem; color:var(--neon-blue); font-weight:700;">
+                                <i class="fa-solid fa-hand-pointer"></i> Clic para ver y asignar carpeta
+                            </div>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                }
+            }
+
+            // ---------------------------------------------------------------------
+            // VISTA 6: GESTIÓN DE EQUIPO (USUARIOS)
             // ---------------------------------------------------------------------
             else if (vistaActual === 'usuarios') {
                 html += '<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-users-cog"></i> Gestión de Equipo</div><button type="button" class="btn-upload" onclick="abrirModalUsuario(-1)"><i class="fa-solid fa-user-plus"></i> Nuevo Usuario</button></div>';
@@ -1842,7 +3549,7 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             }
 
             // ---------------------------------------------------------------------
-            // VISTA 4: HISTORIAL DE ACTIVIDAD
+            // VISTA 7: HISTORIAL DE ACTIVIDAD
             // ---------------------------------------------------------------------
             else if (vistaActual === 'actividad') {
                 let keyLogs = 'boveda_logs_' + usuarioActivoObj.entornoId;
@@ -1861,8 +3568,19 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             ws.innerHTML = html;
         }
 
+        function cargarDatosMachoteCentroUI(centro) {
+            let cfg = configMachotesCentro[centro] || obtenerConfigMachoteDefecto(centro);
+            document.getElementById('mach-asociacion').value = cfg.nombreAsociacion;
+            document.getElementById('mach-acreditacion').value = cfg.acreditacion;
+            document.getElementById('mach-director').value = cfg.directorNombre;
+            document.getElementById('mach-cargo').value = cfg.directorCargo;
+            document.getElementById('mach-destinatario').value = cfg.destinatarioIJANombre;
+            document.getElementById('mach-correo').value = cfg.correoDigitalIJA;
+            document.getElementById('mach-ciudad').value = cfg.ciudadFecha;
+        }
+
         // =========================================================================
-        // 8. FUNCIONES DE MODALES (CREAR / EDITAR / ELIMINAR)
+        // 11. FUNCIONES DE MODALES (CREAR / EDITAR / ELIMINAR)
         // =========================================================================
         function cerrarModales() {
             document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
@@ -1901,38 +3619,57 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
 
         function abrirModalCrearMASC() {
             document.getElementById('input-numero-masc').value = '';
+            document.getElementById('input-numpartes-masc').value = '2';
             document.getElementById('input-solicitante-masc').value = '';
             document.getElementById('input-patrocinado-masc').value = '';
             document.getElementById('input-fechainicio-masc').value = '';
             document.getElementById('input-fechavenc-masc').value = '';
+            document.getElementById('input-predial-masc').value = '';
+            document.getElementById('input-escritura-masc').value = '';
+            document.getElementById('input-mayor60-masc').checked = false;
+            document.getElementById('input-menores-masc').checked = false;
             document.getElementById('modal-crear-masc').style.display = 'flex';
         }
 
         async function procesarNuevoMASC() {
             let numFinal = document.getElementById('input-numero-masc').value.trim();
-            let solicitante = document.getElementById('input-solicitante-masc').value.trim();
+            let numPartes = parseInt(document.getElementById('input-numpartes-masc').value, 10) || 2;
+            let solicitante = document.getElementById('input-solicitante-masc').value.trim().toUpperCase();
             let patrocinado = document.getElementById('input-patrocinado-masc').value.trim();
             let fechaInicio = document.getElementById('input-fechainicio-masc').value;
             let fechaVencimiento = document.getElementById('input-fechavenc-masc').value;
+            let cuentaPredial = document.getElementById('input-predial-masc').value.trim();
+            let numerosEscritura = document.getElementById('input-escritura-masc').value.trim();
+            let mayor60 = document.getElementById('input-mayor60-masc').checked;
+            let involucraMenores = document.getElementById('input-menores-masc').checked;
 
             if (!numFinal) return alert("Ingresa el número de expediente.");
 
-            listaExpedientesMasc.push({
+            let nuevoExp = {
                 centro: pathMasc.centro,
                 anio: pathMasc.anio,
                 tipo: pathMasc.tipo,
                 numero: numFinal,
                 solicitante: solicitante,
+                numPartes: numPartes,
                 patrocinado: patrocinado,
                 fechaInicio: fechaInicio || '',
                 fechaVencimiento: fechaVencimiento || '',
+                cuentaPredial: cuentaPredial,
+                numerosEscritura: numerosEscritura,
+                cantEscrituras: numerosEscritura ? 1 : 0,
+                mayor60: mayor60,
+                involucraMenores: involucraMenores,
+                tieneContratoAdmin: false,
                 observaciones: '',
                 firmadoPartes: false,
                 docs: {},
                 checks: {},
-                cantidades: {}
-            });
+                cantidades: { identificaciones: numPartes }
+            };
 
+            listaExpedientesMasc.push(nuevoExp);
+            registrarAprendizajeConvenio(nuevoExp);
             await guardarEnBDMasc();
             cerrarModales();
             registrarActividad(`Creó convenio MASC: ${numFinal}`);
@@ -1959,6 +3696,10 @@ REGLAS OBLIGATORIAS PARA LA FECHA DE VENCIMIENTO DEL CONVENIO:
             if (!val) return;
             if (editCentroIdx >= 0) centrosMASC[editCentroIdx] = val;
             else centrosMASC.push(val);
+            if (!configMachotesCentro[val]) {
+                configMachotesCentro[val] = obtenerConfigMachoteDefecto(val);
+                localStorage.setItem(storageMachotesKey, JSON.stringify(configMachotesCentro));
+            }
             localStorage.setItem(storageCentrosKey, JSON.stringify(centrosMASC));
             cerrarModales();
             renderizarVista();
