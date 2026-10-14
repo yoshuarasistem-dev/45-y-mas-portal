@@ -502,7 +502,7 @@
             border-color: var(--brand-orange);
         }
 
-        /* ESTILOS DE HOJA DE OFICIO IJA (PANTALLA E IMPRESIÓN) */
+        /* ESTILOS DE HOJA DE OFICIO IJA FIEL AL MACHOTE WORD */
         .oficio-preview-wrapper {
             background: #1e293b;
             padding: 25px;
@@ -517,59 +517,89 @@
             width: 21.59cm;
             min-height: 27.94cm;
             margin: 0 auto 28px auto;
-            padding: 2.2cm 2.4cm 2.0cm 2.4cm;
+            padding: 2.3cm 2.5cm 2.1cm 2.5cm;
             box-shadow: 0 12px 35px rgba(0,0,0,0.55);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            font-family: 'Arial', 'Calibri', sans-serif;
-            font-size: 11pt;
-            line-height: 1.42;
+            font-family: 'Calibri', 'Arial', sans-serif;
+            font-size: 11.5pt;
+            line-height: 1.38;
             position: relative;
             page-break-after: always;
+            outline: none;
+        }
+
+        .hoja-oficio-ija:focus {
+            box-shadow: 0 0 0 3px var(--neon-blue), 0 12px 35px rgba(0,0,0,0.55);
         }
 
         .hoja-oficio-ija * {
-            font-family: 'Arial', 'Calibri', sans-serif;
+            font-family: 'Calibri', 'Arial', sans-serif;
             color: #000000;
         }
 
         .oficio-asunto-top {
             text-align: right;
             font-weight: bold;
-            margin-bottom: 18px;
-            line-height: 1.3;
+            margin-bottom: 22px;
+            line-height: 1.28;
+            font-size: 11.5pt;
         }
 
         .oficio-destinatario {
             font-weight: bold;
-            margin-bottom: 16px;
-            line-height: 1.3;
+            margin-bottom: 18px;
+            line-height: 1.28;
+            font-size: 11.5pt;
         }
 
         .oficio-parrafo {
             text-align: justify;
-            text-indent: 1.2cm;
-            margin-bottom: 16px;
+            text-indent: 1.25cm;
+            margin-bottom: 18px;
+            line-height: 1.42;
         }
 
         .tabla-oficio-ija {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0 18px 0;
+            margin: 8px 0 18px 0;
+            border: 1.5px solid #000000;
         }
 
         .tabla-oficio-ija th, .tabla-oficio-ija td {
             border: 1px solid #000000;
-            padding: 6px 10px;
-            vertical-align: top;
-            font-size: 10.5pt;
+            padding: 7px 11px;
+            vertical-align: middle;
+            font-size: 11pt;
+            line-height: 1.35;
         }
 
         .oficio-pie-firma {
             margin-top: auto;
-            padding-top: 20px;
+            padding-top: 16px;
             page-break-inside: avoid;
+            width: 100%;
+        }
+
+        .oficio-despedida {
+            text-align: justify;
+            text-indent: 1.25cm;
+            margin-bottom: 26px;
+        }
+
+        .oficio-atentamente-box {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 72px;
+            line-height: 1.35;
+        }
+
+        .oficio-director-box {
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.3;
         }
 
         /* MODALES */
@@ -649,7 +679,7 @@
     <div id="modal-ia-loading" class="modal-overlay" style="z-index: 2500;">
         <div class="modal-content" style="text-align: center; max-width: 380px;">
             <i class="fa-solid fa-brain fa-bounce" style="font-size: 2.8rem; color: var(--neon-blue); margin-bottom: 10px;"></i>
-            <h3 style="color: var(--text-main);">Analizando con IA y Aprendizaje...</h3>
+            <h3 style="color: var(--text-main);">Analizando con IA (Gemini 3.8 Flash)...</h3>
             <p style="color: var(--text-muted); font-size: 0.85rem;">Extrayendo expediente, partes, fechas de inicio y vencimiento, predial, escrituras y respaldando en Drive.</p>
         </div>
     </div>
@@ -672,7 +702,7 @@
                     <i class="fa-solid fa-bolt"></i> Ingesta Masiva IA
                 </button>
                 <button type="button" class="btn-topbar-batch" style="border-color: var(--brand-orange); color: var(--brand-orange);" onclick="mostrarMenu('oficios')" title="Generador Oficial de Oficios para el IJA">
-                    <i class="fa-solid fa-file-Lines"></i> Oficios IJA
+                    <i class="fa-solid fa-file-lines"></i> Oficios IJA
                 </button>
                 <div id="cloud-status-box" class="cloud-badge" onclick="conectarDrive()" title="Estado de sincronización automática con Google Drive">
                     <i class="fa-solid fa-cloud"></i>
@@ -702,7 +732,7 @@
                     <div class="menu-item-left"><i class="fa-solid fa-boxes-packing"></i> Ingesta Masiva IA</div>
                 </div>
                 <div id="menu-sinreconocer" class="menu-item" onclick="mostrarMenu('sinreconocer')">
-                    <div class="menu-item-left"><i class="fa-solid fa-folder-Tree"></i> Archivos sin Reconocer</div>
+                    <div class="menu-item-left"><i class="fa-solid fa-folder-tree"></i> Archivos sin Reconocer</div>
                     <span id="badge-sin-reconocer" class="badge-count" style="display:none;">0</span>
                 </div>
                 <div id="menu-usuarios" class="menu-item" onclick="mostrarMenu('usuarios')">
@@ -813,6 +843,7 @@
                                 <option value="2025">2025</option>
                                 <option value="2024">2024</option>
                                 <option value="2023">2023</option>
+                                <option value="2022">2022</option>
                             </select>
                         </div>
                     </div>
@@ -1020,11 +1051,33 @@
         let esAdmin = false;
         let vistaActual = 'masc';
 
-        // Estado Jurídico
+        // Estado Jurídico (Con los 19 Juzgados de lo Mercantil completos)
         const catJuzgados = {
-            "Civil": ["Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil", "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil", "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil", "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil", "Juzgado 13° de lo Civil"],
-            "Familiar": ["Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar", "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar", "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar", "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar", "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar", "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Especializado Niños", "Violencia Mujeres"],
-            "Mercantil": ["Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil", "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil", "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil", "Juzgado 10° de lo Mercantil"]
+            "Civil": [
+                "Juzgado 1° de lo Civil", "Juzgado 2° de lo Civil", "Juzgado 3° de lo Civil",
+                "Juzgado 4° de lo Civil", "Juzgado 5° de lo Civil", "Juzgado 6° de lo Civil",
+                "Juzgado 7° de lo Civil", "Juzgado 8° de lo Civil", "Juzgado 9° de lo Civil",
+                "Juzgado 10° de lo Civil", "Juzgado 11° de lo Civil", "Juzgado 12° de lo Civil",
+                "Juzgado 13° de lo Civil"
+            ],
+            "Familiar": [
+                "Juzgado 1° de lo Familiar", "Juzgado 2° de lo Familiar", "Juzgado 3° de lo Familiar",
+                "Juzgado 4° de lo Familiar", "Juzgado 5° de lo Familiar", "Juzgado 6° de lo Familiar",
+                "Juzgado 7° de lo Familiar", "Juzgado 8° de lo Familiar", "Juzgado 9° de lo Familiar",
+                "Juzgado 10° de lo Familiar", "Juzgado 11° de lo Familiar", "Juzgado 12° de lo Familiar",
+                "Juzgado 13° de lo Familiar", "Juzgado 14° de lo Familiar", "Juzgado 15° de lo Familiar",
+                "Juzgado 16° de lo Familiar", "Juzgado 17° de lo Familiar", "Especializado Niños",
+                "Violencia Mujeres"
+            ],
+            "Mercantil": [
+                "Juzgado 1° de lo Mercantil", "Juzgado 2° de lo Mercantil", "Juzgado 3° de lo Mercantil",
+                "Juzgado 4° de lo Mercantil", "Juzgado 5° de lo Mercantil", "Juzgado 6° de lo Mercantil",
+                "Juzgado 7° de lo Mercantil", "Juzgado 8° de lo Mercantil", "Juzgado 9° de lo Mercantil",
+                "Juzgado 10° de lo Mercantil", "Juzgado 11° de lo Mercantil", "Juzgado 12° de lo Mercantil",
+                "Juzgado 13° de lo Mercantil", "Juzgado 14° de lo Mercantil", "Juzgado 15° de lo Mercantil",
+                "Juzgado 16° de lo Mercantil", "Juzgado 17° de lo Mercantil", "Juzgado 18° de lo Mercantil",
+                "Juzgado 19° de lo Mercantil"
+            ]
         };
         const anios = ["2026", "2025", "2024", "2023", "2022"];
         let materiaActiva = 'Civil';
@@ -1380,8 +1433,9 @@
                 numerosEscritura: expObj.numerosEscritura || '',
                 cantEscrituras: expObj.cantEscrituras || 1
             };
+            memoriaAprendizajeIA = memoriaAprendizajeIA.filter(x => !(x.centro === entrada.centro && x.ejemploNumero === entrada.ejemploNumero));
             memoriaAprendizajeIA.unshift(entrada);
-            if (memoriaAprendizajeIA.length > 35) memoriaAprendizajeIA = memoriaAprendizajeIA.slice(0, 35);
+            if (memoriaAprendizajeIA.length > 40) memoriaAprendizajeIA = memoriaAprendizajeIA.slice(0, 40);
             localStorage.setItem(storageAprendizajeKey, JSON.stringify(memoriaAprendizajeIA));
         }
 
@@ -1453,7 +1507,7 @@
         }
 
         // =========================================================================
-        // 4. MOTOR IA GEMINI CON FECHA DE VENCIMIENTO, OFICIOS Y APRENDIZAJE
+        // 4. MOTOR IA GEMINI 3.8 FLASH BLINDADO A FUTURO (AUTO-DISCOVERY)
         // =========================================================================
         function obtenerLlaveIA() {
             let key = localStorage.getItem('boveda_gemini_key');
@@ -1498,35 +1552,80 @@
             return '';
         }
 
+        // Motor con models/gemini-3.8-flash primero + auto-descubrimiento de modelos futuros
         async function llamarGeminiConAutoRecuperacion(apiKey, body) {
-            let modelos = ["models/gemini-2.5-flash", "models/gemini-1.5-flash", "models/gemini-flash-latest"];
-            let primerError = "";
+            let modeloCache = localStorage.getItem('boveda_modelo_gemini_activo');
+            let modelos = [
+                ...(modeloCache ? [modeloCache] : []),
+                "models/gemini-3.8-flash",
+                "models/gemini-3.0-flash",
+                "models/gemini-flash-latest",
+                "models/gemini-2.5-flash",
+                "models/gemini-2.0-flash"
+            ];
+            modelos = [...new Set(modelos)];
+
+            let ultimoError = "";
             for (let i = 0; i < modelos.length; i++) {
                 let modelo = modelos[i];
-                let res = await fetch('https://generativelanguage.googleapis.com/v1beta/' + modelo + ':generateContent?key=' + encodeURIComponent(apiKey), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                let data = await res.json();
-                if (!data.error) return data;
-                let msg = data.error.message || "";
-                if (!primerError) primerError = msg;
-                let sugerido = msg.match(/models\/[a-zA-Z0-9.-]+/g);
-                if (sugerido) {
-                    sugerido.forEach(m => {
-                        if (!modelos.includes(m)) modelos.splice(i + 1, 0, m);
+                try {
+                    let res = await fetch('https://generativelanguage.googleapis.com/v1beta/' + modelo + ':generateContent?key=' + encodeURIComponent(apiKey), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
                     });
+                    let data = await res.json();
+                    if (!data.error && data.candidates && data.candidates.length > 0) {
+                        localStorage.setItem('boveda_modelo_gemini_activo', modelo);
+                        return data;
+                    }
+                    let msg = (data.error && data.error.message) ? data.error.message : "";
+                    ultimoError = msg;
+                    let sugeridos = msg.match(/models\/[a-zA-Z0-9.-]+/g);
+                    if (sugeridos) {
+                        sugeridos.forEach(m => {
+                            if (!modelos.includes(m)) modelos.splice(i + 1, 0, m);
+                        });
+                    }
+                } catch (netErr) {
+                    ultimoError = netErr.message;
                 }
             }
-            throw new Error(primerError || "No se encontró un modelo Gemini compatible.");
+
+            // Si Google cambia los nombres en el futuro, consulta automáticamente la lista oficial de modelos activos
+            try {
+                let listRes = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(apiKey));
+                let listData = await listRes.json();
+                if (listData && Array.isArray(listData.models)) {
+                    let candidatos = listData.models
+                        .filter(m => m.name && m.name.includes('gemini') && (!m.supportedGenerationMethods || m.supportedGenerationMethods.includes('generateContent')))
+                        .map(m => m.name)
+                        .reverse();
+                    for (let mod of candidatos) {
+                        if (modelos.includes(mod)) continue;
+                        let r2 = await fetch('https://generativelanguage.googleapis.com/v1beta/' + mod + ':generateContent?key=' + encodeURIComponent(apiKey), {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(body)
+                        });
+                        let d2 = await r2.json();
+                        if (!d2.error && d2.candidates && d2.candidates.length > 0) {
+                            localStorage.setItem('boveda_modelo_gemini_activo', mod);
+                            return d2;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("Auto-discovery de modelos omitido:", e);
+            }
+
+            throw new Error(ultimoError || "No se encontró un modelo Gemini disponible con esta API Key.");
         }
 
         async function analizarConGemini(file) {
             const apiKey = obtenerLlaveIA();
             if (!apiKey) throw new Error("No se ingresó Clave de API de Gemini.");
 
-            // Inyectamos ejemplos aprendidos por el centro para mayor precisión
             let contextoAprendido = "";
             if (memoriaAprendizajeIA.length > 0) {
                 let ultimos = memoriaAprendizajeIA.slice(0, 5).map(x =>
@@ -1547,8 +1646,9 @@ Analiza el documento adjunto (y su nombre de archivo "${file.name}") y devuelve 
   "reconocido": true,
   "categoria": "MASC o JURIDICO",
   "centro": "Centro 065 | Centro 353 | Despacho 45yMas",
+  "juzgadoNumero": "Número de juzgado si es JURIDICO (del 1 al 19, ej. 14)",
   "numero": "Número de expediente o convenio (ej. 327/2026). Si no tiene ninguno y es irreconocible pon ''",
-  "solicitante": "Nombres completos en MAYÚSCULAS de TODAS las partes que celebran el convenio (ej. MARCO ANTONIO CERVANTES LÓPEZ, HÉCTOR GERARDO OROZCO ÁVILA Y KARLA FABIOLA CAMPOS MÉNDEZ)",
+  "solicitante": "Nombres completos en MAYÚSCULAS de TODAS las partes que celebran el convenio separados por comas y 'Y' (ej. MARCO ANTONIO CERVANTES LÓPEZ, HÉCTOR GERARDO OROZCO ÁVILA Y KARLA FABIOLA CAMPOS MÉNDEZ)",
   "numPartes": 2,
   "patrocinado": "Nombre del abogado o patrocinador si aparece, o ''",
   "tipo": "Preventivo Arrendamiento | Alimentos y Convivencia | Divorcio Admtvo. y Mutuo | Civil | Familiar | Mercantil",
@@ -1567,15 +1667,16 @@ Analiza el documento adjunto (y su nombre de archivo "${file.name}") y devuelve 
 }
 
 REGLAS ESTRICTAS:
-1. FECHA DE INICIO Y FECHA DE VENCIMIENTO:
+1. PARTES COMPLETAS: En "solicitante" incluye SIEMPRE a todas las partes que celebran el convenio (arrendador, arrendatario, fiador/obligado solidario, o ambos cónyuges) en MAYÚSCULAS.
+2. FECHA DE INICIO Y FECHA DE VENCIMIENTO:
    - "fechaInicio": Extrae la fecha de firma o inicio de vigencia en formato "YYYY-MM-DD".
    - "fechaVencimiento": Busca la fecha de vencimiento, término del arrendamiento/convenio, desocupación o último pago. Si el convenio menciona un plazo (ej. "1 año", "12 meses", "6 meses"), CALCULA la fecha exacta sumando ese plazo a "fechaInicio" y devuélvela en "YYYY-MM-DD".
-2. DATOS PARA OFICIO IJA:
+3. DATOS PARA OFICIO IJA:
    - "mayor60": Pon true si alguna de las partes tiene 60 años o más (tercera edad / adulto mayor) o si menciona traslado a Procuraduría Social (P.S.).
    - "involucraMenores": Pon true si hay hijos menores de edad o traslado a Procuraduría de Niñas, Niños y Adolescentes.
-   - "numPartes": Cuenta cuántas personas físicas/partes firman el convenio (para saber cuántas identificaciones cotejadas son: 2, 3, 4...).
+   - "numPartes": Cuenta cuántas personas físicas/partes firman el convenio (2, 3, 4...).
    - "cuentaPredial" y "numerosEscritura": Extrae del texto de declaraciones/antecedentes del convenio el número de cuenta/recibo predial y el número de escritura pública si se citan.
-3. Si el documento está completamente en blanco, ilegible o no se puede identificar si es jurídico o MASC ni sus partes, pon "reconocido": false.`;
+4. Si el documento está completamente en blanco, ilegible o no se puede identificar si es jurídico o MASC ni sus partes, pon "reconocido": false.`;
 
                         let body = {
                             contents: [{
@@ -1604,7 +1705,6 @@ REGLAS ESTRICTAS:
             });
         }
 
-        // Integra un documento ya analizado y subido dentro de su carpeta MASC, Jurídica o Sin Reconocer
         async function integrarDocumentoAnalizadoEnSistema(file, refArchivo, json, permitirSinReconocer = true) {
             const sinDatosMinimos = !json || json.reconocido === false || (!json.numero && !json.solicitante);
             if (sinDatosMinimos && permitirSinReconocer) {
@@ -1660,7 +1760,7 @@ REGLAS ESTRICTAS:
                     exp.checks[keyDoc] = true;
                     if (json.fechaInicio) exp.fechaInicio = json.fechaInicio;
                     if (json.fechaVencimiento) exp.fechaVencimiento = json.fechaVencimiento;
-                    if (json.solicitante && (!exp.solicitante || exp.solicitante.length < json.solicitante.length)) exp.solicitante = json.solicitante;
+                    if (json.solicitante && (!exp.solicitante || exp.solicitante.length < json.solicitante.length)) exp.solicitante = json.solicitante.toUpperCase();
                     if (json.numPartes) {
                         exp.numPartes = json.numPartes;
                         exp.cantidades['identificaciones'] = json.numPartes;
@@ -1732,7 +1832,10 @@ REGLAS ESTRICTAS:
             } else {
                 let jMateria = ["Civil", "Familiar", "Mercantil"].includes(json.tipo) ? json.tipo : "Civil";
                 materiaActiva = jMateria;
-                let jJuzgado = catJuzgados[jMateria][0];
+                let listaJuzgadosMat = catJuzgados[jMateria] || catJuzgados["Civil"];
+                let numJuz = parseInt(json.juzgadoNumero, 10);
+                let jJuzgado = (numJuz >= 1 && numJuz <= listaJuzgadosMat.length) ? listaJuzgadosMat[numJuz - 1] : listaJuzgadosMat[0];
+
                 let jAnio = json.anio || new Date().getFullYear().toString();
                 let key = 'exp_' + storageMascKey + '_' + jJuzgado + '_' + jAnio;
                 let exps = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : [];
@@ -1779,7 +1882,7 @@ REGLAS ESTRICTAS:
                     vistaActual = 'juridico';
                     nivelJuridico = 2;
                     renderizarVista();
-                    alert(`✅ Expediente Jurídico clasificado: ${res.numero}`);
+                    alert(`✅ Expediente Jurídico clasificado en ${res.centro}: ${res.numero}`);
                 }
             } catch (error) {
                 document.getElementById('modal-ia-loading').style.display = 'none';
@@ -1799,7 +1902,7 @@ REGLAS ESTRICTAS:
                     id: 'batch_' + Date.now() + '_' + i,
                     file: f,
                     nombre: f.name,
-                    estado: 'EN COLA', // 'EN COLA' | 'PROCESANDO' | 'CLASIFICADO' | 'SIN RECONOCER'
+                    estado: 'EN COLA',
                     detalleUbicacion: 'Pendiente de análisis...'
                 });
             }
@@ -1854,7 +1957,6 @@ REGLAS ESTRICTAS:
                 }
 
                 if (vistaActual === 'masiva') renderizarVista();
-                // Pequeña pausa de 650ms entre archivos para cuidar cuotas de API en cargas de 400+ convenios
                 await new Promise(r => setTimeout(r, 650));
             }
 
@@ -1880,7 +1982,6 @@ REGLAS ESTRICTAS:
             renderizarVista();
         }
 
-        // Funciones del Organizador de "Archivos sin Reconocer"
         async function abrirModalOrganizarSinReconocer(idx) {
             indexArchivoOrganizando = idx;
             let item = listaSinReconocer[idx];
@@ -1901,7 +2002,6 @@ REGLAS ESTRICTAS:
 
             document.getElementById('modal-organizar-archivo').style.display = 'flex';
 
-            // Cargar vista previa en el iframe izquierdo
             try {
                 let url = await obtenerUrlBlobDocumento(item.ref);
                 document.getElementById('org-iframe-preview').src = url;
@@ -1975,7 +2075,6 @@ REGLAS ESTRICTAS:
                 await guardarEnBDMasc();
                 registrarActividad(`Organizó archivo [${item.fileName}] en MASC Exp. ${num}`);
             } else {
-                let jMat = document.getElementById('org-materia-jur').value;
                 let jAnio = document.getElementById('org-anio-jur').value;
                 let jJuz = document.getElementById('org-juzgado-jur').value;
                 let jNom = document.getElementById('org-nombre-jur').value.trim() || item.fileName;
@@ -2117,7 +2216,7 @@ REGLAS ESTRICTAS:
         }
 
         // =========================================================================
-        // 7. GENERADOR DE OFICIOS IJA (LAS 5 HOJAS DEL MACHOTE + APRENDIZAJE)
+        // 7. GENERADOR DE OFICIOS IJA FIEL AL MACHOTE WORD (5 HOJAS + EDITABLE)
         // =========================================================================
         function abrirOficioDeExpediente(indexExp) {
             indexExpOficioSeleccionado = indexExp;
@@ -2151,7 +2250,6 @@ REGLAS ESTRICTAS:
                 lineas.push(`Autorización escucha de menores (1)`);
                 lineas.push(`Constancia escucha de menor (${cantHijos})`);
             } else {
-                // Preventivo de Arrendamiento (Hoja 1 y Hoja 2)
                 lineas.push(`Convenio final firmado por las partes. (1)`);
                 lineas.push(`Copias cotejadas identificaciones de las partes. (${numIDs})`);
 
@@ -2178,36 +2276,39 @@ REGLAS ESTRICTAS:
                 }
             }
 
-            return lineas.map(l => `<div style="margin-bottom:2px;">${l}</div>`).join('');
+            return lineas.map(l => `<div style="margin-bottom:3px;">${l}</div>`).join('');
+        }
+
+        function generarBloqueFirmaFijo(cfg) {
+            return `
+                <div class="oficio-pie-firma">
+                    <p class="oficio-despedida">Sin más por el momento y agradecidos por su atención y apoyo. Quedo como su atento y seguro servidor.</p>
+                    <div class="oficio-atentamente-box">
+                        <div>ATENTAMENTE</div>
+                        <div>${cfg.ciudadFecha}</div>
+                    </div>
+                    <div class="oficio-director-box">
+                        <div>${cfg.directorNombre}</div>
+                        <div>${cfg.directorCargo}</div>
+                    </div>
+                </div>
+            `;
         }
 
         function generarHTMLHojaOficioIndividual(m) {
             if (!m) return '<div style="padding:20px;">Selecciona un expediente válido.</div>';
             const cfg = configMachotesCentro[m.centro] || obtenerConfigMachoteDefecto(m.centro);
             const t = (m.tipo || "").toLowerCase();
-            const partesMayus = (m.solicitante || "NOMBRE DE LAS PARTES").toUpperCase();
+            const partesMayus = (m.solicitante || "NOMBRE COMPLETO DE LAS PARTES").toUpperCase();
             const numExpFormat = String(m.numero || "S/N").toUpperCase().startsWith("EXP") ? m.numero.toUpperCase() : `EXP. ${m.numero}`;
             const anexosHTML = construirFilasAnexosTablaIJA(m);
+            const bloqueFirmaPie = generarBloqueFirmaFijo(cfg);
 
-            const bloqueFirmaPie = `
-                <div class="oficio-pie-firma">
-                    <p style="text-indent: 1.2cm; margin-bottom: 24px;">Sin más por el momento y agradecidos por su atención y apoyo. Quedo como su atento y seguro servidor.</p>
-                    <div style="font-weight: bold; margin-bottom: 58px;">
-                        <div>ATENTAMENTE</div>
-                        <div>${cfg.ciudadFecha}</div>
-                    </div>
-                    <div style="font-weight: bold;">
-                        <div>${cfg.directorNombre}</div>
-                        <div>${cfg.directorCargo}</div>
-                    </div>
-                </div>
-            `;
-
-            // CASO A: DIVORCIO POR MUTUO / ALIMENTOS CON MENORES (HOJA 3 DEL MACHOTE)
+            // HOJA 3: DIVORCIO POR MUTUO / ALIMENTOS CON MENORES
             if (t.includes('divorcio') || t.includes('alimentos') || m.involucraMenores) {
                 let asuntoTitulo = t.includes('divorcio') ? 'Convenio Final<br>DIVORCIO POR MUTUO.' : 'Convenio Final<br>ALIMENTOS Y CONVIVENCIA.';
                 return `
-                <div class="hoja-oficio-ija">
+                <div class="hoja-oficio-ija" contenteditable="true" spellcheck="false" title="Puedes hacer clic en cualquier texto de la hoja para editarlo directamente">
                     <div>
                         <div class="oficio-asunto-top">
                             Asunto: Validación y Sanción<br>${asuntoTitulo}
@@ -2223,7 +2324,7 @@ REGLAS ESTRICTAS:
                         <table class="tabla-oficio-ija">
                             <tr>
                                 <td style="width: 34%;"><strong>Expediente Centro Privado:</strong></td>
-                                <td><strong>${numExpFormat}</strong></td>
+                                <td style="text-align:center;"><strong>${numExpFormat}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="text-align:center; font-weight:bold;">DOCUMENTOS QUE SE ADJUNTAN:</td>
@@ -2242,13 +2343,13 @@ REGLAS ESTRICTAS:
                 </div>`;
             }
 
-            // CASO B: PREVENTIVO DE ARRENDAMIENTO CON ADULTO MAYOR +60 AÑOS (GENERA LAS 2 HOJAS: IJA + PROCURADURÍA SOCIAL)
+            // HOJA 1 + HOJA 2: PREVENTIVO DE ARRENDAMIENTO CON ADULTO MAYOR (+60 AÑOS)
             if (m.mayor60) {
                 const tablaCompartidaMayor60 = `
                     <table class="tabla-oficio-ija">
                         <tr>
                             <td style="width: 34%;"><strong>Expediente Centro Privado:</strong></td>
-                            <td><strong>${numExpFormat}</strong></td>
+                            <td style="text-align:center;"><strong>${numExpFormat}</strong></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="text-align:center; font-weight:bold;">DOCUMENTOS QUE SE ADJUNTAN:</td>
@@ -2265,11 +2366,10 @@ REGLAS ESTRICTAS:
                 `;
 
                 return `
-                <!-- HOJA 1: DIRIGIDA AL DIRECTOR GENERAL DEL IJA CON LA MISMA TABLA DE TRASLADO -->
-                <div class="hoja-oficio-ija">
+                <div class="hoja-oficio-ija" contenteditable="true" spellcheck="false">
                     <div>
                         <div class="oficio-asunto-top">
-                            Asunto: Validación y Sanción<br>Preventivo de Arrendamiento
+                            Asunto: Validación y Sanción<br>Preventivo de<br>Arrendamiento
                         </div>
                         <div class="oficio-destinatario">
                             ${cfg.destinatarioIJANombre}<br>
@@ -2284,11 +2384,10 @@ REGLAS ESTRICTAS:
                     ${bloqueFirmaPie}
                 </div>
 
-                <!-- HOJA 2: DIRIGIDA A PROCURADURÍA SOCIAL DEL ESTADO DE JALISCO -->
-                <div class="hoja-oficio-ija">
+                <div class="hoja-oficio-ija" contenteditable="true" spellcheck="false">
                     <div>
                         <div class="oficio-asunto-top">
-                            Asunto: Validación y Sanción<br>Preventivo de Arrendamiento
+                            Asunto: Validación y Sanción<br>Preventivo de<br>Arrendamiento
                         </div>
                         <div class="oficio-destinatario">
                             Procuraduría Social del Estado de Jalisco.<br>
@@ -2303,12 +2402,12 @@ REGLAS ESTRICTAS:
                 </div>`;
             }
 
-            // CASO C: PREVENTIVO DE ARRENDAMIENTO NORMAL SIN MAYORES DE 60 (1 SOLA HOJA)
+            // HOJA 1: PREVENTIVO DE ARRENDAMIENTO NORMAL (SIN MAYORES DE 60 AÑOS)
             return `
-            <div class="hoja-oficio-ija">
+            <div class="hoja-oficio-ija" contenteditable="true" spellcheck="false">
                 <div>
                     <div class="oficio-asunto-top">
-                        Asunto: Validación y Sanción<br>Preventivo de Arrendamiento
+                        Asunto: Validación y Sanción<br>Preventivo de<br>Arrendamiento
                     </div>
                     <div class="oficio-destinatario">
                         ${cfg.destinatarioIJANombre}<br>
@@ -2321,7 +2420,7 @@ REGLAS ESTRICTAS:
                     <table class="tabla-oficio-ija">
                         <tr>
                             <td style="width: 34%;"><strong>Expediente Centro Privado:</strong></td>
-                            <td><strong>${numExpFormat}</strong></td>
+                            <td style="text-align:center;"><strong>${numExpFormat}</strong></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="text-align:center; font-weight:bold;">DOCUMENTOS QUE SE ADJUNTAN:</td>
@@ -2340,7 +2439,6 @@ REGLAS ESTRICTAS:
             </div>`;
         }
 
-        // Genera Hojas 4 y 5 (Listas de hasta 10 convenios máximo por hoja)
         function generarHTMLHojasOficioLote() {
             let seleccionados = expedientesLoteSeleccionados.map(idx => listaExpedientesMasc[idx]).filter(Boolean);
             if (seleccionados.length === 0) {
@@ -2350,29 +2448,15 @@ REGLAS ESTRICTAS:
             let centroRef = seleccionados[0].centro || centrosMASC[0] || "Centro 065";
             let cfg = configMachotesCentro[centroRef] || obtenerConfigMachoteDefecto(centroRef);
 
-            // Dividimos en bloques de MÁXIMO 10 convenios por hoja
             let gruposDe10 = [];
             for (let i = 0; i < seleccionados.length; i += 10) {
                 gruposDe10.push(seleccionados.slice(i, i + 10));
             }
 
-            const bloqueFirmaPie = `
-                <div class="oficio-pie-firma">
-                    <p style="text-indent: 1.2cm; margin-bottom: 24px;">Sin más por el momento y agradecidos por su atención y apoyo. Quedo como su atento y seguro servidor.</p>
-                    <div style="font-weight: bold; margin-bottom: 58px;">
-                        <div>ATENTAMENTE</div>
-                        <div>${cfg.ciudadFecha}</div>
-                    </div>
-                    <div style="font-weight: bold;">
-                        <div>${cfg.directorNombre}</div>
-                        <div>${cfg.directorCargo}</div>
-                    </div>
-                </div>
-            `;
+            const bloqueFirmaPie = generarBloqueFirmaFijo(cfg);
 
             return gruposDe10.map((grupo) => {
                 if (modoLoteOficio === 'agentes60') {
-                    // HOJA 4: CONVENIOS CON TRASLADO AGENTES SOCIALES (+60 AÑOS)
                     let filas = grupo.map(exp => `
                         <tr>
                             <td style="text-align:center; font-weight:bold; padding:8px;">${exp.numero}</td>
@@ -2381,7 +2465,7 @@ REGLAS ESTRICTAS:
                     `).join('');
 
                     return `
-                    <div class="hoja-oficio-ija">
+                    <div class="hoja-oficio-ija" contenteditable="true" spellcheck="false">
                         <div>
                             <div class="oficio-asunto-top">
                                 Asunto: Validación y Sanción<br>Asunto: CONVENIOS CON TRASLADO<br>AGENTES SOCIALES
@@ -2408,7 +2492,6 @@ REGLAS ESTRICTAS:
                         ${bloqueFirmaPie}
                     </div>`;
                 } else {
-                    // HOJA 5: LISTA GENERAL DE CONVENIOS PARA SANCIÓN Y VALIDACIÓN (MÁX. 10 POR HOJA)
                     let filas = grupo.map(exp => `
                         <tr>
                             <td style="text-align:center; font-weight:bold; padding:9px;">
@@ -2418,7 +2501,7 @@ REGLAS ESTRICTAS:
                     `).join('');
 
                     return `
-                    <div class="hoja-oficio-ija">
+                    <div class="hoja-oficio-ija" contenteditable="true" spellcheck="false">
                         <div>
                             <div class="oficio-asunto-top">
                                 Asunto: CONVENIOS PARA SANCIÓN<br>Y VALIDACIÓN
@@ -2455,25 +2538,28 @@ REGLAS ESTRICTAS:
                     <title>Oficio IJA - Impresión Oficial</title>
                     <style>
                         @page { size: letter; margin: 0; }
-                        body { margin: 0; padding: 0; background: #fff; color: #000; font-family: Arial, sans-serif; }
+                        body { margin: 0; padding: 0; background: #fff; color: #000; font-family: 'Calibri', 'Arial', sans-serif; }
                         .hoja-oficio-ija {
                             width: 21.59cm;
                             height: 27.94cm;
-                            padding: 2.2cm 2.4cm 2.0cm 2.4cm;
+                            padding: 2.3cm 2.5cm 2.1cm 2.5cm;
                             box-sizing: border-box;
                             display: flex;
                             flex-direction: column;
                             justify-content: space-between;
                             page-break-after: always;
-                            font-size: 11pt;
-                            line-height: 1.42;
+                            font-size: 11.5pt;
+                            line-height: 1.38;
                         }
-                        .oficio-asunto-top { text-align: right; font-weight: bold; margin-bottom: 18px; }
-                        .oficio-destinatario { font-weight: bold; margin-bottom: 16px; }
-                        .oficio-parrafo { text-align: justify; text-indent: 1.2cm; margin-bottom: 16px; }
-                        .tabla-oficio-ija { width: 100%; border-collapse: collapse; margin: 10px 0 18px 0; }
-                        .tabla-oficio-ija th, .tabla-oficio-ija td { border: 1px solid #000; padding: 6px 10px; vertical-align: top; font-size: 10.5pt; }
-                        .oficio-pie-firma { margin-top: auto; padding-top: 20px; page-break-inside: avoid; }
+                        .oficio-asunto-top { text-align: right; font-weight: bold; margin-bottom: 22px; line-height: 1.28; }
+                        .oficio-destinatario { font-weight: bold; margin-bottom: 18px; line-height: 1.28; }
+                        .oficio-parrafo { text-align: justify; text-indent: 1.25cm; margin-bottom: 18px; line-height: 1.42; }
+                        .tabla-oficio-ija { width: 100%; border-collapse: collapse; margin: 8px 0 18px 0; border: 1.5px solid #000; }
+                        .tabla-oficio-ija th, .tabla-oficio-ija td { border: 1px solid #000; padding: 7px 11px; vertical-align: middle; font-size: 11pt; }
+                        .oficio-pie-firma { margin-top: auto; padding-top: 16px; page-break-inside: avoid; width: 100%; }
+                        .oficio-despedida { text-align: justify; text-indent: 1.25cm; margin-bottom: 26px; }
+                        .oficio-atentamente-box { text-align: center; font-weight: bold; margin-bottom: 72px; }
+                        .oficio-director-box { text-align: center; font-weight: bold; }
                     </style>
                 </head>
                 <body>${area.innerHTML}</body>
@@ -2491,12 +2577,15 @@ REGLAS ESTRICTAS:
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
                 <head><meta charset='utf-8'><title>Oficio IJA</title>
                 <style>
-                    body { font-family: Arial, sans-serif; font-size: 11pt; color: #000; }
-                    table { border-collapse: collapse; width: 100%; }
-                    th, td { border: 1px solid #000; padding: 6px 10px; }
+                    body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11.5pt; color: #000; }
+                    table { border-collapse: collapse; width: 100%; border: 1.5pt solid #000; }
+                    th, td { border: 1pt solid #000; padding: 6pt 10pt; }
                     .oficio-asunto-top { text-align: right; font-weight: bold; }
                     .oficio-destinatario { font-weight: bold; }
-                    .oficio-parrafo { text-align: justify; text-indent: 36pt; }
+                    .oficio-parrafo { text-align: justify; text-indent: 35pt; }
+                    .oficio-despedida { text-align: justify; text-indent: 35pt; }
+                    .oficio-atentamente-box { text-align: center; font-weight: bold; margin-bottom: 50pt; }
+                    .oficio-director-box { text-align: center; font-weight: bold; }
                 </style>
                 </head>
                 <body>${area.innerHTML}</body>
@@ -2512,6 +2601,24 @@ REGLAS ESTRICTAS:
             document.body.removeChild(a);
         }
 
+        // Extrae datos del machote de forma local con Mammoth + respaldo con Gemini 3.8 Flash
+        function extraerDatosMachotePorRegexLocal(texto) {
+            let res = {};
+            let mAcred = texto.match(/acreditaci[oó]n\s*(\d+)/i);
+            if (mAcred) res.acreditacion = mAcred[1];
+
+            let mAsoc = texto.match(/car[aá]cter de[^\n]*del\s+([^(]+?)\s*\(acreditaci/i);
+            if (mAsoc) res.nombreAsociacion = mAsoc[1].trim();
+
+            let mCorreo = texto.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+            if (mCorreo) res.correoDigitalIJA = mCorreo[0];
+
+            let mDir = texto.match(/presentaci[oó]n\s*\n+\s*([^\n]+)\s*\n+\s*DIRECTOR GENERAL/i);
+            if (mDir) res.directorNombre = mDir[1].trim();
+
+            return res;
+        }
+
         async function procesarMachoteSubido(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2520,16 +2627,21 @@ REGLAS ESTRICTAS:
             document.getElementById('modal-ia-loading').style.display = 'flex';
             try {
                 let textoExtraido = "";
+                let aprendidoLocal = {};
+
                 if (file.name.toLowerCase().endsWith('.docx') && typeof mammoth !== 'undefined') {
                     const arrayBuffer = await file.arrayBuffer();
                     const resMammoth = await mammoth.extractRawText({ arrayBuffer });
                     textoExtraido = resMammoth.value || "";
+                    aprendidoLocal = extraerDatosMachotePorRegexLocal(textoExtraido);
                 }
 
+                let aprendidoIA = {};
                 const apiKey = obtenerLlaveIA();
                 if (apiKey) {
-                    let parts = [];
-                    let promptMachote = `Analiza este documento machote de Oficio para el IJA y extrae los datos institucionales del Centro para replicar siempre su formato exacto. Devuelve ÚNICAMENTE un JSON válido:
+                    try {
+                        let parts = [];
+                        let promptMachote = `Analiza este documento machote de Oficio para el IJA y extrae los datos institucionales del Centro y también los ejemplos de convenios que contiene. Devuelve ÚNICAMENTE un JSON válido:
 {
   "nombreAsociacion": "Ej. Centro Privado Movimiento 45yMás A.C.",
   "acreditacion": "Ej. 065",
@@ -2537,46 +2649,75 @@ REGLAS ESTRICTAS:
   "directorCargo": "Ej. DIRECTOR GENERAL",
   "destinatarioIJANombre": "Ej. Dr. Guillermo Raúl Zepeda Lecuona",
   "correoDigitalIJA": "Ej. documentos.digitales@ija.gob.mx",
-  "ciudadFecha": "Ej. Guadalajara, Jalisco, México; Al día de su presentación"
+  "ciudadFecha": "Ej. Guadalajara, Jalisco, México; Al día de su presentación",
+  "ejemplosDetectados": [
+    {
+      "ejemploNumero": "327/2026",
+      "partes": "MARCO ANTONIO CERVANTES LÓPEZ, HÉCTOR GERARDO OROZCO ÁVILA Y KARLA FABIOLA CAMPOS MÉNDEZ",
+      "numPartes": 3,
+      "mayor60": false,
+      "cuentaPredial": "8070194",
+      "numerosEscritura": ""
+    }
+  ]
 }`;
-                    if (textoExtraido) {
-                        parts.push({ text: promptMachote + "\n\nTEXTO DEL MACHOTE:\n" + textoExtraido });
-                    } else {
-                        let base64 = await new Promise((res) => {
-                            let r = new FileReader();
-                            r.onload = () => res(r.result.split(',')[1]);
-                            r.readAsDataURL(file);
-                        });
-                        parts.push({ text: promptMachote });
-                        parts.push({ inline_data: { mime_type: file.type || 'application/pdf', data: base64 } });
-                    }
+                        if (textoExtraido) {
+                            parts.push({ text: promptMachote + "\n\nTEXTO DEL MACHOTE:\n" + textoExtraido });
+                        } else {
+                            let base64 = await new Promise((res) => {
+                                let r = new FileReader();
+                                r.onload = () => res(r.result.split(',')[1]);
+                                r.readAsDataURL(file);
+                            });
+                            parts.push({ text: promptMachote });
+                            parts.push({ inline_data: { mime_type: file.type || 'application/pdf', data: base64 } });
+                        }
 
-                    let data = await llamarGeminiConAutoRecuperacion(apiKey, { contents: [{ parts }] });
-                    let txt = data.candidates[0].content.parts[0].text;
-                    let match = txt.match(/\{[\s\S]*\}/);
-                    if (match) {
-                        let aprendido = JSON.parse(match[0]);
-                        let actual = configMachotesCentro[centroTarget] || obtenerConfigMachoteDefecto(centroTarget);
-                        configMachotesCentro[centroTarget] = {
-                            ...actual,
-                            nombreAsociacion: aprendido.nombreAsociacion || actual.nombreAsociacion,
-                            acreditacion: aprendido.acreditacion || actual.acreditacion,
-                            directorNombre: aprendido.directorNombre || actual.directorNombre,
-                            directorCargo: aprendido.directorCargo || actual.directorCargo,
-                            destinatarioIJANombre: aprendido.destinatarioIJANombre || actual.destinatarioIJANombre,
-                            correoDigitalIJA: aprendido.correoDigitalIJA || actual.correoDigitalIJA,
-                            ciudadFecha: aprendido.ciudadFecha || actual.ciudadFecha
-                        };
-                        localStorage.setItem(storageMachotesKey, JSON.stringify(configMachotesCentro));
+                        let data = await llamarGeminiConAutoRecuperacion(apiKey, { contents: [{ parts }] });
+                        let txt = data.candidates[0].content.parts[0].text;
+                        let match = txt.match(/\{[\s\S]*\}/);
+                        if (match) {
+                            aprendidoIA = JSON.parse(match[0]);
+                            if (Array.isArray(aprendidoIA.ejemplosDetectados)) {
+                                aprendidoIA.ejemplosDetectados.forEach(ej => {
+                                    registrarAprendizajeConvenio({
+                                        centro: centroTarget,
+                                        tipo: 'Preventivo Arrendamiento',
+                                        numero: ej.ejemploNumero || '327/2026',
+                                        solicitante: ej.partes || '',
+                                        numPartes: ej.numPartes || 2,
+                                        mayor60: Boolean(ej.mayor60),
+                                        cuentaPredial: ej.cuentaPredial || '',
+                                        numerosEscritura: ej.numerosEscritura || ''
+                                    });
+                                });
+                            }
+                        }
+                    } catch (iaErr) {
+                        console.warn("Usando extracción directa de Word (.docx) para el machote:", iaErr);
                     }
                 }
+
+                let actual = configMachotesCentro[centroTarget] || obtenerConfigMachoteDefecto(centroTarget);
+                configMachotesCentro[centroTarget] = {
+                    ...actual,
+                    nombreAsociacion: aprendidoIA.nombreAsociacion || aprendidoLocal.nombreAsociacion || actual.nombreAsociacion,
+                    acreditacion: aprendidoIA.acreditacion || aprendidoLocal.acreditacion || actual.acreditacion,
+                    directorNombre: aprendidoIA.directorNombre || aprendidoLocal.directorNombre || actual.directorNombre,
+                    directorCargo: aprendidoIA.directorCargo || actual.directorCargo,
+                    destinatarioIJANombre: aprendidoIA.destinatarioIJANombre || actual.destinatarioIJANombre,
+                    correoDigitalIJA: aprendidoIA.correoDigitalIJA || aprendidoLocal.correoDigitalIJA || actual.correoDigitalIJA,
+                    ciudadFecha: aprendidoIA.ciudadFecha || actual.ciudadFecha
+                };
+                localStorage.setItem(storageMachotesKey, JSON.stringify(configMachotesCentro));
+
                 document.getElementById('modal-ia-loading').style.display = 'none';
-                registrarActividad(`Subió y entrenó nuevo Machote de Oficio IJA para ${centroTarget}`);
+                registrarActividad(`Subió y aprendió Machote Oficial de Oficios IJA para ${centroTarget}`);
                 renderizarVista();
-                alert(`✅ ¡Machote aprendido con éxito para ${centroTarget}! El encabezado, acreditación y firma del Director General al pie han quedado configurados.`);
+                alert(`✅ ¡Machote aprendido y aplicado con éxito para ${centroTarget}!`);
             } catch (e) {
                 document.getElementById('modal-ia-loading').style.display = 'none';
-                alert("Error al analizar el machote: " + e.message);
+                alert("Error al procesar el archivo machote: " + e.message);
             }
             event.target.value = '';
         }
@@ -2701,6 +2842,7 @@ REGLAS ESTRICTAS:
                         let json = await analizarConGemini(file);
                         if (json.fechaInicio) m.fechaInicio = json.fechaInicio;
                         if (json.fechaVencimiento) m.fechaVencimiento = json.fechaVencimiento;
+                        if (json.solicitante && json.solicitante.length > (m.solicitante || '').length) m.solicitante = json.solicitante.toUpperCase();
                         if (json.cuentaPredial) m.cuentaPredial = json.cuentaPredial;
                         if (json.numerosEscritura) m.numerosEscritura = json.numerosEscritura;
                         if (json.numPartes) m.numPartes = json.numPartes;
@@ -2723,6 +2865,9 @@ REGLAS ESTRICTAS:
 
         async function guardarCampoMASC(index, campo, valor) {
             listaExpedientesMasc[index][campo] = valor;
+            if (campo === 'solicitante') {
+                listaExpedientesMasc[index].numPartes = contarPartesEnTexto(valor);
+            }
             registrarAprendizajeConvenio(listaExpedientesMasc[index]);
             await guardarEnBDMasc();
             renderizarVista();
@@ -2873,15 +3018,15 @@ REGLAS ESTRICTAS:
             let html = '';
 
             // ---------------------------------------------------------------------
-            // VISTA 1: EXPEDIENTES JURÍDICOS
+            // VISTA 1: EXPEDIENTES JURÍDICOS (CON LOS 19 JUZGADOS MERCANTILES)
             // ---------------------------------------------------------------------
             if (vistaActual === 'juridico') {
                 if (nivelJuridico === 0) {
                     html += `<div class="section-header-box"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Base de Juzgados</div></div>`;
                     html += `<div class="materia-tabs">
-                        <div class="materia-tab ${materiaActiva === 'Civil' ? 'active' : ''}" onclick="materiaActiva='Civil'; renderizarVista()">Civil</div>
-                        <div class="materia-tab ${materiaActiva === 'Familiar' ? 'active' : ''}" onclick="materiaActiva='Familiar'; renderizarVista()">Familiar</div>
-                        <div class="materia-tab ${materiaActiva === 'Mercantil' ? 'active' : ''}" onclick="materiaActiva='Mercantil'; renderizarVista()">Mercantil</div>
+                        <div class="materia-tab ${materiaActiva === 'Civil' ? 'active' : ''}" onclick="materiaActiva='Civil'; renderizarVista()">Civil (${catJuzgados['Civil'].length})</div>
+                        <div class="materia-tab ${materiaActiva === 'Familiar' ? 'active' : ''}" onclick="materiaActiva='Familiar'; renderizarVista()">Familiar (${catJuzgados['Familiar'].length})</div>
+                        <div class="materia-tab ${materiaActiva === 'Mercantil' ? 'active' : ''}" onclick="materiaActiva='Mercantil'; renderizarVista()">Mercantil (${catJuzgados['Mercantil'].length})</div>
                     </div><div class="grid-carpetas">`;
                     catJuzgados[materiaActiva].forEach(j => {
                         html += `<div class="carpeta-card" onclick="nivelJuridico=1; pathJuridico.juzgado='${j}'; renderizarVista()">
@@ -3012,7 +3157,7 @@ REGLAS ESTRICTAS:
 
                             html += `<div class="carpeta-card" onmouseenter="mostrarHoverPreviewMASC(event, ${i})" onmouseleave="programarOcultarHoverCard()" onclick="ocultarHoverCardInmediato(); nivelMasc=4; pathMasc.indexExp=${i}; renderizarVista()">
                                 <div class="card-actions-top" onclick="event.stopPropagation()">
-                                    <button class="btn-icon-card" onclick="abrirOficioDeExpediente(${i})" title="Generar Oficio IJA"><i class="fa-solid fa-file-Lines"></i></button>
+                                    <button class="btn-icon-card" onclick="abrirOficioDeExpediente(${i})" title="Generar Oficio IJA"><i class="fa-solid fa-file-lines"></i></button>
                                     <button class="btn-icon-card" onclick="eliminarExpedienteMASC(${i})" title="Eliminar expediente"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                                 <i class="fa-solid fa-file-contract folder-icon" style="color:${infoProg.pct === 100 ? 'var(--success)' : 'var(--neon-blue)'};"></i>
@@ -3068,7 +3213,7 @@ REGLAS ESTRICTAS:
                             </div>
                             <div class="form-group" style="grid-column: span 2;">
                                 <label>Partes que celebran el Convenio (Nombres completos para Oficio IJA):</label>
-                                <input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value.toUpperCase())" placeholder="MARCO ANTONIO CERVANTES LÓPEZ Y KARLA FABIOLA CAMPOS MÉNDEZ">
+                                <input type="text" class="form-input" value="${m.solicitante || ''}" onchange="guardarCampoMASC(${pathMasc.indexExp}, 'solicitante', this.value.toUpperCase())" placeholder="MARCO ANTONIO CERVANTES LÓPEZ, HÉCTOR GERARDO OROZCO ÁVILA Y KARLA FABIOLA CAMPOS MÉNDEZ">
                             </div>
                             <div class="form-group">
                                 <label>Patrocinado por:</label>
@@ -3243,8 +3388,8 @@ REGLAS ESTRICTAS:
                                     <input type="text" class="form-input" value="${expActual.numero || ''}" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'numero', this.value)">
                                 </div>
                                 <div class="form-group" style="margin-bottom:10px;">
-                                    <label>Partes que celebran (Mayúsculas):</label>
-                                    <textarea class="form-input" rows="3" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'solicitante', this.value.toUpperCase())">${expActual.solicitante || ''}</textarea>
+                                    <label>Partes que celebran el Convenio (Mayúsculas):</label>
+                                    <textarea class="form-input" rows="3" placeholder="MARCO ANTONIO CERVANTES LÓPEZ, HÉCTOR GERARDO OROZCO ÁVILA Y KARLA FABIOLA CAMPOS MÉNDEZ" onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'solicitante', this.value.toUpperCase())">${expActual.solicitante || ''}</textarea>
                                 </div>
                                 <div class="form-row" style="margin-bottom:10px;">
                                     <div class="form-group">
@@ -3279,6 +3424,9 @@ REGLAS ESTRICTAS:
                                         <input type="checkbox" ${expActual.tieneContratoAdmin ? 'checked' : ''} onchange="guardarCampoMASC(${indexExpOficioSeleccionado}, 'tieneContratoAdmin', this.checked)">
                                         Incluir Contrato de Administración (1)
                                     </label>
+                                </div>
+                                <div style="margin-top:12px; padding:8px; background:rgba(0,242,254,0.08); border-radius:6px; font-size:0.75rem; color:var(--neon-blue);">
+                                    💡 <strong>Tip:</strong> También puedes dar clic directamente sobre cualquier texto de la hoja blanca a la derecha para editarlo antes de imprimir o bajar en Word.
                                 </div>
                             </div>
 
@@ -3337,7 +3485,7 @@ REGLAS ESTRICTAS:
                         <div class="section-header-box">
                             <div>
                                 <h3 style="color:var(--neon-blue);"><i class="fa-solid fa-file-import"></i> Aprendizaje de Machote Oficial por Centro</h3>
-                                <p style="font-size:0.82rem; color:var(--text-muted);">Sube tu archivo Word (.docx) o PDF de machote para que la IA extraiga y mantenga el diseño, acreditación y el Director General que firma siempre al pie de la hoja.</p>
+                                <p style="font-size:0.82rem; color:var(--text-muted);">Sube tu archivo Word (.docx) o PDF de machote para que el sistema extraiga el diseño, acreditación, Director General al pie y ejemplos de convenios.</p>
                             </div>
                             <button type="button" class="btn-ia-scanner" style="margin-top:0;" onclick="document.getElementById('input-subir-machote').click()">
                                 <i class="fa-solid fa-upload"></i> Subir Machote (.docx / .pdf)
@@ -3396,16 +3544,16 @@ REGLAS ESTRICTAS:
 
                     <div class="gestion-box">
                         <h4 style="color:var(--brand-orange); margin-bottom:10px;"><i class="fa-solid fa-graduation-cap"></i> Memoria de Aprendizaje IA (${memoriaAprendizajeIA.length} patrones de convenios aprendidos)</h4>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Cada vez que escaneas o editas un convenio, el sistema aprende cómo redactas folios de predial, escrituras públicas, número de partes y traslados P.S.:</p>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Cada vez que subes un machote, escaneas o editas un convenio, el sistema aprende cómo redactas folios de predial, escrituras públicas, número de partes y traslados P.S.:</p>
                         <div class="docs-table">
                             <table style="width:100%; border-collapse:collapse;">
-                                <tr><th>Centro</th><th>Expediente</th><th>Tipo</th><th>IDs</th><th>Predial</th><th>Escritura Pública</th><th>Mayor +60</th></tr>
-                                ${memoriaAprendizajeIA.length === 0 ? `<tr><td colspan="7" style="color:var(--text-muted);">Aún no hay patrones registrados. Se irán agregando conforme subas o edites convenios.</td></tr>` : ''}
+                                <tr><th>Centro</th><th>Expediente</th><th>Partes</th><th>IDs</th><th>Predial</th><th>Escritura Pública</th><th>Mayor +60</th></tr>
+                                ${memoriaAprendizajeIA.length === 0 ? `<tr><td colspan="7" style="color:var(--text-muted);">Aún no hay patrones registrados. Se irán agregando conforme subas el machote o edites convenios.</td></tr>` : ''}
                                 ${memoriaAprendizajeIA.slice(0, 12).map(ap => `
                                     <tr>
                                         <td>${ap.centro}</td>
                                         <td><strong>${ap.ejemploNumero}</strong></td>
-                                        <td>${ap.tipo}</td>
+                                        <td style="font-size:0.78rem;">${(ap.partes || '').slice(0, 45)}</td>
                                         <td>(${ap.numPartes})</td>
                                         <td>${ap.cuentaPredial || '--'}</td>
                                         <td>${ap.numerosEscritura || '--'}</td>
