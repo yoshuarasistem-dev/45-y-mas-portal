@@ -317,7 +317,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px;
+      padding: 20px;
     }
 
     .foja-canvas-container {
@@ -348,6 +348,16 @@
     #canvas-dibujo.activo {
       pointer-events: auto;
       cursor: crosshair;
+    }
+
+    #drive-iframe-visor {
+      width: 860px;
+      max-width: 94vw;
+      height: 84vh;
+      border: none;
+      border-radius: 6px;
+      background: #ffffff;
+      display: none;
     }
 
     #html-visor {
@@ -566,6 +576,7 @@
       <div id="contenedor-foja-unica" class="foja-canvas-container">
         <canvas id="canvas-principal" style="display:none;"></canvas>
         <canvas id="canvas-dibujo"></canvas>
+        <iframe id="drive-iframe-visor" allow="autoplay"></iframe>
         <div id="html-visor" style="display:none;"></div>
       </div>
 
@@ -614,6 +625,8 @@
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
+    const DRIVE_CLOUD_FOLDER_NAME = 'BOVEDA_45YMAS_CLOUD';
+
     let expedienteActual = null;
     let fojasEnMemoria = [];
     let indiceFojaActiva = 0;
@@ -646,40 +659,22 @@
       await inicializarVisorConExpedienteReal();
     });
 
-    function base64ToUint8Array(base64Str) {
-      try {
-        const clean = base64Str.includes(',') ? base64Str.split(',')[1] : base64Str;
-        const binStr = atob(clean);
-        const len = binStr.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) bytes[i] = binStr.charCodeAt(i);
-        return bytes;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function decodificarDocBinarioWord97(arrayBuffer, fileName) {
+    function extraerTextoLimpioDeDocWord97(arrayBuffer, fileName) {
       try {
         const bytes = new Uint8Array(arrayBuffer);
         let bloquesUnicode = [];
         let actualU = '';
-        let cerosSeguidos = 0;
-
         for (let i = 0; i < bytes.length - 1; i += 2) {
           const low = bytes[i];
           const high = bytes[i + 1];
           if (high === 0 && ((low >= 32 && low <= 126) || (low >= 160 && low <= 255) || low === 10 || low === 13 || low === 9)) {
-            const ch = (low === 13 || low === 10) ? '\n' : String.fromCharCode(low);
-            actualU += ch;
+            actualU += (low === 13 || low === 10) ? '\n' : String.fromCharCode(low);
           } else {
-            if (actualU.trim().length >= 18) {
-              bloquesUnicode.push(actualU.trim());
-            }
+            if (actualU.trim().length >= 20) bloquesUnicode.push(actualU.trim());
             actualU = '';
           }
         }
-        if (actualU.trim().length >= 18) bloquesUnicode.push(actualU.trim());
+        if (actualU.trim().length >= 20) bloquesUnicode.push(actualU.trim());
 
         let bloquesAnsi = [];
         let actualA = '';
@@ -689,30 +684,36 @@
             actualA += (b === 13 || b === 10) ? '\n' : String.fromCharCode(b);
           } else {
             const limpio = actualA.trim();
-            if (limpio.length >= 24 && /[AEIOUÁÉÍÓÚaeiouáéíóú]{2,}/.test(limpio) && !/^(Root Entry|WordDocument|CompObj|SummaryInformation|Microsoft Word|Normal\.dot|Times New Roman|Arial|Calibri)/i.test(limpio)) {
+            if (
+              limpio.length >= 28 &&
+              /[AEIOUÁÉÍÓÚaeiouáéíóú]{3,}/.test(limpio) &&
+              !/^(Root Entry|WordDocument|CompObj|SummaryInformation|DocumentSummaryInformation|Microsoft Word|Normal\.dot|Times New Roman|Arial|Calibri|MSWordDoc|Word\.Document)/i.test(limpio)
+            ) {
               bloquesAnsi.push(limpio);
             }
             actualA = '';
           }
         }
-        if (actualA.trim().length >= 24) bloquesAnsi.push(actualA.trim());
+        if (actualA.trim().length >= 28) bloquesAnsi.push(actualA.trim());
 
-        const mejorTexto = (bloquesUnicode.join('\n\n').length > bloquesAnsi.join('\n\n').length)
+        const unido = (bloquesUnicode.join('\n\n').length > bloquesAnsi.join('\n\n').length)
           ? bloquesUnicode.join('\n\n')
           : bloquesAnsi.join('\n\n');
 
-        const filtrado = mejorTexto
+        const lineasLimpias = unido
           .split(/\n+/)
-          .map(linea => linea.trim())
-          .filter(linea => linea.length >= 3 && !/^(PAGE|MERGEFORMAT|HYPERLINK|TOC|PAGEREF|Normal|Default Paragraph Font|bjbj)/i.test(linea))
-          .join('\n\n');
+          .map(l => l.trim())
+          .filter(l => {
+            if (l.length < 4) return false;
+            if (/^(PAGE|MERGEFORMAT|HYPERLINK|TOC|PAGEREF|Normal|Default Paragraph Font|bjbj|Heading|Header|Footer|Char|Table Grid)/i.test(l)) return false;
+            const letras = (l.match(/[A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g) || []).length;
+            return (letras / l.length) > 0.65;
+          });
 
-        if (filtrado.length > 40) {
-          const parrafosHtml = filtrado
-            .split(/\n{2,}/)
-            .map(p => `<p>${p.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>')}</p>`)
-            .join('');
-          return { html: parrafosHtml, texto: filtrado };
+        const textoFinal = lineasLimpias.join('\n\n');
+        if (textoFinal.length > 30) {
+          const html = lineasLimpias.map(p => `<p>${p.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('');
+          return { html, texto: textoFinal };
         }
       } catch (e) {}
       return { html: `<p>Documento: <strong>${fileName}</strong></p>`, texto: fileName };
@@ -740,23 +741,32 @@
             piezasEmpaquetadas: paqueteActivo.piezas || []
           };
         }
+
+        if (!expEncontrado) {
+          for (const ent of ['despacho45', 'aldo_indep']) {
+            for (const t of ['lf_bd_masc', 'lf_bd_juzgados']) {
+              const lista = await localforage.getItem(`boveda_pro_${ent}_${t}`);
+              if (!Array.isArray(lista)) continue;
+              const hallado = lista.find(e => (paramId && String(e.id) === String(paramId)) || (paramExp && (e.numExpediente || '').trim().toUpperCase() === paramExp.trim().toUpperCase()));
+              if (hallado) { expEncontrado = hallado; break; }
+            }
+            if (expEncontrado) break;
+          }
+        }
       }
 
-      for (const ent of ['despacho45', 'aldo_indep']) {
-        for (const tabla of ['bd_masc', 'bd_juzgados']) {
-          const raw = localStorage.getItem(`boveda_pro_${ent}_${tabla}`);
-          if (!raw) continue;
-          try {
-            const lista = JSON.parse(raw);
-            const hallado = lista.find(e => (paramId && String(e.id) === String(paramId)) || (paramExp && (e.numExpediente || '').trim().toUpperCase() === paramExp.trim().toUpperCase()));
-            if (hallado) {
-              if (!expEncontrado) {
-                expEncontrado = hallado;
-              } else {
-                expEncontrado.docs = { ...(hallado.docs || {}), ...(expEncontrado.docs || {}) };
-              }
-            }
-          } catch (e) {}
+      if (!expEncontrado) {
+        for (const ent of ['despacho45', 'aldo_indep']) {
+          for (const tabla of ['bd_masc', 'bd_juzgados']) {
+            const raw = localStorage.getItem(`boveda_pro_${ent}_${tabla}`);
+            if (!raw) continue;
+            try {
+              const lista = JSON.parse(raw);
+              const hallado = lista.find(e => (paramId && String(e.id) === String(paramId)) || (paramExp && (e.numExpediente || '').trim().toUpperCase() === paramExp.trim().toUpperCase()));
+              if (hallado) { expEncontrado = hallado; break; }
+            } catch (e) {}
+          }
+          if (expEncontrado) break;
         }
       }
 
@@ -784,9 +794,9 @@
     }
 
     function mostrarMensajeSubirArchivos() {
-      const canvas = document.getElementById('canvas-principal');
+      document.getElementById('canvas-principal').style.display = 'none';
+      document.getElementById('drive-iframe-visor').style.display = 'none';
       const htmlVisor = document.getElementById('html-visor');
-      canvas.style.display = 'none';
       htmlVisor.style.display = 'block';
       document.getElementById('label-foja-floating').textContent = '0/0';
       htmlVisor.innerHTML = `
@@ -800,13 +810,51 @@
       `;
     }
 
+    function obtenerTokenDrive() {
+      const t = localStorage.getItem('drive_token');
+      if (!t || t.startsWith('oauth_session_') || t.startsWith('token_activo_')) return null;
+      return t;
+    }
+
+    async function subirDocADriveParaVistaNativa(ab, fileName, numExp, slotKey) {
+      const token = obtenerTokenDrive();
+      if (!token || !ab) return null;
+      try {
+        const folderId = localStorage.getItem('boveda_drive_folder_id');
+        const customName = `EXP_${(numExp || '000').replace(/\W/g, '_')}_${slotKey || 'doc'}_${fileName}`;
+
+        const q = encodeURIComponent(`name = '${customName.replace(/'/g, '')}' and trashed = false`);
+        const resS = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)&pageSize=2`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (resS.ok) {
+          const dS = await resS.json();
+          if (dS.files && dS.files.length > 0) return dS.files[0].id;
+        }
+
+        const metadata = { name: customName };
+        if (folderId) metadata.parents = [folderId];
+
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', new Blob([ab], { type: 'application/msword' }));
+
+        const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: form
+        });
+        if (res.ok) {
+          const data = await res.json();
+          return data.id || null;
+        }
+      } catch (e) {}
+      return null;
+    }
+
     async function recuperarArrayBufferDePieza(pieza, exp) {
       if (pieza.arrayBuffer && pieza.arrayBuffer.byteLength > 0) return pieza.arrayBuffer;
       if (pieza.blob && pieza.blob.size > 0) return await pieza.blob.arrayBuffer();
-      if (pieza.base64Data) {
-        const bytes = base64ToUint8Array(pieza.base64Data);
-        if (bytes && bytes.byteLength > 0) return bytes.buffer;
-      }
 
       if (window.localforage) {
         if (pieza.storeKey) {
@@ -815,15 +863,6 @@
             if (guardado instanceof ArrayBuffer) return guardado;
             if (ArrayBuffer.isView(guardado)) return guardado.buffer;
             if (guardado instanceof Blob) return await guardado.arrayBuffer();
-            if (typeof guardado === 'string') {
-              const b = base64ToUint8Array(guardado);
-              if (b) return b.buffer;
-            }
-            if (guardado.arrayBuffer && guardado.arrayBuffer instanceof ArrayBuffer) return guardado.arrayBuffer;
-            if (guardado.base64Data) {
-              const b = base64ToUint8Array(guardado.base64Data);
-              if (b) return b.buffer;
-            }
           }
         }
 
@@ -840,20 +879,12 @@
             if (item instanceof ArrayBuffer) return item;
             if (ArrayBuffer.isView(item)) return item.buffer;
             if (item instanceof Blob) return await item.arrayBuffer();
-            if (typeof item === 'string') {
-              const b = base64ToUint8Array(item);
-              if (b) return b.buffer;
-            }
-            if (item.base64Data) {
-              const b = base64ToUint8Array(item.base64Data);
-              if (b) return b.buffer;
-            }
           }
         }
       }
 
-      const token = localStorage.getItem('drive_token');
-      if (token && !token.startsWith('oauth_session_') && !token.startsWith('token_activo_')) {
+      const token = obtenerTokenDrive();
+      if (token) {
         try {
           let targetDriveId = pieza.driveFileId;
           if (!targetDriveId && pieza.fileName) {
@@ -863,7 +894,10 @@
             });
             if (resSearch.ok) {
               const dataS = await resSearch.json();
-              if (dataS.files && dataS.files.length > 0) targetDriveId = dataS.files[0].id;
+              if (dataS.files && dataS.files.length > 0) {
+                targetDriveId = dataS.files[0].id;
+                pieza.driveFileId = targetDriveId;
+              }
             }
           }
 
@@ -911,6 +945,7 @@
         const ab = await recuperarArrayBufferDePieza(pieza, exp);
         const ext = (pieza.fileName.split('.').pop() || '').toLowerCase();
 
+        // 1. PDF Original
         if (ab && ext === 'pdf' && window.pdfjsLib) {
           try {
             const pdfDoc = await pdfjsLib.getDocument({ data: ab.slice(0) }).promise;
@@ -926,6 +961,7 @@
                 tipo: 'pdf',
                 pdfDoc,
                 pageNum: p,
+                driveFileId: pieza.driveFileId || null,
                 arrayBufferOriginal: ab,
                 textoPlano: texto
               });
@@ -934,6 +970,7 @@
           } catch (e) {}
         }
 
+        // 2. DOCX Moderno Original
         if (ab && ext === 'docx' && window.mammoth) {
           try {
             const [resHtml, resTxt] = await Promise.all([
@@ -948,6 +985,7 @@
                 fileName: pieza.fileName,
                 tipo: 'html',
                 htmlOriginal: resHtml.value,
+                driveFileId: pieza.driveFileId || null,
                 arrayBufferOriginal: ab,
                 textoPlano: resTxt.value || ''
               });
@@ -956,17 +994,40 @@
           } catch (e) {}
         }
 
-        if (ab && (ext === 'doc' || ext === 'docx')) {
-          const { html, texto } = decodificarDocBinarioWord97(ab, pieza.fileName);
+        // 3. DOC Antiguo (Word 97-2003): Prioriza el Visor Oficial Nativo de Google Drive para que jamás se descomponga el formato
+        if (ext === 'doc') {
+          let dId = pieza.driveFileId || null;
+          if (!dId && ab && obtenerTokenDrive()) {
+            dId = await subirDocADriveParaVistaNativa(ab, pieza.fileName, exp.numExpediente, pieza.slotKey);
+            if (dId) pieza.driveFileId = dId;
+          }
+
+          const { html, texto } = ab ? extraerTextoLimpioDeDocWord97(ab, pieza.fileName) : { html: pieza.htmlContent || `<p>${pieza.fileName}</p>`, texto: '' };
           fojasEnMemoria.push({
             id: `foja_${exp.id}_${pieza.slotKey || i}_doc`,
             numeroFoja: numFojaActual++,
             fojaOrden: pieza.fojaOrden || 4,
             fileName: pieza.fileName,
-            tipo: 'html',
+            tipo: dId ? 'drive_native' : 'html',
+            driveFileId: dId,
             htmlOriginal: html,
-            arrayBufferOriginal: ab,
+            arrayBufferOriginal: ab || null,
             textoPlano: texto
+          });
+          continue;
+        }
+
+        // 4. Si está en otra computadora sin binario local pero con driveFileId
+        if (pieza.driveFileId) {
+          fojasEnMemoria.push({
+            id: `foja_${exp.id}_${pieza.slotKey || i}_drive`,
+            numeroFoja: numFojaActual++,
+            fojaOrden: pieza.fojaOrden || 10,
+            fileName: pieza.fileName,
+            tipo: 'drive_native',
+            driveFileId: pieza.driveFileId,
+            htmlOriginal: pieza.htmlContent || `<p>${pieza.fileName}</p>`,
+            textoPlano: ''
           });
           continue;
         }
@@ -1034,7 +1095,7 @@
         } else {
           const previewDiv = document.createElement('div');
           previewDiv.className = 'foja-thumb-word-preview';
-          previewDiv.innerHTML = f.htmlOriginal || '';
+          previewDiv.innerHTML = f.htmlOriginal || `<div style="padding:18px; text-align:center; font-size:9px; font-weight:bold;">${f.fileName}</div>`;
           thumbBox.appendChild(previewDiv);
         }
       }
@@ -1066,9 +1127,21 @@
 
       const canvas = document.getElementById('canvas-principal');
       const canvasDib = document.getElementById('canvas-dibujo');
+      const iframeDrive = document.getElementById('drive-iframe-visor');
       const htmlVisor = document.getElementById('html-visor');
       const contUnico = document.getElementById('contenedor-foja-unica');
       contUnico.style.transform = `scale(${nivelZoom})`;
+
+      if (f.tipo === 'drive_native' && f.driveFileId) {
+        canvas.style.display = 'none';
+        htmlVisor.style.display = 'none';
+        iframeDrive.style.display = 'block';
+        const targetSrc = `https://drive.google.com/file/d/${f.driveFileId}/preview`;
+        if (iframeDrive.src !== targetSrc) iframeDrive.src = targetSrc;
+        return;
+      }
+
+      iframeDrive.style.display = 'none';
 
       if (f.tipo === 'pdf' && f.pdfDoc) {
         htmlVisor.style.display = 'none';
@@ -1195,6 +1268,8 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+      } else if (f.driveFileId) {
+        window.open(`https://drive.google.com/uc?export=download&id=${f.driveFileId}`, '_blank');
       } else {
         window.print();
       }
@@ -1230,16 +1305,6 @@
       if (indiceFojaActiva >= fojasEnMemoria.length) indiceFojaActiva = Math.max(0, fojasEnMemoria.length - 1);
       await renderizarMiniaturasFojas();
       await renderizarVisorCentral();
-    }
-
-    function arrayBufferToBase64(buffer) {
-      let binary = '';
-      const bytes = new Uint8Array(buffer);
-      const chunkSize = 0x8000;
-      for (let i = 0; i < bytes.length; i += chunkSize) {
-        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
-      }
-      return btoa(binary);
     }
 
     async function cargarDocumentoManual(fileList) {
@@ -1282,7 +1347,7 @@
             htmlExtraido = resH.value || '';
           } catch (e) {}
         } else if (ext === 'doc') {
-          htmlExtraido = decodificarDocBinarioWord97(ab, file.name).html;
+          htmlExtraido = extraerTextoLimpioDeDocWord97(ab, file.name).html;
         }
 
         const storeKey = `bin_${(expedienteActual.centro || 'C065').replace(/\W/g, '_')}_${expedienteActual.numExpediente.replace(/\W/g, '_')}_${slotId}`;
@@ -1290,7 +1355,10 @@
           await localforage.setItem(storeKey, ab);
         }
 
-        const base64Small = ab.byteLength <= 1500000 ? arrayBufferToBase64(ab) : '';
+        let driveFileId = null;
+        if (obtenerTokenDrive()) {
+          driveFileId = await subirDocADriveParaVistaNativa(ab, file.name, expedienteActual.numExpediente, slotId);
+        }
 
         if (!expedienteActual.docs) expedienteActual.docs = {};
         expedienteActual.docs[slotId] = {
@@ -1299,30 +1367,14 @@
           date: new Date().toISOString().split('T')[0],
           fojaOrden,
           storeKey,
+          driveFileId,
           realUploaded: true,
-          htmlContent: htmlExtraido,
-          base64Data: base64Small
+          htmlContent: htmlExtraido
         };
       }
 
       localStorage.setItem('visor_active_expediente', JSON.stringify(expedienteActual));
       if (window.localforage) await localforage.setItem('visor_active_expediente_full', expedienteActual);
-
-      ['despacho45', 'aldo_indep'].forEach(ent => {
-        ['bd_masc', 'bd_juzgados'].forEach(t => {
-          const k = `boveda_pro_${ent}_${t}`;
-          const raw = localStorage.getItem(k);
-          if (!raw) return;
-          try {
-            const arr = JSON.parse(raw);
-            const i = arr.findIndex(e => e.id === expedienteActual.id || e.numExpediente === expedienteActual.numExpediente);
-            if (i !== -1) {
-              arr[i].docs = { ...(arr[i].docs || {}), ...(expedienteActual.docs || {}) };
-              localStorage.setItem(k, JSON.stringify(arr));
-            }
-          } catch (e) {}
-        });
-      });
 
       delete expedienteActual.piezasEmpaquetadas;
       await construirFojasDesdeArchivosReales(expedienteActual);

@@ -145,7 +145,7 @@
 
       <div class="text-center mb-6">
         <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-amber-500/20 text-amber-300 border border-amber-500/40">
-          Nube Compartida en Tiempo Real • PWA
+          Sincronización Binaria 5TB • PWA
         </span>
         <h1 class="text-2xl sm:text-3xl font-black gold-text mt-2">BÓVEDA PRO 45 Y MÁS</h1>
         <p class="text-xs text-slate-400 mt-1">Centros IJA 065 y 353 • 19 Mercantiles • 13 Civiles • 17 Familiares</p>
@@ -172,7 +172,7 @@
 
       <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
         <a href="index.html" class="hover:text-amber-400 transition flex items-center gap-1.5"><i class="fa-solid fa-arrow-left"></i> Volver a Portada</a>
-        <span class="font-mono-code text-[11px] text-emerald-400">PWA Lista • 5TB</span>
+        <span class="font-mono-code text-[11px] text-emerald-400">Cloud Sync 5TB</span>
       </div>
     </div>
   </div>
@@ -204,7 +204,7 @@
             <span id="cloud-sync-badge" class="text-[9px] font-mono-code px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Pendiente</span>
           </div>
           <p id="cloud-sync-last-time" class="text-[10px] text-slate-400 leading-tight">
-            Conecta Google Drive 5TB para compartir los archivos originales entre <code>admin</code>, <code>chava</code> y <code>ceci</code>.
+            Conecta Google Drive 5TB antes o después de subir tus convenios para compartir los archivos originales.
           </p>
           <div class="grid grid-cols-2 gap-1.5 pt-1">
             <button onclick="sincronizarConNubeDrive('manual')" class="bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 border border-sky-500/40 py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1">
@@ -214,6 +214,9 @@
               <i class="fa-brands fa-google-drive"></i> Drive 5TB
             </button>
           </div>
+          <button onclick="subirTodosLosBinariosLocalesPendientesADrive()" class="w-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 py-1.5 px-2 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Subir Archivos Locales a Nube
+          </button>
         </div>
 
         <div class="space-y-1">
@@ -294,7 +297,7 @@
               <span class="text-[9px] font-mono-code bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">.DOC • .DOCX • .PDF</span>
             </div>
             <p class="text-[10px] text-slate-300 leading-snug">
-              Guarda el archivo binario original intacto en la bóveda y en la nube. Si detecta duplicados te avisa para fusionar, renombrar o eliminar.
+              Sube lotes de 337+ archivos conservando el archivo original intacto en LocalForage y en Google Drive 5TB sin límite de cantidad.
             </p>
             <div class="space-y-1.5">
               <label class="cursor-pointer w-full brand-gradient text-slate-950 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg hover:opacity-95 transition">
@@ -392,8 +395,8 @@
           <div id="ia-queue-progress-bar" class="bg-gradient-to-r from-emerald-400 via-amber-400 to-sky-400 h-full transition-all duration-150" style="width: 0%"></div>
         </div>
         <div class="flex flex-wrap items-center justify-between gap-2 mt-2 text-[11px] text-slate-300">
-          <span id="ia-queue-stats-detail">Nuevos: 0 | Integrados en Expediente Existente: 0</span>
-          <span class="font-mono-code text-sky-300">Binarios 100% Originales Persistentes</span>
+          <span id="ia-queue-stats-detail">Nuevos: 0 | Integrados en Expediente Existente: 0 | Subidos a Nube: 0</span>
+          <span class="font-mono-code text-sky-300">Subida Binaria Directa a Google Drive 5TB</span>
         </div>
       </div>
 
@@ -420,7 +423,7 @@
               <i class="fa-solid fa-file-import"></i> Importar
               <input type="file" accept=".json" class="hidden" onchange="importarRespaldoJSON(this.files[0])" />
             </label>
-            <button onclick="reiniciarBovedaDesdeCero()" class="bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5" title="Borrar todos los registros de prueba o antiguos para empezar limpio desde cero">
+            <button onclick="reiniciarBovedaDesdeCero()" class="bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5" title="Borrar todos los registros para empezar limpio desde cero">
               <i class="fa-solid fa-trash-can"></i> Empezar de Cero
             </button>
           </div>
@@ -496,7 +499,7 @@
           <div class="bg-amber-950/30 border border-amber-500/30 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
             <div class="text-xs text-slate-200">
               <i class="fa-solid fa-shield-halved text-amber-400 mr-1.5"></i>
-              <strong>Archivos 100% Originales:</strong> Cada documento que subas aquí se guarda en binario original y se sincroniza para abrirse intacto en cualquier computadora o celular.
+              <strong>Archivos 100% Originales en Nube:</strong> Cada archivo que subas aquí se guarda en binario original en tu equipo y en Google Drive 5TB para verse idéntico en cualquier computadora.
             </div>
             <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-4 py-2 rounded-xl flex items-center gap-2 shadow">
               <i class="fa-solid fa-file-circle-plus"></i> Subir Documento(s) al Expediente
@@ -515,7 +518,7 @@
                   <th class="py-3 px-3">Fojas</th>
                   <th class="py-3 px-3">Casilla Documental</th>
                   <th class="py-3 px-3">Archivo Original Subido</th>
-                  <th class="py-3 px-3">Páginas</th>
+                  <th class="py-3 px-3">Estado Nube</th>
                   <th class="py-3 px-3 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -579,7 +582,6 @@
     </div>
   </div>
 
-  <!-- MODAL DETECTOR Y GESTOR DE DUPLICADOS (#modal-duplicados) -->
   <div id="modal-duplicados" class="fixed inset-0 z-[82] hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="glass-panel rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-amber-500/40 shadow-2xl overflow-hidden">
       <div class="shrink-0 p-4 sm:p-5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
@@ -799,6 +801,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <span id="visor-modal-filename" class="text-xs sm:text-sm font-bold text-white truncate">Documento Original</span>
         </div>
         <div class="flex items-center gap-2">
+          <button id="visor-btn-vista-nube" class="hidden bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+            <i class="fa-brands fa-google-drive mr-1"></i> Vista Original Word/Drive
+          </button>
           <button id="visor-btn-descargar-original" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
             <i class="fa-solid fa-download mr-1"></i> Descargar Archivo Original
           </button>
@@ -1084,31 +1089,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return carpetasConfig.juzgadosPorMateria[materia] || [];
     }
 
-    function arrayBufferToBase64(buffer) {
-      let binary = '';
-      const bytes = new Uint8Array(buffer);
-      const chunkSize = 0x8000;
-      for (let i = 0; i < bytes.length; i += chunkSize) {
-        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
-      }
-      return btoa(binary);
-    }
-
-    function base64ToUint8Array(base64Str) {
-      try {
-        const clean = base64Str.includes(',') ? base64Str.split(',')[1] : base64Str;
-        const binStr = atob(clean);
-        const len = binStr.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) bytes[i] = binStr.charCodeAt(i);
-        return bytes;
-      } catch (e) {
-        return null;
-      }
-    }
-
     function tieneArchivoValido(doc) {
-      return !!(doc && doc.fileName && (doc.storeKey || doc.driveFileId || doc.base64Data || doc.htmlContent || doc.realUploaded));
+      return !!(doc && doc.fileName && (doc.storeKey || doc.driveFileId || doc.realUploaded));
     }
 
     function normalizarNumeroExp(numStr, anioStr) {
@@ -1210,7 +1192,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     async function buscarArchivoEnDrivePorNombre(token, fileName) {
-      const q = encodeURIComponent(`name = '${fileName}' and trashed = false`);
+      const q = encodeURIComponent(`name = '${fileName.replace(/'/g, '')}' and trashed = false`);
       const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime)&pageSize=5`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -1241,7 +1223,21 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           mapa.set(key, JSON.parse(JSON.stringify(expLocal)));
         } else {
           const ex = mapa.get(key);
-          ex.docs = { ...(ex.docs || {}), ...(expLocal.docs || {}) };
+          const docsMerged = { ...(ex.docs || {}) };
+          Object.entries(expLocal.docs || {}).forEach(([slot, dLoc]) => {
+            const dRem = docsMerged[slot];
+            if (!dRem) {
+              docsMerged[slot] = dLoc;
+            } else {
+              docsMerged[slot] = {
+                ...dRem,
+                ...dLoc,
+                driveFileId: dLoc.driveFileId || dRem.driveFileId || null,
+                storeKey: dLoc.storeKey || dRem.storeKey || null
+              };
+            }
+          });
+          ex.docs = docsMerged;
           if ((!ex.solicitante || ex.solicitante.startsWith('Expediente ')) && expLocal.solicitante && !expLocal.solicitante.startsWith('Expediente ')) {
             ex.solicitante = expLocal.solicitante;
           }
@@ -1251,10 +1247,35 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return Array.from(mapa.values());
     }
 
+    function limpiarCopiaLigeraParaBD(lista) {
+      return lista.map(exp => {
+        const copia = { ...exp, docs: {} };
+        Object.entries(exp.docs || {}).forEach(([k, d]) => {
+          copia.docs[k] = {
+            fileName: d.fileName,
+            mimeType: d.mimeType || '',
+            pages: d.pages || 1,
+            date: d.date || '',
+            fojaOrden: d.fojaOrden || 10,
+            storeKey: d.storeKey || '',
+            driveFileId: d.driveFileId || null,
+            realUploaded: true
+          };
+        });
+        return copia;
+      });
+    }
+
     async function subirBaseDeDatosADrive(token) {
       const folderId = await obtenerOCrearCarpetaRaizDrive(token);
       const archivoExistente = await buscarArchivoEnDrivePorNombre(token, DRIVE_MASTER_DB_FILENAME);
-      const payload = { updatedAt: new Date().toISOString(), updatedBy: usuarioActivo, carpetasConfig, bdMasc, bdJuzgados };
+      const payload = {
+        updatedAt: new Date().toISOString(),
+        updatedBy: usuarioActivo,
+        carpetasConfig,
+        bdMasc: limpiarCopiaLigeraParaBD(bdMasc),
+        bdJuzgados: limpiarCopiaLigeraParaBD(bdJuzgados)
+      };
       const metadata = { name: DRIVE_MASTER_DB_FILENAME, mimeType: 'application/json' };
       if (!archivoExistente && folderId) metadata.parents = [folderId];
 
@@ -1277,20 +1298,22 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       try {
         const folderId = await obtenerOCrearCarpetaRaizDrive(token);
         const existente = await buscarArchivoEnDrivePorNombre(token, customName);
+        if (existente && existente.id) return existente.id;
+
         const metadata = { name: customName };
-        if (!existente && folderId) metadata.parents = [folderId];
+        if (folderId) metadata.parents = [folderId];
 
         const form = new FormData();
         form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
         form.append('file', fileOrBlob);
 
-        const url = existente
-          ? `https://www.googleapis.com/upload/drive/v3/files/${existente.id}?uploadType=multipart&fields=id`
-          : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id';
-
         const res = await ejecutarConTimeout(
-          fetch(url, { method: existente ? 'PATCH' : 'POST', headers: { Authorization: `Bearer ${token}` }, body: form }),
-          8000,
+          fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: form
+          }),
+          15000,
           null
         );
         if (res && res.ok) {
@@ -1299,6 +1322,67 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         }
       } catch (e) {}
       return null;
+    }
+
+    // Botón para subir a Google Drive todos los archivos que se hayan cargado localmente antes de conectar Drive
+    async function subirTodosLosBinariosLocalesPendientesADrive() {
+      const token = obtenerTokenDriveActivo();
+      if (!token) {
+        alert('Primero pulsa "Drive 5TB" para conectar tu cuenta de Google Drive.');
+        conectarGoogleDriveOAuth(false);
+        return;
+      }
+
+      const todosExps = [...bdMasc, ...bdJuzgados];
+      const pendientes = [];
+      todosExps.forEach(exp => {
+        Object.entries(exp.docs || {}).forEach(([slotId, doc]) => {
+          if (doc && !doc.driveFileId && doc.storeKey) {
+            pendientes.push({ exp, slotId, doc });
+          }
+        });
+      });
+
+      if (pendientes.length === 0) {
+        await sincronizarConNubeDrive('manual');
+        alert('✅ Todos los archivos de esta computadora ya tienen su binario original respaldado en Google Drive.');
+        return;
+      }
+
+      const banner = document.getElementById('modal-ia-loading');
+      const bar = document.getElementById('ia-queue-progress-bar');
+      const counter = document.getElementById('ia-queue-counter');
+      const currentFileEl = document.getElementById('ia-queue-current-file');
+      const titleEl = document.getElementById('ia-queue-status-title');
+
+      banner.classList.remove('hidden');
+      titleEl.textContent = 'SUBIENDO ARCHIVOS LOCALES ORIGINALES A GOOGLE DRIVE 5TB...';
+      let subidos = 0;
+
+      for (let i = 0; i < pendientes.length; i++) {
+        const { exp, slotId, doc } = pendientes[i];
+        counter.textContent = `${i + 1} / ${pendientes.length}`;
+        bar.style.width = `${Math.round(((i + 1) / pendientes.length) * 100)}%`;
+        currentFileEl.textContent = `Subiendo a Drive: ${doc.fileName} (EXP. ${exp.numExpediente})`;
+
+        if (window.localforage) {
+          const ab = await localforage.getItem(doc.storeKey);
+          if (ab) {
+            const blob = (ab instanceof Blob) ? ab : new Blob([ab], { type: doc.mimeType || 'application/octet-stream' });
+            const customName = `EXP_${exp.numExpediente.replace(/\W/g, '_')}_${slotId}_${doc.fileName}`;
+            const dId = await subirBinarioIndividualADrive(blob, customName);
+            if (dId) {
+              doc.driveFileId = dId;
+              subidos++;
+            }
+          }
+        }
+      }
+
+      await persistirBasesDeDatosLocales();
+      await sincronizarConNubeDrive('force_push');
+      titleEl.textContent = `¡SINCRONIZACIÓN COMPLETA (${subidos} ARCHIVOS SUBIDOS A GOOGLE DRIVE)!`;
+      currentFileEl.textContent = 'Ya puedes abrir estos expedientes desde cualquier otra computadora o celular con su formato original intacto.';
     }
 
     async function sincronizarConNubeDrive(modo = 'manual') {
@@ -1323,8 +1407,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             const cloudDB = await resDownload.json();
             if (Array.isArray(cloudDB.bdMasc)) bdMasc = fusionarExpedientesNubeYLocal(cloudDB.bdMasc, bdMasc);
             if (Array.isArray(cloudDB.bdJuzgados)) bdJuzgados = fusionarExpedientesNubeYLocal(cloudDB.bdJuzgados, bdJuzgados);
-            localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
-            localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
+            await persistirBasesDeDatosLocales();
             renderizarSidebarCarpetas();
             ejecutarFiltroBusqueda();
           }
@@ -1349,6 +1432,20 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return `boveda_pro_${entornoActivo}_${sufijo}`;
     }
 
+    async function persistirBasesDeDatosLocales() {
+      const mascLigera = limpiarCopiaLigeraParaBD(bdMasc);
+      const juzLigera = limpiarCopiaLigeraParaBD(bdJuzgados);
+      try {
+        localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(mascLigera));
+        localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(juzLigera));
+      } catch (e) {}
+
+      if (window.localforage) {
+        await localforage.setItem(obtenerClaveStorage('lf_bd_masc'), bdMasc);
+        await localforage.setItem(obtenerClaveStorage('lf_bd_juzgados'), bdJuzgados);
+      }
+    }
+
     async function cargarDatosEntorno() {
       const savedFolders = localStorage.getItem(obtenerClaveStorage('carpetas'));
       if (savedFolders) {
@@ -1356,18 +1453,27 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       }
       asegurarCatalogoCompletoDeJuzgados();
 
-      const savedMasc = localStorage.getItem(obtenerClaveStorage('bd_masc'));
-      if (savedMasc !== null) {
-        try { bdMasc = JSON.parse(savedMasc); } catch (e) { bdMasc = []; }
-      } else {
-        bdMasc = [];
+      let cargadoDeLF = false;
+      if (window.localforage) {
+        const lfMasc = await localforage.getItem(obtenerClaveStorage('lf_bd_masc'));
+        const lfJuz = await localforage.getItem(obtenerClaveStorage('lf_bd_juzgados'));
+        if (Array.isArray(lfMasc)) { bdMasc = lfMasc; cargadoDeLF = true; }
+        if (Array.isArray(lfJuz)) { bdJuzgados = lfJuz; }
       }
 
-      const savedJuz = localStorage.getItem(obtenerClaveStorage('bd_juzgados'));
-      if (savedJuz !== null) {
-        try { bdJuzgados = JSON.parse(savedJuz); } catch (e) { bdJuzgados = []; }
-      } else {
-        bdJuzgados = [];
+      if (!cargadoDeLF) {
+        const savedMasc = localStorage.getItem(obtenerClaveStorage('bd_masc'));
+        if (savedMasc !== null) {
+          try { bdMasc = JSON.parse(savedMasc); } catch (e) { bdMasc = []; }
+        } else {
+          bdMasc = [];
+        }
+        const savedJuz = localStorage.getItem(obtenerClaveStorage('bd_juzgados'));
+        if (savedJuz !== null) {
+          try { bdJuzgados = JSON.parse(savedJuz); } catch (e) { bdJuzgados = []; }
+        } else {
+          bdJuzgados = [];
+        }
       }
 
       renderizarSidebarCarpetas();
@@ -1375,13 +1481,13 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     function guardarEnBDMasc() {
-      localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
+      persistirBasesDeDatosLocales();
       actualizarTelemetriaGlobal();
       programarSubidaAutomaticaNube();
     }
 
     function guardarEnBDJuzgados() {
-      localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
+      persistirBasesDeDatosLocales();
       actualizarTelemetriaGlobal();
       programarSubidaAutomaticaNube();
     }
@@ -1393,7 +1499,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     async function reiniciarBovedaDesdeCero() {
-      if (!confirm('⚠️ ¿Estás seguro de BORRAR TODOS los expedientes actuales para empezar la Bóveda desde cero?\n\nEsto eliminará los registros de prueba o duplicados antiguos en este navegador y en la nube para que subas tus archivos limpios.')) return;
+      if (!confirm('⚠️ ¿Estás seguro de BORRAR TODOS los expedientes actuales para empezar la Bóveda desde cero?\n\nEsto limpiará la memoria local y la nube para que subas tus archivos limpios.')) return;
 
       bdMasc = [];
       bdJuzgados = [];
@@ -1413,7 +1519,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       renderizarSidebarCarpetas();
       ejecutarFiltroBusqueda();
-      alert('✅ Bóveda reiniciada en 0 expedientes. Ya puedes subir tus convenios y carpetas desde cero.');
+      alert('✅ Bóveda reiniciada en 0 expedientes.');
     }
 
     function calcularFoliadoJudicial(exp) {
@@ -1739,7 +1845,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <div class="col-span-full glass-panel rounded-3xl p-10 text-center text-slate-400 space-y-2">
             <i class="fa-solid fa-folder-open text-4xl text-amber-400"></i>
             <p class="text-sm font-bold text-white">Bóveda lista para recibir tus convenios</p>
-            <p class="text-xs">Usa los botones de "Ingesta Masiva IA" a la izquierda o "+ Nuevo Convenio" para subir tus archivos originales.</p>
+            <p class="text-xs">Conecta "Drive 5TB" y usa los botones de "Ingesta Masiva IA" para subir tus archivos originales.</p>
           </div>
         `;
         return;
@@ -1785,6 +1891,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       esquema.forEach(s => totalRequeridos += s.items.length);
       const docsCargados = piezasOrdenadas.length;
       const pct = Math.min(100, Math.round((docsCargados / Math.max(1, totalRequeridos)) * 100));
+      const todosEnDrive = piezasOrdenadas.length > 0 && piezasOrdenadas.every(p => !!p.driveFileId);
 
       return `
         <div
@@ -1797,9 +1904,14 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
               <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 truncate">
                 <i class="fa-solid fa-folder mr-1"></i>${exp.centro}
               </span>
-              <span class="text-[10px] font-mono-code font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                <i class="fa-solid fa-layer-group mr-1"></i>${totalFojas} Fojas (${docsCargados} archivos)
-              </span>
+              <div class="flex items-center gap-1">
+                ${todosEnDrive
+                  ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30" title="Archivo original respaldado en Google Drive"><i class="fa-brands fa-google-drive mr-1"></i>Drive</span>`
+                  : ''}
+                <span class="text-[10px] font-mono-code font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <i class="fa-solid fa-layer-group mr-1"></i>${totalFojas} Fojas
+                </span>
+              </div>
             </div>
 
             <div class="flex items-baseline justify-between gap-2">
@@ -1920,7 +2032,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return Promise.race([promesa, new Promise(resolve => setTimeout(() => resolve(valorPorDefecto), ms))]);
     }
 
-    function decodificarDocBinarioWord97(arrayBuffer, fileName) {
+    // Extractor limpio para clasificar datos de .doc antiguos sin meter basura binaria ni descomponer el documento
+    function extraerTextoLimpioDeDocWord97(arrayBuffer, fileName) {
       try {
         const bytes = new Uint8Array(arrayBuffer);
         let bloquesUnicode = [];
@@ -1931,11 +2044,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           if (high === 0 && ((low >= 32 && low <= 126) || (low >= 160 && low <= 255) || low === 10 || low === 13 || low === 9)) {
             actualU += (low === 13 || low === 10) ? '\n' : String.fromCharCode(low);
           } else {
-            if (actualU.trim().length >= 18) bloquesUnicode.push(actualU.trim());
+            if (actualU.trim().length >= 20) bloquesUnicode.push(actualU.trim());
             actualU = '';
           }
         }
-        if (actualU.trim().length >= 18) bloquesUnicode.push(actualU.trim());
+        if (actualU.trim().length >= 20) bloquesUnicode.push(actualU.trim());
 
         let bloquesAnsi = [];
         let actualA = '';
@@ -1945,30 +2058,36 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             actualA += (b === 13 || b === 10) ? '\n' : String.fromCharCode(b);
           } else {
             const limpio = actualA.trim();
-            if (limpio.length >= 24 && /[AEIOUÁÉÍÓÚaeiouáéíóú]{2,}/.test(limpio) && !/^(Root Entry|WordDocument|CompObj|SummaryInformation|Microsoft Word|Normal\.dot|Times New Roman|Arial|Calibri)/i.test(limpio)) {
+            if (
+              limpio.length >= 28 &&
+              /[AEIOUÁÉÍÓÚaeiouáéíóú]{3,}/.test(limpio) &&
+              !/^(Root Entry|WordDocument|CompObj|SummaryInformation|DocumentSummaryInformation|Microsoft Word|Normal\.dot|Times New Roman|Arial|Calibri|MSWordDoc|Word\.Document)/i.test(limpio)
+            ) {
               bloquesAnsi.push(limpio);
             }
             actualA = '';
           }
         }
-        if (actualA.trim().length >= 24) bloquesAnsi.push(actualA.trim());
+        if (actualA.trim().length >= 28) bloquesAnsi.push(actualA.trim());
 
-        const mejorTexto = (bloquesUnicode.join('\n\n').length > bloquesAnsi.join('\n\n').length)
+        const unido = (bloquesUnicode.join('\n\n').length > bloquesAnsi.join('\n\n').length)
           ? bloquesUnicode.join('\n\n')
           : bloquesAnsi.join('\n\n');
 
-        const filtrado = mejorTexto
+        const lineasLimpias = unido
           .split(/\n+/)
           .map(l => l.trim())
-          .filter(l => l.length >= 3 && !/^(PAGE|MERGEFORMAT|HYPERLINK|TOC|PAGEREF|Normal|Default Paragraph Font|bjbj)/i.test(l))
-          .join('\n\n');
+          .filter(l => {
+            if (l.length < 4) return false;
+            if (/^(PAGE|MERGEFORMAT|HYPERLINK|TOC|PAGEREF|Normal|Default Paragraph Font|bjbj|Heading|Header|Footer|Char|Table Grid)/i.test(l)) return false;
+            const letras = (l.match(/[A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g) || []).length;
+            return (letras / l.length) > 0.65;
+          });
 
-        if (filtrado.length > 30) {
-          const html = filtrado
-            .split(/\n{2,}/)
-            .map(p => `<p>${p.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>')}</p>`)
-            .join('');
-          return { texto: filtrado, html, paginas: Math.max(1, Math.ceil(filtrado.length / 2200)) };
+        const textoFinal = lineasLimpias.join('\n\n');
+        if (textoFinal.length > 30) {
+          const html = lineasLimpias.map(p => `<p>${p.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('');
+          return { texto: textoFinal, html, paginas: Math.max(1, Math.ceil(textoFinal.length / 2200)) };
         }
       } catch (e) {}
       return { texto: fileName, html: `<p>${fileName}</p>`, paginas: 1 };
@@ -1993,12 +2112,12 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             buffer
           };
         }
-        const fallbackDoc = decodificarDocBinarioWord97(buffer, file.name);
+        const fallbackDoc = extraerTextoLimpioDeDocWord97(buffer, file.name);
         return { ...fallbackDoc, buffer };
       }
 
       if (ext === 'doc') {
-        const resDoc = decodificarDocBinarioWord97(buffer, file.name);
+        const resDoc = extraerTextoLimpioDeDocWord97(buffer, file.name);
         return { ...resDoc, buffer };
       }
 
@@ -2102,6 +2221,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       };
     }
 
+    // COLA SECUENCIAL MASIVA SIN LÍMITE DE 20/40 ARCHIVOS: SUBE TODOS LOS BINARIOS A LOCALFORAGE Y GOOGLE DRIVE
     async function subirArchivoSistema(fileList) {
       if (!fileList || fileList.length === 0) return;
       const archivosValidos = Array.from(fileList).filter(f => {
@@ -2124,6 +2244,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       banner.classList.remove('hidden');
       let nuevosCreados = 0;
       let duplicadosFusionadosPorFoja = 0;
+      let subidosNubeCount = 0;
 
       for (let i = 0; i < archivosValidos.length; i++) {
         if (cancelarColaMasiva) break;
@@ -2143,17 +2264,19 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           const claveBinaria = `bin_${info.centro.replace(/\W/g, '_')}_${info.numExpediente.replace(/\W/g, '_')}_${info.slotId}`;
 
           if (window.localforage && rawBuffer) {
-            await ejecutarConTimeout(localforage.setItem(claveBinaria, rawBuffer).catch(() => null), 3500, null);
+            await ejecutarConTimeout(localforage.setItem(claveBinaria, rawBuffer).catch(() => null), 4000, null);
           }
 
+          // SUBIR SIEMPRE EL ARCHIVO ORIGINAL A GOOGLE DRIVE SI ESTÁ CONECTADO (SIN LÍMITE DE 20 ARCHIVOS)
           let driveFileId = null;
-          if (archivosValidos.length <= 20 && obtenerTokenDriveActivo() && rawBuffer) {
-            driveFileId = await subirBinarioIndividualADrive(new Blob([rawBuffer], { type: file.type || 'application/octet-stream' }), `EXP_${info.numExpediente.replace(/\W/g, '_')}_${info.slotId}_${file.name}`);
+          if (obtenerTokenDriveActivo() && rawBuffer) {
+            const customDriveName = `EXP_${info.numExpediente.replace(/\W/g, '_')}_${info.slotId}_${file.name}`;
+            driveFileId = await subirBinarioIndividualADrive(
+              new Blob([rawBuffer], { type: file.type || 'application/octet-stream' }),
+              customDriveName
+            );
+            if (driveFileId) subidosNubeCount++;
           }
-
-          const base64Data = (rawBuffer && rawBuffer.byteLength <= 750000 && archivosValidos.length <= 40)
-            ? arrayBufferToBase64(rawBuffer)
-            : '';
 
           const listaDestino = (vistaActiva === 'juzgados') ? bdJuzgados : bdMasc;
           const fechaHoy = new Date().toISOString().split('T')[0];
@@ -2172,8 +2295,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             storeKey: claveBinaria,
             driveFileId,
             realUploaded: true,
-            htmlContent: html || '',
-            base64Data
+            htmlContent: html || ''
           };
 
           if (existente) {
@@ -2204,10 +2326,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             nuevosCreados++;
           }
 
-          statsEl.textContent = `Nuevos: ${nuevosCreados} | Integrados en Expediente Existente: ${duplicadosFusionadosPorFoja}`;
+          statsEl.textContent = `Nuevos: ${nuevosCreados} | Integrados por Foja: ${duplicadosFusionadosPorFoja} | En Nube Drive: ${subidosNubeCount}`;
           if ((i + 1) % 8 === 0 || i === archivosValidos.length - 1) {
-            localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
-            localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
+            await persistirBasesDeDatosLocales();
             ejecutarFiltroBusqueda();
             renderizarSidebarCarpetas();
           }
@@ -2216,10 +2337,15 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       }
 
       ingestaMasivaEnCurso = false;
-      guardarEnBDMasc();
-      guardarEnBDJuzgados();
+      await persistirBasesDeDatosLocales();
       renderizarSidebarCarpetas();
       ejecutarFiltroBusqueda();
+
+      if (obtenerTokenDriveActivo() && entornoActivo === 'despacho45') {
+        currentFileEl.textContent = 'Sincronizando índice maestro con Google Drive 5TB...';
+        await sincronizarConNubeDrive('force_push');
+      }
+
       titleEl.textContent = `¡LOTE COMPLETADO (${archivosValidos.length} ARCHIVOS ORIGINALES GUARDADOS)!`;
     }
 
@@ -2301,13 +2427,14 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
                     ${cargado ? `
                       <div class="text-[11px] text-emerald-300 truncate pl-5 mt-1">
                         <span class="font-mono-code bg-emerald-500/20 px-1.5 py-0.5 rounded mr-1.5">${mapaFojas[item.id] || 'Foliado'}</span>
-                        ${doc.fileName} (${doc.pages || 1} págs.)
+                        ${doc.driveFileId ? `<i class="fa-brands fa-google-drive text-sky-400 mr-1" title="Respaldado en Nube Drive"></i>` : ''}
+                        ${doc.fileName}
                       </div>
                     ` : `<span class="text-[10px] text-rose-400/80 pl-5 block mt-0.5">Sin archivo subido</span>`}
                   </div>
                   <div class="flex items-center gap-1.5 shrink-0">
                     ${cargado ? `
-                      <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${item.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-500/40 hover:bg-sky-500/30 text-[11px] font-bold flex items-center gap-1" title="Ver archivo tal cual fue subido">
+                      <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${item.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-500/40 hover:bg-sky-500/30 text-[11px] font-bold flex items-center gap-1" title="Ver archivo original">
                         <i class="fa-solid fa-eye"></i> Ver
                       </button>
                     ` : ''}
@@ -2340,7 +2467,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <td class="py-3 px-3"><span class="font-mono-code font-bold px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300">Foja ${String(pieza.fojaInicio).padStart(3, '0')} - ${String(pieza.fojaFin).padStart(3, '0')}</span></td>
           <td class="py-3 px-3 font-bold text-white">${pieza.slotKey.replace(/_/g, ' ').toUpperCase()}</td>
           <td class="py-3 px-3 font-mono-code text-slate-300">${pieza.fileName}</td>
-          <td class="py-3 px-3 font-mono-code text-white">${pieza.pages}</td>
+          <td class="py-3 px-3">
+            ${pieza.driveFileId
+              ? `<span class="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full font-bold"><i class="fa-brands fa-google-drive mr-1"></i>En Drive</span>`
+              : `<span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-bold">Solo Local</span>`}
+          </td>
           <td class="py-3 px-3 text-right space-x-1">
             <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${pieza.slotKey}')" class="px-2.5 py-1 bg-sky-500/20 text-sky-300 rounded-lg font-bold"><i class="fa-solid fa-eye mr-1"></i>Ver Original</button>
             <button onclick="eliminarPiezaDeExpediente('${exp.id}', '${pieza.slotKey}')" class="px-2 py-1 bg-rose-950 text-rose-300 rounded-lg"><i class="fa-solid fa-trash"></i></button>
@@ -2367,8 +2498,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         `EXP_${exp.numExpediente.replace(/\W/g, '_')}_${slotId}_${file.name}`
       );
 
-      const base64Data = rawBuffer.byteLength <= 1500000 ? arrayBufferToBase64(rawBuffer) : '';
-
       if (!exp.docs) exp.docs = {};
       exp.docs[slotId] = {
         fileName: file.name,
@@ -2379,8 +2508,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         storeKey,
         driveFileId,
         realUploaded: true,
-        htmlContent: html || '',
-        base64Data
+        htmlContent: html || ''
       };
 
       guardarEnBDMasc();
@@ -2413,33 +2541,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     async function recuperarArrayBufferDeDocumento(docInfo, exp) {
-      if (docInfo.base64Data) {
-        const b = base64ToUint8Array(docInfo.base64Data);
-        if (b && b.byteLength > 0) return b.buffer;
-      }
-
-      if (window.localforage) {
-        if (docInfo.storeKey) {
-          const item = await localforage.getItem(docInfo.storeKey);
-          if (item) {
-            if (item instanceof ArrayBuffer) return item;
-            if (ArrayBuffer.isView(item)) return item.buffer;
-            if (item instanceof Blob) return await item.arrayBuffer();
-            if (typeof item === 'string') {
-              const b = base64ToUint8Array(item);
-              if (b) return b.buffer;
-            }
-          }
-        }
-
-        const numLimpio = (exp.numExpediente || '').replace(/\W/g, '_');
-        const llaves = await localforage.keys();
-        const coincidente = llaves.find(k =>
-          (docInfo.storeKey && k.startsWith(docInfo.storeKey)) ||
-          (numLimpio && k.includes(numLimpio))
-        );
-        if (coincidente) {
-          const item = await localforage.getItem(coincidente);
+      if (window.localforage && docInfo.storeKey) {
+        const item = await localforage.getItem(docInfo.storeKey);
+        if (item) {
           if (item instanceof ArrayBuffer) return item;
           if (ArrayBuffer.isView(item)) return item.buffer;
           if (item instanceof Blob) return await item.arrayBuffer();
@@ -2457,7 +2561,10 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             });
             if (resS.ok) {
               const d = await resS.json();
-              if (d.files && d.files.length > 0) targetDriveId = d.files[0].id;
+              if (d.files && d.files.length > 0) {
+                targetDriveId = d.files[0].id;
+                docInfo.driveFileId = targetDriveId;
+              }
             }
           }
           if (targetDriveId) {
@@ -2476,6 +2583,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return null;
     }
 
+    // VISOR MODAL (EL OJO) QUE MUESTRA EL ARCHIVO 100% ORIGINAL SIN DESCOMPONER FORMATOS .DOC/.DOCX/.PDF
     async function abrirDocumentoEnVisorModal(expId, slotKey) {
       ocultarHoverPreviewInmediato();
       const exp = obtenerExpedientePorId(expId);
@@ -2485,36 +2593,41 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       document.getElementById('visor-modal-filename').textContent = `${docInfo.fileName} — EXP. ${exp.numExpediente}`;
       const contenedor = document.getElementById('visor-modal-body');
       const btnDescarga = document.getElementById('visor-btn-descargar-original');
+      const btnVistaNube = document.getElementById('visor-btn-vista-nube');
       btnDescarga.classList.add('hidden');
+      btnVistaNube.classList.add('hidden');
 
-      contenedor.innerHTML = `<div class="text-center py-12 text-slate-300 text-xs"><i class="fa-solid fa-spinner fa-spin text-2xl text-amber-400 mb-2 block"></i>Abriendo archivo original tal cual fue subido...</div>`;
+      contenedor.innerHTML = `<div class="text-center py-12 text-slate-300 text-xs"><i class="fa-solid fa-spinner fa-spin text-2xl text-amber-400 mb-2 block"></i>Abriendo archivo original intacto...</div>`;
       document.getElementById('modal-visor-pdf').classList.remove('hidden');
 
-      const ab = await recuperarArrayBufferDeDocumento(docInfo, exp);
       const ext = (docInfo.fileName.split('.').pop() || '').toLowerCase();
+      const ab = await recuperarArrayBufferDeDocumento(docInfo, exp);
 
       if (ab && ab.byteLength > 0) {
         const blobDescarga = new Blob([ab], { type: docInfo.mimeType || 'application/octet-stream' });
         btnDescarga.classList.remove('hidden');
         btnDescarga.onclick = () => descargarBlobArchivo(blobDescarga, docInfo.fileName);
+      }
 
-        if (ext === 'pdf' && window.pdfjsLib) {
-          try {
-            const pdf = await pdfjsLib.getDocument({ data: ab.slice(0) }).promise;
-            contenedor.innerHTML = `<div id="pdf-modal-stack" class="space-y-4 flex flex-col items-center"></div>`;
-            const stack = document.getElementById('pdf-modal-stack');
-            for (let p = 1; p <= pdf.numPages; p++) {
-              const page = await pdf.getPage(p);
-              const vp = page.getViewport({ scale: 1.4 });
-              const c = document.createElement('canvas');
-              c.className = 'bg-white rounded-xl shadow-2xl max-w-full h-auto';
-              c.width = vp.width;
-              c.height = vp.height;
-              stack.appendChild(c);
-              await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
-            }
-            return;
-          } catch (e) {}
+      // Si es un archivo .doc antiguo y ya tiene su driveFileId en Google Drive, usar el Visor Oficial de Google Drive que muestra los .doc antiguos 100% idénticos a Microsoft Word
+      if (docInfo.driveFileId && ext === 'doc') {
+        contenedor.innerHTML = `<iframe src="https://drive.google.com/file/d/${docInfo.driveFileId}/preview" class="w-full h-full min-h-[78vh] rounded-xl border-0 bg-white" allow="autoplay"></iframe>`;
+        return;
+      }
+
+      if (docInfo.driveFileId) {
+        btnVistaNube.classList.remove('hidden');
+        btnVistaNube.onclick = () => {
+          contenedor.innerHTML = `<iframe src="https://drive.google.com/file/d/${docInfo.driveFileId}/preview" class="w-full h-full min-h-[78vh] rounded-xl border-0 bg-white" allow="autoplay"></iframe>`;
+        };
+      }
+
+      if (ab && ab.byteLength > 0) {
+        if (ext === 'pdf') {
+          const pdfBlob = new Blob([ab], { type: 'application/pdf' });
+          const blobUrl = URL.createObjectURL(pdfBlob);
+          contenedor.innerHTML = `<iframe src="${blobUrl}#toolbar=1&navpanes=1&view=FitH" class="w-full h-full min-h-[78vh] rounded-xl border-0 bg-white"></iframe>`;
+          return;
         }
 
         if (ext === 'docx' && window.mammoth) {
@@ -2527,8 +2640,28 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           } catch (e) {}
         }
 
-        const decodificado = decodificarDocBinarioWord97(ab, docInfo.fileName);
+        // Si es .doc antiguo y aún no estaba en Drive pero tenemos conexión a Drive, subirlo al vuelo y abrir el visor oficial de Word/Drive
+        if (ext === 'doc' && obtenerTokenDriveActivo()) {
+          contenedor.innerHTML = `<div class="text-center py-12 text-slate-300 text-xs"><i class="fa-solid fa-cloud-arrow-up fa-bounce text-2xl text-sky-400 mb-2 block"></i>Abriendo formato original Word (.doc) con el motor oficial de Google Drive...</div>`;
+          const nuevoDriveId = await subirBinarioIndividualADrive(
+            new Blob([ab], { type: 'application/msword' }),
+            `EXP_${exp.numExpediente.replace(/\W/g, '_')}_${slotKey}_${docInfo.fileName}`
+          );
+          if (nuevoDriveId) {
+            docInfo.driveFileId = nuevoDriveId;
+            guardarEnBDMasc();
+            contenedor.innerHTML = `<iframe src="https://drive.google.com/file/d/${nuevoDriveId}/preview" class="w-full h-full min-h-[78vh] rounded-xl border-0 bg-white" allow="autoplay"></iframe>`;
+            return;
+          }
+        }
+
+        const decodificado = extraerTextoLimpioDeDocWord97(ab, docInfo.fileName);
         contenedor.innerHTML = `<div class="doc-sheet-viewer">${decodificado.html}</div>`;
+        return;
+      }
+
+      if (docInfo.driveFileId) {
+        contenedor.innerHTML = `<iframe src="https://drive.google.com/file/d/${docInfo.driveFileId}/preview" class="w-full h-full min-h-[78vh] rounded-xl border-0 bg-white" allow="autoplay"></iframe>`;
         return;
       }
 
@@ -2539,9 +2672,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       contenedor.innerHTML = `
         <div class="max-w-lg mx-auto my-12 p-8 rounded-2xl bg-slate-950 border border-amber-500/40 text-center space-y-3">
-          <i class="fa-solid fa-file-arrow-up text-4xl text-amber-400"></i>
-          <h4 class="text-sm font-bold text-white">Vuelve a seleccionar el archivo original</h4>
-          <p class="text-xs text-slate-400">Este registro venía de una versión anterior sin binario adjunto. Pulsa el botón <strong>"Cambiar / Subir"</strong> en la casilla de <strong>${docInfo.fileName}</strong> para guardar su archivo original.</p>
+          <i class="fa-solid fa-cloud-arrow-up text-4xl text-amber-400"></i>
+          <h4 class="text-sm font-bold text-white">Sincroniza los archivos desde la computadora donde los subiste</h4>
+          <p class="text-xs text-slate-400">En la computadora donde cargaste el lote masivo, conecta <strong>"Drive 5TB"</strong> y pulsa el botón amarillo <strong>"Subir Archivos Locales a Nube"</strong> (en la barra izquierda) para que todos los archivos originales queden en Google Drive.</p>
         </div>
       `;
     }
