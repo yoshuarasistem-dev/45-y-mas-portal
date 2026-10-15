@@ -22,7 +22,7 @@
       --accent-gold: #d4af37;
       --accent-orange: #f59e0b;
       --border-color: rgba(212, 175, 55, 0.25);
-      --header-bg: rgba(7, 11, 20, 0.92);
+      --header-bg: rgba(7, 11, 20, 0.94);
       --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.55);
     }
 
@@ -36,7 +36,7 @@
       --accent-gold: #b45309;
       --accent-orange: #d97706;
       --border-color: rgba(180, 83, 9, 0.25);
-      --header-bg: rgba(255, 255, 255, 0.94);
+      --header-bg: rgba(255, 255, 255, 0.96);
       --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.1);
     }
 
@@ -63,8 +63,8 @@
     .top-bar-institucional {
       background: linear-gradient(90deg, #0b132b 0%, #1c2541 50%, #0b132b 100%);
       color: #f8fafc;
-      font-size: 0.78rem;
-      padding: 8px 5%;
+      font-size: 0.76rem;
+      padding: 7px 4%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -97,7 +97,7 @@
     .top-bar-redes {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .top-bar-redes a {
@@ -111,7 +111,9 @@
       transform: scale(1.15);
     }
 
-    /* Header Principal */
+    /* ==========================================================================
+       HEADER PRINCIPAL (MENÚ ALINEADO EN UNA SOLA LÍNEA Y ESTÉTICO)
+       ========================================================================== */
     .header-principal {
       position: sticky;
       top: 0;
@@ -120,36 +122,46 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 5%;
+      padding: 10px 4%;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
       transition: all 0.3s ease;
     }
 
     .brand-logos {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
       color: var(--text-primary);
+      flex-shrink: 0;
     }
 
     .brand-logos img {
-      height: 52px;
+      height: 48px;
       width: auto;
       object-fit: contain;
       background: #ffffff;
       padding: 4px;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+    }
+
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .brand-titles h1 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 800;
       letter-spacing: 0.3px;
-      line-height: 1.2;
+      line-height: 1.15;
+      white-space: nowrap;
       background: linear-gradient(135deg, #f59e0b 0%, #d4af37 60%, #fef08a 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -162,34 +174,49 @@
     }
 
     .brand-titles p {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--text-secondary);
       font-weight: 600;
+      white-space: nowrap;
+      margin-top: 2px;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 22px;
+      justify-content: center;
+      gap: 6px;
       list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      display: flex;
+      align-items: center;
     }
 
     .nav-links a {
       text-decoration: none;
       color: var(--text-primary);
-      font-weight: 600;
-      font-size: 0.88rem;
-      transition: color 0.2s;
+      font-weight: 700;
+      font-size: 0.84rem;
+      white-space: nowrap;
+      padding: 8px 13px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
     }
 
     .nav-links a:hover {
       color: var(--accent-orange);
+      background: rgba(245, 158, 11, 0.1);
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     /* Botón Camaleón (Modo Claro / Oscuro) */
@@ -205,6 +232,7 @@
       align-items: center;
       justify-content: center;
       font-size: 1rem;
+      flex-shrink: 0;
       transition: all 0.25s ease;
     }
 
@@ -217,10 +245,11 @@
       background: linear-gradient(135deg, #f59e0b 0%, #d4af37 50%, #b45309 100%);
       color: #070b14 !important;
       font-weight: 800 !important;
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: 12px;
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
+      white-space: nowrap;
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -246,7 +275,7 @@
 
     /* ==========================================================================
        HERO PRINCIPAL CON CARRUSEL DINÁMICO DE FONDO (ija1 a ija4)
-       CON ENCUADRE CORREGIDO PARA QUE SE VEA COMPLETO EL DIRECTOR GENERAL
+       ENCUADRE ESPECIAL PARA ija1 (SE VEN CARAS Y CUERPOS DE AMBAS PERSONAS)
        ========================================================================== */
     .hero {
       position: relative;
@@ -254,8 +283,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 60px 5%;
+      padding: 56px 5%;
       overflow: hidden;
+      background-color: #070b14;
     }
 
     .hero-carousel-bg {
@@ -268,39 +298,67 @@
       position: absolute;
       inset: 0;
       opacity: 0;
-      transition: opacity 1.1s ease-in-out, transform 6s ease;
-      transform: scale(1.02);
+      transition: opacity 1.1s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
     .hero-slide.active {
       opacity: 1;
-      transform: scale(1);
     }
 
-    .hero-slide img {
+    .hero-slide > img.slide-main-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      /* Alinea la parte superior-central para que jamás se corte la cabeza del Director General */
-      object-position: center 22%;
+      object-position: center 28%;
     }
 
-    /* Ajuste específico para la primera foto (ija1) que es vertical, mostrando claramente los rostros completos */
-    .hero-slide.slide-ija1 img {
-      object-position: center 12%;
+    /* Solución estética para ija1 (foto vertical):
+       1. Fondo ambiental difuminado a los lados
+       2. Imagen principal escalada proporcionalmente en el centro para mostrar
+          completos TANTO LOS ROSTROS COMO EL CUERPO Y LOS DOCUMENTOS de ambas personas */
+    .hero-slide.slide-ija1 .slide-ambient-blur {
+      position: absolute;
+      inset: -20px;
+      width: calc(100% + 40px);
+      height: calc(100% + 40px);
+      object-fit: cover;
+      object-position: center 35%;
+      filter: blur(24px) brightness(0.45);
+      z-index: 0;
+    }
+
+    .hero-slide.slide-ija1 > img.slide-main-img {
+      position: relative;
+      z-index: 1;
+      width: auto;
+      max-width: 92%;
+      height: 108%;
+      object-fit: contain;
+      object-position: center 32%;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
     }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, rgba(7, 11, 20, 0.90) 0%, rgba(15, 23, 42, 0.62) 52%, rgba(7, 11, 20, 0.85) 100%);
+      background: linear-gradient(
+        90deg,
+        rgba(7, 11, 20, 0.88) 0%,
+        rgba(15, 23, 42, 0.52) 48%,
+        rgba(7, 11, 20, 0.82) 100%
+      );
       z-index: 1;
     }
 
     .hero-content {
       position: relative;
       z-index: 2;
-      max-width: 1180px;
+      max-width: 1200px;
       width: 100%;
       display: grid;
       grid-template-columns: 1.25fr 0.75fr;
@@ -326,10 +384,11 @@
     }
 
     .hero-text h2 {
-      font-size: clamp(2rem, 4vw, 3.3rem);
+      font-size: clamp(2rem, 3.8vw, 3.2rem);
       font-weight: 900;
       line-height: 1.15;
       margin-bottom: 18px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
     }
 
     .hero-text h2 span {
@@ -339,10 +398,11 @@
     }
 
     .hero-text p {
-      font-size: 1.02rem;
-      color: #e2e8f0;
+      font-size: 1rem;
+      color: #f1f5f9;
       margin-bottom: 26px;
-      max-width: 640px;
+      max-width: 630px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
     }
 
     .hero-buttons {
@@ -352,14 +412,15 @@
     }
 
     .btn-secundario {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(15, 23, 42, 0.65);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       padding: 11px 22px;
       border-radius: 12px;
       text-decoration: none;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
+      white-space: nowrap;
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -761,11 +822,14 @@
     }
 
     .galeria-img-wrap {
-      height: 230px;
+      height: 250px;
       width: 100%;
       overflow: hidden;
       background: #0b132b;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .galeria-img-wrap img {
@@ -776,13 +840,15 @@
       transition: transform 0.45s ease;
     }
 
-    /* Asegura que en la galería tampoco se recorte la cara del Director General en ija1 */
+    /* En la tarjeta de galería, muestra a las dos personas completas (rostros y cuerpos) en ija1 */
     .galeria-img-wrap img[data-asset="ija1"] {
-      object-position: center 12%;
+      object-fit: contain;
+      object-position: center center;
+      background: #080e1e;
     }
 
     .galeria-item:hover .galeria-img-wrap img {
-      transform: scale(1.06);
+      transform: scale(1.05);
     }
 
     .galeria-caption {
@@ -895,7 +961,6 @@
       color: #f59e0b;
     }
 
-    /* Contenedor visual del Mapa GPS de Google Maps */
     .footer-gps-card {
       background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(245, 158, 11, 0.35);
@@ -942,15 +1007,25 @@
     }
 
     /* ==========================================================================
-       VISTA EN CELULAR (RESPONSIVE DESIGN)
+       VISTA EN PANTALLAS MEDIANAS Y CELULAR (RESPONSIVE DESIGN)
        ========================================================================== */
+    @media (max-width: 1200px) {
+      .nav-links a {
+        font-size: 0.78rem;
+        padding: 7px 9px;
+      }
+      .brand-titles h1 {
+        font-size: 0.92rem;
+      }
+    }
+
     @media (max-width: 1100px) {
       .footer-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 960px) {
+    @media (max-width: 980px) {
       .hero-content {
         grid-template-columns: 1fr;
         text-align: center;
@@ -976,7 +1051,7 @@
         flex-direction: column;
         padding: 20px;
         border-bottom: 1px solid var(--border-color);
-        gap: 16px;
+        gap: 12px;
       }
       .nav-links.active {
         display: flex;
@@ -993,10 +1068,13 @@
         font-size: 0.72rem;
       }
       .brand-logos img {
-        height: 42px;
+        height: 40px;
       }
       .brand-titles h1 {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+      }
+      .brand-titles p {
+        font-size: 0.63rem;
       }
       .video-card,
       .card-video {
@@ -1041,7 +1119,7 @@
   </div>
 
   <!-- =========================================================================
-       2. HEADER PRINCIPAL (CON UN SOLO LOGO DEL CENTRO + LOGO45)
+       2. HEADER PRINCIPAL (MENÚ ORDENADO EN UNA SOLA LÍNEA + 2 LOGOS)
        ========================================================================= -->
   <header class="header-principal">
     <a href="#inicio" class="brand-logos">
@@ -1059,7 +1137,7 @@
       <li><a href="#capsulas" onclick="cerrarMenuMovil()">Cápsulas y Redes</a></li>
       <li><a href="#galeria" onclick="cerrarMenuMovil()">Galería IJA</a></li>
       <li><a href="#academia" onclick="cerrarMenuMovil()">Academia</a></li>
-      <li><a href="#contacto" onclick="cerrarMenuMovil()">Contacto y Ubicación</a></li>
+      <li><a href="#contacto" onclick="cerrarMenuMovil()">Contacto</a></li>
     </ul>
 
     <div class="header-actions">
@@ -1076,14 +1154,27 @@
   </header>
 
   <!-- =========================================================================
-       3. HERO CON CARRUSEL AUTOMÁTICO (FOTOS ija1 A ija4 BIEN ENCUADRADAS)
+       3. HERO CON CARRUSEL AUTOMÁTICO (ija1 MUESTRA CARAS Y CUERPOS COMPLETOS)
        ========================================================================= -->
   <section id="inicio" class="hero">
     <div class="hero-carousel-bg">
-      <div class="hero-slide slide-ija1 active"><img data-asset="ija1" src="./assets/ija1.jpg" alt="Acreditación IJA 1" /></div>
-      <div class="hero-slide"><img data-asset="ija2" src="./assets/ija2.jpg" alt="Acreditación IJA 2" /></div>
-      <div class="hero-slide"><img data-asset="ija3" src="./assets/ija3.jpg" alt="Acreditación IJA 3" /></div>
-      <div class="hero-slide"><img data-asset="ija4" src="./assets/ija4.jpg" alt="Acreditación IJA 4" /></div>
+      <!-- Slide 1 (ija1): Doble capa para que se vean completas las caras y los cuerpos de las dos personas -->
+      <div class="hero-slide slide-ija1 active">
+        <img data-asset="ija1" src="./assets/ija1.jpg" class="slide-ambient-blur" alt="" aria-hidden="true" />
+        <img data-asset="ija1" src="./assets/ija1.jpg" class="slide-main-img" alt="Acreditación IJA 1" />
+      </div>
+      <!-- Slide 2 (ija2) -->
+      <div class="hero-slide">
+        <img data-asset="ija2" src="./assets/ija2.jpg" class="slide-main-img" alt="Acreditación IJA 2" />
+      </div>
+      <!-- Slide 3 (ija3) -->
+      <div class="hero-slide">
+        <img data-asset="ija3" src="./assets/ija3.jpg" class="slide-main-img" alt="Acreditación IJA 3" />
+      </div>
+      <!-- Slide 4 (ija4) -->
+      <div class="hero-slide">
+        <img data-asset="ija4" src="./assets/ija4.jpg" class="slide-main-img" alt="Acreditación IJA 4" />
+      </div>
     </div>
     <div class="hero-overlay"></div>
 
@@ -1436,7 +1527,6 @@
           <li><i class="fa-solid fa-book-open-reader"></i> Talleres prácticos de redacción de Convenios Finales ante el IJA</li>
           <li><i class="fa-solid fa-award"></i> Ponentes certificados y especialistas en Justicia Alternativa</li>
         </ul>
-        <!-- Solo los 2 logos oficiales sin repetir -->
         <div class="academia-logos-colegio">
           <img data-asset="LOGO" src="./assets/LOGO.png" alt="Logo Oficial Centro Privado" />
           <img data-asset="logo45" src="./assets/logo45.png" alt="Logo 45 y Más" />
