@@ -176,7 +176,7 @@
         left: 0;
         bottom: 0;
         z-index: 60;
-        width: 290px;
+        width: 295px;
         transform: translateX(-100%);
         transition: transform 0.28s ease-in-out;
       }
@@ -212,7 +212,7 @@
           Nube Compartida en Tiempo Real • 5TB
         </span>
         <h1 class="text-2xl sm:text-3xl font-black gold-text mt-2">BÓVEDA PRO 45 Y MÁS</h1>
-        <p class="text-xs text-slate-400 mt-1">Centros Privados IJA 065 y 353 • Control Judicial por Fojas • Visor IA</p>
+        <p class="text-xs text-slate-400 mt-1">Centros IJA 065 y 353 • 19 Mercantiles • 13 Civiles • 17 Familiares</p>
       </div>
 
       <form onsubmit="iniciarSesion(event)" class="space-y-4">
@@ -257,7 +257,7 @@
         <a href="index.html" class="hover:text-amber-400 transition flex items-center gap-1.5">
           <i class="fa-solid fa-arrow-left"></i> Volver a Portada
         </a>
-        <span class="font-mono-code text-[11px] text-sky-400">v5.0 Cloud Sync • 5TB</span>
+        <span class="font-mono-code text-[11px] text-sky-400">v5.2 Cloud Sync • 49 Juzgados</span>
       </div>
     </div>
   </div>
@@ -324,7 +324,7 @@
           </button>
 
           <button onclick="renderizarVista('juzgados')" id="nav-btn-juzgados" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition bg-slate-900/70 hover:bg-slate-800 text-slate-300">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-gavel text-amber-400"></i> Expedientes Juzgados (19 Merc.)</span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-gavel text-amber-400"></i> Juzgados (19 Merc / 13 Civ / 17 Fam)</span>
             <span id="badge-count-juzgados" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono-code">0</span>
           </button>
 
@@ -339,7 +339,7 @@
           </button>
         </div>
 
-        <!-- ÁRBOL DE CARPETAS MASC Y JUZGADOS (100% EDITABLE AL SELECCIONAR) -->
+        <!-- ÁRBOL DE CARPETAS MASC Y JUZGADOS (100% SEPARADO Y EDITABLE AL SELECCIONAR) -->
         <div class="border-t border-slate-800 pt-3 space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
@@ -376,20 +376,28 @@
             </div>
           </div>
 
-          <!-- Sub-árbol para Juzgados (19 Mercantiles, Civiles, Familiares) -->
+          <!-- Sub-árbol para Juzgados (Separado estrictamente: 19 Mercantiles, 13 Civiles, 17 Familiares) -->
           <div id="sidebar-tree-juzgados" class="hidden space-y-3">
             <div>
-              <p class="text-[10px] font-semibold uppercase text-slate-400 mb-1">Materia Judicial</p>
+              <p class="text-[10px] font-semibold uppercase text-slate-400 mb-1">1. Carpeta por Materia Judicial</p>
               <div id="folder-list-materias-juz" class="space-y-1"></div>
             </div>
+
             <div>
               <div class="flex items-center justify-between mb-1">
-                <p class="text-[10px] font-semibold uppercase text-slate-400">Juzgados (19 Mercantiles y más)</p>
-                <button onclick="abrirModalEditarCarpetaSeleccionada()" class="text-[10px] text-sky-400 hover:underline">Editar</button>
+                <p id="label-sidebar-juzgados-count" class="text-[10px] font-semibold uppercase text-amber-300">2. Carpetas por Juzgado Individual</p>
+                <button onclick="abrirModalEditarCarpetaSeleccionada()" class="text-[10px] text-sky-400 hover:underline">Renombrar</button>
               </div>
-              <select id="select-juzgado-filtro" onchange="seleccionarFiltroJuzgado(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white">
-                <!-- Se puebla con los 19 Juzgados de lo Mercantil + Civil + Familiar -->
+
+              <!-- Selector rápido desplegable -->
+              <select id="select-juzgado-filtro" onchange="seleccionarFiltroJuzgado(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white mb-2">
+                <!-- Se puebla según la Materia activa (19 Mercantiles, 13 Civiles o 17 Familiares) -->
               </select>
+
+              <!-- Lista de Carpetas Individuales por cada Juzgado (Para que jamás se revuelvan) -->
+              <div id="folder-list-juzgados-individuales" class="space-y-1 max-h-56 overflow-y-auto pr-1">
+                <!-- Botones individuales de carpeta para cada Juzgado 1°, 2°, 3°... -->
+              </div>
             </div>
           </div>
         </div>
@@ -406,7 +414,7 @@
               </span>
             </div>
             <p class="text-[11px] text-slate-300 leading-snug">
-              Procesa lotes de <strong>337 a 400+ archivos</strong> sin congelarse en <code>.doc</code> antiguos y <strong>sincroniza automáticamente con la nube del despacho</strong>.
+              Procesa lotes de <strong>337 a 400+ archivos</strong> sin congelarse en <code>.doc</code> antiguos, separa cada Juzgado o Centro en su propia carpeta y <strong>sincroniza con la nube del despacho</strong>.
             </p>
 
             <div class="space-y-1.5">
@@ -570,7 +578,7 @@
               type="text"
               id="global-search-input"
               oninput="ejecutarFiltroBusqueda()"
-              placeholder="Buscar por N° Expediente (ej. 327/2026), Solicitante, Partes, Juzgado, Predial, Foja o Estatus IJA..."
+              placeholder="Buscar por N° Expediente (ej. 327/2026), Solicitante, Partes, Juzgado (ej. 3° de lo Civil), Predial o Foja..."
               class="w-full bg-slate-900/95 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-400"
             />
           </div>
@@ -606,16 +614,29 @@
       </main>
 
       <!-- ========================================================================
-           VISTA 2: EXPEDIENTES DE JUZGADOS (19 MERCANTILES + CIVIL + FAMILIAR) (#view-juzgados)
+           VISTA 2: EXPEDIENTES DE JUZGADOS (19 MERCANTILES + 13 CIVILES + 17 FAMILIARES) (#view-juzgados)
            ======================================================================== -->
-      <main id="view-juzgados" class="p-3 sm:p-6 flex-1 hidden">
-        <div class="mb-4 glass-panel rounded-xl p-3 border border-sky-500/30 flex flex-wrap items-center justify-between gap-2 text-xs">
-          <div>
-            <i class="fa-solid fa-scale-balanced text-sky-400 mr-1.5"></i>
-            <strong>Control Judicial por Foja + Nube Compartida:</strong> Al subir promociones, acuerdos o anexos de un expediente existente, se integran automáticamente en el orden consecutivo de su foja y se sincronizan con todo el despacho.
+      <main id="view-juzgados" class="p-3 sm:p-6 flex-1 hidden space-y-4">
+        <!-- Barra informativa y selector visual de Carpetas por Juzgado Individual -->
+        <div class="glass-panel rounded-2xl p-4 border border-sky-500/30 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div>
+              <i class="fa-solid fa-folder-tree text-amber-400 mr-1.5"></i>
+              <strong>Carpetas Independientes por Juzgado:</strong> Cada Juzgado tiene su propia carpeta aislada. Nada se mezcla entre Juzgados.
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-[11px]">19 Mercantiles</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold text-[11px]">13 Civiles</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold text-[11px]">17 Familiares</span>
+            </div>
           </div>
-          <span class="font-mono-code text-amber-300 font-bold">19 Juzgados Mercantiles + Civiles + Familiares</span>
+
+          <!-- Cinta de Carpetas de Juzgados de la Materia Seleccionada -->
+          <div id="juzgados-folders-strip" class="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1">
+            <!-- Renderizado dinámico de carpetas de cada juzgado individual -->
+          </div>
         </div>
+
         <div id="grid-expedientes-juzgados" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
           <!-- Renderizado dinámico por renderizarGridJuzgados() -->
         </div>
@@ -682,8 +703,8 @@
                 <code class="text-emerald-300 font-mono-code text-[11px]">BOVEDA_45YMAS_CLOUD / boveda_45ymas_despacho45_db.json</code>
               </div>
               <div>
-                <span class="text-slate-400 block">Cuenta de Servicio Gemini IA:</span>
-                <code class="text-amber-300 font-mono-code text-[11px] break-all">gemini-boveda@boveda-45ymas.iam.gserviceaccount.com</code>
+                <span class="text-slate-400 block">Estructura Judicial Separada:</span>
+                <span class="text-amber-300 font-bold">19 Juzgados Mercantiles • 13 Juzgados Civiles • 17 Juzgados Familiares</span>
               </div>
               <div>
                 <span class="text-slate-400 block">OAuth Client ID Google Drive:</span>
@@ -785,7 +806,7 @@
                 <i class="fa-solid fa-scale-balanced mr-1.5"></i> Índice de Actuaciones y Piezas Documentales por Foja
               </h3>
               <p class="text-xs text-slate-400 mt-0.5">
-                Ordenado conforme a prelación procesal (1. Solicitud → 2. Dictamen → 3. Acuerdo → 4. Convenio Final → 5. Constancia Digital → 6. Anexos Cotejados → 7. Estatus IJA).
+                Ordenado conforme a prelación procesal (1. Solicitud/Demanda → 2. Dictamen/Anexos → 3. Acuerdo/Auto → 4. Convenio/Sentencia → 5. Constancias y Promociones).
               </p>
             </div>
             <div class="flex items-center gap-2">
@@ -818,7 +839,7 @@
         <div id="content-exp-editar" class="hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-xs">
             <div>
-              <label class="block text-amber-300 font-bold mb-1">Centro MASC / Juzgado (Carpeta)</label>
+              <label class="block text-amber-300 font-bold mb-1">Centro MASC / Juzgado Específico (Carpeta)</label>
               <input type="text" id="edit-exp-centro" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white" />
             </div>
             <div>
@@ -839,13 +860,14 @@
                 <option value="Preventivo Arrendamiento">Preventivo Arrendamiento</option>
                 <option value="Alimentos y Convivencia">Alimentos y Convivencia</option>
                 <option value="Divorcio Admtvo. y Mutuo">Divorcio Admtvo. y Mutuo</option>
-                <option value="Mercantil">Mercantil (Juzgados)</option>
-                <option value="Civil">Civil (Juzgados)</option>
-                <option value="Familiar">Familiar (Juzgados)</option>
+                <option value="Mercantil">Mercantil (19 Juzgados)</option>
+                <option value="Civil">Civil (13 Juzgados)</option>
+                <option value="Familiar">Familiar (17 Juzgados)</option>
+                <option value="Amparo">Amparo / Federal</option>
               </select>
             </div>
             <div>
-              <label class="block text-amber-300 font-bold mb-1">Fecha de Firma del Convenio</label>
+              <label class="block text-amber-300 font-bold mb-1">Fecha de Firma / Radicación</label>
               <input type="date" id="edit-exp-firma" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white" />
             </div>
             <div>
@@ -896,7 +918,6 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <!-- Botón para cargar el .docx original del usuario y reemplazar directo en su XML -->
           <label class="cursor-pointer bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5" title="Selecciona tu archivo 'Oficio al IJA (Convenios Finales) ARRENDAMIENTO.docx' para reemplazar las letras directamente dentro de tu mismo archivo sin perder ningún logo">
             <i class="fa-solid fa-file-import"></i> Vincular tu .DOCX Original
             <input type="file" accept=".docx" class="hidden" onchange="vincularMachoteDocxOriginal(this.files[0])" />
@@ -1010,7 +1031,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     <div class="glass-panel rounded-3xl max-w-xl w-full p-6 border border-amber-500/40 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="text-base font-black gold-text flex items-center gap-2">
-          <i class="fa-solid fa-folder-plus"></i> Registrar Nuevo Expediente en Bóveda
+          <i class="fa-solid fa-folder-plus"></i> Registrar Nuevo Expediente en su Carpeta Exclusiva
         </h3>
         <button onclick="cerrarModalCrear()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
@@ -1020,18 +1041,31 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <label class="block text-amber-300 font-bold mb-1">Tipo de Registro</label>
           <select id="new-exp-tipo" onchange="toggleCamposCrearModal()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white">
             <option value="masc">Convenio MASC / IJA</option>
-            <option value="juzgado">Expediente Judicial (Juzgado)</option>
+            <option value="juzgado">Expediente Judicial (Juzgado Específico)</option>
           </select>
         </div>
 
-        <div id="wrap-new-centro">
-          <label class="block text-amber-300 font-bold mb-1">Centro MASC / Carpeta</label>
+        <div>
+          <label class="block text-amber-300 font-bold mb-1">Categoría / Materia</label>
+          <select id="new-exp-categoria" onchange="actualizarSelectorJuzgadosEnCrear()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white">
+            <option value="Preventivo Arrendamiento">Preventivo Arrendamiento (MASC)</option>
+            <option value="Alimentos y Convivencia">Alimentos y Convivencia (MASC)</option>
+            <option value="Divorcio Admtvo. y Mutuo">Divorcio Admtvo. y Mutuo (MASC)</option>
+            <option value="Mercantil">Materia Mercantil (19 Juzgados)</option>
+            <option value="Civil">Materia Civil (13 Juzgados)</option>
+            <option value="Familiar">Materia Familiar (17 Juzgados)</option>
+            <option value="Amparo">Materia Amparo / Federal</option>
+          </select>
+        </div>
+
+        <div id="wrap-new-centro" class="sm:col-span-2">
+          <label class="block text-amber-300 font-bold mb-1">Carpeta de Centro MASC</label>
           <select id="new-exp-centro" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
         </div>
 
-        <div id="wrap-new-juzgado" class="hidden">
-          <label class="block text-sky-300 font-bold mb-1">Juzgado Asignado</label>
-          <select id="new-exp-juzgado" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
+        <div id="wrap-new-juzgado" class="hidden sm:col-span-2">
+          <label class="block text-sky-300 font-bold mb-1">Carpeta de Juzgado Específico (No se mezcla con otros juzgados)</label>
+          <select id="new-exp-juzgado" class="w-full bg-slate-900 border border-sky-500/50 rounded-xl px-3 py-2 text-white font-bold"></select>
         </div>
 
         <div>
@@ -1045,30 +1079,18 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         </div>
 
         <div class="sm:col-span-2">
-          <label class="block text-amber-300 font-bold mb-1">Solicitante y Partes Intervinientes</label>
+          <label class="block text-amber-300 font-bold mb-1">Solicitante / Partes (Actor vs Demandado)</label>
           <input type="text" id="new-exp-partes" required placeholder="Nombres completos de las partes..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white" />
         </div>
 
-        <div>
-          <label class="block text-amber-300 font-bold mb-1">Categoría / Materia</label>
-          <select id="new-exp-categoria" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white">
-            <option value="Preventivo Arrendamiento">Preventivo Arrendamiento</option>
-            <option value="Alimentos y Convivencia">Alimentos y Convivencia</option>
-            <option value="Divorcio Admtvo. y Mutuo">Divorcio Admtvo. y Mutuo</option>
-            <option value="Mercantil">Mercantil</option>
-            <option value="Civil">Civil</option>
-            <option value="Familiar">Familiar</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-amber-300 font-bold mb-1">Fecha de Firma / Inicio</label>
+        <div class="sm:col-span-2">
+          <label class="block text-amber-300 font-bold mb-1">Fecha de Firma / Radicación</label>
           <input type="date" id="new-exp-firma" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white" />
         </div>
 
         <div class="sm:col-span-2 flex justify-end gap-2 pt-3 border-t border-slate-800">
           <button type="button" onclick="cerrarModalCrear()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl font-bold">Cancelar</button>
-          <button type="submit" class="brand-gradient text-slate-950 font-black px-5 py-2 rounded-xl shadow">Crear y Sincronizar</button>
+          <button type="submit" class="brand-gradient text-slate-950 font-black px-5 py-2 rounded-xl shadow">Crear en su Carpeta y Sincronizar</button>
         </div>
       </form>
     </div>
@@ -1139,10 +1161,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
   </div>
 
   <!-- ============================================================================
-       9. MOTOR JAVASCRIPT COMPLETO DE BÓVEDA PRO + SINCRONIZACIÓN REAL GOOGLE DRIVE
+       9. MOTOR JAVASCRIPT COMPLETO DE BÓVEDA PRO + 49 JUZGADOS EN CARPETAS SEPARADAS
        ============================================================================ -->
   <script>
-    // Inicializar Worker de PDF.js
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
@@ -1154,45 +1175,42 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     const AUTHORIZED_USER_EMAIL = 'yoshua.ra.sistem@gmail.com';
     const SERVICE_ACCOUNT = 'gemini-boveda@boveda-45ymas.iam.gserviceaccount.com';
 
-    // Nombres de la Carpeta y Base de Datos Maestra en Google Drive para el entorno "despacho45"
     const DRIVE_CLOUD_FOLDER_NAME = 'BOVEDA_45YMAS_CLOUD';
     const DRIVE_MASTER_DB_FILENAME = 'boveda_45ymas_despacho45_db.json';
 
     // API Key fragmentada en arreglo para evitar bloqueo de GitHub Push Protection y jamás pedirla a los usuarios
     const ACTIVE_GEMINI_KEY = ['AQ.Ab8', 'RN6LTu', 'jUhsb2', 'Uz3s8B', 'E6hexn', 'a4ZhYG', 'UnkuZJ', 'OF_Jo3', '9Kozw'].join('');
 
-    // Modelos activos requeridos con función de auto-recuperación
     const ACTIVE_GEMINI_MODELS = [
       'models/gemini-3.8-flash',
       'models/gemini-3.0-flash',
       'models/gemini-flash-latest'
     ];
 
-    // Los 19 Juzgados de lo Mercantil del Primer Partido Judicial de Jalisco + Civiles y Familiares
+    // ============================================================================
+    // ESTRUCTURA OFICIAL COMPLETA Y SEPARADA DE JUZGADOS DE JALISCO:
+    // - 19 JUZGADOS DE LO MERCANTIL (1° al 19°)
+    // - 13 JUZGADOS DE LO CIVIL (1° al 13°)
+    // - 17 JUZGADOS DE LO FAMILIAR (1° al 17°)
+    // ============================================================================
+    const JUZGADOS_POR_MATERIA = {
+      Mercantil: Array.from({ length: 19 }, (_, i) => `Juzgado ${i + 1}° de lo Mercantil`),
+      Civil: Array.from({ length: 13 }, (_, i) => `Juzgado ${i + 1}° de lo Civil`),
+      Familiar: Array.from({ length: 17 }, (_, i) => `Juzgado ${i + 1}° de lo Familiar`),
+      Amparo: [
+        'Juzgado 1° de Distrito en Materia Civil y Trabajo',
+        'Juzgado 2° de Distrito en Materia Civil y Trabajo',
+        'Juzgado 3° de Distrito en Materia Civil y Trabajo',
+        'Tribunal Colegiado en Materia Civil'
+      ]
+    };
+
     const CATALOGO_JUZGADOS_JALISCO = [
       'TODOS LOS JUZGADOS',
-      'Juzgado 1° de lo Mercantil',
-      'Juzgado 2° de lo Mercantil',
-      'Juzgado 3° de lo Mercantil',
-      'Juzgado 4° de lo Mercantil',
-      'Juzgado 5° de lo Mercantil',
-      'Juzgado 6° de lo Mercantil',
-      'Juzgado 7° de lo Mercantil',
-      'Juzgado 8° de lo Mercantil',
-      'Juzgado 9° de lo Mercantil',
-      'Juzgado 10° de lo Mercantil',
-      'Juzgado 11° de lo Mercantil',
-      'Juzgado 12° de lo Mercantil',
-      'Juzgado 13° de lo Mercantil',
-      'Juzgado 14° de lo Mercantil',
-      'Juzgado 15° de lo Mercantil',
-      'Juzgado 16° de lo Mercantil',
-      'Juzgado 17° de lo Mercantil',
-      'Juzgado 18° de lo Mercantil',
-      'Juzgado 19° de lo Mercantil',
-      'Juzgados de lo Civil (Oral y Tradicional)',
-      'Juzgados de lo Familiar',
-      'Juzgados de Distrito (Amparo / Federal)'
+      ...JUZGADOS_POR_MATERIA.Mercantil,
+      ...JUZGADOS_POR_MATERIA.Civil,
+      ...JUZGADOS_POR_MATERIA.Familiar,
+      ...JUZGADOS_POR_MATERIA.Amparo
     ];
 
     // Check-lists Oficiales Completos por Categoría + Orden de Prelación de Foja
@@ -1308,6 +1326,28 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             { id: 'validacion', nombre: 'Constancia de Validación y Sanción Definitiva', fojaOrden: 23 }
           ]
         }
+      ],
+      // Check-list Procesal para Expedientes de Juzgados (Mercantil, Civil, Familiar)
+      'Judicial_Juzgado': [
+        {
+          titulo: '1. Escrito Inicial y Documentos Fundatorios (Fojas Iniciales)',
+          items: [
+            { id: 'escrito_inicial', nombre: 'Escrito Inicial de Demanda / Solicitud', fojaOrden: 1 },
+            { id: 'documento_base', nombre: 'Documento Base de la Acción y Anexos', fojaOrden: 2 },
+            { id: 'auto_radicacion', nombre: 'Auto de Radicación / Admisión / Exequendo', fojaOrden: 3 },
+            { id: 'constancia_emplazamiento', nombre: 'Diligencia de Emplazamiento / Notificación', fojaOrden: 4 },
+            { id: 'contestacion_demanda', nombre: 'Contestación de Demanda y Excepciones', fojaOrden: 5 }
+          ]
+        },
+        {
+          titulo: '2. Pruebas, Audiencias, Promociones y Sentencia (Fojas Subsecuentes)',
+          items: [
+            { id: 'ofrecimiento_pruebas', nombre: 'Escrito de Ofrecimiento / Desahogo de Pruebas', fojaOrden: 6 },
+            { id: 'audiencia_acuerdos', nombre: 'Acta de Audiencia / Promociones de Trámite', fojaOrden: 7 },
+            { id: 'sentencia_definitiva', nombre: 'Sentencia Definitiva / Convenio Judicial', fojaOrden: 8 },
+            { id: 'ejecucion_sentencia', nombre: 'Incidente de Liquidación / Ejecución de Sentencia', fojaOrden: 9 }
+          ]
+        }
       ]
     };
 
@@ -1321,6 +1361,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       anios: ['2026', '2025', '2024'],
       categorias: ['Preventivo Arrendamiento', 'Alimentos y Convivencia', 'Divorcio Admtvo. y Mutuo'],
       materiasJuzgado: ['TODAS', 'Mercantil', 'Civil', 'Familiar', 'Amparo'],
+      juzgadosPorMateria: JSON.parse(JSON.stringify(JUZGADOS_POR_MATERIA)),
       juzgados: [...CATALOGO_JUZGADOS_JALISCO],
       cloudLinks: {}
     };
@@ -1351,7 +1392,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     // INICIALIZACIÓN DEL SISTEMA Y CARGA AUTOMÁTICA DE CREDENCIALES + NUBE
     // ============================================================================
     window.addEventListener('DOMContentLoaded', async () => {
-      // Asegurar que la API Key esté siempre registrada para que ningún usuario nuevo o existente reciba avisos
       localStorage.setItem('gemini_api_key', ACTIVE_GEMINI_KEY);
       localStorage.setItem('boveda_ai_ready', 'true');
 
@@ -1365,14 +1405,12 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       precargarLogosOficialesBase64();
       await verificarTokenGoogleDriveYSincronizar();
 
-      // Auto-Polling cada 30 segundos para que cualquier cambio hecho por otro perfil del despacho se refleje solo
       setInterval(() => {
         if (entornoActivo === 'despacho45' && !ingestaMasivaEnCurso && !syncEnProgreso && obtenerTokenDriveActivo()) {
           sincronizarConNubeDrive('pull_background');
         }
       }, 30000);
 
-      // Sincronizar al volver a abrir la pestaña en celular o PC
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible' && entornoActivo === 'despacho45' && !ingestaMasivaEnCurso && obtenerTokenDriveActivo()) {
           sincronizarConNubeDrive('pull_background');
@@ -1422,7 +1460,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       }
     }
 
-    // Precarga los logos institucionales en Base64 para que el Machote de Oficios y la descarga Word siempre conserven los logos
     async function precargarLogosOficialesBase64() {
       const convertirRutaABase64 = async (rutas) => {
         for (const r of rutas) {
@@ -1443,6 +1480,40 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       logosBase64.centrologo = await convertirRutaABase64(['./assets/centrologo.png', './assets/centrologo.jpg', './assets/LOGO.png', './assets/LOGO.jpg']);
       logosBase64.logo45 = await convertirRutaABase64(['./assets/logo45.png', './assets/logo45.jpg', './assets/logocirculotransparente1.png']);
+    }
+
+    // Asegura que siempre existan los 19 Mercantiles, 13 Civiles y 17 Familiares aunque haya datos viejos en localStorage
+    function asegurarCatalogoCompletoDeJuzgados() {
+      if (!carpetasConfig.juzgadosPorMateria) {
+        carpetasConfig.juzgadosPorMateria = JSON.parse(JSON.stringify(JUZGADOS_POR_MATERIA));
+      } else {
+        ['Mercantil', 'Civil', 'Familiar', 'Amparo'].forEach(mat => {
+          const base = JUZGADOS_POR_MATERIA[mat] || [];
+          const actual = carpetasConfig.juzgadosPorMateria[mat] || [];
+          carpetasConfig.juzgadosPorMateria[mat] = Array.from(new Set([...base, ...actual]));
+        });
+      }
+
+      carpetasConfig.juzgados = [
+        'TODOS LOS JUZGADOS',
+        ...carpetasConfig.juzgadosPorMateria.Mercantil,
+        ...carpetasConfig.juzgadosPorMateria.Civil,
+        ...carpetasConfig.juzgadosPorMateria.Familiar,
+        ...carpetasConfig.juzgadosPorMateria.Amparo
+      ];
+    }
+
+    function obtenerListaJuzgadosSegunMateria(materia) {
+      asegurarCatalogoCompletoDeJuzgados();
+      if (!materia || materia === 'TODAS') {
+        return [
+          ...carpetasConfig.juzgadosPorMateria.Mercantil,
+          ...carpetasConfig.juzgadosPorMateria.Civil,
+          ...carpetasConfig.juzgadosPorMateria.Familiar,
+          ...carpetasConfig.juzgadosPorMateria.Amparo
+        ];
+      }
+      return carpetasConfig.juzgadosPorMateria[materia] || [];
     }
 
     // ============================================================================
@@ -1478,7 +1549,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           btnDrive.classList.add('text-emerald-300', 'border-emerald-500/40');
         }
         const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        lastTime.textContent = detalle || `Sincronizado con el Despacho (${hora}) • ${bdMasc.length} convenios en nube.`;
+        lastTime.textContent = detalle || `Sincronizado (${hora}) • ${bdMasc.length} MASC y ${bdJuzgados.length} Judiciales en nube.`;
       } else {
         badge.textContent = 'Sin Conectar';
         badge.className = 'text-[9px] font-mono-code px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30';
@@ -1519,7 +1590,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       }
     }
 
-    // 1. Buscar o Crear la Carpeta Raíz "BOVEDA_45YMAS_CLOUD" en Google Drive
     async function obtenerOCrearCarpetaRaizDrive(token) {
       if (driveFolderIdCache) return driveFolderIdCache;
 
@@ -1540,7 +1610,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         return driveFolderIdCache;
       }
 
-      // Crear carpeta si no existe
       const resCreate = await fetch('https://www.googleapis.com/drive/v3/files', {
         method: 'POST',
         headers: {
@@ -1561,7 +1630,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return null;
     }
 
-    // 2. Buscar el archivo JSON de la base de datos compartida en Google Drive
     async function buscarArchivoMaestraBDEnDrive(token) {
       const q = encodeURIComponent(`name = '${DRIVE_MASTER_DB_FILENAME}' and trashed = false`);
       const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime)&pageSize=5`, {
@@ -1582,23 +1650,22 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return null;
     }
 
-    // 3. Fusión Inteligente entre la Base de Datos de la Nube y la Local (Sin perder ningún expediente ni foja)
+    // Fusión Inteligente que incluye el Centro o Juzgado en la clave única para que jamás se mezclen expedientes de distintos Juzgados
     function fusionarExpedientesNubeYLocal(listaNube = [], listaLocal = []) {
       const mapa = new Map();
 
       const claveUnica = (exp) => {
+        const centroOJuzgado = (exp.centro || 'SIN_CARPETA').trim().toUpperCase();
         const num = (exp.numExpediente || '').trim().toUpperCase();
         const anio = String(exp.anio || '2026').trim();
-        return `${num}__${anio}`;
+        return `${centroOJuzgado}__${num}__${anio}`;
       };
 
-      // Primero insertar todos los de la Nube
       listaNube.forEach(expNube => {
         if (!expNube || !expNube.numExpediente) return;
         mapa.set(claveUnica(expNube), JSON.parse(JSON.stringify(expNube)));
       });
 
-      // Luego fusionar o agregar los Locales (incluyendo fojas/documentos nuevos)
       listaLocal.forEach(expLocal => {
         if (!expLocal || !expLocal.numExpediente) return;
         const key = claveUnica(expLocal);
@@ -1606,9 +1673,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           mapa.set(key, JSON.parse(JSON.stringify(expLocal)));
         } else {
           const existente = mapa.get(key);
-          // Fusionar documentos y fojas de ambos lados
           existente.docs = { ...(existente.docs || {}), ...(expLocal.docs || {}) };
-          // Preservar el nombre del solicitante más completo
           if (
             (!existente.solicitante || existente.solicitante.startsWith('Expediente ')) &&
             expLocal.solicitante &&
@@ -1626,7 +1691,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return Array.from(mapa.values());
     }
 
-    // 4. Subir el estado actual de la base de datos a Google Drive
     async function subirBaseDeDatosADrive(token) {
       const folderId = await obtenerOCrearCarpetaRaizDrive(token);
       const archivoExistente = await buscarArchivoMaestraBDEnDrive(token);
@@ -1685,7 +1749,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       }
     }
 
-    // 5. Subir un archivo binario (PDF/DOCX) a Google Drive para que esté disponible en el celular u otra PC
     async function subirBinarioIndividualADrive(file, numExp, slotId) {
       const token = obtenerTokenDriveActivo();
       if (!token || entornoActivo !== 'despacho45') return null;
@@ -1694,7 +1757,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         const folderId = await obtenerOCrearCarpetaRaizDrive(token);
         const metadata = {
           name: `EXP_${numExp.replace(/\W/g, '_')}_${slotId}_${file.name}`,
-           parents: folderId ? [folderId] : undefined
+          parents: folderId ? [folderId] : undefined
         };
 
         const form = new FormData();
@@ -1721,7 +1784,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return null;
     }
 
-    // 6. Función Principal de Sincronización Bidireccional (Pull + Merge + Push)
     async function sincronizarConNubeDrive(modo = 'manual') {
       if (entornoActivo !== 'despacho45') return;
       const token = obtenerTokenDriveActivo();
@@ -1736,7 +1798,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       syncEnProgreso = true;
 
       if (modo !== 'pull_background') {
-        actualizarEstadoVisualNube('sincronizando', 'Sincronizando convenios y fojas con Google Drive 5TB...');
+        actualizarEstadoVisualNube('sincronizando', 'Sincronizando convenios, juzgados y fojas con Google Drive 5TB...');
       }
 
       try {
@@ -1750,7 +1812,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           if (resDownload.ok) {
             const cloudDB = await resDownload.json();
 
-            // Fusionar carpetas personalizadas
             if (cloudDB.carpetasConfig) {
               carpetasConfig.centros = Array.from(new Set([...carpetasConfig.centros, ...(cloudDB.carpetasConfig.centros || [])]));
               carpetasConfig.anios = Array.from(new Set([...carpetasConfig.anios, ...(cloudDB.carpetasConfig.anios || [])]));
@@ -1758,7 +1819,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
               carpetasConfig.cloudLinks = { ...(cloudDB.carpetasConfig.cloudLinks || {}), ...(carpetasConfig.cloudLinks || {}) };
             }
 
-            // Fusionar convenios MASC y expedientes de Juzgados
+            asegurarCatalogoCompletoDeJuzgados();
+
             if (Array.isArray(cloudDB.bdMasc)) {
               bdMasc = fusionarExpedientesNubeYLocal(cloudDB.bdMasc, bdMasc);
             }
@@ -1766,7 +1828,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
               bdJuzgados = fusionarExpedientesNubeYLocal(cloudDB.bdJuzgados, bdJuzgados);
             }
 
-            // Guardar localmente sin disparar bucle de subida
             localStorage.setItem(obtenerClaveStorage('carpetas'), JSON.stringify(carpetasConfig));
             localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
             localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
@@ -1776,7 +1837,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           }
         }
 
-        // Si fue manual, inicial o push, subir la base fusionada para que todos los demás dispositivos vean lo mismo
         if (modo !== 'pull_background') {
           await subirBaseDeDatosADrive(token);
         }
@@ -1821,6 +1881,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         } catch (e) {}
       }
 
+      // Garantizar siempre los 19 Mercantiles, 13 Civiles y 17 Familiares completos
+      asegurarCatalogoCompletoDeJuzgados();
+
       const savedMasc = localStorage.getItem(obtenerClaveStorage('bd_masc'));
       if (savedMasc) {
         try { bdMasc = JSON.parse(savedMasc); } catch (e) { bdMasc = []; }
@@ -1831,7 +1894,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         try { bdJuzgados = JSON.parse(savedJuz); } catch (e) { bdJuzgados = []; }
       }
 
-      // Poblar con los expedientes reales del Machote Oficial si está vacío
       if (!bdMasc || bdMasc.length === 0) {
         bdMasc = obtenerExpedientesMascIniciales();
         localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
@@ -1859,6 +1921,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     function guardarCarpetasConfig() {
+      asegurarCatalogoCompletoDeJuzgados();
       localStorage.setItem(obtenerClaveStorage('carpetas'), JSON.stringify(carpetasConfig));
       programarSubidaAutomaticaNube();
     }
@@ -1955,7 +2018,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           fechaVencimiento: '',
           predial: '',
           estatusIja: 'Auto de Exequendo / Emplazamiento',
-          cloudPath: 'OneDrive://45yMas/Juzgados/Mercantil/1420-2026',
+          cloudPath: 'OneDrive://45yMas/Juzgados/Mercantil/Juzgado 4° de lo Mercantil/2026/1420-2026',
           docs: {
             escrito_inicial: { fileName: '01_Demanda_Inicial_Mercantil.pdf', pages: 9, date: '2026-02-10', fojaOrden: 1 },
             documento_base: { fileName: '02_Pagare_y_Anexos_Fundatorios.pdf', pages: 3, date: '2026-02-10', fojaOrden: 2 },
@@ -1991,9 +2054,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     // ============================================================================
-    // RENDERIZADO DE VISTAS Y SIDEBAR DE CARPETAS
+    // RENDERIZADO DE VISTAS Y SIDEBAR DE CARPETAS (CON LOS 49 JUZGADOS SEPARADOS)
     // ============================================================================
     function renderizarSidebarCarpetas() {
+      asegurarCatalogoCompletoDeJuzgados();
+
       // 1. Centros MASC
       const contCentros = document.getElementById('folder-list-centros');
       const listaCentros = ['TODOS', ...carpetasConfig.centros];
@@ -2034,19 +2099,50 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         `;
       }).join('');
 
-      // 4. Materias y 19 Juzgados Mercantiles
+      // 4. Materias Judiciales con conteo de Juzgados por Materia
+      const etiquetasMateria = {
+        TODAS: 'Todas las Materias (49 Juzgados)',
+        Mercantil: 'Mercantil (19 Juzgados)',
+        Civil: 'Civil (13 Juzgados)',
+        Familiar: 'Familiar (17 Juzgados)',
+        Amparo: 'Amparo / Federal'
+      };
+
       const contMatJuz = document.getElementById('folder-list-materias-juz');
       contMatJuz.innerHTML = carpetasConfig.materiasJuzgado.map(m => {
         const activo = filtrosActivos.materiaJuz === m;
+        const countExp = m === 'TODAS' ? bdJuzgados.length : bdJuzgados.filter(e => e.categoria === m).length;
         return `
-          <button onclick="seleccionarFiltroMateriaJuz('${m}')" class="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs transition ${activo ? 'neon-blue-gradient text-slate-950 font-black' : 'bg-slate-900/50 hover:bg-slate-800 text-slate-300'}">
-            <span><i class="fa-solid fa-gavel mr-1.5"></i>${m === 'TODAS' ? 'Todas las Materias' : m}</span>
+          <button onclick="seleccionarFiltroMateriaJuz('${m}')" class="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs transition ${activo ? 'neon-blue-gradient text-slate-950 font-black shadow' : 'bg-slate-900/50 hover:bg-slate-800 text-slate-300'}">
+            <span class="truncate"><i class="fa-solid fa-gavel mr-1.5"></i>${etiquetasMateria[m] || m}</span>
+            <span class="text-[10px] font-mono-code px-1.5 py-0.5 rounded-full ${activo ? 'bg-slate-950/20 text-slate-950' : 'bg-slate-800 text-slate-400'}">${countExp}</span>
           </button>
         `;
       }).join('');
 
+      // 5. Lista filtrada de Juzgados Individuales según la Materia seleccionada
+      const juzgadosDeMateria = obtenerListaJuzgadosSegunMateria(filtrosActivos.materiaJuz);
+      const opcionesSelect = ['TODOS LOS JUZGADOS', ...juzgadosDeMateria];
+
       const selJuz = document.getElementById('select-juzgado-filtro');
-      selJuz.innerHTML = carpetasConfig.juzgados.map(j => `<option value="${j}" ${filtrosActivos.juzgado === j ? 'selected' : ''}>${j}</option>`).join('');
+      selJuz.innerHTML = opcionesSelect.map(j => `<option value="${j}" ${filtrosActivos.juzgado === j ? 'selected' : ''}>${j}</option>`).join('');
+
+      // Renderizar botones de carpeta individuales para cada Juzgado en el sidebar
+      const contJuzIndividuales = document.getElementById('folder-list-juzgados-individuales');
+      if (contJuzIndividuales) {
+        contJuzIndividuales.innerHTML = opcionesSelect.map(j => {
+          const activo = filtrosActivos.juzgado === j;
+          const totalJuz = j === 'TODOS LOS JUZGADOS'
+            ? (filtrosActivos.materiaJuz === 'TODAS' ? bdJuzgados.length : bdJuzgados.filter(e => e.categoria === filtrosActivos.materiaJuz).length)
+            : bdJuzgados.filter(e => e.centro === j).length;
+          return `
+            <button onclick="seleccionarFiltroJuzgado('${j}')" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition ${activo ? 'bg-amber-500/25 border border-amber-400 text-amber-300 font-bold' : 'bg-slate-900/60 hover:bg-slate-800 text-slate-300'}">
+              <span class="truncate"><i class="fa-solid ${activo ? 'fa-folder-open text-amber-400' : 'fa-folder text-sky-400'} mr-1.5"></i>${j}</span>
+              <span class="text-[10px] font-mono-code px-1.5 py-0.2 rounded-full ${totalJuz > 0 ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'bg-slate-800 text-slate-500'}">${totalJuz}</span>
+            </button>
+          `;
+        }).join('');
+      }
 
       actualizarTelemetriaGlobal();
       actualizarRutaBreadcrumb();
@@ -2063,13 +2159,15 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
     function seleccionarFiltroMateriaJuz(mat) {
       filtrosActivos.materiaJuz = mat;
+      // Al cambiar de materia (ej. a Civil o Familiar), mostrar "TODOS LOS JUZGADOS" de esa materia para elegir entre sus 13 o 17 carpetas
+      filtrosActivos.juzgado = 'TODOS LOS JUZGADOS';
       renderizarSidebarCarpetas();
       renderizarGridJuzgados();
     }
 
     function seleccionarFiltroJuzgado(juz) {
       filtrosActivos.juzgado = juz;
-      actualizarRutaBreadcrumb();
+      renderizarSidebarCarpetas();
       renderizarGridJuzgados();
     }
 
@@ -2081,7 +2179,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         const cat = filtrosActivos.categoria === 'TODOS' ? 'Todas las Categorías' : filtrosActivos.categoria;
         bread.textContent = `Carpeta MASC: ${c} / ${a} / ${cat}`;
       } else if (vistaActiva === 'juzgados') {
-        bread.textContent = `Carpeta Judicial: ${filtrosActivos.materiaJuz} / ${filtrosActivos.juzgado}`;
+        const matTxt = filtrosActivos.materiaJuz === 'TODAS' ? 'Todas las Materias' : `Materia ${filtrosActivos.materiaJuz}`;
+        bread.textContent = `Carpeta Judicial Aislada: ${matTxt} / ${filtrosActivos.juzgado}`;
       } else {
         bread.textContent = `Administración de Perfiles, Entornos y Sincronización Cloud 5TB`;
       }
@@ -2125,7 +2224,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         renderizarGridMasc();
       } else if (nuevaVista === 'juzgados') {
         btnJuz.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition neon-blue-gradient text-slate-950 shadow';
-        document.getElementById('header-active-module-title').textContent = 'EXPEDIENTES DE JUZGADOS (CONTROL POR FOJA)';
+        document.getElementById('header-active-module-title').textContent = 'JUZGADOS (19 MERCANTILES • 13 CIVILES • 17 FAMILIARES)';
         document.getElementById('btn-crear-label').textContent = 'Nuevo Expediente Judicial';
         renderizarGridJuzgados();
       } else {
@@ -2176,7 +2275,30 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
     function renderizarGridJuzgados() {
       const grid = document.getElementById('grid-expedientes-juzgados');
+      const strip = document.getElementById('juzgados-folders-strip');
       const q = (document.getElementById('global-search-input').value || '').toLowerCase().trim();
+
+      // Renderizar la cinta horizontal de carpetas individuales por Juzgado para que jamás se revuelvan
+      const listaJuzgados = obtenerListaJuzgadosSegunMateria(filtrosActivos.materiaJuz);
+      if (strip) {
+        const botonTodos = `
+          <button onclick="seleccionarFiltroJuzgado('TODOS LOS JUZGADOS')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${filtrosActivos.juzgado === 'TODOS LOS JUZGADOS' ? 'brand-gradient text-slate-950 shadow' : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'}">
+            <i class="fa-solid fa-layer-group"></i> Ver Todos (${filtrosActivos.materiaJuz})
+          </button>
+        `;
+        const botonesCarpetas = listaJuzgados.map(j => {
+          const activo = filtrosActivos.juzgado === j;
+          const count = bdJuzgados.filter(e => e.centro === j).length;
+          return `
+            <button onclick="seleccionarFiltroJuzgado('${j}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${activo ? 'neon-blue-gradient text-slate-950 shadow' : 'bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800'}">
+              <i class="fa-solid ${activo ? 'fa-folder-open' : 'fa-folder text-amber-400'}"></i>
+              <span>${j}</span>
+              <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono-code ${activo ? 'bg-slate-950/20 text-slate-950' : (count > 0 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-500')}">${count}</span>
+            </button>
+          `;
+        }).join('');
+        strip.innerHTML = botonTodos + botonesCarpetas;
+      }
 
       const filtrados = bdJuzgados.filter(exp => {
         if (filtrosActivos.materiaJuz !== 'TODAS' && exp.categoria !== filtrosActivos.materiaJuz) return false;
@@ -2191,9 +2313,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       if (filtrados.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full glass-panel rounded-3xl p-10 text-center text-slate-400">
-            <i class="fa-solid fa-gavel text-4xl text-sky-400 mb-3"></i>
-            <h3 class="text-base font-bold text-white">Sin expedientes judiciales en este filtro</h3>
-            <p class="text-xs mt-1">Puedes registrar un nuevo expediente mercantil/civil/familiar o cargar promociones con IA.</p>
+            <i class="fa-solid fa-folder-closed text-4xl text-sky-400 mb-3"></i>
+            <h3 class="text-base font-bold text-white">Carpeta Exclusiva: ${filtrosActivos.juzgado}</h3>
+            <p class="text-xs mt-1">Esta carpeta individual aún no tiene expedientes registrados. Si subes o creas uno para <strong>${filtrosActivos.juzgado}</strong>, se guardará únicamente aquí sin mezclarse con otros juzgados.</p>
           </div>
         `;
         return;
@@ -2204,7 +2326,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
     function construirTarjetaExpedienteHTML(exp) {
       const { piezasOrdenadas, totalFojas } = calcularFoliadoJudicial(exp);
-      const esquema = CHECKLISTS_OFICIALES_MASC[exp.categoria] || CHECKLISTS_OFICIALES_MASC['Preventivo Arrendamiento'];
+      const esquema = CHECKLISTS_OFICIALES_MASC[exp.categoria] || CHECKLISTS_OFICIALES_MASC['Judicial_Juzgado'];
       let totalRequeridos = 0;
       esquema.forEach(s => totalRequeridos += s.items.length);
       const docsCargados = piezasOrdenadas.length;
@@ -2213,10 +2335,10 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return `
         <div class="glass-card rounded-2xl p-4 flex flex-col justify-between">
           <div>
-            <!-- Badges superiores -->
+            <!-- Badges superiores (Muestra claramente la carpeta individual del Centro o Juzgado) -->
             <div class="flex items-center justify-between gap-2 mb-2.5">
-              <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 truncate">
-                ${exp.centro}
+              <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 truncate" title="Carpeta asignada: ${exp.centro}">
+                <i class="fa-solid fa-folder mr-1"></i>${exp.centro}
               </span>
               <div class="flex items-center gap-1.5">
                 <span class="text-[10px] font-mono-code font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
@@ -2242,7 +2364,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             <!-- Metadatos de Fechas y Estatus -->
             <div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-slate-800/80 text-[11px]">
               <div>
-                <span class="text-slate-400 block">Fecha Firma:</span>
+                <span class="text-slate-400 block">Fecha Firma / Auto:</span>
                 <span class="text-slate-200 font-semibold">${exp.fechaFirma || 'S/F'}</span>
               </div>
               ${exp.categoria === 'Preventivo Arrendamiento' ? `
@@ -2252,7 +2374,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
                 </div>
               ` : `
                 <div>
-                  <span class="text-slate-400 block">Estatus IJA / Auto:</span>
+                  <span class="text-slate-400 block">Estatus / Actuación:</span>
                   <span class="text-emerald-300 font-bold truncate block">${exp.estatusIja || 'En trámite'}</span>
                 </div>
               `}
@@ -2288,7 +2410,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
     // ============================================================================
     // MOTOR DE INGESTA MASIVA IA DESTRABADO (.DOC BINARIO, .DOCX Y .PDF)
-    // + DETECCIÓN DE DUPLICADOS Y ACTUALIZACIÓN EN ORDEN DE FOJA + SYNC NUBE
+    // + DETECTOR INTELIGENTE DE JUZGADOS INDIVIDUALES (1-19 MERC, 1-13 CIV, 1-17 FAM)
     // ============================================================================
     function ejecutarConTimeout(promesa, ms, valorPorDefecto) {
       return Promise.race([
@@ -2297,7 +2419,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       ]);
     }
 
-    // Lector binario especializado para Word 97-2003 (.doc) que evita que mammoth.js congele la cola en "PROCESANDO"
     function extraerTextoBinarioDocAntiguo(arrayBuffer, fileName) {
       try {
         const bytes = new Uint8Array(arrayBuffer);
@@ -2336,13 +2457,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         return { texto: `ARCHIVO: ${file.name}`, paginas: 2 };
       }
 
-      // 1. Archivos .doc antiguos -> Extracción binaria directa sin bloquear
       if (ext === 'doc') {
         const textoDoc = extraerTextoBinarioDocAntiguo(buffer, file.name);
         return { texto: textoDoc, paginas: 5 };
       }
 
-      // 2. Archivos .docx modernos -> Mammoth con timeout de 5 segundos y fallback binario
       if (ext === 'docx' && window.mammoth) {
         const resMammoth = await ejecutarConTimeout(
           mammoth.extractRawText({ arrayBuffer: buffer }).catch(() => null),
@@ -2356,7 +2475,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         return { texto: extraerTextoBinarioDocAntiguo(buffer, file.name), paginas: 4 };
       }
 
-      // 3. Archivos .pdf -> PDF.js con conteo exacto de fojas y timeout de 6 segundos
       if (ext === 'pdf' && window.pdfjsLib) {
         const resPdf = await ejecutarConTimeout((async () => {
           try {
@@ -2381,8 +2499,81 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return { texto: `ARCHIVO: ${file.name}`, paginas: 2 };
     }
 
-    function clasificarPorReglasLocales(fileName, textoExtraido) {
-      const fuente = `${fileName} ${textoExtraido || ''}`;
+    // Detector de Juzgado Exacto (por número 1-19 o nombre ordinal en español) para asignar cada expediente a su carpeta individual
+    function detectarJuzgadoEspecificoYMateria(fuenteTexto) {
+      const upper = fuenteTexto.toUpperCase();
+
+      const mapaOrdinales = [
+        { regex: /DECIMO\s*NOVENO|DÉCIMO\s*NOVENO|19\s*(?:°|º|O)?/, num: 19 },
+        { regex: /DECIMO\s*OCTAVO|DÉCIMO\s*OCTAVO|18\s*(?:°|º|O)?/, num: 18 },
+        { regex: /DECIMO\s*SEPTIMO|DÉCIMO\s*SÉPTIMO|17\s*(?:°|º|O)?/, num: 17 },
+        { regex: /DECIMO\s*SEXTO|DÉCIMO\s*SEXTO|16\s*(?:°|º|O)?/, num: 16 },
+        { regex: /DECIMO\s*QUINTO|DÉCIMO\s*QUINTO|15\s*(?:°|º|O)?/, num: 15 },
+        { regex: /DECIMO\s*CUARTO|DÉCIMO\s*CUARTO|14\s*(?:°|º|O)?/, num: 14 },
+        { regex: /DECIMO\s*TERCERO|DÉCIMO\s*TERCERO|13\s*(?:°|º|O)?/, num: 13 },
+        { regex: /DECIMO\s*SEGUNDO|DÉCIMO\s*SEGUNDO|12\s*(?:°|º|O)?/, num: 12 },
+        { regex: /DECIMO\s*PRIMERO|DÉCIMO\s*PRIMERO|ONCEAVO|11\s*(?:°|º|O)?/, num: 11 },
+        { regex: /DECIMO|DÉCIMO|10\s*(?:°|º|O)?/, num: 10 },
+        { regex: /NOVENO|9\s*(?:°|º|O)?/, num: 9 },
+        { regex: /OCTAVO|8\s*(?:°|º|O)?/, num: 8 },
+        { regex: /SEPTIMO|SÉPTIMO|7\s*(?:°|º|O)?/, num: 7 },
+        { regex: /SEXTO|6\s*(?:°|º|O)?/, num: 6 },
+        { regex: /QUINTO|5\s*(?:°|º|O)?/, num: 5 },
+        { regex: /CUARTO|4\s*(?:°|º|O)?/, num: 4 },
+        { regex: /TERCERO|TERCER|3\s*(?:°|º|O)?/, num: 3 },
+        { regex: /SEGUNDO|2\s*(?:°|º|O)?/, num: 2 },
+        { regex: /PRIMERO|PRIMER|1\s*(?:°|º|O)?/, num: 1 }
+      ];
+
+      let materiaDetectada = filtrosActivos.materiaJuz !== 'TODAS' ? filtrosActivos.materiaJuz : 'Mercantil';
+      if (upper.includes('DE LO CIVIL') || upper.includes('JUZGADO CIVIL') || upper.includes('MATERIA CIVIL')) {
+        materiaDetectada = 'Civil';
+      } else if (upper.includes('DE LO FAMILIAR') || upper.includes('JUZGADO FAMILIAR') || upper.includes('MATERIA FAMILIAR')) {
+        materiaDetectada = 'Familiar';
+      } else if (upper.includes('DE LO MERCANTIL') || upper.includes('JUZGADO MERCANTIL') || upper.includes('EJECUTIVO MERCANTIL')) {
+        materiaDetectada = 'Mercantil';
+      }
+
+      // Buscar mención explícita como "JUZGADO [NÚMERO/ORDINAL] DE LO [MATERIA]"
+      const bloqueJuzgado = upper.match(/JUZGADO\s+([A-ZÁÉÍÓÚ0-9°º\s]{1,28}?)\s*(?:DE\s+LO\s+)?(MERCANTIL|CIVIL|FAMILIAR)/i);
+      let numeroJuzgado = 1;
+
+      if (bloqueJuzgado) {
+        const fragmentoNum = bloqueJuzgado[1];
+        const mat = bloqueJuzgado[2].toUpperCase();
+        if (mat === 'CIVIL') materiaDetectada = 'Civil';
+        else if (mat === 'FAMILIAR') materiaDetectada = 'Familiar';
+        else if (mat === 'MERCANTIL') materiaDetectada = 'Mercantil';
+
+        for (const ord of mapaOrdinales) {
+          if (ord.regex.test(fragmentoNum)) {
+            numeroJuzgado = ord.num;
+            break;
+          }
+        }
+      } else if (filtrosActivos.juzgado !== 'TODOS LOS JUZGADOS') {
+        return {
+          materia: materiaDetectada,
+          juzgadoNombre: filtrosActivos.juzgado
+        };
+      }
+
+      // Respetar límites reales: 13 Civiles, 17 Familiares, 19 Mercantiles
+      if (materiaDetectada === 'Civil') {
+        numeroJuzgado = Math.min(13, Math.max(1, numeroJuzgado));
+        return { materia: 'Civil', juzgadoNombre: `Juzgado ${numeroJuzgado}° de lo Civil` };
+      }
+      if (materiaDetectada === 'Familiar') {
+        numeroJuzgado = Math.min(17, Math.max(1, numeroJuzgado));
+        return { materia: 'Familiar', juzgadoNombre: `Juzgado ${numeroJuzgado}° de lo Familiar` };
+      }
+
+      numeroJuzgado = Math.min(19, Math.max(1, numeroJuzgado));
+      return { materia: 'Mercantil', juzgadoNombre: `Juzgado ${numeroJuzgado}° de lo Mercantil` };
+    }
+
+    function clasificarPorReglasLocales(fileName, textoExtraido, rutaRelativa = '') {
+      const fuente = `${rutaRelativa} ${fileName} ${textoExtraido || ''}`;
       const upper = fuente.toUpperCase();
 
       // Centro MASC (065 o 353)
@@ -2406,7 +2597,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         if (soloNum) numExp = soloNum[1].padStart(3, '0');
       }
 
-      // Categoría
+      // Categoría MASC
       let categoria = 'Preventivo Arrendamiento';
       if (upper.includes('DIVORCIO') || upper.includes('CÓNYUGES') || upper.includes('CONYUGES') || upper.includes('EMBARAZO')) {
         categoria = 'Divorcio Admtvo. y Mutuo';
@@ -2414,27 +2605,41 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         categoria = 'Alimentos y Convivencia';
       }
 
-      // Casilla del Check-list y Orden de Foja Judicial
-      let slotId = 'convenio_final';
-      let fojaOrden = 4;
-      const fnUpper = fileName.toUpperCase();
-      if (fnUpper.includes('SOLICITUD')) { slotId = 'solicitud'; fojaOrden = 1; }
-      else if (fnUpper.includes('DICTAMEN')) { slotId = 'dictamen'; fojaOrden = 2; }
-      else if (fnUpper.includes('ACUERDO')) { slotId = 'acuerdo'; fojaOrden = 3; }
-      else if (fnUpper.includes('DIGITAL') || fnUpper.includes('ENVIO') || fnUpper.includes('CONSTANCIA ENVIO')) { slotId = 'convenio_digital'; fojaOrden = 5; }
-      else if (fnUpper.includes('IDENTIFICACION') || fnUpper.includes('INE')) { slotId = 'identificaciones'; fojaOrden = 6; }
-      else if (fnUpper.includes('ADMINISTRACION')) { slotId = 'contrato_administracion'; fojaOrden = 8; }
-      else if (fnUpper.includes('CONTRATO')) { slotId = 'contrato_arrendamiento'; fojaOrden = 7; }
-      else if (fnUpper.includes('ESCRITURA')) { slotId = 'escritura_publica'; fojaOrden = 9; }
-      else if (fnUpper.includes('PREDIAL')) { slotId = 'predial'; fojaOrden = 10; }
-      else if (fnUpper.includes('EMBARAZO')) { slotId = 'certificado_no_embarazo'; fojaOrden = 10; }
-      else if (fnUpper.includes('ESCUCHA')) { slotId = 'constancia_escucha'; fojaOrden = 13; }
-      else if (fnUpper.includes('CONTESTACION')) { slotId = 'contestacion_prevencion'; fojaOrden = 21; }
-      else if (fnUpper.includes('PREVENCION') || fnUpper.includes('PREVENCIÓN')) { slotId = 'prevencion'; fojaOrden = 20; }
-      else if (fnUpper.includes('NO SANCION') || fnUpper.includes('NO SANCIÓN')) { slotId = 'no_sancion'; fojaOrden = 22; }
-      else if (fnUpper.includes('VALIDACION') || fnUpper.includes('VALIDACIÓN') || fnUpper.includes('SANCION')) { slotId = 'validacion'; fojaOrden = 23; }
+      // Detectar también Juzgado Específico por si estamos en el módulo de Juzgados
+      const infoJuzgado = detectarJuzgadoEspecificoYMateria(fuente);
 
-      // Solicitante / Partes
+      // Casilla del Check-list y Orden de Foja Judicial
+      let slotId = vistaActiva === 'juzgados' ? 'escrito_inicial' : 'convenio_final';
+      let fojaOrden = vistaActiva === 'juzgados' ? 1 : 4;
+      const fnUpper = fileName.toUpperCase();
+
+      if (vistaActiva === 'juzgados') {
+        if (fnUpper.includes('DEMANDA') || fnUpper.includes('INICIAL')) { slotId = 'escrito_inicial'; fojaOrden = 1; }
+        else if (fnUpper.includes('PAGARE') || fnUpper.includes('BASE') || fnUpper.includes('ANEXO')) { slotId = 'documento_base'; fojaOrden = 2; }
+        else if (fnUpper.includes('RADICACION') || fnUpper.includes('ADMISORIO') || fnUpper.includes('AUTO')) { slotId = 'auto_radicacion'; fojaOrden = 3; }
+        else if (fnUpper.includes('EMPLAZAMIENTO') || fnUpper.includes('NOTIFICACION')) { slotId = 'constancia_emplazamiento'; fojaOrden = 4; }
+        else if (fnUpper.includes('CONTESTACION')) { slotId = 'contestacion_demanda'; fojaOrden = 5; }
+        else if (fnUpper.includes('PRUEBA')) { slotId = 'ofrecimiento_pruebas'; fojaOrden = 6; }
+        else if (fnUpper.includes('AUDIENCIA') || fnUpper.includes('PROMOCION')) { slotId = 'audiencia_acuerdos'; fojaOrden = 7; }
+        else if (fnUpper.includes('SENTENCIA')) { slotId = 'sentencia_definitiva'; fojaOrden = 8; }
+      } else {
+        if (fnUpper.includes('SOLICITUD')) { slotId = 'solicitud'; fojaOrden = 1; }
+        else if (fnUpper.includes('DICTAMEN')) { slotId = 'dictamen'; fojaOrden = 2; }
+        else if (fnUpper.includes('ACUERDO')) { slotId = 'acuerdo'; fojaOrden = 3; }
+        else if (fnUpper.includes('DIGITAL') || fnUpper.includes('ENVIO') || fnUpper.includes('CONSTANCIA ENVIO')) { slotId = 'convenio_digital'; fojaOrden = 5; }
+        else if (fnUpper.includes('IDENTIFICACION') || fnUpper.includes('INE')) { slotId = 'identificaciones'; fojaOrden = 6; }
+        else if (fnUpper.includes('ADMINISTRACION')) { slotId = 'contrato_administracion'; fojaOrden = 8; }
+        else if (fnUpper.includes('CONTRATO')) { slotId = 'contrato_arrendamiento'; fojaOrden = 7; }
+        else if (fnUpper.includes('ESCRITURA')) { slotId = 'escritura_publica'; fojaOrden = 9; }
+        else if (fnUpper.includes('PREDIAL')) { slotId = 'predial'; fojaOrden = 10; }
+        else if (fnUpper.includes('EMBARAZO')) { slotId = 'certificado_no_embarazo'; fojaOrden = 10; }
+        else if (fnUpper.includes('ESCUCHA')) { slotId = 'constancia_escucha'; fojaOrden = 13; }
+        else if (fnUpper.includes('CONTESTACION')) { slotId = 'contestacion_prevencion'; fojaOrden = 21; }
+        else if (fnUpper.includes('PREVENCION') || fnUpper.includes('PREVENCIÓN')) { slotId = 'prevencion'; fojaOrden = 20; }
+        else if (fnUpper.includes('NO SANCION') || fnUpper.includes('NO SANCIÓN')) { slotId = 'no_sancion'; fojaOrden = 22; }
+        else if (fnUpper.includes('VALIDACION') || fnUpper.includes('VALIDACIÓN') || fnUpper.includes('SANCION')) { slotId = 'validacion'; fojaOrden = 23; }
+      }
+
       let solicitante = `Expediente ${numExp}/${anio}`;
       const matchPartes = fuente.match(/celebraron las partes[\.,:\s]+([A-ZÁÉÍÓÚÑ\s,Y]{8,160}?)(?:\.|Expediente)/i);
       if (matchPartes && matchPartes[1]) {
@@ -2442,10 +2647,10 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       }
 
       return {
-        centro,
+        centro: vistaActiva === 'juzgados' ? infoJuzgado.juzgadoNombre : centro,
         anio,
         numExpediente: `${numExp}/${anio}`,
-        categoria,
+        categoria: vistaActiva === 'juzgados' ? infoJuzgado.materia : categoria,
         solicitante,
         fechaFirma: `${anio}-03-15`,
         fechaVencimiento: categoria === 'Preventivo Arrendamiento' ? `${Number(anio) + 1}-03-15` : '',
@@ -2454,15 +2659,15 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       };
     }
 
-    async function procesarDocGlobalIA(fileName, textoExtraido, esLoteMasivoGrandioso = false) {
-      const base = clasificarPorReglasLocales(fileName, textoExtraido);
+    async function procesarDocGlobalIA(fileName, textoExtraido, esLoteMasivoGrandioso = false, rutaRelativa = '') {
+      const base = clasificarPorReglasLocales(fileName, textoExtraido, rutaRelativa);
 
       if (esLoteMasivoGrandioso || !textoExtraido || textoExtraido.length < 100) {
         return base;
       }
 
-      const prompt = `Analiza este documento del Centro Privado Movimiento 45yMás A.C. y devuelve SOLO un JSON con:
-      {"centro":"Centro 065" o "Centro 353","anio":"2026","numExpediente":"XXX/2026","categoria":"Preventivo Arrendamiento"|"Alimentos y Convivencia"|"Divorcio Admtvo. y Mutuo","solicitante":"NOMBRES DE LAS PARTES","fechaFirma":"YYYY-MM-DD","fechaVencimiento":"YYYY-MM-DD"}
+      const prompt = `Analiza este documento jurídico y devuelve SOLO un JSON con:
+      {"centro":"Centro 065" o "Centro 353" o "Juzgado X° de lo Civil/Familiar/Mercantil","anio":"2026","numExpediente":"XXX/2026","categoria":"Preventivo Arrendamiento"|"Alimentos y Convivencia"|"Divorcio Admtvo. y Mutuo"|"Mercantil"|"Civil"|"Familiar","solicitante":"NOMBRES DE LAS PARTES","fechaFirma":"YYYY-MM-DD","fechaVencimiento":"YYYY-MM-DD"}
       Texto: ${textoExtraido.substring(0, 3200)}`;
 
       for (const modelo of ACTIVE_GEMINI_MODELS) {
@@ -2506,7 +2711,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return base;
     }
 
-    // Función Maestra de Subida Masiva (337 / 397+ archivos) con Fusión por Foja y Sincronización Cloud
+    // Función Maestra de Subida Masiva con Separación Estricta por Carpeta de Centro o Juzgado
     async function subirArchivoSistema(fileList) {
       if (!fileList || fileList.length === 0) return;
 
@@ -2542,6 +2747,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         saltarArchivoEnCurso = false;
 
         const file = archivosValidos[i];
+        const rutaSubcarpeta = file.webkitRelativePath || '';
         const porcentaje = Math.round(((i + 1) / archivosValidos.length) * 100);
         counter.textContent = `${i + 1} / ${archivosValidos.length}`;
         bar.style.width = `${porcentaje}%`;
@@ -2551,14 +2757,13 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           const { texto, paginas } = await extraerContenidoYPaginasSeguro(file);
           if (saltarArchivoEnCurso) continue;
 
-          const info = await procesarDocGlobalIA(file.name, texto, esLoteGrande);
+          const info = await procesarDocGlobalIA(file.name, texto, esLoteGrande, rutaSubcarpeta);
 
-          const claveBinaria = `bin_${info.numExpediente.replace(/\W/g, '_')}_${info.slotId}_${i}`;
+          const claveBinaria = `bin_${info.centro.replace(/\W/g, '_')}_${info.numExpediente.replace(/\W/g, '_')}_${info.slotId}_${i}`;
           if (window.localforage) {
             await ejecutarConTimeout(localforage.setItem(claveBinaria, file).catch(() => null), 2000, null);
           }
 
-          // Si es un lote pequeño (<= 15 archivos) y Drive está conectado, subir también el binario a Google Drive
           let driveFileId = null;
           if (!esLoteGrande && obtenerTokenDriveActivo()) {
             driveFileId = await subirBinarioIndividualADrive(file, info.numExpediente, info.slotId);
@@ -2567,9 +2772,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           const listaDestino = (vistaActiva === 'juzgados') ? bdJuzgados : bdMasc;
           const fechaHoy = new Date().toISOString().split('T')[0];
 
+          // VERIFICACIÓN ESTRICTA: Mismo Número de Expediente + Mismo Año + MISMO JUZGADO/CENTRO (para que jamás se mezclen)
           const existente = listaDestino.find(
             e => e.numExpediente.trim().toUpperCase() === info.numExpediente.trim().toUpperCase() &&
-                 String(e.anio) === String(info.anio)
+                 String(e.anio) === String(info.anio) &&
+                 e.centro.trim().toUpperCase() === info.centro.trim().toUpperCase()
           );
 
           if (existente) {
@@ -2601,16 +2808,16 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             const nuevoExp = {
               id: `exp-${Date.now()}-${i}`,
               tipoRegistro: vistaActiva === 'juzgados' ? 'juzgado' : 'masc',
-              centro: vistaActiva === 'juzgados' ? (filtrosActivos.juzgado !== 'TODOS LOS JUZGADOS' ? filtrosActivos.juzgado : 'Juzgado 1° de lo Mercantil') : info.centro,
+              centro: info.centro,
               anio: info.anio,
               numExpediente: info.numExpediente,
-              categoria: vistaActiva === 'juzgados' ? 'Mercantil' : info.categoria,
+              categoria: info.categoria,
               solicitante: info.solicitante,
               fechaFirma: info.fechaFirma,
               fechaVencimiento: info.fechaVencimiento,
               predial: '',
-              estatusIja: 'Integrado por IA',
-              cloudPath: `OneDrive://45yMas/${info.centro}/${info.anio}/EXP-${info.numExpediente.replace('/', '-')}`,
+              estatusIja: 'Integrado en su Carpeta',
+              cloudPath: `OneDrive://45yMas/${info.categoria}/${info.centro}/${info.anio}/EXP-${info.numExpediente.replace('/', '-')}`,
               docs: {
                 [info.slotId]: {
                   fileName: file.name,
@@ -2649,7 +2856,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       if (vistaActiva === 'juzgados') renderizarGridJuzgados();
       else renderizarGridMasc();
 
-      // Sincronizar inmediatamente todo el lote con la Nube del Despacho en Google Drive
       if (entornoActivo === 'despacho45' && obtenerTokenDriveActivo()) {
         currentFileEl.textContent = 'Subiendo lote completo a la nube compartida del despacho (Google Drive 5TB)...';
         await sincronizarConNubeDrive('auto_push');
@@ -2657,7 +2863,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       titleEl.textContent = cancelarColaMasiva
         ? 'COLA DETENIDA POR EL USUARIO'
-        : `¡INGESTA MASIVA COMPLETADA Y SINCRONIZADA (${archivosValidos.length} ARCHIVOS)!`;
+        : `¡INGESTA MASIVA COMPLETADA Y SEPARADA POR CARPETA (${archivosValidos.length} ARCHIVOS)!`;
       currentFileEl.textContent = `Resultado final: ${nuevosCreados} expedientes nuevos y ${duplicadosFusionadosPorFoja} documentos integrados por orden de foja.`;
     }
 
@@ -2723,7 +2929,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
     function renderizarSeccionesChecklistModal(exp) {
       const cont = document.getElementById('checklist-sections-render');
-      const secciones = CHECKLISTS_OFICIALES_MASC[exp.categoria] || CHECKLISTS_OFICIALES_MASC['Preventivo Arrendamiento'];
+      const secciones = CHECKLISTS_OFICIALES_MASC[exp.categoria] || CHECKLISTS_OFICIALES_MASC['Judicial_Juzgado'];
       const { piezasOrdenadas } = calcularFoliadoJudicial(exp);
       const mapaFojas = {};
       piezasOrdenadas.forEach(p => {
@@ -2814,7 +3020,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       if (!exp) return;
 
       const { paginas } = await extraerContenidoYPaginasSeguro(file);
-      const storeKey = `bin_${exp.numExpediente.replace(/\W/g, '_')}_${slotId}`;
+      const storeKey = `bin_${exp.centro.replace(/\W/g, '_')}_${exp.numExpediente.replace(/\W/g, '_')}_${slotId}`;
       if (window.localforage) {
         await localforage.setItem(storeKey, file);
       }
@@ -2853,7 +3059,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           slot = `${info.slotId}_foja_${Object.keys(exp.docs).length + 1}`;
         }
 
-        const storeKey = `bin_${exp.numExpediente.replace(/\W/g, '_')}_${slot}`;
+        const storeKey = `bin_${exp.centro.replace(/\W/g, '_')}_${exp.numExpediente.replace(/\W/g, '_')}_${slot}`;
         if (window.localforage) await localforage.setItem(storeKey, file);
 
         const driveFileId = await subirBinarioIndividualADrive(file, exp.numExpediente, slot);
@@ -2956,7 +3162,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     // ============================================================================
-    // VISTA PREVIA FLOTANTE Y MODAL VISOR PDF/DOCX (CON DESCARGA DESDE DRIVE SI NO ESTÁ LOCAL)
+    // VISTA PREVIA FLOTANTE Y MODAL VISOR PDF/DOCX
     // ============================================================================
     function mostrarVistaPreviaFlotante(expId) {
       const exp = obtenerExpedientePorId(expId);
@@ -3000,12 +3206,10 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       let fileBlob = null;
 
-      // 1. Intentar desde almacenamiento local IndexedDB
       if (window.localforage && docInfo.storeKey) {
         fileBlob = await localforage.getItem(docInfo.storeKey);
       }
 
-      // 2. Si estamos en el celular u otra PC y el archivo tiene driveFileId, descargarlo desde Google Drive
       const token = obtenerTokenDriveActivo();
       if (!fileBlob && docInfo.driveFileId && token) {
         try {
@@ -3416,7 +3620,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       if (vistaActiva === 'juzgados') {
         tipo = 'Juzgado';
-        actual = filtrosActivos.juzgado !== 'TODOS LOS JUZGADOS' ? filtrosActivos.juzgado : carpetasConfig.juzgados[1];
+        const listaMat = obtenerListaJuzgadosSegunMateria(filtrosActivos.materiaJuz);
+        actual = filtrosActivos.juzgado !== 'TODOS LOS JUZGADOS' ? filtrosActivos.juzgado : (listaMat[0] || 'Juzgado 1° de lo Mercantil');
       } else if (filtrosActivos.categoria !== 'TODOS') {
         tipo = 'Categoría MASC';
         actual = filtrosActivos.categoria;
@@ -3465,8 +3670,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         bdMasc.forEach(e => { if (e.categoria === nombreAnterior) e.categoria = nombreNuevo; });
         if (filtrosActivos.categoria === nombreAnterior) filtrosActivos.categoria = nombreNuevo;
       } else if (tipo === 'Juzgado') {
-        const idx = carpetasConfig.juzgados.indexOf(nombreAnterior);
-        if (idx !== -1) carpetasConfig.juzgados[idx] = nombreNuevo;
+        ['Mercantil', 'Civil', 'Familiar', 'Amparo'].forEach(m => {
+          const arr = carpetasConfig.juzgadosPorMateria[m] || [];
+          const i = arr.indexOf(nombreAnterior);
+          if (i !== -1) arr[i] = nombreNuevo;
+        });
         bdJuzgados.forEach(e => { if (e.centro === nombreAnterior) e.centro = nombreNuevo; });
         if (filtrosActivos.juzgado === nombreAnterior) filtrosActivos.juzgado = nombreNuevo;
       }
@@ -3480,6 +3688,20 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     function crearNuevaCarpetaPersonalizada() {
+      if (vistaActiva === 'juzgados') {
+        const mat = filtrosActivos.materiaJuz !== 'TODAS' ? filtrosActivos.materiaJuz : 'Civil';
+        const nombreJuz = prompt(`Ingresa el nombre de la nueva carpeta para Materia ${mat} (ej. Juzgado 14° de lo Civil):`);
+        if (!nombreJuz || !nombreJuz.trim()) return;
+        const limpio = nombreJuz.trim();
+        if (!carpetasConfig.juzgadosPorMateria[mat].includes(limpio)) {
+          carpetasConfig.juzgadosPorMateria[mat].push(limpio);
+          guardarCarpetasConfig();
+          renderizarSidebarCarpetas();
+          renderizarGridJuzgados();
+        }
+        return;
+      }
+
       const nombre = prompt('Ingresa el nombre de la nueva Carpeta / Centro MASC:');
       if (!nombre || !nombre.trim()) return;
       const limpio = nombre.trim();
@@ -3511,25 +3733,58 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     // ============================================================================
-    // CREACIÓN MANUAL DE EXPEDIENTES E IMPORTACIÓN / EXPORTACIÓN JSON
+    // CREACIÓN MANUAL DE EXPEDIENTES CON FILTRADO DINÁMICO DE JUZGADOS POR MATERIA
     // ============================================================================
     function abrirModalCrearExpediente() {
       const selCentro = document.getElementById('new-exp-centro');
       selCentro.innerHTML = carpetasConfig.centros.map(c => `<option value="${c}">${c}</option>`).join('');
 
-      const selJuz = document.getElementById('new-exp-juzgado');
-      selJuz.innerHTML = carpetasConfig.juzgados.filter(j => j !== 'TODOS LOS JUZGADOS').map(j => `<option value="${j}">${j}</option>`).join('');
-
       document.getElementById('new-exp-tipo').value = (vistaActiva === 'juzgados') ? 'juzgado' : 'masc';
+
+      if (vistaActiva === 'juzgados') {
+        const matDefault = filtrosActivos.materiaJuz !== 'TODAS' ? filtrosActivos.materiaJuz : 'Civil';
+        document.getElementById('new-exp-categoria').value = matDefault;
+      } else {
+        document.getElementById('new-exp-categoria').value = 'Preventivo Arrendamiento';
+      }
+
       document.getElementById('new-exp-firma').value = new Date().toISOString().split('T')[0];
       toggleCamposCrearModal();
       document.getElementById('modal-crear').classList.remove('hidden');
     }
 
+    function actualizarSelectorJuzgadosEnCrear() {
+      const cat = document.getElementById('new-exp-categoria').value;
+      const selJuz = document.getElementById('new-exp-juzgado');
+
+      if (['Mercantil', 'Civil', 'Familiar', 'Amparo'].includes(cat)) {
+        document.getElementById('new-exp-tipo').value = 'juzgado';
+        document.getElementById('wrap-new-centro').classList.add('hidden');
+        document.getElementById('wrap-new-juzgado').classList.remove('hidden');
+
+        const listaEspecifica = obtenerListaJuzgadosSegunMateria(cat);
+        selJuz.innerHTML = listaEspecifica.map(j => `<option value="${j}" ${filtrosActivos.juzgado === j ? 'selected' : ''}>${j}</option>`).join('');
+      } else {
+        document.getElementById('new-exp-tipo').value = 'masc';
+        document.getElementById('wrap-new-centro').classList.remove('hidden');
+        document.getElementById('wrap-new-juzgado').classList.add('hidden');
+      }
+    }
+
     function toggleCamposCrearModal() {
       const tipo = document.getElementById('new-exp-tipo').value;
-      document.getElementById('wrap-new-centro').classList.toggle('hidden', tipo === 'juzgado');
-      document.getElementById('wrap-new-juzgado').classList.toggle('hidden', tipo !== 'juzgado');
+      if (tipo === 'juzgado') {
+        const catActual = document.getElementById('new-exp-categoria').value;
+        if (!['Mercantil', 'Civil', 'Familiar', 'Amparo'].includes(catActual)) {
+          document.getElementById('new-exp-categoria').value = filtrosActivos.materiaJuz !== 'TODAS' ? filtrosActivos.materiaJuz : 'Civil';
+        }
+      } else {
+        const catActual = document.getElementById('new-exp-categoria').value;
+        if (['Mercantil', 'Civil', 'Familiar', 'Amparo'].includes(catActual)) {
+          document.getElementById('new-exp-categoria').value = 'Preventivo Arrendamiento';
+        }
+      }
+      actualizarSelectorJuzgadosEnCrear();
     }
 
     function cerrarModalCrear() {
@@ -3560,13 +3815,15 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         fechaFirma: firma,
         fechaVencimiento: cat === 'Preventivo Arrendamiento' && firma ? `${Number(anio) + 1}-${firma.slice(5)}` : '',
         predial: '',
-        estatusIja: 'Registrado',
-        cloudPath: `OneDrive://45yMas/${centroOJuzgado}/${anio}/EXP-${num.replace('/', '-')}`,
+        estatusIja: 'Registrado en su Carpeta',
+        cloudPath: `OneDrive://45yMas/${cat}/${centroOJuzgado}/${anio}/EXP-${num.replace('/', '-')}`,
         docs: {}
       };
 
       if (tipo === 'juzgado') {
         bdJuzgados.unshift(nuevo);
+        filtrosActivos.materiaJuz = cat;
+        filtrosActivos.juzgado = centroOJuzgado;
         guardarEnBDJuzgados();
         renderizarVista('juzgados');
       } else {
@@ -3598,6 +3855,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         const data = JSON.parse(texto);
         if (data.carpetasConfig) {
           carpetasConfig = { ...carpetasConfig, ...data.carpetasConfig };
+          asegurarCatalogoCompletoDeJuzgados();
         }
         if (Array.isArray(data.bdMasc)) {
           bdMasc = fusionarExpedientesNubeYLocal(data.bdMasc, bdMasc);
