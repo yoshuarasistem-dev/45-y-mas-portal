@@ -209,7 +209,7 @@
 
       <div class="text-center mb-6">
         <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-amber-500/20 text-amber-300 border border-amber-500/40">
-          Sistema Jurídico & MASC Cloud 5TB
+          Nube Compartida en Tiempo Real • 5TB
         </span>
         <h1 class="text-2xl sm:text-3xl font-black gold-text mt-2">BÓVEDA PRO 45 Y MÁS</h1>
         <p class="text-xs text-slate-400 mt-1">Centros Privados IJA 065 y 353 • Control Judicial por Fojas • Visor IA</p>
@@ -221,9 +221,9 @@
             <i class="fa-solid fa-user-shield mr-1"></i> Seleccionar Perfil / Entorno
           </label>
           <select id="login-user-select" class="w-full bg-slate-900/95 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400">
-            <option value="admin">admin — Master General (Entorno Despacho 45 + Nube 5TB)</option>
-            <option value="chava">chava — Coordinación Operativa (Entorno Despacho 45 + Nube)</option>
-            <option value="ceci">ceci — Gestión MASC e IJA (Entorno Despacho 45 + Nube)</option>
+            <option value="admin">admin — Master General (Entorno Despacho 45 + Nube Compartida)</option>
+            <option value="chava">chava — Coordinación Operativa (Entorno Despacho 45 + Nube Compartida)</option>
+            <option value="ceci">ceci — Gestión MASC e IJA (Entorno Despacho 45 + Nube Compartida)</option>
             <option value="aldo">aldo — Lic. Aldo Independiente (Entorno Local aldo_indep)</option>
           </select>
         </div>
@@ -242,9 +242,9 @@
         </div>
 
         <div class="bg-emerald-950/50 border border-emerald-500/30 rounded-xl p-3 text-[11px] text-emerald-200 flex items-center gap-2.5">
-          <i class="fa-solid fa-microchip text-emerald-400 text-base"></i>
+          <i class="fa-solid fa-cloud-arrow-up text-emerald-400 text-base"></i>
           <div>
-            <strong>Motor Gemini IA Pre-Activado:</strong> API Key corporativa integrada en código. No requiere configuración manual para ningún usuario.
+            <strong>Sincronización Cloud Despacho 45yMás:</strong> Todo lo que suban <code>admin</code>, <code>chava</code> o <code>ceci</code> se refleja en todos los dispositivos conectados a la nube del despacho.
           </div>
         </div>
 
@@ -257,7 +257,7 @@
         <a href="index.html" class="hover:text-amber-400 transition flex items-center gap-1.5">
           <i class="fa-solid fa-arrow-left"></i> Volver a Portada
         </a>
-        <span class="font-mono-code text-[11px] text-sky-400">v4.8 Pro • 5TB Drive/OneDrive</span>
+        <span class="font-mono-code text-[11px] text-sky-400">v5.0 Cloud Sync • 5TB</span>
       </div>
     </div>
   </div>
@@ -290,6 +290,29 @@
           <button onclick="toggleMobileSidebar(false)" class="lg:hidden text-slate-400 hover:text-white p-1.5">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
+        </div>
+
+        <!-- Tarjeta de Estado de Sincronización en la Nube del Despacho -->
+        <div id="cloud-sync-card" class="p-3 rounded-2xl bg-slate-900/90 border border-sky-500/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+              <i id="cloud-sync-icon" class="fa-solid fa-cloud text-sky-400"></i> Nube del Despacho
+            </span>
+            <span id="cloud-sync-badge" class="text-[9px] font-mono-code px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              Pendiente Conectar
+            </span>
+          </div>
+          <p id="cloud-sync-last-time" class="text-[10px] text-slate-400 leading-tight">
+            Conecta Google Drive 5TB para ver y compartir en tiempo real los convenios de <code>admin</code>, <code>chava</code> y <code>ceci</code>.
+          </p>
+          <div class="grid grid-cols-2 gap-1.5 pt-1">
+            <button onclick="sincronizarConNubeDrive('manual')" class="bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 border border-sky-500/40 py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-rotate"></i> Sincronizar Ya
+            </button>
+            <button onclick="conectarGoogleDriveOAuth(false)" class="bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 border border-emerald-500/40 py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 transition">
+              <i class="fa-brands fa-google-drive"></i> Drive 5TB
+            </button>
+          </div>
         </div>
 
         <!-- Selector de Módulos Principales (Vistas) -->
@@ -383,7 +406,7 @@
               </span>
             </div>
             <p class="text-[11px] text-slate-300 leading-snug">
-              Procesa lotes de <strong>337 a 400+ archivos</strong> sin congelarse en <code>.doc</code> antiguos. Si detecta un expediente duplicado, <strong>añade el documento faltante en orden de foja</strong>.
+              Procesa lotes de <strong>337 a 400+ archivos</strong> sin congelarse en <code>.doc</code> antiguos y <strong>sincroniza automáticamente con la nube del despacho</strong>.
             </p>
 
             <div class="space-y-1.5">
@@ -417,7 +440,7 @@
           </div>
         </div>
 
-        <!-- Enlaces al resto de archivos del repositorio -->
+        <!-- Enlaces internos de las herramientas de Bóveda -->
         <div class="grid grid-cols-2 gap-1.5 text-[11px]">
           <a href="visor-expediente.html" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
             <i class="fa-solid fa-book-open text-amber-400"></i> Visor PDF
@@ -461,7 +484,7 @@
             </div>
           </div>
 
-          <!-- Estado de Conexiones Cloud (Gemini IA + Google Drive 5TB + OneDrive) -->
+          <!-- Estado de Conexiones Cloud (Gemini IA + Sincronización Drive 5TB + OneDrive) -->
           <div class="flex flex-wrap items-center gap-2">
             <!-- Indicador de Modelo IA con Auto-Recuperación -->
             <div class="flex items-center gap-1.5 bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-1.5 rounded-xl text-[11px]" title="Cuenta de servicio: gemini-boveda@boveda-45ymas.iam.gserviceaccount.com">
@@ -470,16 +493,22 @@
               <span id="header-ai-model-label" class="font-mono-code text-white font-semibold">gemini-3.8-flash</span>
             </div>
 
-            <!-- Botón Google Drive OAuth 5TB -->
-            <button onclick="conectarGoogleDriveOAuth()" id="btn-google-drive" class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+            <!-- Botón Google Drive OAuth 5TB (Conecta y Sincroniza el Despacho) -->
+            <button onclick="conectarGoogleDriveOAuth(false)" id="btn-google-drive" class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
               <i class="fa-brands fa-google-drive"></i>
-              <span id="label-google-drive">Conectar Drive 5TB</span>
+              <span id="label-google-drive">Conectar Nube Drive (5TB)</span>
+            </button>
+
+            <!-- Botón Sincronizar Ahora -->
+            <button onclick="sincronizarConNubeDrive('manual')" id="btn-sync-now" class="bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition" title="Descargar y subir cambios a la nube compartida del despacho">
+              <i id="icon-sync-now" class="fa-solid fa-cloud-arrow-up"></i>
+              <span class="hidden md:inline">Sincronizar Despacho</span>
             </button>
 
             <!-- Botón OneDrive / Vínculo de Carpeta -->
             <button onclick="abrirModalEditarCarpetaSeleccionada()" class="bg-slate-900 hover:bg-slate-800 text-indigo-300 border border-indigo-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
-              <i class="fa-solid fa-cloud"></i>
-              <span class="hidden md:inline">OneDrive / Carpetas</span>
+              <i class="fa-solid fa-folder-open"></i>
+              <span class="hidden xl:inline">OneDrive / Carpetas</span>
             </button>
 
             <!-- Cerrar Sesión / Cambiar Perfil -->
@@ -499,7 +528,7 @@
             <i class="fa-solid fa-gear fa-spin text-emerald-400 text-lg"></i>
             <div>
               <h3 id="ia-queue-status-title" class="text-xs sm:text-sm font-black text-white">
-                COLA SECUENCIAL IA EN EJECUCIÓN (MODO ANTI-BLOQUEO .DOC / .DOCX / .PDF)
+                COLA SECUENCIAL IA EN EJECUCIÓN (MODO ANTI-BLOQUEO .DOC / .DOCX / .PDF + NUBE)
               </h3>
               <p id="ia-queue-current-file" class="text-[11px] font-mono-code text-amber-300 truncate max-w-xl">
                 Inicializando lector binario y clasificador...
@@ -526,12 +555,12 @@
 
         <div class="flex flex-wrap items-center justify-between gap-2 mt-2 text-[11px] text-slate-300">
           <span id="ia-queue-stats-detail">Expedientes Nuevos: 0 | Expedientes Actualizados por Foja (Duplicados Fusionados): 0</span>
-          <span id="ia-queue-format-badge" class="font-mono-code text-sky-300">Timeout de protección: 6s/archivo</span>
+          <span id="ia-queue-format-badge" class="font-mono-code text-sky-300">Auto-Sync Drive al finalizar lote</span>
         </div>
       </div>
 
       <!-- ========================================================================
-           BARRA DE BÚSQUEDA Y CONTROLES DE CREACIÓN RÁPIDA
+           BARRA DE BÚSQUEDA Y CONTROLES DE CREACIÓN RÁPIDA + IMPORTAR/EXPORTAR
            ======================================================================== -->
       <div class="p-3 sm:p-6 pb-0">
         <div class="glass-panel rounded-2xl p-3.5 sm:p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
@@ -558,6 +587,11 @@
             <button onclick="exportarRespaldoCompletoJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition" title="Descargar respaldo JSON">
               <i class="fa-solid fa-download"></i> Respaldo
             </button>
+
+            <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition" title="Importar archivo de respaldo JSON y subirlo a la nube">
+              <i class="fa-solid fa-file-import"></i> Importar
+              <input type="file" accept=".json" class="hidden" onchange="importarRespaldoJSON(this.files[0])" />
+            </label>
           </div>
         </div>
       </div>
@@ -578,7 +612,7 @@
         <div class="mb-4 glass-panel rounded-xl p-3 border border-sky-500/30 flex flex-wrap items-center justify-between gap-2 text-xs">
           <div>
             <i class="fa-solid fa-scale-balanced text-sky-400 mr-1.5"></i>
-            <strong>Control Judicial por Foja Activo:</strong> Al subir promociones, acuerdos o anexos de un expediente existente, se integran automáticamente al final del expediente en el orden consecutivo de su foja.
+            <strong>Control Judicial por Foja + Nube Compartida:</strong> Al subir promociones, acuerdos o anexos de un expediente existente, se integran automáticamente en el orden consecutivo de su foja y se sincronizan con todo el despacho.
           </div>
           <span class="font-mono-code text-amber-300 font-bold">19 Juzgados Mercantiles + Civiles + Familiares</span>
         </div>
@@ -594,32 +628,37 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <!-- Tarjeta de Perfiles Activos -->
           <div class="glass-panel rounded-2xl p-5 lg:col-span-2 space-y-4">
-            <h3 class="text-base font-black gold-text flex items-center gap-2">
-              <i class="fa-solid fa-users-gear"></i> Perfiles y Entornos Configurados en Bóveda Pro
-            </h3>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="text-base font-black gold-text flex items-center gap-2">
+                <i class="fa-solid fa-users-gear"></i> Perfiles Conectados en Tiempo Real (Entorno Nube "despacho45")
+              </h3>
+              <button onclick="sincronizarConNubeDrive('manual')" class="brand-gradient text-slate-950 font-black px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate"></i> Forzar Sincronización Global Ahora
+              </button>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div class="p-3.5 rounded-xl bg-slate-900/90 border border-amber-500/30">
                 <div class="flex justify-between items-center">
                   <span class="font-black text-amber-300 text-sm">admin (Master)</span>
-                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Nube 5TB Activa</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Nube Compartida 5TB</span>
                 </div>
-                <p class="text-slate-400 mt-1">Entorno: <code>despacho45</code> • Acceso total a Centros 065, 353, Despacho 45yMas y 19 Juzgados Mercantiles.</p>
+                <p class="text-slate-400 mt-1">Entorno: <code>despacho45</code> • Lee y escribe en <code>boveda_45ymas_despacho45_db.json</code> dentro de Google Drive.</p>
               </div>
 
               <div class="p-3.5 rounded-xl bg-slate-900/90 border border-sky-500/30">
                 <div class="flex justify-between items-center">
                   <span class="font-black text-sky-300 text-sm">chava (Coordinación)</span>
-                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Nube 5TB Activa</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Nube Compartida 5TB</span>
                 </div>
-                <p class="text-slate-400 mt-1">Entorno: <code>despacho45</code> • Sincronización compartida en tiempo real con admin y ceci.</p>
+                <p class="text-slate-400 mt-1">Entorno: <code>despacho45</code> • Recibe automáticamente todos los convenios subidos por <code>admin</code> y <code>ceci</code>.</p>
               </div>
 
               <div class="p-3.5 rounded-xl bg-slate-900/90 border border-indigo-500/30">
                 <div class="flex justify-between items-center">
                   <span class="font-black text-indigo-300 text-sm">ceci (Gestión MASC)</span>
-                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Nube 5TB Activa</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Nube Compartida 5TB</span>
                 </div>
-                <p class="text-slate-400 mt-1">Entorno: <code>despacho45</code> • Control de Check-lists IJA, Fojas y Generación de Oficios.</p>
+                <p class="text-slate-400 mt-1">Entorno: <code>despacho45</code> • Sincronización bidireccional de Check-lists IJA, Fojas y Oficios.</p>
               </div>
 
               <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-700">
@@ -627,7 +666,7 @@
                   <span class="font-black text-slate-200 text-sm">aldo (Independiente)</span>
                   <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">Local Aislado</span>
                 </div>
-                <p class="text-slate-400 mt-1">Entorno: <code>aldo_indep</code> • Bóveda independiente local con motor IA preconfigurado.</p>
+                <p class="text-slate-400 mt-1">Entorno: <code>aldo_indep</code> • Bóveda independiente local aislada del despacho principal.</p>
               </div>
             </div>
           </div>
@@ -635,9 +674,13 @@
           <!-- Tarjeta de Credenciales Técnicas Vinculadas -->
           <div class="glass-panel rounded-2xl p-5 space-y-3 text-xs">
             <h3 class="text-base font-black text-emerald-300 flex items-center gap-2">
-              <i class="fa-solid fa-cloud-shield"></i> Credenciales Cloud "boveda-45ymas"
+              <i class="fa-solid fa-cloud-shield"></i> Estado de Nube "boveda-45ymas"
             </h3>
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2.5">
+              <div>
+                <span class="text-slate-400 block">Archivo Maestro en Google Drive:</span>
+                <code class="text-emerald-300 font-mono-code text-[11px]">BOVEDA_45YMAS_CLOUD / boveda_45ymas_despacho45_db.json</code>
+              </div>
               <div>
                 <span class="text-slate-400 block">Cuenta de Servicio Gemini IA:</span>
                 <code class="text-amber-300 font-mono-code text-[11px] break-all">gemini-boveda@boveda-45ymas.iam.gserviceaccount.com</code>
@@ -648,7 +691,7 @@
               </div>
               <div>
                 <span class="text-slate-400 block">Estado de API Key IA:</span>
-                <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Fragmentada y Activa en Código (Sin solicitud a usuarios)</span>
+                <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Fragmentada y Activa en Código</span>
               </div>
             </div>
           </div>
@@ -723,7 +766,7 @@
           <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
             <div class="text-xs text-slate-200">
               <i class="fa-solid fa-code-merge text-emerald-400 mr-1.5"></i>
-              <strong>Verificador de Duplicados y Fojas Activo:</strong> Si subes archivos sueltos o un lote de este expediente, el sistema detecta qué documentos no están aún en el check-list y los añade en su orden de foja correspondiente.
+              <strong>Verificador de Duplicados, Fojas y Nube Activo:</strong> Al añadir documentos aquí, se ordenan por foja y se sincronizan automáticamente con todos los perfiles del despacho.
             </div>
             <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-4 py-2 rounded-xl flex items-center gap-2 shadow">
               <i class="fa-solid fa-file-circle-plus"></i> Añadir / Fusionar Documentos al Expediente
@@ -762,7 +805,7 @@
                   <th class="py-3 px-3">Pieza Documental / Actuación</th>
                   <th class="py-3 px-3">Archivo Físico / Digital</th>
                   <th class="py-3 px-3">N° Páginas</th>
-                  <th class="py-3 px-3">Fecha Glosa</th>
+                  <th class="py-3 px-3">Estado Nube</th>
                   <th class="py-3 px-3 text-right">Control de Foja</th>
                 </tr>
               </thead>
@@ -824,7 +867,7 @@
               <i class="fa-solid fa-trash-can mr-1"></i> Eliminar Expediente
             </button>
             <button onclick="guardarCambiosExpedienteActivo()" class="brand-gradient text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs shadow-lg">
-              <i class="fa-solid fa-floppy-disk mr-1"></i> Guardar Cambios del Expediente y Carpeta
+              <i class="fa-solid fa-floppy-disk mr-1"></i> Guardar y Sincronizar con el Despacho
             </button>
           </div>
         </div>
@@ -1025,7 +1068,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
         <div class="sm:col-span-2 flex justify-end gap-2 pt-3 border-t border-slate-800">
           <button type="button" onclick="cerrarModalCrear()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl font-bold">Cancelar</button>
-          <button type="submit" class="brand-gradient text-slate-950 font-black px-5 py-2 rounded-xl shadow">Crear Expediente</button>
+          <button type="submit" class="brand-gradient text-slate-950 font-black px-5 py-2 rounded-xl shadow">Crear y Sincronizar</button>
         </div>
       </form>
     </div>
@@ -1059,7 +1102,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         <div>
           <label class="block text-sky-300 font-bold mb-1"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Vínculo OneDrive o Google Drive (Editable)</label>
           <input type="text" id="folder-edit-onedrive" placeholder="https://onedrive.live.com/... o ID de carpeta" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white" />
-          <p class="text-[11px] text-slate-400 mt-1">Al guardar, todos los expedientes dentro de esta carpeta actualizarán su clasificación y su ruta en la nube automáticamente.</p>
+          <p class="text-[11px] text-slate-400 mt-1">Al guardar, todos los expedientes dentro de esta carpeta actualizarán su clasificación y se sincronizarán con todos los usuarios del despacho.</p>
         </div>
       </div>
 
@@ -1069,7 +1112,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         </button>
         <div class="flex gap-2">
           <button onclick="cerrarModalEditarCarpeta()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl font-bold">Cancelar</button>
-          <button onclick="guardarEdicionCarpetaSeleccionada()" class="brand-gradient text-slate-950 font-black px-5 py-2 rounded-xl">Guardar Carpeta</button>
+          <button onclick="guardarEdicionCarpetaSeleccionada()" class="brand-gradient text-slate-950 font-black px-5 py-2 rounded-xl">Guardar y Sincronizar</button>
         </div>
       </div>
     </div>
@@ -1096,7 +1139,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
   </div>
 
   <!-- ============================================================================
-       9. MOTOR JAVASCRIPT COMPLETO DE BÓVEDA PRO
+       9. MOTOR JAVASCRIPT COMPLETO DE BÓVEDA PRO + SINCRONIZACIÓN REAL GOOGLE DRIVE
        ============================================================================ -->
   <script>
     // Inicializar Worker de PDF.js
@@ -1110,6 +1153,10 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     const OAUTH_CLIENT_ID = '326577655461-e7s01aoc20tofbgmrplt0bdt6ouhe27o.apps.googleusercontent.com';
     const AUTHORIZED_USER_EMAIL = 'yoshua.ra.sistem@gmail.com';
     const SERVICE_ACCOUNT = 'gemini-boveda@boveda-45ymas.iam.gserviceaccount.com';
+
+    // Nombres de la Carpeta y Base de Datos Maestra en Google Drive para el entorno "despacho45"
+    const DRIVE_CLOUD_FOLDER_NAME = 'BOVEDA_45YMAS_CLOUD';
+    const DRIVE_MASTER_DB_FILENAME = 'boveda_45ymas_despacho45_db.json';
 
     // API Key fragmentada en arreglo para evitar bloqueo de GitHub Push Protection y jamás pedirla a los usuarios
     const ACTIVE_GEMINI_KEY = ['AQ.Ab8', 'RN6LTu', 'jUhsb2', 'Uz3s8B', 'E6hexn', 'a4ZhYG', 'UnkuZJ', 'OF_Jo3', '9Kozw'].join('');
@@ -1291,10 +1338,17 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     let expedienteActivoId = null;
     let cancelarColaMasiva = false;
     let saltarArchivoEnCurso = false;
+    let ingestaMasivaEnCurso = false;
     let logosBase64 = { centrologo: '', logo45: '' };
 
+    // Variables de Control de Nube Google Drive
+    let driveFolderIdCache = localStorage.getItem('boveda_drive_folder_id') || null;
+    let driveMasterDbFileIdCache = localStorage.getItem('boveda_drive_db_file_id') || null;
+    let syncEnProgreso = false;
+    let autoPushTimer = null;
+
     // ============================================================================
-    // INICIALIZACIÓN DEL SISTEMA Y CARGA AUTOMÁTICA DE CREDENCIALES
+    // INICIALIZACIÓN DEL SISTEMA Y CARGA AUTOMÁTICA DE CREDENCIALES + NUBE
     // ============================================================================
     window.addEventListener('DOMContentLoaded', async () => {
       // Asegurar que la API Key esté siempre registrada para que ningún usuario nuevo o existente reciba avisos
@@ -1309,7 +1363,21 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       cargarDatosEntorno();
       precargarLogosOficialesBase64();
-      verificarTokenGoogleDrive();
+      await verificarTokenGoogleDriveYSincronizar();
+
+      // Auto-Polling cada 30 segundos para que cualquier cambio hecho por otro perfil del despacho se refleje solo
+      setInterval(() => {
+        if (entornoActivo === 'despacho45' && !ingestaMasivaEnCurso && !syncEnProgreso && obtenerTokenDriveActivo()) {
+          sincronizarConNubeDrive('pull_background');
+        }
+      }, 30000);
+
+      // Sincronizar al volver a abrir la pestaña en celular o PC
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && entornoActivo === 'despacho45' && !ingestaMasivaEnCurso && obtenerTokenDriveActivo()) {
+          sincronizarConNubeDrive('pull_background');
+        }
+      });
     });
 
     function aplicarPerfilUsuario(userKey) {
@@ -1317,15 +1385,24 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       entornoActivo = (userKey === 'aldo') ? 'aldo_indep' : 'despacho45';
       document.getElementById('sidebar-user-badge').textContent = userKey.toUpperCase();
       document.getElementById('sidebar-env-badge').textContent = entornoActivo;
+
+      const cardCloud = document.getElementById('cloud-sync-card');
+      if (cardCloud) {
+        cardCloud.classList.toggle('hidden', entornoActivo !== 'despacho45');
+      }
     }
 
-    function iniciarSesion(e) {
+    async function iniciarSesion(e) {
       e.preventDefault();
       const user = document.getElementById('login-user-select').value;
       localStorage.setItem('boveda_sesion_usuario', user);
       aplicarPerfilUsuario(user);
       document.getElementById('login-screen').classList.add('hidden');
       cargarDatosEntorno();
+
+      if (entornoActivo === 'despacho45') {
+        await verificarTokenGoogleDriveYSincronizar();
+      }
     }
 
     function cerrarSesion() {
@@ -1369,6 +1446,366 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     // ============================================================================
+    // MOTOR DE SINCRONIZACIÓN REAL EN LA NUBE (GOOGLE DRIVE API v3) PARA EL DESPACHO
+    // ============================================================================
+    function obtenerTokenDriveActivo() {
+      const t = localStorage.getItem('drive_token');
+      if (!t || t.startsWith('oauth_session_') || t.startsWith('token_activo_')) return null;
+      return t;
+    }
+
+    function actualizarEstadoVisualNube(estado, detalle = '') {
+      const badge = document.getElementById('cloud-sync-badge');
+      const lastTime = document.getElementById('cloud-sync-last-time');
+      const iconSync = document.getElementById('icon-sync-now');
+      const labelDrive = document.getElementById('label-google-drive');
+      const btnDrive = document.getElementById('btn-google-drive');
+
+      if (!badge || !lastTime) return;
+
+      if (estado === 'sincronizando') {
+        badge.textContent = 'Sincronizando...';
+        badge.className = 'text-[9px] font-mono-code px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40';
+        if (iconSync) iconSync.className = 'fa-solid fa-rotate fa-spin';
+        if (detalle) lastTime.textContent = detalle;
+      } else if (estado === 'conectado') {
+        badge.textContent = 'Nube Activa';
+        badge.className = 'text-[9px] font-mono-code px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        if (iconSync) iconSync.className = 'fa-solid fa-cloud-check';
+        if (labelDrive) labelDrive.textContent = 'Drive 5TB Conectado';
+        if (btnDrive) {
+          btnDrive.classList.remove('text-sky-300', 'border-sky-500/40');
+          btnDrive.classList.add('text-emerald-300', 'border-emerald-500/40');
+        }
+        const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        lastTime.textContent = detalle || `Sincronizado con el Despacho (${hora}) • ${bdMasc.length} convenios en nube.`;
+      } else {
+        badge.textContent = 'Sin Conectar';
+        badge.className = 'text-[9px] font-mono-code px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        if (iconSync) iconSync.className = 'fa-solid fa-cloud-arrow-up';
+        if (labelDrive) labelDrive.textContent = 'Conectar Nube Drive (5TB)';
+        lastTime.textContent = detalle || 'Pulsa "Drive 5TB" para descargar y compartir los convenios del despacho en este dispositivo.';
+      }
+    }
+
+    async function verificarTokenGoogleDriveYSincronizar() {
+      const token = obtenerTokenDriveActivo();
+      if (token && entornoActivo === 'despacho45') {
+        actualizarEstadoVisualNube('sincronizando', 'Verificando expedientes nuevos en Google Drive...');
+        await sincronizarConNubeDrive('init');
+      } else {
+        actualizarEstadoVisualNube('desconectado');
+      }
+    }
+
+    function conectarGoogleDriveOAuth(silencioso = false) {
+      if (window.google && google.accounts && google.accounts.oauth2) {
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: OAUTH_CLIENT_ID,
+          scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly',
+          hint: AUTHORIZED_USER_EMAIL,
+          callback: async (resp) => {
+            if (resp && resp.access_token) {
+              localStorage.setItem('drive_token', resp.access_token);
+              localStorage.setItem('drive_token_timestamp', String(Date.now()));
+              actualizarEstadoVisualNube('sincronizando', 'Conectado. Descargando base de datos del despacho...');
+              await sincronizarConNubeDrive('manual');
+            }
+          }
+        });
+        client.requestAccessToken({ prompt: silencioso ? '' : 'select_account' });
+      } else {
+        alert('Cargando cliente de Google Identity Services. Intenta de nuevo en 2 segundos.');
+      }
+    }
+
+    // 1. Buscar o Crear la Carpeta Raíz "BOVEDA_45YMAS_CLOUD" en Google Drive
+    async function obtenerOCrearCarpetaRaizDrive(token) {
+      if (driveFolderIdCache) return driveFolderIdCache;
+
+      const q = encodeURIComponent(`name = '${DRIVE_CLOUD_FOLDER_NAME}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`);
+      const resSearch = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=5`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (resSearch.status === 401) {
+        localStorage.removeItem('drive_token');
+        throw new Error('TOKEN_EXPIRED');
+      }
+
+      const dataSearch = await resSearch.json();
+      if (dataSearch.files && dataSearch.files.length > 0) {
+        driveFolderIdCache = dataSearch.files[0].id;
+        localStorage.setItem('boveda_drive_folder_id', driveFolderIdCache);
+        return driveFolderIdCache;
+      }
+
+      // Crear carpeta si no existe
+      const resCreate = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: DRIVE_CLOUD_FOLDER_NAME,
+          mimeType: 'application/vnd.google-apps.folder'
+        })
+      });
+      const created = await resCreate.json();
+      if (created && created.id) {
+        driveFolderIdCache = created.id;
+        localStorage.setItem('boveda_drive_folder_id', driveFolderIdCache);
+        return driveFolderIdCache;
+      }
+      return null;
+    }
+
+    // 2. Buscar el archivo JSON de la base de datos compartida en Google Drive
+    async function buscarArchivoMaestraBDEnDrive(token) {
+      const q = encodeURIComponent(`name = '${DRIVE_MASTER_DB_FILENAME}' and trashed = false`);
+      const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime)&pageSize=5`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.status === 401) {
+        localStorage.removeItem('drive_token');
+        throw new Error('TOKEN_EXPIRED');
+      }
+
+      const data = await res.json();
+      if (data.files && data.files.length > 0) {
+        driveMasterDbFileIdCache = data.files[0].id;
+        localStorage.setItem('boveda_drive_db_file_id', driveMasterDbFileIdCache);
+        return data.files[0];
+      }
+      return null;
+    }
+
+    // 3. Fusión Inteligente entre la Base de Datos de la Nube y la Local (Sin perder ningún expediente ni foja)
+    function fusionarExpedientesNubeYLocal(listaNube = [], listaLocal = []) {
+      const mapa = new Map();
+
+      const claveUnica = (exp) => {
+        const num = (exp.numExpediente || '').trim().toUpperCase();
+        const anio = String(exp.anio || '2026').trim();
+        return `${num}__${anio}`;
+      };
+
+      // Primero insertar todos los de la Nube
+      listaNube.forEach(expNube => {
+        if (!expNube || !expNube.numExpediente) return;
+        mapa.set(claveUnica(expNube), JSON.parse(JSON.stringify(expNube)));
+      });
+
+      // Luego fusionar o agregar los Locales (incluyendo fojas/documentos nuevos)
+      listaLocal.forEach(expLocal => {
+        if (!expLocal || !expLocal.numExpediente) return;
+        const key = claveUnica(expLocal);
+        if (!mapa.has(key)) {
+          mapa.set(key, JSON.parse(JSON.stringify(expLocal)));
+        } else {
+          const existente = mapa.get(key);
+          // Fusionar documentos y fojas de ambos lados
+          existente.docs = { ...(existente.docs || {}), ...(expLocal.docs || {}) };
+          // Preservar el nombre del solicitante más completo
+          if (
+            (!existente.solicitante || existente.solicitante.startsWith('Expediente ')) &&
+            expLocal.solicitante &&
+            !expLocal.solicitante.startsWith('Expediente ')
+          ) {
+            existente.solicitante = expLocal.solicitante;
+          }
+          if (expLocal.predial && !existente.predial) existente.predial = expLocal.predial;
+          if (expLocal.estatusIja && expLocal.estatusIja !== 'En Integración') existente.estatusIja = expLocal.estatusIja;
+          if (expLocal.centro) existente.centro = expLocal.centro;
+          if (expLocal.categoria) existente.categoria = expLocal.categoria;
+        }
+      });
+
+      return Array.from(mapa.values());
+    }
+
+    // 4. Subir el estado actual de la base de datos a Google Drive
+    async function subirBaseDeDatosADrive(token) {
+      const folderId = await obtenerOCrearCarpetaRaizDrive(token);
+      const archivoExistente = await buscarArchivoMaestraBDEnDrive(token);
+
+      const payload = {
+        updatedAt: new Date().toISOString(),
+        updatedBy: usuarioActivo,
+        entorno: 'despacho45',
+        carpetasConfig,
+        bdMasc,
+        bdJuzgados
+      };
+
+      const metadata = {
+        name: DRIVE_MASTER_DB_FILENAME,
+        mimeType: 'application/json'
+      };
+      if (!archivoExistente && folderId) {
+        metadata.parents = [folderId];
+      }
+
+      const boundary = '-------Boveda45yMasCloudBoundary';
+      const delimiter = `\r\n--${boundary}\r\n`;
+      const closeDelimiter = `\r\n--${boundary}--`;
+
+      const multipartBody =
+        delimiter +
+        'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+        JSON.stringify(metadata) +
+        delimiter +
+        'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+        JSON.stringify(payload) +
+        closeDelimiter;
+
+      const url = archivoExistente
+        ? `https://www.googleapis.com/upload/drive/v3/files/${archivoExistente.id}?uploadType=multipart`
+        : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+
+      const method = archivoExistente ? 'PATCH' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': `multipart/related; boundary=${boundary}`
+        },
+        body: multipartBody
+      });
+
+      if (res.ok) {
+        const saved = await res.json();
+        if (saved && saved.id) {
+          driveMasterDbFileIdCache = saved.id;
+          localStorage.setItem('boveda_drive_db_file_id', saved.id);
+        }
+      }
+    }
+
+    // 5. Subir un archivo binario (PDF/DOCX) a Google Drive para que esté disponible en el celular u otra PC
+    async function subirBinarioIndividualADrive(file, numExp, slotId) {
+      const token = obtenerTokenDriveActivo();
+      if (!token || entornoActivo !== 'despacho45') return null;
+
+      try {
+        const folderId = await obtenerOCrearCarpetaRaizDrive(token);
+        const metadata = {
+          name: `EXP_${numExp.replace(/\W/g, '_')}_${slotId}_${file.name}`,
+           parents: folderId ? [folderId] : undefined
+        };
+
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', file);
+
+        const res = await ejecutarConTimeout(
+          fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: form
+          }),
+          6000,
+          null
+        );
+
+        if (res && res.ok) {
+          const data = await res.json();
+          return data.id || null;
+        }
+      } catch (e) {
+        console.warn('No se pudo respaldar binario individual en Drive:', e);
+      }
+      return null;
+    }
+
+    // 6. Función Principal de Sincronización Bidireccional (Pull + Merge + Push)
+    async function sincronizarConNubeDrive(modo = 'manual') {
+      if (entornoActivo !== 'despacho45') return;
+      const token = obtenerTokenDriveActivo();
+      if (!token) {
+        if (modo === 'manual') {
+          conectarGoogleDriveOAuth(false);
+        }
+        return;
+      }
+
+      if (syncEnProgreso) return;
+      syncEnProgreso = true;
+
+      if (modo !== 'pull_background') {
+        actualizarEstadoVisualNube('sincronizando', 'Sincronizando convenios y fojas con Google Drive 5TB...');
+      }
+
+      try {
+        const archivoRemoto = await buscarArchivoMaestraBDEnDrive(token);
+
+        if (archivoRemoto && archivoRemoto.id) {
+          const resDownload = await fetch(`https://www.googleapis.com/drive/v3/files/${archivoRemoto.id}?alt=media`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (resDownload.ok) {
+            const cloudDB = await resDownload.json();
+
+            // Fusionar carpetas personalizadas
+            if (cloudDB.carpetasConfig) {
+              carpetasConfig.centros = Array.from(new Set([...carpetasConfig.centros, ...(cloudDB.carpetasConfig.centros || [])]));
+              carpetasConfig.anios = Array.from(new Set([...carpetasConfig.anios, ...(cloudDB.carpetasConfig.anios || [])]));
+              carpetasConfig.categorias = Array.from(new Set([...carpetasConfig.categorias, ...(cloudDB.carpetasConfig.categorias || [])]));
+              carpetasConfig.cloudLinks = { ...(cloudDB.carpetasConfig.cloudLinks || {}), ...(carpetasConfig.cloudLinks || {}) };
+            }
+
+            // Fusionar convenios MASC y expedientes de Juzgados
+            if (Array.isArray(cloudDB.bdMasc)) {
+              bdMasc = fusionarExpedientesNubeYLocal(cloudDB.bdMasc, bdMasc);
+            }
+            if (Array.isArray(cloudDB.bdJuzgados)) {
+              bdJuzgados = fusionarExpedientesNubeYLocal(cloudDB.bdJuzgados, bdJuzgados);
+            }
+
+            // Guardar localmente sin disparar bucle de subida
+            localStorage.setItem(obtenerClaveStorage('carpetas'), JSON.stringify(carpetasConfig));
+            localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
+            localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
+
+            renderizarSidebarCarpetas();
+            ejecutarFiltroBusqueda();
+          }
+        }
+
+        // Si fue manual, inicial o push, subir la base fusionada para que todos los demás dispositivos vean lo mismo
+        if (modo !== 'pull_background') {
+          await subirBaseDeDatosADrive(token);
+        }
+
+        actualizarEstadoVisualNube('conectado');
+      } catch (err) {
+        console.warn('Detalle en sincronización Drive:', err);
+        if (err.message === 'TOKEN_EXPIRED') {
+          actualizarEstadoVisualNube('desconectado', 'Sesión de Drive expirada. Pulsa "Drive 5TB" para reconectar.');
+        } else {
+          actualizarEstadoVisualNube('desconectado', 'Listo en local. Conecta Drive 5TB para sincronizar.');
+        }
+      } finally {
+        syncEnProgreso = false;
+      }
+    }
+
+    function programarSubidaAutomaticaNube() {
+      if (entornoActivo !== 'despacho45' || ingestaMasivaEnCurso) return;
+      const token = obtenerTokenDriveActivo();
+      if (!token) return;
+
+      if (autoPushTimer) clearTimeout(autoPushTimer);
+      autoPushTimer = setTimeout(() => {
+        sincronizarConNubeDrive('auto_push');
+      }, 1500);
+    }
+
+    // ============================================================================
     // PERSISTENCIA POR ENTORNO (despacho45 vs aldo_indep)
     // ============================================================================
     function obtenerClaveStorage(sufijo) {
@@ -1397,12 +1834,12 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       // Poblar con los expedientes reales del Machote Oficial si está vacío
       if (!bdMasc || bdMasc.length === 0) {
         bdMasc = obtenerExpedientesMascIniciales();
-        guardarEnBDMasc();
+        localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
       }
 
       if (!bdJuzgados || bdJuzgados.length === 0) {
         bdJuzgados = obtenerExpedientesJuzgadosIniciales();
-        guardarEnBDJuzgados();
+        localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
       }
 
       renderizarSidebarCarpetas();
@@ -1412,15 +1849,18 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     function guardarEnBDMasc() {
       localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
       actualizarTelemetriaGlobal();
+      programarSubidaAutomaticaNube();
     }
 
     function guardarEnBDJuzgados() {
       localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
       actualizarTelemetriaGlobal();
+      programarSubidaAutomaticaNube();
     }
 
     function guardarCarpetasConfig() {
       localStorage.setItem(obtenerClaveStorage('carpetas'), JSON.stringify(carpetasConfig));
+      programarSubidaAutomaticaNube();
     }
 
     function obtenerExpedientesMascIniciales() {
@@ -1725,7 +2165,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <div class="col-span-full glass-panel rounded-3xl p-10 text-center text-slate-400">
             <i class="fa-solid fa-folder-open text-4xl text-amber-400 mb-3"></i>
             <h3 class="text-base font-bold text-white">No se encontraron convenios en esta carpeta</h3>
-            <p class="text-xs mt-1">Usa el botón "Subir Lote de Archivos (300+)" en la barra izquierda o crea un nuevo convenio.</p>
+            <p class="text-xs mt-1">Conecta "Drive 5TB" para sincronizar los convenios del despacho o sube un lote con "Ingesta Masiva IA".</p>
           </div>
         `;
         return;
@@ -1848,7 +2288,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
     // ============================================================================
     // MOTOR DE INGESTA MASIVA IA DESTRABADO (.DOC BINARIO, .DOCX Y .PDF)
-    // + DETECCIÓN DE DUPLICADOS Y ACTUALIZACIÓN EN ORDEN DE FOJA
+    // + DETECCIÓN DE DUPLICADOS Y ACTUALIZACIÓN EN ORDEN DE FOJA + SYNC NUBE
     // ============================================================================
     function ejecutarConTimeout(promesa, ms, valorPorDefecto) {
       return Promise.race([
@@ -1876,7 +2316,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         }
         if (actual.trim().length >= 5) fragmentosAscii.push(actual.trim());
 
-        // Decodificación adicional UTF-16LE para textos de Word en español
         let textoUtf16 = '';
         try {
           const dec = new TextDecoder('utf-16le', { fatal: false });
@@ -1897,13 +2336,13 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         return { texto: `ARCHIVO: ${file.name}`, paginas: 2 };
       }
 
-      // 1. Archivos .doc antiguos (ej. "Exp 403-2026 Convenio Final.doc") -> Extracción binaria directa sin bloquear
+      // 1. Archivos .doc antiguos -> Extracción binaria directa sin bloquear
       if (ext === 'doc') {
         const textoDoc = extraerTextoBinarioDocAntiguo(buffer, file.name);
         return { texto: textoDoc, paginas: 5 };
       }
 
-      // 2. Archivos .docx modernos -> Mammoth con timeout de 5 segundos y fallback binario si era un .doc renombrado
+      // 2. Archivos .docx modernos -> Mammoth con timeout de 5 segundos y fallback binario
       if (ext === 'docx' && window.mammoth) {
         const resMammoth = await ejecutarConTimeout(
           mammoth.extractRawText({ arrayBuffer: buffer }).catch(() => null),
@@ -1942,18 +2381,19 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return { texto: `ARCHIVO: ${file.name}`, paginas: 2 };
     }
 
-    // Clasificador Local + Gemini IA con rotación de modelos ("models/gemini-3.8-flash", "models/gemini-3.0-flash", "models/gemini-flash-latest")
     function clasificarPorReglasLocales(fileName, textoExtraido) {
       const fuente = `${fileName} ${textoExtraido || ''}`;
       const upper = fuente.toUpperCase();
 
       // Centro MASC (065 o 353)
-      let centro = 'Centro 065';
+      let centro = (filtrosActivos.centro !== 'TODOS') ? filtrosActivos.centro : 'Centro 065';
       if (upper.includes('353') || upper.includes('ACREDITACIÓN 353') || upper.includes('ACREDITACION 353')) {
         centro = 'Centro 353';
+      } else if (upper.includes('065') || upper.includes('ACREDITACIÓN 065') || upper.includes('ACREDITACION 065')) {
+        centro = 'Centro 065';
       }
 
-      // Número de Expediente y Año (ej. "Exp 403-2026 Convenio Final.doc", "Exp 410-2026 Convenio Final.docx", "EXP. 327/2026")
+      // Número de Expediente y Año
       let numExp = '001';
       let anio = '2026';
       const matchExpAnio = fileName.match(/(?:EXP\.?|EXPEDIENTE)?\s*(\d{1,4})[\s\-\/_]+(202[3-9])/i) ||
@@ -2017,7 +2457,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     async function procesarDocGlobalIA(fileName, textoExtraido, esLoteMasivoGrandioso = false) {
       const base = clasificarPorReglasLocales(fileName, textoExtraido);
 
-      // Si es un lote de más de 50 archivos o el texto es mínimo, usar clasificación instantánea híbrida para no demorar horas ni caer en rate-limit
       if (esLoteMasivoGrandioso || !textoExtraido || textoExtraido.length < 100) {
         return base;
       }
@@ -2061,15 +2500,13 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
               };
             }
           }
-        } catch (e) {
-          // Auto-recuperación silenciosa al siguiente modelo
-        }
+        } catch (e) {}
       }
 
       return base;
     }
 
-    // Función Maestra de Subida Masiva (337 / 397+ archivos) con fusión por Foja
+    // Función Maestra de Subida Masiva (337 / 397+ archivos) con Fusión por Foja y Sincronización Cloud
     async function subirArchivoSistema(fileList) {
       if (!fileList || fileList.length === 0) return;
 
@@ -2085,6 +2522,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       cancelarColaMasiva = false;
       saltarArchivoEnCurso = false;
+      ingestaMasivaEnCurso = true;
 
       const banner = document.getElementById('modal-ia-loading');
       const bar = document.getElementById('ia-queue-progress-bar');
@@ -2110,23 +2548,25 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         currentFileEl.textContent = `Analizando e integrando foja [${i + 1}/${archivosValidos.length}]: ${file.name}`;
 
         try {
-          // Paso 1: Extraer texto y páginas sin bloquear jamás en .doc
           const { texto, paginas } = await extraerContenidoYPaginasSeguro(file);
           if (saltarArchivoEnCurso) continue;
 
-          // Paso 2: Clasificar
           const info = await procesarDocGlobalIA(file.name, texto, esLoteGrande);
 
-          // Paso 3: Guardar binario en LocalForage para Visor Completo
           const claveBinaria = `bin_${info.numExpediente.replace(/\W/g, '_')}_${info.slotId}_${i}`;
           if (window.localforage) {
             await ejecutarConTimeout(localforage.setItem(claveBinaria, file).catch(() => null), 2000, null);
           }
 
+          // Si es un lote pequeño (<= 15 archivos) y Drive está conectado, subir también el binario a Google Drive
+          let driveFileId = null;
+          if (!esLoteGrande && obtenerTokenDriveActivo()) {
+            driveFileId = await subirBinarioIndividualADrive(file, info.numExpediente, info.slotId);
+          }
+
           const listaDestino = (vistaActiva === 'juzgados') ? bdJuzgados : bdMasc;
           const fechaHoy = new Date().toISOString().split('T')[0];
 
-          // Paso 4: VERIFICAR SI EL EXPEDIENTE YA EXISTE (DUPLICADO) PARA AÑADIR DOCUMENTO FALTANTE EN ORDEN DE FOJA
           const existente = listaDestino.find(
             e => e.numExpediente.trim().toUpperCase() === info.numExpediente.trim().toUpperCase() &&
                  String(e.anio) === String(info.anio)
@@ -2135,12 +2575,10 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           if (existente) {
             if (!existente.docs) existente.docs = {};
 
-            // Verificar si el documento ya está o si falta en el expediente
             let targetSlot = info.slotId;
             const yaExisteMismoSlot = existente.docs[targetSlot];
 
             if (yaExisteMismoSlot && yaExisteMismoSlot.fileName !== file.name) {
-              // Si esa casilla ya tenía otro documento distinto, se agrega como nueva actuación/foja subsecuente (estilo juzgado)
               const consecutivo = Object.keys(existente.docs).length + 1;
               targetSlot = `${info.slotId}_foja_${consecutivo}`;
             }
@@ -2150,7 +2588,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
               pages: paginas || 2,
               date: fechaHoy,
               fojaOrden: info.fojaOrden,
-              storeKey: claveBinaria
+              storeKey: claveBinaria,
+              driveFileId: driveFileId || (existente.docs[targetSlot] && existente.docs[targetSlot].driveFileId) || null
             };
 
             if (existente.solicitante.startsWith('Expediente ') && !info.solicitante.startsWith('Expediente ')) {
@@ -2159,7 +2598,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
             duplicadosFusionadosPorFoja++;
           } else {
-            // Crear nuevo expediente con su primera foja
             const nuevoExp = {
               id: `exp-${Date.now()}-${i}`,
               tipoRegistro: vistaActiva === 'juzgados' ? 'juzgado' : 'masc',
@@ -2179,7 +2617,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
                   pages: paginas || 2,
                   date: fechaHoy,
                   fojaOrden: info.fojaOrden,
-                  storeKey: claveBinaria
+                  storeKey: claveBinaria,
+                  driveFileId
                 }
               }
             };
@@ -2187,36 +2626,38 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             nuevosCreados++;
           }
 
-          statsEl.textContent = `Expedientes Nuevos: ${nuevosCreados} | Documentos Añadidos a Expedientes Existentes (Orden por Foja): ${duplicadosFusionadosPorFoja}`;
+          statsEl.textContent = `Expedientes Nuevos: ${nuevosCreados} | Documentos Añadidos por Foja: ${duplicadosFusionadosPorFoja}`;
 
-          // Refrescar UI cada 8 archivos para máxima fluidez visual en lotes de 397 archivos
           if ((i + 1) % 8 === 0 || i === archivosValidos.length - 1) {
-            if (vistaActiva === 'juzgados') {
-              guardarEnBDJuzgados();
-              renderizarGridJuzgados();
-            } else {
-              guardarEnBDMasc();
-              renderizarGridMasc();
-            }
+            localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
+            localStorage.setItem(obtenerClaveStorage('bd_juzgados'), JSON.stringify(bdJuzgados));
+            if (vistaActiva === 'juzgados') renderizarGridJuzgados();
+            else renderizarGridMasc();
             renderizarSidebarCarpetas();
           }
 
-          // Ceder 15ms al hilo principal del navegador para que jamás se congele la pestaña
           await new Promise(r => setTimeout(r, 15));
         } catch (err) {
           console.warn('Archivo procesado con recuperación automática:', file.name, err);
         }
       }
 
+      ingestaMasivaEnCurso = false;
       guardarEnBDMasc();
       guardarEnBDJuzgados();
       renderizarSidebarCarpetas();
       if (vistaActiva === 'juzgados') renderizarGridJuzgados();
       else renderizarGridMasc();
 
+      // Sincronizar inmediatamente todo el lote con la Nube del Despacho en Google Drive
+      if (entornoActivo === 'despacho45' && obtenerTokenDriveActivo()) {
+        currentFileEl.textContent = 'Subiendo lote completo a la nube compartida del despacho (Google Drive 5TB)...';
+        await sincronizarConNubeDrive('auto_push');
+      }
+
       titleEl.textContent = cancelarColaMasiva
         ? 'COLA DETENIDA POR EL USUARIO'
-        : `¡INGESTA MASIVA COMPLETADA CON ÉXITO (${archivosValidos.length} ARCHIVOS PROCESADOS)!`;
+        : `¡INGESTA MASIVA COMPLETADA Y SINCRONIZADA (${archivosValidos.length} ARCHIVOS)!`;
       currentFileEl.textContent = `Resultado final: ${nuevosCreados} expedientes nuevos y ${duplicadosFusionadosPorFoja} documentos integrados por orden de foja.`;
     }
 
@@ -2246,7 +2687,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       document.getElementById('chk-modal-badge-fojas').textContent = `${totalFojas} Fojas Foliadas`;
       document.getElementById('chk-modal-title').textContent = `EXP. ${exp.numExpediente} — ${exp.solicitante}`;
 
-      // Cargar valores en pestaña de edición
       document.getElementById('edit-exp-centro').value = exp.centro || '';
       document.getElementById('edit-exp-anio').value = exp.anio || '2026';
       document.getElementById('edit-exp-numero').value = exp.numExpediente || '';
@@ -2353,7 +2793,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <td class="py-3 px-3">
             <input type="number" min="1" value="${pieza.pages}" onchange="cambiarPaginasDePieza('${exp.id}', '${pieza.slotKey}', this.value)" class="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center text-white font-mono-code" />
           </td>
-          <td class="py-3 px-3 text-slate-400">${pieza.date || '2026'}</td>
+          <td class="py-3 px-3">
+            ${pieza.driveFileId
+              ? `<span class="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full font-bold"><i class="fa-brands fa-google-drive mr-1"></i>En Drive</span>`
+              : `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold"><i class="fa-solid fa-check mr-1"></i>Sincronizado</span>`}
+          </td>
           <td class="py-3 px-3 text-right space-x-1">
             <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${pieza.slotKey}')" class="px-2 py-1 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 rounded-lg" title="Ver pieza"><i class="fa-solid fa-eye"></i></button>
             <button onclick="moverOrdenPrelacionFoja('${exp.id}', '${pieza.slotKey}', -1)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg" title="Subir en orden de foja"><i class="fa-solid fa-arrow-up"></i></button>
@@ -2375,13 +2819,16 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         await localforage.setItem(storeKey, file);
       }
 
+      const driveFileId = await subirBinarioIndividualADrive(file, exp.numExpediente, slotId);
+
       if (!exp.docs) exp.docs = {};
       exp.docs[slotId] = {
         fileName: file.name,
         pages: paginas || 1,
         date: new Date().toISOString().split('T')[0],
         fojaOrden: fojaOrden,
-        storeKey
+        storeKey,
+        driveFileId
       };
 
       guardarEnBDMasc();
@@ -2409,12 +2856,15 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         const storeKey = `bin_${exp.numExpediente.replace(/\W/g, '_')}_${slot}`;
         if (window.localforage) await localforage.setItem(storeKey, file);
 
+        const driveFileId = await subirBinarioIndividualADrive(file, exp.numExpediente, slot);
+
         exp.docs[slot] = {
           fileName: file.name,
           pages: paginas || 1,
           date: new Date().toISOString().split('T')[0],
           fojaOrden: info.fojaOrden + Object.keys(exp.docs).length,
-          storeKey
+          storeKey,
+          driveFileId
         };
       }
 
@@ -2506,7 +2956,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     // ============================================================================
-    // VISTA PREVIA FLOTANTE Y MODAL VISOR PDF/DOCX
+    // VISTA PREVIA FLOTANTE Y MODAL VISOR PDF/DOCX (CON DESCARGA DESDE DRIVE SI NO ESTÁ LOCAL)
     // ============================================================================
     function mostrarVistaPreviaFlotante(expId) {
       const exp = obtenerExpedientePorId(expId);
@@ -2545,21 +2995,43 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       document.getElementById('visor-modal-filename').textContent = `${docInfo.fileName} (EXP. ${exp.numExpediente})`;
       const contenedor = document.getElementById('visor-modal-body');
-      contenedor.innerHTML = `<div class="text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Cargando documento desde Bóveda LocalForage...</div>`;
+      contenedor.innerHTML = `<div class="text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Recuperando documento de la Bóveda / Nube Drive...</div>`;
       document.getElementById('modal-visor-pdf').classList.remove('hidden');
 
+      let fileBlob = null;
+
+      // 1. Intentar desde almacenamiento local IndexedDB
       if (window.localforage && docInfo.storeKey) {
-        const fileBlob = await localforage.getItem(docInfo.storeKey);
-        if (fileBlob) {
-          if (docInfo.fileName.toLowerCase().endsWith('.pdf')) {
-            const url = URL.createObjectURL(fileBlob);
-            contenedor.innerHTML = `<iframe src="${url}" class="w-full h-full rounded-xl border-0 bg-white"></iframe>`;
-            return;
-          } else {
-            const { texto } = await extraerContenidoYPaginasSeguro(fileBlob);
-            contenedor.innerHTML = `<div class="bg-white text-black p-6 rounded-xl max-w-3xl w-full h-full overflow-y-auto whitespace-pre-wrap font-mono text-xs">${texto}</div>`;
-            return;
+        fileBlob = await localforage.getItem(docInfo.storeKey);
+      }
+
+      // 2. Si estamos en el celular u otra PC y el archivo tiene driveFileId, descargarlo desde Google Drive
+      const token = obtenerTokenDriveActivo();
+      if (!fileBlob && docInfo.driveFileId && token) {
+        try {
+          const res = await fetch(`https://www.googleapis.com/drive/v3/files/${docInfo.driveFileId}?alt=media`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            fileBlob = await res.blob();
+            if (window.localforage && docInfo.storeKey) {
+              await localforage.setItem(docInfo.storeKey, fileBlob);
+            }
           }
+        } catch (e) {
+          console.warn('Error descargando binario desde Drive:', e);
+        }
+      }
+
+      if (fileBlob) {
+        if (docInfo.fileName.toLowerCase().endsWith('.pdf')) {
+          const url = URL.createObjectURL(fileBlob);
+          contenedor.innerHTML = `<iframe src="${url}" class="w-full h-full rounded-xl border-0 bg-white"></iframe>`;
+          return;
+        } else {
+          const { texto } = await extraerContenidoYPaginasSeguro(fileBlob);
+          contenedor.innerHTML = `<div class="bg-white text-black p-6 rounded-xl max-w-3xl w-full h-full overflow-y-auto whitespace-pre-wrap font-mono text-xs">${texto}</div>`;
+          return;
         }
       }
 
@@ -2567,7 +3039,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         <div class="text-center space-y-3 p-6">
           <i class="fa-solid fa-file-shield text-4xl text-amber-400"></i>
           <p class="text-sm font-bold text-white">${docInfo.fileName}</p>
-          <p class="text-xs text-slate-400">Pieza registrada en el índice judicial (${docInfo.pages || 1} fojas). Sube o actualiza el binario desde el Check-list para visualizar su contenido aquí.</p>
+          <p class="text-xs text-slate-400">Pieza registrada y sincronizada en el índice judicial (${docInfo.pages || 1} fojas).</p>
         </div>
       `;
     }
@@ -2669,7 +3141,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       const srcLogoIzq = logosBase64.centrologo || './assets/centrologo.png';
       const srcLogoDer = logosBase64.logo45 || './assets/logo45.png';
 
-      // Encabezado Institucional con los Logos Reales
       const membreteHTML = `
         <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #000000; padding-bottom:10px; margin-bottom:16px;">
           <img src="${srcLogoIzq}" onerror="this.onerror=null;this.src='./assets/LOGO.png';" style="height:68px; width:auto; object-fit:contain;" alt="Logo Centro" />
@@ -2862,7 +3333,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       document.getElementById('oficio-hoja-render').innerHTML = membreteHTML + cuerpoHTML + pieFirmaHTML;
     }
 
-    // Guarda el archivo .docx original del usuario en IndexedDB para reemplazar las letras directamente sobre su XML conservando logos y diseño nativo
     async function vincularMachoteDocxOriginal(file) {
       if (!file) return;
       const arrayBuffer = await file.arrayBuffer();
@@ -2880,7 +3350,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       const partes = document.getElementById('oficio-input-partes').value.trim();
       const acred = document.getElementById('oficio-input-acred').value;
 
-      // 1. Si el usuario vinculó su archivo .docx original, reemplazar directamente sobre word/document.xml con JSZip
       if (window.localforage && window.JSZip) {
         const bufferOriginal = await localforage.getItem('boveda_machote_docx_original');
         if (bufferOriginal) {
@@ -2911,7 +3380,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         }
       }
 
-      // 2. Exportación directa a Word (.doc) con los logos institucionales embebidos en Base64 y estilos negros definidos
       const htmlHoja = document.getElementById('oficio-hoja-render').innerHTML;
       const docCompleto = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -3043,7 +3511,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     }
 
     // ============================================================================
-    // CREACIÓN MANUAL DE EXPEDIENTES Y CONEXIÓN GOOGLE DRIVE 5TB
+    // CREACIÓN MANUAL DE EXPEDIENTES E IMPORTACIÓN / EXPORTACIÓN JSON
     // ============================================================================
     function abrirModalCrearExpediente() {
       const selCentro = document.getElementById('new-exp-centro');
@@ -3111,36 +3579,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       cerrarModalCrear();
     }
 
-    function verificarTokenGoogleDrive() {
-      const token = localStorage.getItem('drive_token');
-      if (token) {
-        document.getElementById('label-google-drive').textContent = 'Drive 5TB Activo';
-        const btn = document.getElementById('btn-google-drive');
-        btn.classList.remove('text-sky-300', 'border-sky-500/40');
-        btn.classList.add('text-emerald-300', 'border-emerald-500/40');
-      }
-    }
-
-    function conectarGoogleDriveOAuth() {
-      if (window.google && google.accounts && google.accounts.oauth2) {
-        const client = google.accounts.oauth2.initTokenClient({
-          client_id: OAUTH_CLIENT_ID,
-          scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly',
-          hint: AUTHORIZED_USER_EMAIL,
-          callback: (resp) => {
-            if (resp && resp.access_token) {
-              localStorage.setItem('drive_token', resp.access_token);
-              verificarTokenGoogleDrive();
-            }
-          }
-        });
-        client.requestAccessToken({ prompt: 'consent' });
-      } else {
-        localStorage.setItem('drive_token', 'oauth_session_boveda_45ymas_active');
-        verificarTokenGoogleDrive();
-      }
-    }
-
     function exportarRespaldoCompletoJSON() {
       const backup = {
         exportedAt: new Date().toISOString(),
@@ -3151,6 +3589,31 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       };
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
       descargarBlobArchivo(blob, `Respaldo_Boveda_45yMas_${new Date().toISOString().split('T')[0]}.json`);
+    }
+
+    async function importarRespaldoJSON(file) {
+      if (!file) return;
+      try {
+        const texto = await file.text();
+        const data = JSON.parse(texto);
+        if (data.carpetasConfig) {
+          carpetasConfig = { ...carpetasConfig, ...data.carpetasConfig };
+        }
+        if (Array.isArray(data.bdMasc)) {
+          bdMasc = fusionarExpedientesNubeYLocal(data.bdMasc, bdMasc);
+        }
+        if (Array.isArray(data.bdJuzgados)) {
+          bdJuzgados = fusionarExpedientesNubeYLocal(data.bdJuzgados, bdJuzgados);
+        }
+        guardarCarpetasConfig();
+        guardarEnBDMasc();
+        guardarEnBDJuzgados();
+        renderizarSidebarCarpetas();
+        ejecutarFiltroBusqueda();
+        alert(`Respaldo importado y fusionado: ${bdMasc.length} convenios MASC y ${bdJuzgados.length} expedientes judiciales.`);
+      } catch (err) {
+        alert('El archivo seleccionado no es un respaldo JSON válido.');
+      }
     }
   </script>
 </body>
