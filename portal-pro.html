@@ -44,7 +44,7 @@
     }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
     .glass-panel {
-      background: rgba(13, 21, 40, 0.90);
+      background: rgba(13, 21, 40, 0.92);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--border-subtle);
@@ -70,7 +70,6 @@
     ::-webkit-scrollbar-track { background: #060b16; }
     ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.4); border-radius: 9999px; }
 
-    /* Hoja de vista previa del Machote Original */
     #oficio-hoja-render {
       background-color: #ffffff !important;
       color: #000000 !important;
@@ -94,23 +93,22 @@
     }
     #oficio-hoja-render img { max-height: 85px; width: auto; object-fit: contain; }
 
-    /* Hoja de lectura para el Ojo Visor */
     .doc-sheet-viewer {
       background: #ffffff;
-      color: #0f172a;
-      max-width: 860px;
+      color: #000000;
+      max-width: 880px;
       width: 100%;
       margin: 0 auto;
-      padding: 40px 50px;
+      padding: 44px 56px;
       border-radius: 12px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      font-family: 'Inter', Arial, sans-serif;
-      line-height: 1.65;
-      font-size: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.65);
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      font-size: 11.5pt;
     }
-    .doc-sheet-viewer * { color: #0f172a; }
+    .doc-sheet-viewer * { color: #000000; }
     .doc-sheet-viewer table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-    .doc-sheet-viewer td, .doc-sheet-viewer th { border: 1px solid #cbd5e1; padding: 6px 10px; }
+    .doc-sheet-viewer td, .doc-sheet-viewer th { border: 1px solid #000000; padding: 6px 10px; }
 
     @media print {
       body * { visibility: hidden !important; }
@@ -127,13 +125,12 @@
         width: 295px; transform: translateX(-100%); transition: transform 0.28s ease-in-out;
       }
       #sidebar-navigation.mobile-open { transform: translateX(0); }
-      .doc-sheet-viewer { padding: 20px; font-size: 12.5px; }
+      .doc-sheet-viewer { padding: 20px; font-size: 10.5pt; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- 1. LOGIN SCREEN -->
   <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#050914] p-4 overflow-y-auto">
     <div class="glass-panel rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-amber-500/30">
       <div class="flex items-center justify-center gap-3 mb-5">
@@ -179,11 +176,9 @@
     </div>
   </div>
 
-  <!-- 2. DASHBOARD PRINCIPAL -->
   <div id="dashboard-screen" class="min-h-screen flex flex-col lg:flex-row">
     <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar(false)" class="fixed inset-0 bg-black/70 z-50 hidden lg:hidden"></div>
 
-    <!-- SIDEBAR -->
     <aside id="sidebar-navigation" class="w-72 xl:w-80 glass-panel border-r border-amber-500/20 flex flex-col justify-between shrink-0 lg:sticky lg:top-0 lg:h-screen overflow-y-auto">
       <div class="p-4 space-y-4">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -200,7 +195,6 @@
           <button onclick="toggleMobileSidebar(false)" class="lg:hidden text-slate-400 hover:text-white p-1.5"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
 
-        <!-- Nube del Despacho -->
         <div id="cloud-sync-card" class="p-3 rounded-2xl bg-slate-900/90 border border-sky-500/30 space-y-2">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
@@ -221,7 +215,6 @@
           </div>
         </div>
 
-        <!-- Navegación de Módulos -->
         <div class="space-y-1">
           <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-2 mb-1">Módulos de Bóveda</p>
           <button onclick="renderizarVista('masc')" id="nav-btn-masc" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition brand-gradient text-slate-950 shadow">
@@ -242,7 +235,6 @@
           </button>
         </div>
 
-        <!-- Árbol de Carpetas -->
         <div class="border-t border-slate-800 pt-3 space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
@@ -292,7 +284,6 @@
           </div>
         </div>
 
-        <!-- Ingesta Masiva IA -->
         <div class="border-t border-slate-800 pt-3">
           <div class="p-3.5 rounded-2xl bg-gradient-to-b from-emerald-950/60 to-slate-900/90 border border-emerald-500/40 space-y-2">
             <div class="flex items-center justify-between">
@@ -302,7 +293,7 @@
               <span class="text-[9px] font-mono-code bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">.DOC • .DOCX • .PDF</span>
             </div>
             <p class="text-[10px] text-slate-300 leading-snug">
-              El Convenio Final se coloca solo en su casilla; los documentos escaneados (INE, Predial, Escritura, Contrato) solo se marcan cuando subes sus archivos.
+              Conserva cada documento tal cual fue subido sin modificarlo ni inventar resúmenes.
             </p>
             <div class="space-y-1.5">
               <label class="cursor-pointer w-full brand-gradient text-slate-950 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg hover:opacity-95 transition">
@@ -318,7 +309,6 @@
         </div>
       </div>
 
-      <!-- Telemetría 5TB -->
       <div class="p-4 border-t border-slate-800 bg-slate-950/70 space-y-2.5">
         <div>
           <div class="flex items-center justify-between text-[11px] mb-1">
@@ -336,7 +326,6 @@
       </div>
     </aside>
 
-    <!-- CONTENIDO CENTRAL -->
     <div class="flex-1 flex flex-col min-w-0">
       <header class="glass-panel sticky top-0 z-30 border-b border-amber-500/20 px-3 sm:px-6 py-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -356,8 +345,7 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
-            <!-- Botón Instalar App (PWA) -->
-            <button onclick="instalarAppPWA()" id="btn-pwa-install" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition" title="Instalar Bóveda Pro como App en tu Celular o PC">
+            <button onclick="instalarAppPWA()" id="btn-pwa-install" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition">
               <i class="fa-solid fa-mobile-screen-button"></i>
               <span>Instalar App</span>
             </button>
@@ -384,7 +372,6 @@
         </div>
       </header>
 
-      <!-- Consola de Cola Masiva IA -->
       <div id="modal-ia-loading" class="hidden mx-3 sm:mx-6 mt-4 glass-panel rounded-2xl p-4 border-2 border-emerald-500/50 shadow-2xl">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
           <div class="flex items-center gap-2.5">
@@ -405,11 +392,10 @@
         </div>
         <div class="flex flex-wrap items-center justify-between gap-2 mt-2 text-[11px] text-slate-300">
           <span id="ia-queue-stats-detail">Nuevos: 0 | Documentos integrados por Foja: 0</span>
-          <span class="font-mono-code text-sky-300">Separación estricta: Convenio vs Escaneados</span>
+          <span class="font-mono-code text-sky-300">Archivos conservados 100% originales</span>
         </div>
       </div>
 
-      <!-- Buscador y Botones -->
       <div class="p-3 sm:p-6 pb-0">
         <div class="glass-panel rounded-2xl p-3.5 sm:p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           <div class="relative flex-1">
@@ -434,12 +420,10 @@
         </div>
       </div>
 
-      <!-- VISTA 1: MASC -->
       <main id="view-masc" class="p-3 sm:p-6 flex-1">
         <div id="grid-convenios-masc" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4"></div>
       </main>
 
-      <!-- VISTA 2: JUZGADOS -->
       <main id="view-juzgados" class="p-3 sm:p-6 flex-1 hidden space-y-4">
         <div class="glass-panel rounded-2xl p-4 border border-sky-500/30 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -450,7 +434,6 @@
         <div id="grid-expedientes-juzgados" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4"></div>
       </main>
 
-      <!-- VISTA 3: EQUIPO Y NUBE -->
       <main id="view-usuarios" class="p-3 sm:p-6 flex-1 hidden space-y-6">
         <div class="glass-panel rounded-2xl p-5 space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -463,8 +446,7 @@
     </div>
   </div>
 
-  <!-- 3. TARJETA FLOTANTE DE VISIÓN AUTOMÁTICA AL PASAR EL MOUSE (#floating-preview-panel) -->
-  <div id="floating-preview-panel" onmouseenter="cancelarOcultarHoverPreview()" onmouseleave="ocultarHoverPreviewInmediato()" class="fixed bottom-4 right-4 z-50 w-80 sm:w-[420px] glass-panel rounded-2xl p-4 shadow-2xl border-2 border-amber-400/70 hidden">
+  <div id="floating-preview-panel" onmouseenter="cancelarOcultarHoverPreview()" onmouseleave="ocultarHoverPreviewInmediato()" class="fixed bottom-4 right-4 z-50 w-80 sm:w-[430px] glass-panel rounded-2xl p-4 shadow-2xl border-2 border-amber-400/70 hidden">
     <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2.5">
       <span class="text-xs font-black text-amber-300 flex items-center gap-1.5">
         <i class="fa-solid fa-bolt"></i> Visión Rápida de Check-List y Documentos
@@ -474,10 +456,9 @@
     <div id="floating-preview-body" class="text-xs space-y-2.5 max-h-[70vh] overflow-y-auto pr-1"></div>
   </div>
 
-  <!-- 4. MODAL DE CHECK-LIST OFICIAL + ÍNDICE JUDICIAL POR FOJA (#modal-checklist-fojas) -->
   <div id="modal-checklist-fojas" class="fixed inset-0 z-[70] hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="glass-panel rounded-3xl max-w-6xl w-full max-h-[94vh] flex flex-col border border-amber-500/40 shadow-2xl overflow-hidden">
-      <div class="p-4 sm:p-5 bg-slate-900/95 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div class="shrink-0 p-4 sm:p-5 bg-slate-900/95 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div>
           <div class="flex flex-wrap items-center gap-2">
             <span id="chk-modal-badge-centro" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">Centro 065</span>
@@ -501,14 +482,14 @@
         </div>
       </div>
 
-      <div class="bg-slate-900/70 px-4 pt-2 border-b border-slate-800 flex gap-2 overflow-x-auto">
-        <button onclick="cambiarTabModalExp('checklist')" id="tab-exp-checklist" class="px-4 py-2.5 text-xs font-black border-b-2 border-amber-400 text-amber-300 whitespace-nowrap">
+      <div class="shrink-0 min-h-[48px] bg-slate-900 px-4 border-b border-slate-800 flex items-center gap-2 overflow-x-auto">
+        <button onclick="cambiarTabModalExp('checklist')" id="tab-exp-checklist" class="px-4 py-3 text-xs font-black border-b-2 border-amber-400 text-amber-300 whitespace-nowrap leading-none">
           <i class="fa-solid fa-list-check mr-1.5"></i> 1. Check-List Oficial (Subir Escaneados Individuales)
         </button>
-        <button onclick="cambiarTabModalExp('fojas')" id="tab-exp-fojas" class="px-4 py-2.5 text-xs font-black border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">
+        <button onclick="cambiarTabModalExp('fojas')" id="tab-exp-fojas" class="px-4 py-3 text-xs font-black border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap leading-none">
           <i class="fa-solid fa-layer-group mr-1.5"></i> 2. Orden Judicial por Foja
         </button>
-        <button onclick="cambiarTabModalExp('editar')" id="tab-exp-editar" class="px-4 py-2.5 text-xs font-black border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">
+        <button onclick="cambiarTabModalExp('editar')" id="tab-exp-editar" class="px-4 py-3 text-xs font-black border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap leading-none">
           <i class="fa-solid fa-folder-gear mr-1.5"></i> 3. Editar Datos y Carpeta
         </button>
       </div>
@@ -518,10 +499,10 @@
           <div class="bg-amber-950/30 border border-amber-500/30 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
             <div class="text-xs text-slate-200">
               <i class="fa-solid fa-shield-halved text-amber-400 mr-1.5"></i>
-              <strong>Separación de Documentos Activa:</strong> El Convenio Final va exclusivamente en su casilla. Las copias escaneadas de <strong>Identificaciones (ID), Predial, Escritura y Contrato</strong> deben subirse en sus propias casillas.
+              <strong>Archivos 100% Originales:</strong> Cada archivo que subas se muestra exactamente tal cual fue cargado, sin modificaciones ni resúmenes.
             </div>
             <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-4 py-2 rounded-xl flex items-center gap-2 shadow">
-              <i class="fa-solid fa-file-circle-plus"></i> Subir Documento(s) Escaneados
+              <i class="fa-solid fa-file-circle-plus"></i> Subir Documento(s) al Expediente
               <input type="file" multiple accept=".pdf,.doc,.docx" class="hidden" onchange="fusionarArchivosEnExpedienteActivo(this.files)" />
             </label>
           </div>
@@ -536,7 +517,7 @@
                   <th class="py-3 px-3">Orden</th>
                   <th class="py-3 px-3">Fojas</th>
                   <th class="py-3 px-3">Casilla Documental</th>
-                  <th class="py-3 px-3">Archivo</th>
+                  <th class="py-3 px-3">Archivo Original Subido</th>
                   <th class="py-3 px-3">Páginas</th>
                   <th class="py-3 px-3 text-right">Acciones</th>
                 </tr>
@@ -601,10 +582,9 @@
     </div>
   </div>
 
-  <!-- 5. MODAL MACHOTE DE OFICIOS AL IJA (SE GUARDA EN LA NUBE Y DUPLICA EL .DOCX ORIGINAL CAMBIANDO SOLO EL TEXTO) -->
   <div id="modal-oficios-ija" class="fixed inset-0 z-[75] hidden bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="glass-panel rounded-3xl max-w-7xl w-full max-h-[95vh] flex flex-col border border-indigo-500/40 shadow-2xl overflow-hidden">
-      <div class="p-4 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div class="shrink-0 p-4 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 class="text-sm sm:text-lg font-black text-white flex items-center gap-2">
             <i class="fa-solid fa-file-word text-indigo-400"></i>
@@ -700,7 +680,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     </div>
   </div>
 
-  <!-- 6. MODAL CREAR NUEVO EXPEDIENTE -->
   <div id="modal-crear" class="fixed inset-0 z-[80] hidden bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
     <div class="glass-panel rounded-3xl max-w-xl w-full p-6 border border-amber-500/40 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -758,7 +737,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     </div>
   </div>
 
-  <!-- 7. MODAL EDITAR CARPETA -->
   <div id="modal-editar-carpeta" class="fixed inset-0 z-[85] hidden bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass-panel rounded-3xl max-w-lg w-full p-6 border border-amber-500/40 shadow-2xl space-y-4 text-xs">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -793,24 +771,23 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     </div>
   </div>
 
-  <!-- 8. MODAL VISOR DE DOCUMENTO INDIVIDUAL (EL OJO) REPARADO AL 100% -->
   <div id="modal-visor-pdf" class="fixed inset-0 z-[95] hidden bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
-    <div class="glass-panel rounded-3xl max-w-5xl w-full h-[92vh] flex flex-col border border-sky-500/40 shadow-2xl overflow-hidden">
-      <div class="p-3.5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+    <div class="glass-panel rounded-3xl max-w-6xl w-full h-[93vh] flex flex-col border border-sky-500/40 shadow-2xl overflow-hidden">
+      <div class="shrink-0 p-3.5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2 min-w-0">
           <i class="fa-solid fa-eye text-amber-400"></i>
-          <span id="visor-modal-filename" class="text-xs sm:text-sm font-bold text-white truncate">Documento</span>
+          <span id="visor-modal-filename" class="text-xs sm:text-sm font-bold text-white truncate">Documento Original</span>
         </div>
         <div class="flex items-center gap-2">
           <button id="visor-btn-descargar-original" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
-            <i class="fa-solid fa-download mr-1"></i> Descargar Original
+            <i class="fa-solid fa-download mr-1"></i> Descargar Archivo Original
           </button>
           <button onclick="cerrarModalVisorPdf()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-bold">
             <i class="fa-solid fa-xmark mr-1"></i> Cerrar Visor
           </button>
         </div>
       </div>
-      <div id="visor-modal-body" class="flex-1 bg-slate-900 overflow-y-auto p-4 sm:p-6"></div>
+      <div id="visor-modal-body" class="flex-1 bg-slate-900 overflow-y-auto p-3 sm:p-6"></div>
     </div>
   </div>
 
@@ -819,7 +796,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
-    // CREDENCIALES CORPORATIVAS
     const OAUTH_CLIENT_ID = '326577655461-e7s01aoc20tofbgmrplt0bdt6ouhe27o.apps.googleusercontent.com';
     const AUTHORIZED_USER_EMAIL = 'yoshua.ra.sistem@gmail.com';
     const DRIVE_CLOUD_FOLDER_NAME = 'BOVEDA_45YMAS_CLOUD';
@@ -985,9 +961,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     let autoPushTimer = null;
     let machoteOriginalHtmlCache = '';
 
-    // ============================================================================
-    // INICIALIZACIÓN + PWA + LIMPIEZA DE DOCUMENTOS FALSOS PRECARGADOS
-    // ============================================================================
     window.addEventListener('DOMContentLoaded', async () => {
       localStorage.setItem('gemini_api_key', ACTIVE_GEMINI_KEY);
       inicializarPWAInstalable();
@@ -998,7 +971,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         document.getElementById('login-screen').classList.add('hidden');
       }
 
-      cargarDatosEntorno();
+      await cargarDatosEntorno();
       await verificarMachoteLocalONube();
       await verificarTokenGoogleDriveYSincronizar();
 
@@ -1009,12 +982,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       }, 30000);
     });
 
-    // Configuración PWA (App Instalable en Celular y PC)
     function inicializarPWAInstalable() {
       const manifestObj = {
         name: 'Bóveda Jurídica Pro 45 y Más',
         short_name: 'Bóveda 45+',
-        description: 'Plataforma Jurídica y MASC Movimiento 45 y Más A.C. (Centros 065 y 353)',
+        description: 'Plataforma Jurídica y MASC Movimiento 45 y Más A.C.',
         start_url: window.location.href,
         display: 'standalone',
         background_color: '#050914',
@@ -1026,7 +998,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       };
       const blobManifest = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
       document.getElementById('pwa-manifest-link').setAttribute('href', URL.createObjectURL(blobManifest));
-
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPwaPrompt = e;
@@ -1039,7 +1010,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         await deferredPwaPrompt.userChoice;
         deferredPwaPrompt = null;
       } else {
-        alert('📲 Para instalar la App Bóveda 45 y Más:\n\n• En Android / Chrome / Edge: toca el ícono de instalar en la barra de direcciones o en el menú (⋮) -> "Instalar aplicación".\n• En iPhone / iPad (Safari): toca el botón Compartir (⬆️) y selecciona "Agregar a pantalla de inicio".');
+        alert('📲 Para instalar la App Bóveda 45 y Más:\n\n• En Chrome / Edge / Android: toca el ícono de instalar en la barra de direcciones o en el menú (⋮) -> "Instalar aplicación".\n• En iPhone / iPad (Safari): toca Compartir (⬆️) -> "Agregar a pantalla de inicio".');
       }
     }
 
@@ -1057,7 +1028,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       localStorage.setItem('boveda_sesion_usuario', user);
       aplicarPerfilUsuario(user);
       document.getElementById('login-screen').classList.add('hidden');
-      cargarDatosEntorno();
+      await cargarDatosEntorno();
       if (entornoActivo === 'despacho45') await verificarTokenGoogleDriveYSincronizar();
     }
 
@@ -1094,9 +1065,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return carpetasConfig.juzgadosPorMateria[materia] || [];
     }
 
-    // ============================================================================
-    // NUBE COMPARTIDA GOOGLE DRIVE (EXPEDIENTES + MACHOTE .DOCX)
-    // ============================================================================
     function obtenerTokenDriveActivo() {
       const t = localStorage.getItem('drive_token');
       if (!t || t.startsWith('oauth_session_') || t.startsWith('token_activo_')) return null;
@@ -1199,28 +1167,43 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return (data.files && data.files.length > 0) ? data.files[0] : null;
     }
 
+    function depurarDocsSinArchivoReal(exp) {
+      if (!exp || !exp.docs) return;
+      delete exp.htmlCompletoConvenio;
+      Object.keys(exp.docs).forEach(k => {
+        const d = exp.docs[k];
+        if (!d || (!d.storeKey && !d.driveFileId && !d.realUploaded)) {
+          delete exp.docs[k];
+        }
+      });
+    }
+
     function fusionarExpedientesNubeYLocal(listaNube = [], listaLocal = []) {
       const mapa = new Map();
       const claveUnica = (exp) => `${(exp.centro || 'CENTRO').trim().toUpperCase()}__${(exp.numExpediente || '').trim().toUpperCase()}__${String(exp.anio || '2026').trim()}`;
 
       listaNube.forEach(expNube => {
-        if (expNube && expNube.numExpediente) mapa.set(claveUnica(expNube), JSON.parse(JSON.stringify(expNube)));
+        if (expNube && expNube.numExpediente) {
+          const copia = JSON.parse(JSON.stringify(expNube));
+          depurarDocsSinArchivoReal(copia);
+          mapa.set(claveUnica(copia), copia);
+        }
       });
 
       listaLocal.forEach(expLocal => {
         if (!expLocal || !expLocal.numExpediente) return;
-        const key = claveUnica(expLocal);
+        const copiaLocal = JSON.parse(JSON.stringify(expLocal));
+        depurarDocsSinArchivoReal(copiaLocal);
+        const key = claveUnica(copiaLocal);
         if (!mapa.has(key)) {
-          mapa.set(key, JSON.parse(JSON.stringify(expLocal)));
+          mapa.set(key, copiaLocal);
         } else {
           const ex = mapa.get(key);
-          ex.docs = { ...(ex.docs || {}), ...(expLocal.docs || {}) };
-          if (expLocal.textoCompletoConvenio && !ex.textoCompletoConvenio) ex.textoCompletoConvenio = expLocal.textoCompletoConvenio;
-          if (expLocal.htmlCompletoConvenio && !ex.htmlCompletoConvenio) ex.htmlCompletoConvenio = expLocal.htmlCompletoConvenio;
-          if ((!ex.solicitante || ex.solicitante.startsWith('Expediente ')) && expLocal.solicitante && !expLocal.solicitante.startsWith('Expediente ')) {
-            ex.solicitante = expLocal.solicitante;
+          ex.docs = { ...(ex.docs || {}), ...(copiaLocal.docs || {}) };
+          if ((!ex.solicitante || ex.solicitante.startsWith('Expediente ')) && copiaLocal.solicitante && !copiaLocal.solicitante.startsWith('Expediente ')) {
+            ex.solicitante = copiaLocal.solicitante;
           }
-          if (expLocal.predial && !ex.predial) ex.predial = expLocal.predial;
+          if (copiaLocal.predial && !ex.predial) ex.predial = copiaLocal.predial;
         }
       });
       return Array.from(mapa.values());
@@ -1320,32 +1303,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       autoPushTimer = setTimeout(() => sincronizarConNubeDrive('auto_push'), 1500);
     }
 
-    // ============================================================================
-    // DATOS DE ENTORNO Y SEPARACIÓN ESTRICTA CONVENIO VS ESCANEADOS
-    // ============================================================================
     function obtenerClaveStorage(sufijo) {
       return `boveda_pro_${entornoActivo}_${sufijo}`;
     }
 
-    // Limpia cualquier documento falso precargado de versiones anteriores donde decía que ya estaban subidos IDs, predial o escritura sin tener archivo real
-    function limpiarDocumentosSimuladosFalsos(lista) {
-      const archivosFalsosAntiguos = [
-        'Identificaciones Cotejadas (3).pdf', 'Contrato Arrendamiento.pdf', 'Comprobante Predial 8070194.pdf',
-        'Exp 327-2026 Solicitud.pdf', 'Exp 327-2026 Dictamen.pdf', 'Exp 327-2026 Acuerdo Inicio.pdf', 'Constancia Envio Digital 327-2026.pdf',
-        'Copias Cotejadas Identificaciones (4).pdf', 'Contrato Arrendamiento 307.pdf', 'Escritura Publica 27830.pdf', 'Recibo Predial 1133176792.pdf', 'Constancia Envio Digital 307-2026.pdf',
-        'Identificaciones partes (2).pdf', 'Actas nacimiento Conyuges (2).pdf', 'Acta de matrimonio.pdf', 'Comprobantes de Domicilio (2).pdf', 'Certificado de no embarazo.pdf', 'Acta de nacimiento Hijos (2).pdf', 'Autorizacion escucha de menores (1).pdf', 'Constancia escucha de menor (2).pdf', 'Solicitud de servicio firmada.pdf', 'Constancia envio digital IJA.pdf'
-      ];
-      lista.forEach(exp => {
-        if (!exp.docs) return;
-        Object.keys(exp.docs).forEach(k => {
-          if (k !== 'convenio_final' && exp.docs[k] && archivosFalsosAntiguos.includes(exp.docs[k].fileName) && !exp.docs[k].storeKey && !exp.docs[k].driveFileId) {
-            delete exp.docs[k];
-          }
-        });
-      });
-    }
-
-    function cargarDatosEntorno() {
+    async function cargarDatosEntorno() {
       const savedFolders = localStorage.getItem(obtenerClaveStorage('carpetas'));
       if (savedFolders) {
         try { carpetasConfig = { ...carpetasConfig, ...JSON.parse(savedFolders) }; } catch (e) {}
@@ -1364,20 +1326,13 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       if (!bdMasc || bdMasc.length === 0) {
         bdMasc = obtenerExpedientesMascIniciales();
       } else {
-        limpiarDocumentosSimuladosFalsos(bdMasc);
-        // Asegurar que los expedientes base tengan texto completo del convenio para el visor
-        const baseEjemplos = obtenerExpedientesMascIniciales();
-        bdMasc.forEach(e => {
-          const matchBase = baseEjemplos.find(b => b.numExpediente === e.numExpediente);
-          if (matchBase && !e.htmlCompletoConvenio) {
-            e.htmlCompletoConvenio = matchBase.htmlCompletoConvenio;
-            if (e.docs && e.docs.convenio_final) e.docs.convenio_final.htmlContent = matchBase.htmlCompletoConvenio;
-          }
-        });
+        bdMasc.forEach(exp => depurarDocsSinArchivoReal(exp));
       }
 
       if (!bdJuzgados || bdJuzgados.length === 0) {
         bdJuzgados = obtenerExpedientesJuzgadosIniciales();
+      } else {
+        bdJuzgados.forEach(exp => depurarDocsSinArchivoReal(exp));
       }
 
       localStorage.setItem(obtenerClaveStorage('bd_masc'), JSON.stringify(bdMasc));
@@ -1405,52 +1360,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       programarSubidaAutomaticaNube();
     }
 
-    function generarHtmlConvenioReal(numExp, centro, categoria, partes, fechaFirma, fechaVenc, predial) {
-      return `
-        <div style="font-family: Arial, sans-serif; color:#0f172a; line-height:1.65;">
-          <div style="text-align:right; font-weight:bold; font-size:13px; margin-bottom:14px;">
-            EXPEDIENTE: ${numExp}<br/>
-            ${centro.toUpperCase()} — MOVIMIENTO 45 Y MÁS A.C.<br/>
-            MATERIA: ${categoria.toUpperCase()}
-          </div>
-          <h2 style="text-align:center; font-size:16px; font-weight:bold; margin-bottom:16px;">
-            CONVENIO FINAL DE MÉTODO ALTERNATIVO DE SOLUCIÓN DE CONFLICTOS (${categoria.toUpperCase()})
-          </h2>
-          <p style="text-align:justify; margin-bottom:12px;">
-            En la ciudad de <strong>Guadalajara, Jalisco</strong>, con fecha <strong>${fechaFirma}</strong>, ante el Prestador de Servicios de Justicia Alternativa adscrito al <strong>Centro Privado Movimiento 45 y Más A.C. (${centro})</strong>, acreditado ante el Instituto de Justicia Alternativa del Estado de Jalisco (IJA), comparecen de manera libre, informada y voluntaria las partes: <strong>${partes}</strong>, con el objeto de celebrar y ratificar el presente <strong>CONVENIO FINAL</strong>.
-          </p>
-          <h3 style="font-size:14px; font-weight:bold; margin-top:16px;">DECLARACIONES Y ANTECEDENTES</h3>
-          <p style="text-align:justify; margin-bottom:10px;">
-            <strong>I. IDENTIDAD DE LAS PARTES:</strong> Manifiestan los comparecientes llamarse como ha quedado escrito, identificándose en este acto con sus respectivas credenciales oficiales vigentes (cuyos datos quedan asentados en el cuerpo de este instrumento, debiendo glosarse por separado las copias cotejadas de las identificaciones en el apartado correspondiente del expediente).
-          </p>
-          ${predial ? `<p style="text-align:justify; margin-bottom:10px;"><strong>II. DATOS DEL INMUEBLE MENCIONADOS EN EL CONVENIO:</strong> Se hace constar como referencia escrita en este convenio la referencia catastral / predial / escritura: <strong>${predial}</strong> (documento físico que deberá adjuntarse escaneado de forma independiente en el check-list del expediente).</p>` : ''}
-          <h3 style="font-size:14px; font-weight:bold; margin-top:16px;">CLÁUSULAS DEL CONVENIO FINAL</h3>
-          <p style="text-align:justify; margin-bottom:10px;">
-            <strong>PRIMERA (OBJETO).-</strong> Las partes reconocen mutuamente su personalidad jurídica y celebran el presente Convenio Final de ${categoria}, obligándose a estar y pasar por él en todo tiempo y lugar como si se tratara de sentencia ejecutoriada.
-          </p>
-          <p style="text-align:justify; margin-bottom:10px;">
-            <strong>SEGUNDA (VIGENCIA Y CUMPLIMIENTO).-</strong> El presente convenio surte efectos a partir de su firma el día <strong>${fechaFirma}</strong>${fechaVenc ? ` y tendrá vigencia con fecha de vencimiento programada para el día <strong>${fechaVenc}</strong>` : ''}.
-          </p>
-          <p style="text-align:justify; margin-bottom:10px;">
-            <strong>TERCERA (VALIDACIÓN Y SANCIÓN ANTE EL IJA).-</strong> Las partes solicitan que el presente instrumento sea remitido al Instituto de Justicia Alternativa del Estado de Jalisco para su correspondiente validación, sanción e inscripción, elevándose a la categoría de sentencia ejecutoriada conforme a la Ley de Justicia Alternativa del Estado de Jalisco.
-          </p>
-          <div style="margin-top:36px; padding-top:16px; border-top:1px solid #cbd5e1; text-align:center; font-size:12px;">
-            <strong>FIRMADO DE CONFORMIDAD POR LAS PARTES INTERVINIENTES:</strong><br/>
-            ${partes}<br/><br/>
-            <strong>CENTRO PRIVADO MOVIMIENTO 45 Y MÁS A.C. (${centro})</strong>
-          </div>
-        </div>
-      `;
-    }
-
-    // NOTA CRÍTICA: En los expedientes iniciales SOLO viene subido el `convenio_final`.
-    // Los datos como Predial 8070194 o Escritura 27,830 están registrados como dato escrito del convenio,
-    // pero sus casillas de archivos escaneados (identificaciones, predial, escritura, contrato) están VACÍAS hasta que se suban sus escaneos reales.
     function obtenerExpedientesMascIniciales() {
-      const html327 = generarHtmlConvenioReal('327/2026', 'Centro 065', 'Preventivo Arrendamiento', 'MARCO ANTONIO CERVANTES LÓPEZ, HÉCTOR GERARDO OROZCO ÁVILA Y KARLA FABIOLA CAMPOS MÉNDEZ', '2026-03-15', '2027-03-15', 'Predial 8070194');
-      const html307 = generarHtmlConvenioReal('307/2026', 'Centro 065', 'Preventivo Arrendamiento', 'MARÍA MAGDALENA DE NAZARETH VIZCAINO BRIBIEZCA, GERARDO CABELLO MÁRQUEZ, GUSTAVO CABELLO GALICIA Y MARÍA MARTA GONZÁLEZ MAGDALENO', '2026-03-10', '2027-03-10', 'Predial 1133176792 / Escritura 27,830');
-      const html059 = generarHtmlConvenioReal('059/2025', 'Centro 065', 'Divorcio Admtvo. y Mutuo', 'FERNANDA ASTRID ALVAREZ DEL CASTILLO MENDIETA Y FRANCO IVAN RODRÍGUEZ NAVARRO', '2025-11-20', '', '');
-
       return [
         {
           id: 'masc-327-2026',
@@ -1463,18 +1373,9 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           fechaFirma: '2026-03-15',
           fechaVencimiento: '2027-03-15',
           predial: '8070194',
-          estatusIja: 'En Integración de Anexos',
+          estatusIja: 'Listo para subir escaneados',
           cloudPath: 'OneDrive://45yMas/Centro 065/2026/EXP-327-2026',
-          htmlCompletoConvenio: html327,
-          docs: {
-            convenio_final: {
-              fileName: 'Exp 327-2026 Convenio Final.docx',
-              pages: 6,
-              date: '2026-03-15',
-              fojaOrden: 4,
-              htmlContent: html327
-            }
-          }
+          docs: {}
         },
         {
           id: 'masc-307-2026',
@@ -1489,16 +1390,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           predial: '1133176792 / Escritura pública 27,830',
           estatusIja: 'Traslado P.S. (Tercera Edad)',
           cloudPath: 'OneDrive://45yMas/Centro 065/2026/EXP-307-2026',
-          htmlCompletoConvenio: html307,
-          docs: {
-            convenio_final: {
-              fileName: 'Exp 307-2026 Convenio Final.docx',
-              pages: 7,
-              date: '2026-03-10',
-              fojaOrden: 4,
-              htmlContent: html307
-            }
-          }
+          docs: {}
         },
         {
           id: 'masc-059-2025',
@@ -1513,22 +1405,12 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           predial: '',
           estatusIja: 'Traslado PNNA / Validación',
           cloudPath: 'OneDrive://45yMas/Centro 065/2025/EXP-059-2025',
-          htmlCompletoConvenio: html059,
-          docs: {
-            convenio_final: {
-              fileName: 'Exp 059-2025 Convenio Final Divorcio Mutuo.docx',
-              pages: 8,
-              date: '2025-11-20',
-              fojaOrden: 4,
-              htmlContent: html059
-            }
-          }
+          docs: {}
         }
       ];
     }
 
     function obtenerExpedientesJuzgadosIniciales() {
-      const htmlDemanda = generarHtmlConvenioReal('1420/2026', 'Juzgado 4° de lo Mercantil', 'Mercantil', 'MOVIMIENTO 45 Y MÁS VS DEUDOR SOLIDARIO', '2026-02-10', '', '');
       return [
         {
           id: 'juz-1420-2026',
@@ -1543,16 +1425,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           predial: '',
           estatusIja: 'Auto de Exequendo',
           cloudPath: 'OneDrive://45yMas/Juzgados/Mercantil/Juzgado 4° de lo Mercantil/2026/1420-2026',
-          htmlCompletoConvenio: htmlDemanda,
-          docs: {
-            escrito_inicial: {
-              fileName: '01_Demanda_Inicial_Mercantil.pdf',
-              pages: 9,
-              date: '2026-02-10',
-              fojaOrden: 1,
-              htmlContent: htmlDemanda
-            }
-          }
+          docs: {}
         }
       ];
     }
@@ -1575,9 +1448,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       return { piezasOrdenadas: lista, totalFojas: fojaCursor - 1 };
     }
 
-    // ============================================================================
-    // RENDERIZADO DE CARPETAS Y TARJETAS CON HOVER AUTOMÁTICO
-    // ============================================================================
     function renderizarSidebarCarpetas() {
       asegurarCatalogoCompletoDeJuzgados();
 
@@ -1758,7 +1628,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       grid.innerHTML = filtrados.map(exp => construirTarjetaExpedienteHTML(exp)).join('');
     }
 
-    // TARJETA CON EVENTO HOVER (onmouseenter) PARA MOSTRAR VISIÓN RÁPIDA DE CHECK-LIST SIN DAR CLICK
     function construirTarjetaExpedienteHTML(exp) {
       const { piezasOrdenadas, totalFojas } = calcularFoliadoJudicial(exp);
       const esquema = CHECKLISTS_OFICIALES_MASC[exp.categoria] || CHECKLISTS_OFICIALES_MASC['Judicial_Juzgado'];
@@ -1779,7 +1648,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
                 <i class="fa-solid fa-folder mr-1"></i>${exp.centro}
               </span>
               <span class="text-[10px] font-mono-code font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                <i class="fa-solid fa-layer-group mr-1"></i>${totalFojas} Fojas
+                <i class="fa-solid fa-layer-group mr-1"></i>${totalFojas} Fojas (${docsCargados} archivos)
               </span>
             </div>
 
@@ -1794,7 +1663,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
             ${exp.predial ? `
               <div class="mt-2 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-800 text-[10px] text-amber-300 font-mono-code truncate">
-                <i class="fa-solid fa-pen-clip mr-1"></i>Dato escrito en convenio: ${exp.predial}
+                <i class="fa-solid fa-pen-clip mr-1"></i>Dato escrito: ${exp.predial}
               </div>
             ` : ''}
 
@@ -1811,7 +1680,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
             <div class="mt-3">
               <div class="flex justify-between text-[11px] mb-1">
-                <span class="text-slate-400">Archivos Escaneados Subidos</span>
+                <span class="text-slate-400">Archivos Reales Subidos</span>
                 <span class="text-amber-300 font-bold">${docsCargados} / ${totalRequeridos} (${pct}%)</span>
               </div>
               <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
@@ -1835,9 +1704,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       `;
     }
 
-    // ============================================================================
-    // TARJETA DE VISIÓN FLOTANTE AL PASAR EL MOUSE (SIN DAR CLICK)
-    // ============================================================================
     function mostrarVistaPreviaFlotante(expId) {
       if (hoverHideTimer) clearTimeout(hoverHideTimer);
       const exp = obtenerExpedientePorId(expId);
@@ -1852,7 +1718,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         <div class="space-y-1">
           <div class="text-[10px] font-extrabold uppercase text-amber-300 border-b border-slate-800 pb-0.5">${sec.titulo}</div>
           ${sec.items.map(it => {
-            const subido = exp.docs && exp.docs[it.id];
+            const subido = exp.docs && exp.docs[it.id] && (exp.docs[it.id].storeKey || exp.docs[it.id].driveFileId);
             return `
               <div class="flex items-center justify-between text-[11px] py-0.5 px-1.5 rounded ${subido ? 'bg-emerald-950/40 text-emerald-200' : 'text-slate-400'}">
                 <span class="truncate pr-2">
@@ -1874,11 +1740,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">${totalFojas} Fojas (${piezasOrdenadas.length} archivos)</span>
           </div>
           <div class="text-slate-300 text-[11px] font-semibold mt-0.5">${exp.solicitante}</div>
-          ${exp.predial ? `<div class="text-[10px] text-amber-300 mt-1 font-mono-code">Dato escrito en convenio: ${exp.predial} (Subir escaneo por separado)</div>` : ''}
+          ${exp.predial ? `<div class="text-[10px] text-amber-300 mt-1 font-mono-code">Dato escrito en convenio: ${exp.predial}</div>` : ''}
         </div>
         <div class="space-y-2">${checklistResumenHTML}</div>
         <div class="pt-2 border-t border-slate-800 flex justify-between gap-2">
-          <button onclick="abrirModalChecklistFojas('${exp.id}', 'checklist')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold py-1.5 rounded-xl text-[11px]">Subir Escaneados</button>
+          <button onclick="abrirModalChecklistFojas('${exp.id}', 'checklist')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold py-1.5 rounded-xl text-[11px]">Subir Archivos</button>
           <button onclick="irDirectoAVisorCompleto('${exp.id}')" class="flex-1 brand-gradient text-slate-950 font-black py-1.5 rounded-xl text-[11px]">Abrir Visor Completo</button>
         </div>
       `;
@@ -1901,9 +1767,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       document.getElementById('floating-preview-panel').classList.add('hidden');
     }
 
-    // ============================================================================
-    // INGESTA MASIVA Y EXTRACCIÓN DE CONVENIO COMPLETO (SIN MEZCLAR CASILLAS)
-    // ============================================================================
     function ejecutarConTimeout(promesa, ms, valorPorDefecto) {
       return Promise.race([promesa, new Promise(resolve => setTimeout(() => resolve(valorPorDefecto), ms))]);
     }
@@ -1911,47 +1774,43 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     function extraerTextoBinarioDocAntiguo(arrayBuffer, fileName) {
       try {
         const bytes = new Uint8Array(arrayBuffer);
-        const limite = Math.min(bytes.length, 300000);
-        let fragmentosAscii = [];
+        let ascii = [];
         let actual = '';
-        for (let i = 0; i < limite; i++) {
+        for (let i = 0; i < bytes.length; i++) {
           const b = bytes[i];
           if ((b >= 32 && b <= 126) || (b >= 192 && b <= 255) || b === 10 || b === 13) {
             actual += String.fromCharCode(b);
           } else {
-            if (actual.trim().length >= 5) fragmentosAscii.push(actual.trim());
+            if (actual.trim().length >= 5) ascii.push(actual.trim());
             actual = '';
           }
         }
-        if (actual.trim().length >= 5) fragmentosAscii.push(actual.trim());
-
+        if (actual.trim().length >= 5) ascii.push(actual.trim());
         let textoUtf16 = '';
         try {
           const dec = new TextDecoder('utf-16le', { fatal: false });
-          textoUtf16 = dec.decode(bytes.slice(0, 220000)).replace(/[^\x20-\x7E\xA0-\xFF\n\r]/g, ' ').replace(/\s+/g, ' ');
+          textoUtf16 = dec.decode(bytes).replace(/[^\x20-\x7E\xA0-\xFF\n\r]/g, ' ').replace(/\s+/g, ' ');
         } catch (e) {}
-
-        const unido = (fragmentosAscii.join('\n') + '\n' + textoUtf16).trim();
-        return unido.substring(0, 25000);
+        return (ascii.join('\n') + '\n' + textoUtf16).trim();
       } catch (err) {
-        return `Documento: ${fileName}`;
+        return fileName;
       }
     }
 
     async function extraerContenidoYPaginasSeguro(file) {
       const ext = (file.name.split('.').pop() || '').toLowerCase();
-      const buffer = await ejecutarConTimeout(file.arrayBuffer().catch(() => null), 5000, null);
-      if (!buffer) return { texto: `ARCHIVO: ${file.name}`, html: `<p>${file.name}</p>`, paginas: 2 };
+      const buffer = await ejecutarConTimeout(file.arrayBuffer().catch(() => null), 6000, null);
+      if (!buffer) return { texto: file.name, html: '', paginas: 1 };
 
       if (ext === 'docx' && window.mammoth) {
         const [resTxt, resHtml] = await Promise.all([
-          ejecutarConTimeout(mammoth.extractRawText({ arrayBuffer: buffer }).catch(() => null), 5000, null),
-          ejecutarConTimeout(mammoth.convertToHtml({ arrayBuffer: buffer }).catch(() => null), 5000, null)
+          ejecutarConTimeout(mammoth.extractRawText({ arrayBuffer: buffer.slice(0) }).catch(() => null), 6000, null),
+          ejecutarConTimeout(mammoth.convertToHtml({ arrayBuffer: buffer.slice(0) }).catch(() => null), 6000, null)
         ]);
-        if (resTxt && resTxt.value && resTxt.value.trim().length > 10) {
-          const pags = Math.max(1, Math.ceil(resTxt.value.length / 2100));
+        if (resTxt && resTxt.value) {
+          const pags = Math.max(1, Math.ceil(resTxt.value.length / 2200));
           return {
-            texto: resTxt.value.substring(0, 25000),
+            texto: resTxt.value,
             html: (resHtml && resHtml.value) ? resHtml.value : `<div style="white-space:pre-wrap;">${resTxt.value}</div>`,
             paginas: pags
           };
@@ -1963,7 +1822,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         return {
           texto: textoDoc,
           html: `<div style="white-space:pre-wrap; font-family:Arial,sans-serif;">${textoDoc.replace(/</g, '&lt;')}</div>`,
-          paginas: Math.max(2, Math.ceil(textoDoc.length / 2200))
+          paginas: Math.max(1, Math.ceil(textoDoc.length / 2200))
         };
       }
 
@@ -1973,26 +1832,20 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             const pdf = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
             const numPages = pdf.numPages || 1;
             let txt = '';
-            for (let p = 1; p <= Math.min(numPages, 10); p++) {
+            for (let p = 1; p <= Math.min(numPages, 6); p++) {
               const page = await pdf.getPage(p);
               const content = await page.getTextContent();
-              txt += `--- FOJA / PÁGINA ${p} ---\n` + content.items.map(it => it.str).join(' ') + '\n\n';
+              txt += content.items.map(it => it.str).join(' ') + '\n';
             }
-            return {
-              texto: txt.substring(0, 25000),
-              html: `<div style="white-space:pre-wrap;">${txt.replace(/</g, '&lt;')}</div>`,
-              paginas: numPages
-            };
+            return { texto: txt, html: '', paginas: numPages };
           } catch (e) { return null; }
-        })(), 6500, null);
+        })(), 7000, null);
         if (resPdf) return resPdf;
       }
 
-      return { texto: file.name, html: `<p>${file.name}</p>`, paginas: 2 };
+      return { texto: file.name, html: '', paginas: 1 };
     }
 
-    // REGLA DE ORO: Clasifica la casilla SOLO por el NOMBRE DEL ARCHIVO, jamás por lo que mencione adentro el texto del convenio.
-    // Así, si un Convenio menciona adentro la palabra "identificación", "predial", "escritura" o "contrato", sigue siendo `convenio_final` y no llena las casillas de escaneados.
     function detectarCasillaExclusivaPorNombreArchivo(fileName) {
       const fnUpper = fileName.toUpperCase();
       if (vistaActiva === 'juzgados') {
@@ -2005,7 +1858,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         return { slotId: 'escrito_inicial', fojaOrden: 1 };
       }
 
-      // Si el nombre del archivo dice "CONVENIO", SIEMPRE va a `convenio_final` (o `convenio_digital` si dice digital/envío)
       if (fnUpper.includes('DIGITAL') || fnUpper.includes('ENVIO')) return { slotId: 'convenio_digital', fojaOrden: 5 };
       if (fnUpper.includes('CONVENIO')) return { slotId: 'convenio_final', fojaOrden: 4 };
       if (fnUpper.includes('SOLICITUD')) return { slotId: 'solicitud', fojaOrden: 1 };
@@ -2052,7 +1904,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       const { slotId, fojaOrden } = detectarCasillaExclusivaPorNombreArchivo(fileName);
 
-      // Extraer dato escrito de predial o escritura si viene mencionado adentro del convenio (solo como dato escrito, NO como archivo subido)
       let predialEscrito = '';
       const matchPredial = fuente.match(/predial\s*(?:n[úu]mero|cuenta)?\s*[:#]?\s*([0-9\-]{5,15})/i);
       if (matchPredial) predialEscrito = matchPredial[1];
@@ -2115,7 +1966,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           const claveBinaria = `bin_${info.centro.replace(/\W/g, '_')}_${info.numExpediente.replace(/\W/g, '_')}_${info.slotId}`;
 
           if (window.localforage) {
-            await ejecutarConTimeout(localforage.setItem(claveBinaria, file).catch(() => null), 2500, null);
+            await ejecutarConTimeout(localforage.setItem(claveBinaria, file).catch(() => null), 3000, null);
           }
 
           const listaDestino = (vistaActiva === 'juzgados') ? bdJuzgados : bdMasc;
@@ -2129,17 +1980,18 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
           const docEntry = {
             fileName: file.name,
-            pages: paginas || 2,
+            mimeType: file.type || '',
+            pages: paginas || 1,
             date: fechaHoy,
             fojaOrden: info.fojaOrden,
             storeKey: claveBinaria,
+            realUploaded: true,
             htmlContent: html
           };
 
           if (existente) {
             if (!existente.docs) existente.docs = {};
             existente.docs[info.slotId] = docEntry;
-            if (info.slotId === 'convenio_final') existente.htmlCompletoConvenio = html;
             if (info.predialEscrito && !existente.predial) existente.predial = info.predialEscrito;
             if (existente.solicitante.startsWith('Expediente ') && !info.solicitante.startsWith('Expediente ')) {
               existente.solicitante = info.solicitante;
@@ -2157,9 +2009,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
               fechaFirma: info.fechaFirma,
               fechaVencimiento: info.fechaVencimiento,
               predial: info.predialEscrito || '',
-              estatusIja: 'En Integración',
+              estatusIja: 'Integrado',
               cloudPath: `OneDrive://45yMas/${info.centro}/${info.anio}/EXP-${info.numExpediente.replace('/', '-')}`,
-              htmlCompletoConvenio: info.slotId === 'convenio_final' ? html : '',
               docs: { [info.slotId]: docEntry }
             };
             listaDestino.unshift(nuevoExp);
@@ -2188,9 +2039,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
     function saltarArchivoActualCola() { saltarArchivoEnCurso = true; }
     function detenerColaMasiva() { cancelarColaMasiva = true; }
 
-    // ============================================================================
-    // MODAL DE CHECK-LIST + BOTÓN DEL OJO REPARADO (PDF.JS CANVAS + MAMMOTH HTML)
-    // ============================================================================
     function obtenerExpedientePorId(expId) {
       return bdMasc.find(e => e.id === expId) || bdJuzgados.find(e => e.id === expId);
     }
@@ -2235,8 +2083,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       ['checklist', 'fojas', 'editar'].forEach(t => {
         document.getElementById(`content-exp-${t}`).classList.toggle('hidden', t !== tab);
         document.getElementById(`tab-exp-${t}`).className = (t === tab)
-          ? 'px-4 py-2.5 text-xs font-black border-b-2 border-amber-400 text-amber-300 whitespace-nowrap'
-          : 'px-4 py-2.5 text-xs font-black border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap';
+          ? 'px-4 py-3 text-xs font-black border-b-2 border-amber-400 text-amber-300 whitespace-nowrap leading-none'
+          : 'px-4 py-3 text-xs font-black border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap leading-none';
       });
     }
 
@@ -2254,7 +2102,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <h4 class="text-xs font-black uppercase tracking-wider text-amber-300 mb-3">${sec.titulo}</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             ${sec.items.map(item => {
-              const doc = exp.docs ? exp.docs[item.id] : null;
+              const doc = (exp.docs && exp.docs[item.id] && (exp.docs[item.id].storeKey || exp.docs[item.id].driveFileId)) ? exp.docs[item.id] : null;
               const cargado = !!doc;
               return `
                 <div class="flex items-center justify-between p-3 rounded-xl border ${cargado ? 'bg-emerald-950/35 border-emerald-500/40' : 'bg-slate-950/70 border-slate-800'}">
@@ -2268,11 +2116,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
                         <span class="font-mono-code bg-emerald-500/20 px-1.5 py-0.5 rounded mr-1.5">${mapaFojas[item.id] || 'Foliado'}</span>
                         ${doc.fileName} (${doc.pages || 1} págs.)
                       </div>
-                    ` : `<span class="text-[10px] text-rose-400/80 pl-5 block mt-0.5">Pendiente de subir archivo escaneado</span>`}
+                    ` : `<span class="text-[10px] text-rose-400/80 pl-5 block mt-0.5">Sin archivo subido</span>`}
                   </div>
                   <div class="flex items-center gap-1.5 shrink-0">
                     ${cargado ? `
-                      <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${item.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-500/40 hover:bg-sky-500/30 text-[11px] font-bold flex items-center gap-1" title="Ver documento completo">
+                      <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${item.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-500/40 hover:bg-sky-500/30 text-[11px] font-bold flex items-center gap-1" title="Ver archivo tal cual fue subido">
                         <i class="fa-solid fa-eye"></i> Ver
                       </button>
                     ` : ''}
@@ -2295,7 +2143,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       document.getElementById('chk-modal-badge-fojas').textContent = `${totalFojas} Fojas Foliadas`;
 
       if (piezasOrdenadas.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">Sin documentos escaneados aún.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">Aún no se han subido archivos reales a este expediente.</td></tr>`;
         return;
       }
 
@@ -2307,7 +2155,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           <td class="py-3 px-3 font-mono-code text-slate-300">${pieza.fileName}</td>
           <td class="py-3 px-3 font-mono-code text-white">${pieza.pages}</td>
           <td class="py-3 px-3 text-right space-x-1">
-            <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${pieza.slotKey}')" class="px-2.5 py-1 bg-sky-500/20 text-sky-300 rounded-lg font-bold"><i class="fa-solid fa-eye mr-1"></i>Ver</button>
+            <button onclick="abrirDocumentoEnVisorModal('${exp.id}', '${pieza.slotKey}')" class="px-2.5 py-1 bg-sky-500/20 text-sky-300 rounded-lg font-bold"><i class="fa-solid fa-eye mr-1"></i>Ver Original</button>
             <button onclick="eliminarPiezaDeExpediente('${exp.id}', '${pieza.slotKey}')" class="px-2 py-1 bg-rose-950 text-rose-300 rounded-lg"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
@@ -2328,14 +2176,15 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       if (!exp.docs) exp.docs = {};
       exp.docs[slotId] = {
         fileName: file.name,
+        mimeType: file.type || '',
         pages: paginas || 1,
         date: new Date().toISOString().split('T')[0],
         fojaOrden,
         storeKey,
         driveFileId,
+        realUploaded: true,
         htmlContent: html
       };
-      if (slotId === 'convenio_final') exp.htmlCompletoConvenio = html;
 
       guardarEnBDMasc();
       guardarEnBDJuzgados();
@@ -2366,7 +2215,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       ejecutarFiltroBusqueda();
     }
 
-    // BOTÓN DEL OJO REPARADO: Muestra siempre el documento completo (.PDF en Canvas, .DOCX/.DOC en Hoja Blanca)
     async function abrirDocumentoEnVisorModal(expId, slotKey) {
       ocultarHoverPreviewInmediato();
       const exp = obtenerExpedientePorId(expId);
@@ -2378,7 +2226,7 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       const btnDescarga = document.getElementById('visor-btn-descargar-original');
       btnDescarga.classList.add('hidden');
 
-      contenedor.innerHTML = `<div class="text-center py-12 text-slate-300 text-xs"><i class="fa-solid fa-spinner fa-spin text-2xl text-amber-400 mb-2 block"></i>Abriendo documento completo...</div>`;
+      contenedor.innerHTML = `<div class="text-center py-12 text-slate-300 text-xs"><i class="fa-solid fa-spinner fa-spin text-2xl text-amber-400 mb-2 block"></i>Cargando archivo original tal cual fue subido...</div>`;
       document.getElementById('modal-visor-pdf').classList.remove('hidden');
 
       let fileBlob = null;
@@ -2391,7 +2239,10 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
           const res = await fetch(`https://www.googleapis.com/drive/v3/files/${docInfo.driveFileId}?alt=media`, {
             headers: { Authorization: `Bearer ${token}` }
           });
-          if (res.ok) fileBlob = await res.blob();
+          if (res.ok) {
+            fileBlob = await res.blob();
+            if (window.localforage && docInfo.storeKey) await localforage.setItem(docInfo.storeKey, fileBlob);
+          }
         } catch (e) {}
       }
 
@@ -2401,69 +2252,84 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
         const ext = (docInfo.fileName.split('.').pop() || '').toLowerCase();
 
-        // Caso 1: PDF -> Renderizar todas las páginas con PDF.js en lienzos <canvas> para que jamás salga ventana vacía
-        if (ext === 'pdf' && window.pdfjsLib) {
-          try {
-            const arrayBuffer = await fileBlob.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            contenedor.innerHTML = `<div id="pdf-canvas-stack" class="space-y-4 flex flex-col items-center"></div>`;
-            const stack = document.getElementById('pdf-canvas-stack');
-
-            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-              const page = await pdf.getPage(pageNum);
-              const viewport = page.getViewport({ scale: 1.35 });
-              const canvas = document.createElement('canvas');
-              canvas.className = 'bg-white rounded-xl shadow-2xl max-w-full h-auto';
-              canvas.width = viewport.width;
-              canvas.height = viewport.height;
-              stack.appendChild(canvas);
-              await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-            }
-            return;
-          } catch (err) {}
+        if (ext === 'pdf') {
+          const pdfBlob = fileBlob.type === 'application/pdf' ? fileBlob : new Blob([await fileBlob.arrayBuffer()], { type: 'application/pdf' });
+          const blobUrl = URL.createObjectURL(pdfBlob);
+          contenedor.innerHTML = `<iframe src="${blobUrl}#toolbar=1&navpanes=1&view=FitH" class="w-full h-full min-h-[78vh] rounded-xl border-0 bg-white"></iframe>`;
+          return;
         }
 
-        // Caso 2: Word (.docx / .doc) -> Convertir y mostrar en Hoja Blanca completa
+        if (ext === 'docx' && window.mammoth) {
+          const ab = await fileBlob.arrayBuffer();
+          const resHtml = await mammoth.convertToHtml({ arrayBuffer: ab });
+          contenedor.innerHTML = `<div class="doc-sheet-viewer">${resHtml.value}</div>`;
+          return;
+        }
+
         const { html } = await extraerContenidoYPaginasSeguro(fileBlob);
         contenedor.innerHTML = `<div class="doc-sheet-viewer">${html}</div>`;
         return;
       }
 
-      // Caso 3: Si está en otro dispositivo o es el Convenio con HTML guardado en la base de datos
-      const htmlGuardado = docInfo.htmlContent || (slotKey === 'convenio_final' ? exp.htmlCompletoConvenio : '') || generarHtmlConvenioReal(exp.numExpediente, exp.centro, exp.categoria, exp.solicitante, exp.fechaFirma, exp.fechaVencimiento, exp.predial);
-      contenedor.innerHTML = `<div class="doc-sheet-viewer">${htmlGuardado}</div>`;
+      if (docInfo.htmlContent) {
+        contenedor.innerHTML = `<div class="doc-sheet-viewer">${docInfo.htmlContent}</div>`;
+        return;
+      }
+
+      contenedor.innerHTML = `
+        <div class="max-w-lg mx-auto my-12 p-8 rounded-2xl bg-slate-950 border border-amber-500/40 text-center space-y-3">
+          <i class="fa-solid fa-file-circle-exclamation text-4xl text-amber-400"></i>
+          <h4 class="text-sm font-bold text-white">Archivo físico no encontrado en este dispositivo</h4>
+          <p class="text-xs text-slate-400">Por favor sube el archivo original <strong>${docInfo.fileName}</strong> en su casilla del Check-list para visualizarlo tal cual fue escaneado.</p>
+        </div>
+      `;
     }
 
     function cerrarModalVisorPdf() {
       document.getElementById('modal-visor-pdf').classList.add('hidden');
     }
 
-    // ENVÍO AL VISOR DE EXPEDIENTE COMPLETO (`visor-expediente.html`) SIN MOSTRAR DOCUMENTOS VIEJOS
     async function irDirectoAVisorCompleto(expId) {
       ocultarHoverPreviewInmediato();
       const exp = obtenerExpedientePorId(expId);
       if (!exp) return;
+
       localStorage.setItem('visor_active_expediente', JSON.stringify(exp));
+
       if (window.localforage) {
+        await localforage.removeItem('archivo_actual');
+        await localforage.removeItem('ultimo_expediente');
         await localforage.setItem('visor_active_expediente_full', exp);
+
+        const piezasConBlob = [];
+        const { piezasOrdenadas } = calcularFoliadoJudicial(exp);
+        for (const p of piezasOrdenadas) {
+          let b = null;
+          if (p.storeKey) b = await localforage.getItem(p.storeKey);
+          piezasConBlob.push({ ...p, blob: b || null });
+        }
+        await localforage.setItem('paquete_visor_activo', {
+          expId: exp.id,
+          numExpediente: exp.numExpediente,
+          solicitante: exp.solicitante,
+          centro: exp.centro,
+          categoria: exp.categoria,
+          piezas: piezasConBlob
+        });
       }
-      window.location.href = `visor-expediente.html?id=${encodeURIComponent(exp.id)}&exp=${encodeURIComponent(exp.numExpediente)}`;
+
+      window.location.href = `visor-expediente.html?id=${encodeURIComponent(exp.id)}&exp=${encodeURIComponent(exp.numExpediente)}&t=${Date.now()}`;
     }
 
     function enviarAlVisorCompleto() {
       if (expedienteActivoId) irDirectoAVisorCompleto(expedienteActivoId);
     }
 
-    // ============================================================================
-    // MACHOTE DE OFICIOS AL IJA: GUARDADO EN NUBE + DUPLICACIÓN EXACTA DEL .DOCX ORIGINAL
-    // ============================================================================
     async function verificarMachoteLocalONube() {
       const banner = document.getElementById('status-machote-docx');
       if (!window.localforage) return;
 
       let buffer = await localforage.getItem('boveda_machote_docx_original');
-
-      // Si no está local pero hay Drive conectado, descargarlo automáticamente de la Nube del Despacho
       const token = obtenerTokenDriveActivo();
       if (!buffer && token) {
         try {
@@ -2482,7 +2348,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
       if (buffer && window.mammoth) {
         try {
-          // Extraer el HTML con los logos e imágenes originales incrustados en el propio .docx
           const resHtml = await mammoth.convertToHtml({ arrayBuffer: buffer.slice(0) });
           machoteOriginalHtmlCache = resHtml.value || '';
         } catch (e) {}
@@ -2502,15 +2367,12 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       if (window.localforage) {
         await localforage.setItem('boveda_machote_docx_original', buffer);
       }
-
-      // Subir a Google Drive para que quede guardado en la nube para todo el despacho
       if (obtenerTokenDriveActivo()) {
         await subirBinarioIndividualADrive(file, DRIVE_MACHOTE_FILENAME);
       }
-
       await verificarMachoteLocalONube();
       renderizarHojaOficioIJA();
-      alert('✅ Tu documento Machote Original (.docx) quedó guardado en la Bóveda y en la Nube del Despacho. Ahora solo se duplicará cambiando el texto necesario sin alterar logos ni diseño.');
+      alert('✅ Tu documento Machote Original (.docx) quedó guardado en la Bóveda y en la Nube del Despacho.');
     }
 
     function abrirModalOficiosIJA(expId = null) {
@@ -2591,14 +2453,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
     function renderizarHojaOficioIJA() {
       const hoja = document.getElementById('oficio-hoja-render');
-
-      // Si el usuario ya subió su .docx original, mostrar exactamente el renderizado de su propio documento con los textos reemplazados
       if (machoteOriginalHtmlCache) {
         hoja.innerHTML = aplicarReemplazosDeTextoAlMachote(machoteOriginalHtmlCache);
         return;
       }
 
-      // Vista fiel del documento original mientras sube su archivo .docx
       const acred = document.getElementById('oficio-input-acred').value;
       const numExp = document.getElementById('oficio-input-exp').value;
       const partes = document.getElementById('oficio-input-partes').value;
@@ -2637,9 +2496,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       `;
     }
 
-    // DUPLICADOR QUIRÚRGICO DEL ARCHIVO .DOCX ORIGINAL:
-    // Abre el .docx original con JSZip, une runs fragmentados dentro de cada párrafo <w:p> solo cuando contienen las frases a reemplazar,
-    // y conserva el 100% de los logos, encabezados, tablas y estilos originales de Word sin tocar nada extra.
     async function duplicarYDescargarMachoteOriginalDocx() {
       const numExp = document.getElementById('oficio-input-exp').value.trim();
 
@@ -2652,10 +2508,8 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
 
             for (const xmlPath of archivosXml) {
               let xmlStr = await zip.file(xmlPath).async('string');
-              // 1. Reemplazo directo si las cadenas están en un solo nodo <w:t>
               xmlStr = aplicarReemplazosDeTextoAlMachote(xmlStr);
 
-              // 2. Si Word fragmentó una frase en varios <w:t> dentro del mismo párrafo <w:p>, reconstruir el texto del párrafo conservando su formato <w:pPr> y <w:rPr>
               const parser = new DOMParser();
               const xmlDoc = parser.parseFromString(xmlStr, 'application/xml');
               const parrafos = xmlDoc.getElementsByTagName('w:p');
@@ -2684,13 +2538,11 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
             });
             descargarBlobArchivo(blobDuplicado, `Oficio_IJA_${numExp.replace(/\W+/g, '_')}.docx`);
             return;
-          } catch (e) {
-            console.warn('Error en duplicación XML:', e);
-          }
+          } catch (e) {}
         }
       }
 
-      alert('Primero pulsa el botón "Subir y Guardar Machote .DOCX en Nube" y selecciona tu archivo "Oficio al IJA (Convenios Finales) ARRENDAMIENTO.docx". Una vez subido, quedará guardado en la nube y se duplicará idéntico.');
+      alert('Primero pulsa el botón "Subir y Guardar Machote .DOCX en Nube" y selecciona tu archivo "Oficio al IJA (Convenios Finales) ARRENDAMIENTO.docx".');
     }
 
     function descargarBlobArchivo(blob, nombreArchivo) {
@@ -2704,9 +2556,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       URL.revokeObjectURL(url);
     }
 
-    // ============================================================================
-    // EDICIÓN DE EXPEDIENTES, CARPETAS Y CREACIÓN MANUAL
-    // ============================================================================
     function guardarCambiosExpedienteActivo() {
       const exp = obtenerExpedientePorId(expedienteActivoId);
       if (!exp) return;
@@ -2864,7 +2713,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
       const firma = document.getElementById('new-exp-firma').value;
       const centroOJuzgado = tipo === 'juzgado' ? document.getElementById('new-exp-juzgado').value : document.getElementById('new-exp-centro').value;
       const numFormateado = num.includes('/') ? num : `${num}/${anio}`;
-      const htmlInicial = generarHtmlConvenioReal(numFormateado, centroOJuzgado, cat, partes, firma, '', '');
 
       const nuevo = {
         id: `${tipo}-${Date.now()}`,
@@ -2879,7 +2727,6 @@ Copia cotejada del comprobante predial 8070194. (1)</textarea>
         predial: '',
         estatusIja: 'Registrado',
         cloudPath: `OneDrive://45yMas/${cat}/${centroOJuzgado}/${anio}/EXP-${num.replace('/', '-')}`,
-        htmlCompletoConvenio: htmlInicial,
         docs: {}
       };
 

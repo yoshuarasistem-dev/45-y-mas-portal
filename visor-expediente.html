@@ -1,362 +1,1089 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expediente Inteligente IA | 45 y Más</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { --bg-deep: #050810; --bg-panel: #0f172a; --glass-bg: rgba(15, 23, 42, 0.95); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --danger: #ef4444; --success: #10b981; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
-        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: var(--bg-deep); } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        
-        .topbar { background: var(--bg-panel); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 100; position: relative; }
-        .logo-oficial { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
-        .logo-oficial .sub-brand { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-        .expediente-title { background: rgba(56, 189, 248, 0.1); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--neon-blue); font-weight: bold; border: 1px solid rgba(56, 189, 248, 0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
-        
-        .btn { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; justify-content: center; background: var(--glass-bg); }
-        .btn:hover { background: var(--border-glass); }
-        .btn-accion { border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); } .btn-accion:hover { background: var(--neon-blue); color: #000; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>45YMÁS Bóveda Inteligente | Visor de Expedientes</title>
 
-        .workspace { display: flex; flex: 1; overflow: hidden; position: relative; width: 100%; }
-        .sidebar-fojas { width: 250px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; z-index: 50; flex-shrink: 0; }
-        .sidebar-herramientas { width: 320px; background: var(--bg-panel); border-left: 1px solid var(--border-glass); display: flex; flex-direction: column; z-index: 50; flex-shrink: 0; }
-        
-        .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border-glass); text-align: center; }
-        .btn-add-foja { width: 100%; background: transparent; border: 1px dashed var(--brand-orange); color: var(--brand-orange); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s; margin-bottom: 8px;}
-        .btn-add-foja:hover { background: rgba(255, 115, 21, 0.1); }
-        .fojas-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
-        .foja-item { background: var(--bg-deep); border: 1px solid var(--border-glass); border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; position: relative;}
-        .foja-item.activa { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-        .foja-canvas-container { height: 120px; background: #fff; margin-bottom: 8px; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: #000;}
-        .foja-canvas-container canvas { width: 100%; height: auto; display: block; }
-        .foja-label { font-size: 0.8rem; font-weight: bold; color: var(--text-main); }
-        .foja-controls { display: flex; justify-content: center; gap: 4px; margin-top: 5px; }
-        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 25px; height: 25px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;}
-        .btn-mini:hover { background: var(--brand-orange); }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
-        .tabs { display: flex; border-bottom: 1px solid var(--border-glass); }
-        .tab { flex: 1; text-align: center; padding: 15px 10px; cursor: pointer; font-weight: bold; font-size: 0.85rem; color: var(--text-muted); border-bottom: 2px solid transparent; transition: 0.3s; }
-        .tab.active { color: var(--neon-blue); border-bottom-color: var(--neon-blue); }
-        .panel-content { flex: 1; overflow-y: auto; padding: 20px; display: none; flex-direction: column;}
-        .panel-content.active { display: flex; }
-        
-        .keyword-card { background: var(--bg-deep); border: 1px solid var(--border-glass); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-        .keyword-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .keyword-word { font-weight: 800; color: var(--text-main); font-size: 0.9rem; text-transform: uppercase; }
-        .keyword-count { background: rgba(56, 189, 248, 0.2); color: var(--neon-blue); padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-        .keyword-fojas { font-size: 0.75rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 5px; }
-        .badge-foja { background: rgba(255, 255, 255, 0.1); padding: 3px 6px; border-radius: 4px; cursor: pointer; font-weight: 600;}
-        .badge-foja:hover { background: var(--brand-orange); color: white; }
+  <style>
+    :root {
+      --bg-dark: #070b14;
+      --bg-sidebar: #0b1120;
+      --bg-card: #111a2e;
+      --accent-orange: #ea580c;
+      --accent-amber: #f59e0b;
+      --accent-blue: #38bdf8;
+      --border-line: rgba(148, 163, 184, 0.16);
+      --text-light: #f8fafc;
+      --text-dim: #94a3b8;
+    }
 
-        .nota-area { width: 100%; flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: var(--text-main); padding: 15px; border-radius: 8px; resize: none; font-size: 0.9rem; outline: none; margin-bottom: 10px; min-height: 120px;}
-        .nota-area:focus { border-color: var(--brand-orange); }
-        #indice-notas-container { max-height: 150px; overflow-y: auto; border-bottom: 1px solid var(--border-glass); margin-bottom: 15px; padding-bottom: 10px; }
-        .nota-preview { background: rgba(255,255,255,0.03); border-left: 3px solid var(--brand-orange); padding: 10px; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .visor-central { flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: var(--bg-deep); width: 100%; }
-        #canvas-principal { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; position: absolute; transform-origin: top center; transition: transform 0.2s ease;}
-        #canvas-dibujo { position: absolute; pointer-events: none; z-index: 5; transform-origin: top center; transition: transform 0.2s ease;} 
-        #html-visor { background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 850px; min-height: 100%; padding: 20px; display: none; line-height: 1.6; position: absolute; overflow-wrap: break-word;}
-        
-        .zoom-controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--glass-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-glass); display: flex; gap: 6px; z-index: 40; backdrop-filter: blur(5px);}
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-        #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; padding: 20px;}
-        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 30px; border-radius: 12px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);}
-        .barra-fondo { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; margin: 20px 0; overflow: hidden; }
-        .barra-llena { width: 0%; height: 100%; background: var(--neon-blue); transition: width 0.3s ease; }
-        .mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 45; }
-        .mobile-only { display: none; } .desktop-only { display: flex; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #050811; }
+    ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.4); border-radius: 999px; }
 
-        @media (max-width: 992px) {
-            .mobile-only { display: flex; } .desktop-only { display: none; }
-            .topbar { padding: 10px; flex-wrap: wrap; }
-            .topbar-branding { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-            .topbar-actions { width: 100%; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-            .sidebar-fojas { position: absolute; left: 0; top: 0; height: 100%; transform: translateX(-100%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); width: 280px; max-width: 80vw; }
-            .sidebar-fojas.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.7); }
-            .sidebar-herramientas { position: absolute; right: 0; top: 0; height: 100%; transform: translateX(100%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); width: 300px; max-width: 85vw; }
-            .sidebar-herramientas.open { transform: translateX(0); box-shadow: -10px 0 30px rgba(0,0,0,0.7); }
-            .mobile-overlay.active { display: block; }
-        }
-    </style>
+    #pantalla-progreso {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(7, 11, 20, 0.92);
+      backdrop-filter: blur(10px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .progreso-box {
+      background: var(--bg-sidebar);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .barra-fondo {
+      width: 100%;
+      height: 10px;
+      background: #050811;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    #barra-llena {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ea580c, #f59e0b, #38bdf8);
+      transition: width 0.2s ease;
+    }
+
+    .topbar {
+      height: 58px;
+      background: #090e1a;
+      border-bottom: 1px solid var(--border-line);
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      shrink: 0;
+    }
+
+    .brand-block {
+      display: flex;
+       flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      color: var(--accent-amber);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-sub {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-top {
+      background: #131c31;
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+    }
+
+    .btn-top:hover {
+      border-color: var(--accent-amber);
+      color: #ffffff;
+    }
+
+    .pill-exp {
+      background: rgba(30, 58, 138, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      max-width: 340px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-ia-orange {
+      background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%);
+      color: #ffffff;
+      border: none;
+      font-weight: 800;
+    }
+
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 230px 1fr 320px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-fojas {
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-line);
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      gap: 10px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .btn-dashed-orange {
+      width: 100%;
+      background: rgba(234, 88, 12, 0.08);
+      border: 1px dashed rgba(245, 158, 11, 0.6);
+      color: #fb923c;
+      padding: 9px 10px;
+      border-radius: 10px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.18s;
+    }
+
+    .btn-dashed-orange:hover {
+      background: rgba(234, 88, 12, 0.18);
+    }
+
+    .btn-dashed-blue {
+      width: 100%;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px dashed rgba(56, 189, 248, 0.55);
+      color: #38bdf8;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    #lista-fojas-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 4px;
+    }
+
+    .foja-item {
+      background: #0d1424;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .foja-item:hover {
+      border-color: var(--accent-amber);
+    }
+
+    .foja-item.activa {
+      border: 2px solid #38bdf8;
+      background: rgba(14, 30, 56, 0.9);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+    }
+
+    .foja-item-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .foja-thumb-box {
+      width: 100%;
+      height: 118px;
+      background: #ffffff;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .foja-thumb-box canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .foja-thumb-word-preview {
+      width: 100%;
+      height: 100%;
+      padding: 6px;
+      font-size: 5px;
+      line-height: 1.25;
+      color: #0f172a;
+      overflow: hidden;
+      text-align: left;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+    }
+
+    .foja-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding-top: 2px;
+    }
+
+    .foja-ctrl-btn {
+      background: #17223b;
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 6px;
+      width: 26px;
+      height: 24px;
+      font-size: 0.68rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .foja-ctrl-btn:hover {
+      background: #253559;
+      color: #ffffff;
+    }
+
+    .visor-central {
+      background: #050811;
+      position: relative;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 22px;
+    }
+
+    .foja-canvas-container {
+      background: #ffffff;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      border-radius: 4px;
+      transition: transform 0.18s ease;
+      transform-origin: top center;
+      position: relative;
+    }
+
+    #canvas-principal {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    #html-visor {
+      width: 820px;
+      max-width: 92vw;
+      min-height: 1060px;
+      background: #ffffff;
+      color: #000000;
+      padding: 50px 60px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11.5pt;
+      line-height: 1.65;
+    }
+
+    #html-visor * { color: #000000; }
+    #html-visor table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    #html-visor td, #html-visor th { border: 1px solid #000000; padding: 6px 10px; }
+
+    #controles-zoom {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 12px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 45;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    .zoom-btn {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .zoom-btn:hover {
+      background: #334155;
+      border-color: var(--accent-amber);
+    }
+
+    .sidebar-herramientas {
+      background: var(--bg-sidebar);
+      border-left: 1px solid var(--border-line);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .tabs-right {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border-line);
+    }
+
+    .tab-right-btn {
+      background: transparent;
+      color: var(--text-dim);
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 13px 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tab-right-btn.activa {
+      color: #38bdf8;
+      border-bottom-color: #38bdf8;
+    }
+
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .keyword-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .keyword-card:hover {
+      border-color: var(--accent-amber);
+    }
+
+    .keyword-word {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #fbbf24;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .keyword-snippet {
+      font-size: 0.74rem;
+      color: #cbd5e1;
+      line-height: 1.45;
+    }
+
+    .nota-area {
+      width: 100%;
+      min-height: 100px;
+      background: #060a14;
+      border: 1px solid var(--border-line);
+      border-radius: 10px;
+      padding: 10px;
+      color: #ffffff;
+      font-size: 0.76rem;
+      resize: vertical;
+      outline: none;
+    }
+
+    .nota-guardada {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent-amber);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.74rem;
+    }
+
+    @media (max-width: 1024px) {
+      .workspace { grid-template-columns: 180px 1fr; }
+      .sidebar-herramientas { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="topbar">
-        <div class="topbar-branding">
-            <button class="btn mobile-only" onclick="togglePanel('fojas')"><i class="fa-solid fa-bars"></i> Fojas</button>
-            <div class="logo-oficial" style="align-items: center; text-align: center; flex: 1;">
-                <div style="font-weight:900; font-size:1rem; color:var(--brand-orange); letter-spacing:-1px;"><i class="fa-solid fa-scale-balanced"></i> 45<span style="color:var(--text-main);">YMÁS</span></div>
-                <div class="sub-brand" style="font-size: 0.55rem;">Bóveda Inteligente</div>
-            </div>
-            <button class="btn mobile-only" onclick="togglePanel('herramientas')"><i class="fa-solid fa-toolbox"></i></button>
-        </div>
+  <div id="pantalla-progreso">
+    <div class="progreso-box">
+      <i class="fa-solid fa-scale-balanced fa-bounce" style="font-size:2.2rem; color:#f59e0b; margin-bottom:12px;"></i>
+      <div id="texto-progreso" style="font-size:0.9rem; font-weight:800;">Cargando archivos originales del expediente...</div>
+      <div class="barra-fondo">
+        <div id="barra-llena"></div>
+      </div>
+    </div>
+  </div>
 
-        <div class="topbar-actions">
-            <a href="index.html" class="btn"><i class="fa-solid fa-house"></i> <span class="desktop-only">Inicio</span></a>
-            <a href="portal-pro.html" class="btn"><i class="fa-solid fa-vault"></i> <span class="desktop-only">Bóveda</span></a>
-            <span class="expediente-title desktop-only" id="titulo-exp">EXP/000/00</span>
-            <input type="file" id="pdf-upload" accept=".pdf, .doc, .docx" style="display:none;" onchange="cargarDocumentoManual(event)">
-            <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-arrow-up"></i> Cargar</button>
-            <button id="btn-analizar" class="btn btn-accion" style="display:none; background: var(--brand-orange); border-color: var(--brand-orange); color:white;" onclick="escanearAlertasInfalible()"><i class="fa-solid fa-brain"></i> IA</button>
-        </div>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-title"><i class="fa-solid fa-scale-balanced"></i> 45YMÁS</div>
+      <div class="brand-sub">BÓVEDA INTELIGENTE</div>
     </div>
 
-    <div class="workspace">
-        <div class="mobile-overlay" id="mobile-overlay" onclick="cerrarPaneles()"></div>
-
-        <div class="sidebar-fojas" id="panel-fojas">
-            <div class="sidebar-header">
-                <button class="btn-add-foja mobile-only" style="border-color:var(--danger); color:var(--danger); margin-bottom: 15px;" onclick="cerrarPaneles()"><i class="fa-solid fa-xmark"></i> Cerrar Panel</button>
-                <input type="file" id="add-foja-input" accept=".pdf, .doc, .docx, image/*" style="display:none;" onchange="agregarFojaFaltante(event)">
-                <button class="btn-add-foja" onclick="document.getElementById('add-foja-input').click()"><i class="fa-solid fa-plus"></i> Insertar Foja</button>
-                <button class="btn-add-foja" style="border-color:var(--neon-blue); color:var(--neon-blue);" onclick="autoOrdenarFojas()"><i class="fa-solid fa-arrow-down-1-9"></i> Ordenar</button>
-            </div>
-            <div class="fojas-list" id="lista-fojas-container">
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Abriendo Expediente...</p>
-            </div>
-        </div>
-
-        <div class="visor-central" id="contenedor-visor-zoom">
-            <canvas id="canvas-principal" style="display:none;"></canvas>
-            <canvas id="canvas-dibujo" style="display:none;"></canvas>
-            <div id="html-visor"></div>
-            <div style="text-align:center; color:var(--text-muted); margin-top: 30%;" id="msg-vacio">
-                <i class="fa-solid fa-folder-open" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
-                <h4>Visor Inactivo</h4>
-                <p style="font-size: 0.8rem;">Carga o selecciona una foja.</p>
-            </div>
-            <div class="zoom-controls" id="controles-zoom" style="display: none;">
-                <button class="btn btn-mini" style="width:35px; height:35px; font-size: 1rem;" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-                <button class="btn btn-mini" style="width:35px; height:35px; font-size: 1rem;" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
-            </div>
-        </div>
-
-        <div class="sidebar-herramientas" id="panel-herramientas">
-            <div class="sidebar-header mobile-only" style="padding-bottom: 0;">
-                <button class="btn-add-foja" style="border-color:var(--danger); color:var(--danger); margin-bottom: 10px;" onclick="cerrarPaneles()"><i class="fa-solid fa-xmark"></i> Cerrar Herramientas</button>
-            </div>
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('tab-palabras', this)"><i class="fa-solid fa-radar"></i> Alertas IA</div>
-                <div class="tab" onclick="switchTab('tab-notas', this)"><i class="fa-solid fa-pen-to-square"></i> Apuntes</div>
-            </div>
-
-            <div class="panel-content active" id="tab-palabras">
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">La IA buscará alertas de la <strong>Ley de Justicia Alternativa</strong> automáticamente.</p>
-                <div id="contenedor-keywords"></div>
-            </div>
-
-            <div class="panel-content" id="tab-notas">
-                <div id="indice-notas-container">
-                    <h5 style="color:var(--text-muted); margin-bottom:10px; font-size: 0.75rem; text-transform: uppercase;"><i class="fa-solid fa-list"></i> Anotaciones</h5>
-                    <div id="lista-resumen-notas"></div>
-                </div>
-                <h4 style="color: var(--neon-blue); margin-bottom: 5px; font-size: 0.85rem;" id="titulo-nota-foja">Apunte Foja</h4>
-                <p id="info-nota-fecha" style="font-size:0.65rem; color:var(--text-muted); margin-bottom:10px;"></p>
-                <textarea class="nota-area" id="texto-notas" placeholder="Escribe aquí..."></textarea>
-                <button class="btn btn-accion" style="width: 100%; justify-content: center;" onclick="guardarNotas()"><i class="fa-solid fa-save"></i> Guardar</button>
-                <p id="nota-guardada" style="color: var(--success); font-size: 0.75rem; text-align: center; margin-top: 10px; display: none;"><i class="fa-solid fa-check"></i> Guardado</p>
-            </div>
-        </div>
+    <div class="topbar-right">
+      <a href="index.html" class="btn-top"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="portal-pro.html" class="btn-top"><i class="fa-solid fa-folder-tree"></i> Bóveda</a>
+      <div id="titulo-exp" class="pill-exp">Cargando expediente...</div>
+      <label class="btn-top" style="cursor:pointer;">
+        <i class="fa-solid fa-file-arrow-up text-sky-400"></i> Cargar
+        <input type="file" id="pdf-upload" multiple accept=".pdf,.doc,.docx" style="display:none;" onchange="cargarDocumentoManual(this.files)" />
+      </label>
+      <button id="btn-analizar" onclick="escanearAlertasInfalible()" class="btn-top btn-ia-orange">
+        <i class="fa-solid fa-brain"></i> IA
+      </button>
     </div>
+  </header>
 
-    <div id="pantalla-progreso">
-        <div class="progreso-card">
-            <i class="fa-solid fa-cloud-arrow-down fa-fade" id="icono-progreso" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
-            <h3 style="color: white; margin-bottom: 5px; font-size: 1.1rem;" id="titulo-progreso">Procesando Bóveda</h3>
-            <p id="texto-progreso" style="color: var(--text-muted); font-size: 0.8rem;">Conectando a la Nube...</p>
-            <p id="texto-subprogreso" style="color: var(--brand-orange); font-size: 0.7rem; margin-top: 8px; font-weight: bold;"></p>
-            <div class="barra-fondo"><div class="barra-llena" id="barra-llena"></div></div>
-            <button class="btn btn-accion" id="btn-cancelar-ia" style="margin-top: 15px; font-size: 0.75rem; padding: 8px 15px; display:none;" onclick="cancelarProcesos()">Detener</button>
-        </div>
-    </div>
+  <div class="workspace">
+    <aside class="sidebar-fojas">
+      <label class="btn-dashed-orange">
+        <i class="fa-solid fa-plus"></i> Insertar Foja
+        <input type="file" multiple accept=".pdf,.doc,.docx" style="display:none;" onchange="cargarDocumentoManual(this.files)" />
+      </label>
+      <button onclick="ordenarFojasPorPrelacion()" class="btn-dashed-blue">
+        <i class="fa-solid fa-arrow-down-1-9"></i> Ordenar
+      </button>
 
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        
-        let nombreExpediente = localStorage.getItem('expediente_abierto') || 'EXP_NUEVO';
-        document.getElementById('titulo-exp').innerText = nombreExpediente;
-        if(window.innerWidth > 1024) document.getElementById('titulo-exp').style.display = 'inline-block';
+      <div id="lista-fojas-container"></div>
+    </aside>
 
-        let arrayFojas = []; let fojaSeleccionadaIndex = 0; let zoomGlobal = 1.0; let detenerEjecucion = false;
-        window.pdfDocs = []; 
-        let gDriveToken = localStorage.getItem('drive_token') || null; // Llave heredada de Bóveda
-        
-        const categoriasIA = [
-            { nombre: "Resolución", palabras: ['sentencia', 'resuelve', 'resolutivo', 'acuerdo', 'convenio'], colorFondo: 'rgba(231, 76, 60, 0.4)', colorBorde: '#e74c3c' },
-            { nombre: "Requerimiento", palabras: ['prevéngase', 'aclarar', 'apercibimiento', 'requiérase', 'omiso'], colorFondo: 'rgba(230, 126, 34, 0.4)', colorBorde: '#e67e22' },
-            { nombre: "Término", palabras: ['admite', 'término', 'días', 'improrrogable', 'caducidad', 'mediación'], colorFondo: 'rgba(52, 152, 219, 0.4)', colorBorde: '#3498db' },
-            { nombre: "Familiar / MASC", palabras: ['alimentos', 'pensión', 'divorcio', 'custodia'], colorFondo: 'rgba(255, 105, 180, 0.4)', colorBorde: '#ff69b4' }
-        ];
+    <main id="visor-central-scroll" class="visor-central">
+      <div id="contenedor-foja-unica" class="foja-canvas-container">
+        <canvas id="canvas-principal" style="display:none;"></canvas>
+        <div id="html-visor" style="display:none;"></div>
+      </div>
 
-        let resultadosKeywords = {}; window.mapaAlertasPorFoja = {}; 
-        function togglePanel(panelName) { const fojas = document.getElementById('panel-fojas'); const herr = document.getElementById('panel-herramientas'); const overlay = document.getElementById('mobile-overlay'); if(panelName === 'fojas') { herr.classList.remove('open'); fojas.classList.toggle('open'); } else if (panelName === 'herramientas') { fojas.classList.remove('open'); herr.classList.toggle('open'); } overlay.classList.toggle('active', fojas.classList.contains('open') || herr.classList.contains('open')); }
-        function cerrarPaneles() { document.getElementById('panel-fojas').classList.remove('open'); document.getElementById('panel-herramientas').classList.remove('open'); document.getElementById('mobile-overlay').classList.remove('active'); }
+      <div id="controles-zoom">
+        <button onclick="cambiarZoom(0.15)" class="zoom-btn" title="Acercar"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+        <button onclick="cambiarZoom(-0.15)" class="zoom-btn" title="Alejar"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+        <button onclick="cambiarZoom(0, true)" class="zoom-btn" title="100%" style="font-size:0.7rem; font-weight:800;">1:1</button>
+      </div>
+    </main>
 
-        window.onload = async () => {
-            mostrarProgreso("fa-cloud-arrow-down", "Cargando Expediente", "Contactando servidores...");
+    <aside class="sidebar-herramientas">
+      <div class="tabs-right">
+        <button id="tab-palabras" onclick="cambiarTabDerecha('palabras')" class="tab-right-btn activa">Alertas IA</button>
+        <button id="tab-notas" onclick="cambiarTabDerecha('notas')" class="tab-right-btn"><i class="fa-regular fa-pen-to-square"></i> Apuntes</button>
+      </div>
+
+      <div id="panel-palabras" class="panel-content">
+        <p style="font-size:0.74rem; color:#94a3b8; line-height:1.45;">
+          La IA buscará alertas de la <strong>Ley de Justicia Alternativa</strong> automáticamente sobre los documentos originales subidos.
+        </p>
+        <div id="contenedor-alertas-resultados" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+
+      <div id="panel-notas" class="panel-content" style="display:none;">
+        <textarea id="texto-notas" class="nota-area" placeholder="Escribe un apunte para la foja actual..."></textarea>
+        <button onclick="guardarNotas()" class="btn-top btn-ia-orange" style="justify-content:center; width:100%;">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar Apunte
+        </button>
+        <div id="indice-notas-container" style="display:flex; flex-direction:column; gap:8px; margin-top:6px;"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    let expedienteActual = null;
+    let fojasEnMemoria = [];
+    let indiceFojaActiva = 0;
+    let nivelZoom = 1.0;
+    let notasDelExpediente = [];
+
+    function mostrarProgreso(texto, pct = 20) {
+      document.getElementById('pantalla-progreso').style.display = 'flex';
+      document.getElementById('texto-progreso').textContent = texto;
+      document.getElementById('barra-llena').style.width = `${pct}%`;
+    }
+
+    function actualizarBarra(pct, texto = '') {
+      document.getElementById('barra-llena').style.width = `${pct}%`;
+      if (texto) document.getElementById('texto-progreso').textContent = texto;
+    }
+
+    function ocultarProgreso() {
+      setTimeout(() => {
+        document.getElementById('pantalla-progreso').style.display = 'none';
+      }, 180);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await inicializarVisorConExpedienteReal();
+    });
+
+    async function inicializarVisorConExpedienteReal() {
+      mostrarProgreso('Cargando archivos originales del expediente...', 25);
+
+      if (window.localforage) {
+        await localforage.removeItem('archivo_actual');
+        await localforage.removeItem('ultimo_expediente');
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const paramId = params.get('id');
+      const paramExp = params.get('exp');
+
+      let expEncontrado = null;
+
+      if (window.localforage) {
+        const paqueteActivo = await localforage.getItem('paquete_visor_activo');
+        if (paqueteActivo && (!paramId || paqueteActivo.expId === paramId)) {
+          expEncontrado = {
+            id: paqueteActivo.expId,
+            numExpediente: paqueteActivo.numExpediente,
+            solicitante: paqueteActivo.solicitante,
+            centro: paqueteActivo.centro,
+            categoria: paqueteActivo.categoria,
+            piezasEmpaquetadas: paqueteActivo.piezas || []
+          };
+        }
+      }
+
+      if (!expEncontrado) {
+        for (const ent of ['despacho45', 'aldo_indep']) {
+          for (const tabla of ['bd_masc', 'bd_juzgados']) {
+            const raw = localStorage.getItem(`boveda_pro_${ent}_${tabla}`);
+            if (!raw) continue;
             try {
-                let isMulti = localStorage.getItem('modo_multidoc') === 'true';
-                if(isMulti) {
-                    let paquete = await localforage.getItem('paquete_masc_' + nombreExpediente);
-                    if (paquete && paquete.length > 0) { await procesarPaqueteMultidoc(paquete); } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Expediente vacío.</p>";}
-                } else {
-                    let archivo = await localforage.getItem('archivo_' + nombreExpediente);
-                    if (archivo) { await procesarArchivoInterno(archivo); } else { ocultarProgreso(); document.getElementById('lista-fojas-container').innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Sube un archivo para comenzar.</p>";}
-                }
-            } catch (error) { console.error("Error al cargar:", error); ocultarProgreso(); }
+              const lista = JSON.parse(raw);
+              const hallado = lista.find(e => (paramId && String(e.id) === String(paramId)) || (paramExp && e.numExpediente === paramExp));
+              if (hallado) { expEncontrado = hallado; break; }
+            } catch (e) {}
+          }
+          if (expEncontrado) break;
+        }
+      }
+
+      if (!expEncontrado) {
+        const rawActive = localStorage.getItem('visor_active_expediente');
+        if (rawActive) {
+          try { expEncontrado = JSON.parse(rawActive); } catch (e) {}
+        }
+      }
+
+      if (!expEncontrado) {
+        ocultarProgreso();
+        document.getElementById('titulo-exp').textContent = 'Sin expediente';
+        mostrarMensajeSubirArchivos();
+        return;
+      }
+
+      expedienteActual = expEncontrado;
+      document.getElementById('titulo-exp').textContent = `${expedienteActual.numExpediente} - ${expedienteActual.solicitante}`;
+
+      cargarNotasGuardadas();
+      await construirFojasDesdeArchivosReales(expedienteActual);
+      ocultarProgreso();
+    }
+
+    function mostrarMensajeSubirArchivos() {
+      const canvas = document.getElementById('canvas-principal');
+      const htmlVisor = document.getElementById('html-visor');
+      canvas.style.display = 'none';
+      htmlVisor.style.display = 'block';
+      htmlVisor.innerHTML = `
+        <div style="text-align:center; padding:80px 20px;">
+          <i class="fa-solid fa-file-circle-plus" style="font-size:3.2rem; color:#f59e0b; margin-bottom:16px;"></i>
+          <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:10px;">Este expediente aún no tiene documentos subidos</h2>
+          <p style="font-size:0.95rem; color:#475569; max-width:480px; margin:0 auto 24px auto;">
+            Usa el botón <strong>"+ Insertar Foja"</strong> a la izquierda o <strong>"Cargar"</strong> arriba a la derecha para subir el Convenio o los PDFs escaneados y verlos aquí tal cual fueron subidos.
+          </p>
+        </div>
+      `;
+    }
+
+    function extraerTextoBinarioDoc(arrayBuffer, fileName) {
+      try {
+        const bytes = new Uint8Array(arrayBuffer);
+        let ascii = [];
+        let cur = '';
+        for (let i = 0; i < bytes.length; i++) {
+          const b = bytes[i];
+          if ((b >= 32 && b <= 126) || (b >= 192 && b <= 255) || b === 10 || b === 13) {
+            cur += String.fromCharCode(b);
+          } else {
+            if (cur.trim().length >= 5) ascii.push(cur.trim());
+            cur = '';
+          }
+        }
+        if (cur.trim().length >= 5) ascii.push(cur.trim());
+        let utf16 = '';
+        try {
+          utf16 = new TextDecoder('utf-16le', { fatal: false }).decode(bytes).replace(/[^\x20-\x7E\xA0-\xFF\n\r]/g, ' ').replace(/\s+/g, ' ');
+        } catch (e) {}
+        return (ascii.join('\n') + '\n' + utf16).trim();
+      } catch (e) {
+        return fileName;
+      }
+    }
+
+    async function recuperarBlobReal(pieza) {
+      if (pieza.blob) return pieza.blob;
+      if (window.localforage && pieza.storeKey) {
+        const b = await localforage.getItem(pieza.storeKey);
+        if (b) return b;
+      }
+      const token = localStorage.getItem('drive_token');
+      if (pieza.driveFileId && token && !token.startsWith('oauth_session_')) {
+        try {
+          const res = await fetch(`https://www.googleapis.com/drive/v3/files/${pieza.driveFileId}?alt=media`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) return await res.blob();
+        } catch (e) {}
+      }
+      return null;
+    }
+
+    async function construirFojasDesdeArchivosReales(exp) {
+      fojasEnMemoria = [];
+
+      let listaPiezas = [];
+      if (Array.isArray(exp.piezasEmpaquetadas) && exp.piezasEmpaquetadas.length > 0) {
+        listaPiezas = exp.piezasEmpaquetadas;
+      } else if (exp.docs) {
+        listaPiezas = Object.entries(exp.docs).map(([slotKey, item]) => ({
+          slotKey,
+          ...item,
+          fojaOrden: Number(item.fojaOrden) || 50
+        })).sort((a, b) => a.fojaOrden - b.fojaOrden);
+      }
+
+      let numFojaActual = 1;
+
+      for (let i = 0; i < listaPiezas.length; i++) {
+        const pieza = listaPiezas[i];
+        actualizarBarra(30 + Math.round(((i + 1) / Math.max(1, listaPiezas.length)) * 60), `Abriendo archivo original: ${pieza.fileName}`);
+
+        const blob = await recuperarBlobReal(pieza);
+        if (!blob && !pieza.htmlContent) continue;
+
+        const ext = (pieza.fileName.split('.').pop() || '').toLowerCase();
+
+        if (blob && ext === 'pdf' && window.pdfjsLib) {
+          try {
+            const ab = await blob.arrayBuffer();
+            const pdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
+            for (let p = 1; p <= pdfDoc.numPages; p++) {
+              const page = await pdfDoc.getPage(p);
+              const tc = await page.getTextContent();
+              const texto = tc.items.map(it => it.str).join(' ');
+              fojasEnMemoria.push({
+                id: `foja_${numFojaActual}`,
+                numeroFoja: numFojaActual++,
+                fojaOrden: pieza.fojaOrden || 10,
+                fileName: pieza.fileName,
+                tipo: 'pdf',
+                pdfDoc,
+                pageNum: p,
+                textoPlano: texto
+              });
+            }
+            continue;
+          } catch (e) {}
+        }
+
+        if (blob && ext === 'docx' && window.mammoth) {
+          try {
+            const ab = await blob.arrayBuffer();
+            const [resHtml, resTxt] = await Promise.all([
+              mammoth.convertToHtml({ arrayBuffer: ab.slice(0) }),
+              mammoth.extractRawText({ arrayBuffer: ab.slice(0) })
+            ]);
+            fojasEnMemoria.push({
+              id: `foja_${numFojaActual}`,
+              numeroFoja: numFojaActual++,
+              fojaOrden: pieza.fojaOrden || 4,
+              fileName: pieza.fileName,
+              tipo: 'html',
+              htmlOriginal: resHtml.value,
+              textoPlano: resTxt.value || ''
+            });
+            continue;
+          } catch (e) {}
+        }
+
+        if (blob && ext === 'doc') {
+          const ab = await blob.arrayBuffer();
+          const textoDoc = extraerTextoBinarioDoc(ab, pieza.fileName);
+          fojasEnMemoria.push({
+            id: `foja_${numFojaActual}`,
+            numeroFoja: numFojaActual++,
+            fojaOrden: pieza.fojaOrden || 4,
+            fileName: pieza.fileName,
+            tipo: 'html',
+            htmlOriginal: `<div style="white-space:pre-wrap; font-family:Arial,sans-serif;">${textoDoc.replace(/</g, '&lt;')}</div>`,
+            textoPlano: textoDoc
+          });
+          continue;
+        }
+
+        if (pieza.htmlContent) {
+          const tmp = document.createElement('div');
+          tmp.innerHTML = pieza.htmlContent;
+          fojasEnMemoria.push({
+            id: `foja_${numFojaActual}`,
+            numeroFoja: numFojaActual++,
+            fojaOrden: pieza.fojaOrden || 10,
+            fileName: pieza.fileName,
+            tipo: 'html',
+            htmlOriginal: pieza.htmlContent,
+            textoPlano: tmp.innerText || tmp.textContent || ''
+          });
+        }
+      }
+
+      if (fojasEnMemoria.length === 0) {
+        document.getElementById('lista-fojas-container').innerHTML = '';
+        mostrarMensajeSubirArchivos();
+        return;
+      }
+
+      indiceFojaActiva = 0;
+      await renderizarMiniaturasFojas();
+      await renderizarVisorCentral();
+    }
+
+    async function renderizarMiniaturasFojas() {
+      const cont = document.getElementById('lista-fojas-container');
+      cont.innerHTML = '';
+
+      fojasEnMemoria.forEach((f, idx) => { f.numeroFoja = idx + 1; });
+
+      for (let i = 0; i < fojasEnMemoria.length; i++) {
+        const f = fojasEnMemoria[i];
+        const card = document.createElement('div');
+        card.className = `foja-item ${i === indiceFojaActiva ? 'activa' : ''}`;
+        card.onclick = () => seleccionarFoja(i);
+
+        card.innerHTML = `
+          <div class="foja-item-title">FOJA ${f.numeroFoja}</div>
+          <div class="foja-thumb-box" id="thumb-box-${i}"></div>
+          <div style="font-size:0.65rem; color:#94a3b8; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${f.fileName}">${f.fileName}</div>
+          <div class="foja-controls-row" onclick="event.stopPropagation();">
+            <button onclick="moverFoja(${i}, -1)" class="foja-ctrl-btn" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
+            <button onclick="moverFoja(${i}, 1)" class="foja-ctrl-btn" title="Bajar"><i class="fa-solid fa-arrow-down"></i></button>
+            <button onclick="eliminarFojaEnMemoria(${i})" class="foja-ctrl-btn" style="color:#fda4af;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        cont.appendChild(card);
+
+        const thumbBox = document.getElementById(`thumb-box-${i}`);
+        if (f.tipo === 'pdf' && f.pdfDoc) {
+          const canvasThumb = document.createElement('canvas');
+          thumbBox.appendChild(canvasThumb);
+          try {
+            const page = await f.pdfDoc.getPage(f.pageNum);
+            const vp = page.getViewport({ scale: 0.3 });
+            canvasThumb.width = vp.width;
+            canvasThumb.height = vp.height;
+            await page.render({ canvasContext: canvasThumb.getContext('2d'), viewport: vp }).promise;
+          } catch (e) {}
+        } else {
+          const previewDiv = document.createElement('div');
+          previewDiv.className = 'foja-thumb-word-preview';
+          previewDiv.innerHTML = f.htmlOriginal || '';
+          thumbBox.appendChild(previewDiv);
+        }
+      }
+    }
+
+    async function seleccionarFoja(idx) {
+      if (idx < 0 || idx >= fojasEnMemoria.length) return;
+      indiceFojaActiva = idx;
+      document.querySelectorAll('.foja-item').forEach((el, i) => {
+        el.classList.toggle('activa', i === indiceFojaActiva);
+      });
+      await renderizarVisorCentral();
+    }
+
+    async function renderizarVisorCentral() {
+      const f = fojasEnMemoria[indiceFojaActiva];
+      if (!f) {
+        mostrarMensajeSubirArchivos();
+        return;
+      }
+
+      const canvas = document.getElementById('canvas-principal');
+      const htmlVisor = document.getElementById('html-visor');
+      const contUnico = document.getElementById('contenedor-foja-unica');
+      contUnico.style.transform = `scale(${nivelZoom})`;
+
+      if (f.tipo === 'pdf' && f.pdfDoc) {
+        htmlVisor.style.display = 'none';
+        canvas.style.display = 'block';
+        const page = await f.pdfDoc.getPage(f.pageNum);
+        const vp = page.getViewport({ scale: 1.45 });
+        canvas.width = vp.width;
+        canvas.height = vp.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      } else {
+        canvas.style.display = 'none';
+        htmlVisor.style.display = 'block';
+        htmlVisor.innerHTML = f.htmlOriginal || '';
+      }
+    }
+
+    function cambiarZoom(delta, reset = false) {
+      if (reset) nivelZoom = 1.0;
+      else nivelZoom = Math.min(2.2, Math.max(0.55, Number((nivelZoom + delta).toFixed(2))));
+      document.getElementById('contenedor-foja-unica').style.transform = `scale(${nivelZoom})`;
+    }
+
+    async function moverFoja(idx, delta) {
+      const dest = idx + delta;
+      if (dest < 0 || dest >= fojasEnMemoria.length) return;
+      const tmp = fojasEnMemoria[idx];
+      fojasEnMemoria[idx] = fojasEnMemoria[dest];
+      fojasEnMemoria[dest] = tmp;
+      indiceFojaActiva = dest;
+      await renderizarMiniaturasFojas();
+      await renderizarVisorCentral();
+    }
+
+    async function ordenarFojasPorPrelacion() {
+      fojasEnMemoria.sort((a, b) => (a.fojaOrden || 10) - (b.fojaOrden || 10));
+      indiceFojaActiva = 0;
+      await renderizarMiniaturasFojas();
+      await renderizarVisorCentral();
+    }
+
+    async function eliminarFojaEnMemoria(idx) {
+      if (!confirm(`¿Quitar Foja ${idx + 1} del visor?`)) return;
+      fojasEnMemoria.splice(idx, 1);
+      if (indiceFojaActiva >= fojasEnMemoria.length) indiceFojaActiva = Math.max(0, fojasEnMemoria.length - 1);
+      await renderizarMiniaturasFojas();
+      await renderizarVisorCentral();
+    }
+
+    async function cargarDocumentoManual(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      mostrarProgreso('Integrando archivo original tal cual fue subido...', 35);
+
+      if (!expedienteActual) {
+        expedienteActual = {
+          id: 'exp-' + Date.now(),
+          numExpediente: 'S/N',
+          solicitante: 'EXPEDIENTE ACTIVO',
+          centro: 'Centro 065',
+          categoria: 'Preventivo Arrendamiento',
+          docs: {}
         };
+      }
 
-        function base64ToUint8Array(base64) {
-            const arr = base64.split(','); const bstr = atob(arr.length > 1 ? arr[1] : arr[0]); let n = bstr.length; const u8arr = new Uint8Array(n);
-            while(n--) { u8arr[n] = bstr.charCodeAt(n); } return u8arr;
-        }
+      for (const file of Array.from(fileList)) {
+        const fnUpper = file.name.toUpperCase();
+        let slotId = 'anexo_' + Date.now();
+        let fojaOrden = 12;
 
-        async function obtenerBytesDocumento(dataRef) {
-            if (typeof dataRef === 'string') {
-                if (dataRef.startsWith('gdrive:')) {
-                    if(!gDriveToken) throw new Error("Falta autenticación de Google Drive");
-                    let id = dataRef.split(':')[1];
-                    let res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { 'Authorization': 'Bearer ' + gDriveToken } });
-                    return new Uint8Array(await res.arrayBuffer());
-                } else if (dataRef.startsWith('localforage:')) {
-                    let id = dataRef.split(':')[1]; let base64 = await localforage.getItem(id); return base64ToUint8Array(base64);
-                } else { return base64ToUint8Array(dataRef); }
-            } else if (dataRef instanceof Blob || dataRef instanceof File) { return new Uint8Array(await dataRef.arrayBuffer()); }
-            return null;
-        }
+        if (fnUpper.includes('SOLICITUD')) { slotId = 'solicitud'; fojaOrden = 1; }
+        else if (fnUpper.includes('DICTAMEN')) { slotId = 'dictamen'; fojaOrden = 2; }
+        else if (fnUpper.includes('ACUERDO')) { slotId = 'acuerdo'; fojaOrden = 3; }
+        else if (fnUpper.includes('DIGITAL')) { slotId = 'convenio_digital'; fojaOrden = 5; }
+        else if (fnUpper.includes('CONVENIO')) { slotId = 'convenio_final'; fojaOrden = 4; }
+        else if (fnUpper.includes('INE') || fnUpper.includes('IDENTIFICACION')) { slotId = 'identificaciones'; fojaOrden = 6; }
+        else if (fnUpper.includes('CONTRATO')) { slotId = 'contrato_arrendamiento'; fojaOrden = 7; }
+        else if (fnUpper.includes('ESCRITURA')) { slotId = 'escritura_publica'; fojaOrden = 9; }
+        else if (fnUpper.includes('PREDIAL')) { slotId = 'predial'; fojaOrden = 10; }
 
-        async function cargarDocumentoManual(event) { const file = event.target.files[0]; if (!file) return; mostrarProgreso("fa-save", "Guardando Documento", "Asegurando archivo..."); const archivoData = { blob: file, name: file.name, type: file.type }; localStorage.setItem('modo_multidoc', 'false'); await localforage.setItem('archivo_' + nombreExpediente, archivoData); await procesarArchivoInterno(archivoData); }
+        const storeKey = `bin_${(expedienteActual.centro || 'C065').replace(/\W/g, '_')}_${expedienteActual.numExpediente.replace(/\W/g, '_')}_${slotId}`;
+        if (window.localforage) await localforage.setItem(storeKey, file);
 
-        async function procesarPaqueteMultidoc(paquete) {
-            detenerEjecucion = false; document.getElementById('texto-progreso').innerText = "Cosiendo expediente múltiple..."; document.getElementById('btn-cancelar-ia').style.display = 'none';
-            arrayFojas = []; window.mapaAlertasPorFoja = {}; window.pdfDocs = [];
-            categoriasIA.forEach(c => { c.palabras.forEach(p => resultadosKeywords[p] = []); });
+        if (!expedienteActual.docs) expedienteActual.docs = {};
+        expedienteActual.docs[slotId] = {
+          fileName: file.name,
+          pages: 1,
+          date: new Date().toISOString().split('T')[0],
+          fojaOrden,
+          storeKey,
+          realUploaded: true
+        };
+      }
 
-            try {
-                for(let d = 0; d < paquete.length; d++) {
-                    let docInfo = paquete[d]; document.getElementById('texto-subprogreso').innerText = `Descargando: ${docInfo.name}`;
-                    let bytes = await obtenerBytesDocumento(docInfo.data);
-                    let pdfInstance = await pdfjsLib.getDocument(bytes).promise; window.pdfDocs.push(pdfInstance);
+      localStorage.setItem('visor_active_expediente', JSON.stringify(expedienteActual));
+      if (window.localforage) await localforage.setItem('visor_active_expediente_full', expedienteActual);
 
-                    for (let i = 1; i <= pdfInstance.numPages; i++) {
-                        arrayFojas.push({ id: Date.now() + Math.random(), numeroLogico: arrayFojas.length + 1, isHtml: false, numPaginaPdf: i, pdfIndex: d, etiquetaDoc: i === 1 ? docInfo.name : null, rotacion: 0 });
-                    }
-                    actualizarBarra(Math.round(((d+1)/paquete.length)*100));
-                }
-                
-                setTimeout(() => { ocultarProgreso(); document.getElementById('btn-analizar').style.display = 'inline-flex'; renderizarBarraLateralFojas(); renderizarIndiceNotas(); if(arrayFojas.length > 0) seleccionarFoja(0); }, 500);
-            } catch(e) { console.error(e); ocultarProgreso(); alert("Error al conectar con la Nube. Asegúrate de haber iniciado sesión en Drive."); }
-        }
+      ['despacho45', 'aldo_indep'].forEach(ent => {
+        ['bd_masc', 'bd_juzgados'].forEach(t => {
+          const k = `boveda_pro_${ent}_${t}`;
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          try {
+            const arr = JSON.parse(raw);
+            const i = arr.findIndex(e => e.id === expedienteActual.id);
+            if (i !== -1) { arr[i] = expedienteActual; localStorage.setItem(k, JSON.stringify(arr)); }
+          } catch (e) {}
+        });
+      });
 
-        async function procesarArchivoInterno(archivoData) {
-            detenerEjecucion = false; document.getElementById('texto-progreso').innerText = "Generando índice..."; document.getElementById('texto-subprogreso').innerText = ""; document.getElementById('btn-cancelar-ia').style.display = 'none';
-            arrayFojas = []; window.mapaAlertasPorFoja = {}; window.pdfDocs = [];
-            categoriasIA.forEach(c => { c.palabras.forEach(p => resultadosKeywords[p] = []); });
-            
-            let blobReal = archivoData.blob || archivoData; let nombreArchivo = archivoData.name || ''; let isWord = nombreArchivo.endsWith('.docx') || nombreArchivo.endsWith('.doc');
+      delete expedienteActual.piezasEmpaquetadas;
+      await construirFojasDesdeArchivosReales(expedienteActual);
+      ocultarProgreso();
+    }
 
-            try {
-                if(isWord) {
-                    const arrayBuffer = await blobReal.arrayBuffer(); const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer}); const rawText = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
-                    arrayFojas.push({ id: Date.now(), numeroLogico: 1, isHtml: true, htmlContent: result.value, rawText: rawText.value, rotacion: 0 }); actualizarBarra(100);
-                } else {
-                    let bytes = await obtenerBytesDocumento(blobReal); let pdfInstance = await pdfjsLib.getDocument(bytes).promise; window.pdfDocs.push(pdfInstance);
-                    for (let i = 1; i <= pdfInstance.numPages; i++) { arrayFojas.push({ id: Date.now() + i, numeroLogico: i, isHtml: false, numPaginaPdf: i, pdfIndex: 0, rotacion: 0 }); } actualizarBarra(100);
-                }
-                setTimeout(() => { ocultarProgreso(); document.getElementById('btn-analizar').style.display = 'inline-flex'; renderizarBarraLateralFojas(); renderizarIndiceNotas(); if(arrayFojas.length > 0) seleccionarFoja(0); }, 500);
-            } catch (error) { console.error(error); ocultarProgreso(); alert("Archivo dañado."); localforage.removeItem('archivo_' + nombreExpediente); }
-        }
+    function escanearAlertasInfalible() {
+      const cont = document.getElementById('contenedor-alertas-resultados');
+      const hallazgos = [];
+      const patrones = [
+        { titulo: 'Partes / Comparecientes', regex: /(?:celebraron las partes|comparecen|arrendador|arrendatario)[\s:.,]+([A-ZÁÉÍÓÚÑ\s,Y]{10,120})/gi },
+        { titulo: 'Vigencia / Plazo', regex: /(?:vigencia|vencimiento|forzoso|plazo|fecha)[^.;\n]{4,90}/gi },
+        { titulo: 'Monto / Renta / Pensión', regex: /(?:\$\s*[0-9,]+(?:\.[0-9]{2})?|renta\s+mensual|pensión)[^.;\n]{0,70}/gi },
+        { titulo: 'Predial / Escritura / Inmueble', regex: /(?:predial|escritura|inmueble|finca)[^.;\n]{4,90}/gi }
+      ];
 
-        async function obtenerCanvasFoja(fojaInfo, scale = 1.0) { if(fojaInfo.isHtml) return null; let currentPdf = window.pdfDocs[fojaInfo.pdfIndex]; const page = await currentPdf.getPage(fojaInfo.numPaginaPdf); const viewport = page.getViewport({ scale: scale }); const canvas = document.createElement('canvas'); canvas.width = viewport.width; canvas.height = viewport.height; const ctx = canvas.getContext('2d'); await page.render({ canvasContext: ctx, viewport: viewport }).promise; return canvas; }
-
-        async function escanearAlertasInfalible() {
-            if(arrayFojas.length === 0) return;
-            detenerEjecucion = false; cerrarPaneles(); mostrarProgreso("fa-brain", "IA Analizando", "Iniciando Motor de Lectura..."); document.getElementById('btn-cancelar-ia').style.display = 'inline-block';
-            resultadosKeywords = {}; window.mapaAlertasPorFoja = {}; 
-            categoriasIA.forEach(c => { c.palabras.forEach(p => resultadosKeywords[p] = []); });
-
-            try {
-                for (let i = 0; i < arrayFojas.length; i++) {
-                    if (detenerEjecucion) break; let f = arrayFojas[i]; actualizarBarra(Math.round(((i) / arrayFojas.length) * 100)); document.getElementById('texto-progreso').innerText = `Leyendo Foja ${f.numeroLogico} de ${arrayFojas.length}`;
-                    if (!window.mapaAlertasPorFoja[f.numeroLogico]) window.mapaAlertasPorFoja[f.numeroLogico] = [];
-
-                    if(f.isHtml) {
-                        let textoWord = f.rawText.toLowerCase(); categoriasIA.forEach(cat => { cat.palabras.forEach(p => { if(textoWord.includes(p)) { if(!resultadosKeywords[p].includes(f.numeroLogico)) resultadosKeywords[p].push(f.numeroLogico); } }); });
-                    } else {
-                        try {
-                            const canvasOCR = await obtenerCanvasFoja(f, 1.0); const { data } = await Tesseract.recognize(canvasOCR, 'spa');
-                            data.words.forEach(palabra => {
-                                let txtLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, ''); if (txtLimpio.length < 3) return;
-                                for (let cat of categoriasIA) { if (cat.palabras.includes(txtLimpio)) { if(!resultadosKeywords[txtLimpio].includes(f.numeroLogico)) resultadosKeywords[txtLimpio].push(f.numeroLogico); window.mapaAlertasPorFoja[f.numeroLogico].push({ bbox: palabra.bbox, colorFondo: cat.colorFondo, colorBorde: cat.colorBorde }); } }
-                            }); canvasOCR.width = 0; canvasOCR.height = 0; 
-                        } catch (e) { console.warn("Error OCR", e); }
-                    }
-                }
-            } catch (error) { console.error("Error IA", error); }
-
-            ocultarProgreso(); if(!detenerEjecucion) { switchTab('tab-palabras', document.querySelectorAll('.tab')[0]); mostrarResultadosKeywords(); renderizarVisorCentral(); if(window.innerWidth <= 992) togglePanel('herramientas'); }
-        }
-
-        function cancelarProcesos() { detenerEjecucion = true; ocultarProgreso(); }
-
-        function mostrarResultadosKeywords() {
-            const cont = document.getElementById('contenedor-keywords'); cont.innerHTML = ''; let encontroAlgo = false;
-            for(let key in resultadosKeywords) { let fojas = resultadosKeywords[key]; if(fojas.length > 0) { encontroAlgo = true; let badges = fojas.map(num => `<span class="badge-foja" onclick="buscarFojaPorNumero(${num})">F-${num}</span>`).join(''); cont.innerHTML += `<div class="keyword-card"><div class="keyword-header"><span class="keyword-word">${key}</span><span class="keyword-count">${fojas.length}</span></div><div class="keyword-fojas">En: ${badges}</div></div>`; } }
-            if(!encontroAlgo) cont.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:20px;">No se detectaron alertas.</p>`;
-        }
-
-        async function renderizarBarraLateralFojas() {
-            const container = document.getElementById('lista-fojas-container'); container.innerHTML = '';
-            for (let i = 0; i < arrayFojas.length; i++) {
-                const f = arrayFojas[i]; const div = document.createElement('div'); div.className = 'foja-item'; div.id = 'thumb-' + i; div.onclick = () => seleccionarFoja(i);
-
-                let badge = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${f.numeroLogico}`)) ? `<div style="color:var(--brand-orange); font-size:0.75rem; margin-top:6px; font-weight:bold;"><i class="fa-solid fa-pen-to-square"></i></div>` : '';
-                let etiquetaHtml = f.etiquetaDoc ? `<div style="font-size:0.75rem; color:var(--brand-orange); border-bottom:1px dashed rgba(255,255,255,0.2); padding-bottom:5px; margin-bottom: 8px; font-weight:900;"><i class="fa-solid fa-file-pdf"></i> ${f.etiquetaDoc}</div>` : '';
-                
-                div.innerHTML = `${etiquetaHtml}<div class="foja-label">FOJA ${f.numeroLogico}</div><div class="foja-canvas-container" id="cont-canvas-${i}">...</div><div class="foja-controls"><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, -1)"><i class="fa-solid fa-arrow-up"></i></button><button class="btn-mini" onclick="event.stopPropagation(); moverFoja(${i}, 1)"><i class="fa-solid fa-arrow-down"></i></button><button class="btn-mini" onclick="event.stopPropagation(); eliminarFojaEnMemoria(${i})"><i class="fa-solid fa-trash"></i></button></div>${badge}`;
-                container.appendChild(div);
-
-                if(!f.isHtml && window.pdfDocs[f.pdfIndex]) { obtenerCanvasFoja(f, 0.2).then(canvasMini => { const contCanvas = document.getElementById('cont-canvas-'+i); if(contCanvas) { contCanvas.innerHTML = ''; contCanvas.appendChild(canvasMini); } }); }
+      fojasEnMemoria.forEach((f, idx) => {
+        const txt = f.textoPlano || '';
+        patrones.forEach(p => {
+          for (const m of txt.matchAll(p.regex)) {
+            if (hallazgos.length < 30) {
+              hallazgos.push({ titulo: p.titulo, foja: f.numeroFoja, idx, extracto: m[0].trim() });
             }
-        }
+          }
+        });
+      });
 
-        async function renderizarVisorCentral() {
-            if(arrayFojas.length === 0) return; const foja = arrayFojas[fojaSeleccionadaIndex]; const canvasP = document.getElementById('canvas-principal'); const canvasD = document.getElementById('canvas-dibujo'); const divHtml = document.getElementById('html-visor');
-            if(foja.isHtml) { canvasP.style.display = 'none'; canvasD.style.display = 'none'; divHtml.style.display = 'block'; divHtml.innerHTML = foja.htmlContent; divHtml.style.transform = `scale(${zoomGlobal})`;
-            } else {
-                divHtml.style.display = 'none'; canvasP.style.display = 'block'; canvasD.style.display = 'block';
-                const canvasAltaRes = await obtenerCanvasFoja(foja, zoomGlobal); const ctxP = canvasP.getContext('2d'); const ctxD = canvasD.getContext('2d');
-                canvasP.width = canvasAltaRes.width; canvasP.height = canvasAltaRes.height; canvasD.width = canvasAltaRes.width; canvasD.height = canvasAltaRes.height; ctxP.drawImage(canvasAltaRes, 0, 0); ctxD.clearRect(0, 0, canvasD.width, canvasD.height);
-                const alertas = window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[foja.numeroLogico] : [];
-                if (alertas && alertas.length > 0) { alertas.forEach(a => { const b = a.bbox; ctxD.fillStyle = a.colorFondo; ctxD.fillRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal); ctxD.strokeStyle = a.colorBorde; ctxD.lineWidth = 2; ctxD.strokeRect(b.x0 * zoomGlobal, b.y0 * zoomGlobal, (b.x1 - b.x0) * zoomGlobal, (b.y1 - b.y0) * zoomGlobal); }); }
-            }
-        }
+      if (hallazgos.length === 0) {
+        cont.innerHTML = `<div style="font-size:0.74rem; color:#64748b; text-align:center; padding:16px;">Sube un documento y pulsa "IA" para extraer cláusulas y alertas.</div>`;
+        return;
+      }
 
-        function seleccionarFoja(index) { fojaSeleccionadaIndex = index; document.querySelectorAll('.foja-item').forEach(el => el.classList.remove('activa')); document.getElementById('thumb-' + index).classList.add('activa'); document.getElementById('msg-vacio').style.display = 'none'; document.getElementById('controles-zoom').style.display = 'flex'; cargarNotasDeFojaActual(); renderizarVisorCentral(); cerrarPaneles(); }
-        function cambiarZoom(delta) { zoomGlobal = Math.max(0.3, Math.min(3, zoomGlobal + delta)); renderizarVisorCentral(); }
-        async function eliminarFojaEnMemoria(index) { if(confirm("¿Eliminar foja?")) { arrayFojas.splice(index, 1); for(let i=index; i<arrayFojas.length; i++) arrayFojas[i].numeroLogico--; renderizarBarraLateralFojas(); if(arrayFojas.length > 0) seleccionarFoja(Math.max(0, index-1)); else { document.getElementById('canvas-principal').style.display='none'; document.getElementById('canvas-dibujo').style.display='none'; document.getElementById('msg-vacio').style.display='block'; await localforage.removeItem('archivo_' + nombreExpediente); await localforage.removeItem('paquete_masc_' + nombreExpediente); } } }
-        function moverFoja(index, dir) { if(index + dir < 0 || index + dir >= arrayFojas.length) return; let temp = arrayFojas[index]; arrayFojas[index] = arrayFojas[index + dir]; arrayFojas[index + dir] = temp; renderizarBarraLateralFojas(); if(fojaSeleccionadaIndex === index) seleccionarFoja(index + dir); else if(fojaSeleccionadaIndex === index + dir) seleccionarFoja(index); }
-        function buscarFojaPorNumero(num) { let index = arrayFojas.findIndex(f => f.numeroLogico === parseInt(num)); if(index !== -1) seleccionarFoja(index); }
-        function switchTab(tabId, element) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); element.classList.add('active'); document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active')); document.getElementById(tabId).classList.add('active'); }
+      cont.innerHTML = hallazgos.map(h => `
+        <div onclick="seleccionarFoja(${h.idx})" class="keyword-card">
+          <div class="keyword-word"><span>${h.titulo}</span><span>FOJA ${h.foja}</span></div>
+          <div class="keyword-snippet">"${h.extracto}"</div>
+        </div>
+      `).join('');
+    }
 
-        function cargarNotasDeFojaActual() { if(arrayFojas.length === 0) return; let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico; document.getElementById('titulo-nota-foja').innerText = `Apunte Foja ${num}`; let dataNota = JSON.parse(localStorage.getItem(`notas_${nombreExpediente}_f${num}`)) || {texto: '', fecha: ''}; document.getElementById('texto-notas').value = dataNota.texto; document.getElementById('info-nota-fecha').innerText = dataNota.fecha ? `Modificado: ${dataNota.fecha}` : ''; }
-        function guardarNotas() { if(arrayFojas.length === 0) return; let num = arrayFojas[fojaSeleccionadaIndex].numeroLogico; let texto = document.getElementById('texto-notas').value; let fechaActual = new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }); if(texto.trim() === '') localStorage.removeItem(`notas_${nombreExpediente}_f${num}`); else localStorage.setItem(`notas_${nombreExpediente}_f${num}`, JSON.stringify({ texto: texto, fecha: fechaActual })); document.getElementById('info-nota-fecha').innerText = `Modificado: ${fechaActual}`; const msg = document.getElementById('nota-guardada'); msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 3000); renderizarBarraLateralFojas(); renderizarIndiceNotas(); }
-        function renderizarIndiceNotas() { const list = document.getElementById('lista-resumen-notas'); list.innerHTML = ''; let hayNotas = false; let notasArray = []; for(let i=0; i<localStorage.length; i++) { let key = localStorage.key(i); if(key.startsWith(`notas_${nombreExpediente}_f`)) { let numFoja = parseInt(key.split('_f')[1]); let dataNota = JSON.parse(localStorage.getItem(key)); notasArray.push({ foja: numFoja, texto: dataNota.texto }); } } notasArray.sort((a,b) => a.foja - b.foja); notasArray.forEach(nota => { hayNotas = true; let extracto = nota.texto.substring(0, 35) + (nota.texto.length > 35 ? '...' : ''); list.innerHTML += `<div class="nota-preview" onclick="buscarFojaPorNumero(${nota.foja}); if(window.innerWidth <= 1024) togglePanel('herramientas');"><strong style="color:var(--neon-blue); font-size:0.75rem;">Foja ${nota.foja}</strong><p style="font-size:0.7rem; color:var(--text-main); margin:3px 0;">"${extracto}"</p></div>`; }); if(!hayNotas) list.innerHTML = `<p style="font-size:0.7rem; color:var(--text-muted); text-align:center;">No hay notas.</p>`; }
-        function mostrarProgreso(icono, titulo, texto) { document.getElementById('icono-progreso').className = `fa-solid ${icono} fa-fade`; document.getElementById('titulo-progreso').innerText = titulo; document.getElementById('texto-progreso').innerText = texto; document.getElementById('barra-llena').style.width = '0%'; document.getElementById('btn-cancelar-ia').style.display = 'none'; document.getElementById('pantalla-progreso').style.display = 'flex'; }
-        function actualizarBarra(porcentaje) { document.getElementById('barra-llena').style.width = `${porcentaje}%`; }
-        function ocultarProgreso() { document.getElementById('pantalla-progreso').style.display = 'none'; }
-    </script>
+    function cambiarTabDerecha(tab) {
+      const esPalabras = tab === 'palabras';
+      document.getElementById('tab-palabras').classList.toggle('activa', esPalabras);
+      document.getElementById('tab-notas').classList.toggle('activa', !esPalabras);
+      document.getElementById('panel-palabras').style.display = esPalabras ? 'flex' : 'none';
+      document.getElementById('panel-notas').style.display = esPalabras ? 'none' : 'flex';
+    }
+
+    function cargarNotasGuardadas() {
+      const clave = `notas_visor_${expedienteActual ? expedienteActual.id : 'default'}`;
+      const raw = localStorage.getItem(clave);
+      notasDelExpediente = raw ? JSON.parse(raw) : [];
+      renderizarIndiceNotas();
+    }
+
+    function guardarNotas() {
+      const txt = (document.getElementById('texto-notas').value || '').trim();
+      if (!txt) return;
+      const fojaNum = fojasEnMemoria[indiceFojaActiva] ? fojasEnMemoria[indiceFojaActiva].numeroFoja : 1;
+      notasDelExpediente.unshift({ id: Date.now(), foja: fojaNum, idx: indiceFojaActiva, texto: txt });
+      const clave = `notas_visor_${expedienteActual ? expedienteActual.id : 'default'}`;
+      localStorage.setItem(clave, JSON.stringify(notasDelExpediente));
+      document.getElementById('texto-notas').value = '';
+      renderizarIndiceNotas();
+    }
+
+    function renderizarIndiceNotas() {
+      const cont = document.getElementById('indice-notas-container');
+      cont.innerHTML = notasDelExpediente.map(n => `
+        <div onclick="seleccionarFoja(${n.idx})" class="nota-guardada" style="cursor:pointer;">
+          <strong style="color:#fbbf24; display:block; margin-bottom:3px;">Foja ${n.foja}</strong>
+          <span>${n.texto}</span>
+        </div>
+      `).join('');
+    }
+  </script>
 </body>
 </html>
