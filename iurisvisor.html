@@ -1,426 +1,589 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IurisVisor Pro | Dashboard de Alertas</title>
-    <!-- Librerías Core -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { --bg-deep: #050810; --bg-panel: #0a0f1d; --glass-bg: rgba(15, 23, 42, 0.7); --brand-orange: #ff7315; --neon-blue: #38bdf8; --border-glass: rgba(255, 255, 255, 0.08); --text-main: #f8fafc; --text-muted: #94a3b8; }
-        body.light-mode { --bg-deep: #f8fafc; --bg-panel: #ffffff; --glass-bg: rgba(255, 255, 255, 0.9); --border-glass: rgba(0, 0, 0, 0.1); --text-main: #0f172a; --text-muted: #475569; }
-        body.light-mode .radar-panel { background: #f1f5f9; border-left: 1px solid #cbd5e1; }
-        body.light-mode .carrusel { background: #e2e8f0; border-top: 1px solid #cbd5e1; }
-        body.light-mode .foja-card { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        body.light-mode .topbar { background: rgba(255, 255, 255, 0.95); }
-        body.light-mode .logo-visor { color: #0f172a; }
+<!-- ==========================================
+     MÓDULO: ESCÁNER HÍBRIDO Y PRE-CONFIRMACIÓN
+     ========================================== -->
+<style>
+  .scan-module-card {
+    background: #1e293b;
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid #334155;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .scan-sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .scan-source-box {
+    background: #0f172a;
+    border: 1px dashed #475569;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .scan-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 4px;
+    transition: background 0.2s;
+    font-size: 0.9rem;
+  }
+  .scan-btn:hover { background: #1d4ed8; }
+  .scan-btn.secondary { background: #475569; }
+  .scan-btn.secondary:hover { background: #334155; }
+  .scan-btn.success { background: #16a34a; font-size: 1rem; padding: 12px 24px; }
+  .scan-btn.success:hover { background: #15803d; }
+  .scan-btn.danger { background: #dc2626; padding: 6px 10px; font-size: 0.85rem; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
-        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s, color 0.3s; }
-        
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  #cameraPreviewContainer {
+    display: none;
+    margin-top: 12px;
+    position: relative;
+  }
+  #cameraVideo {
+    width: 100%;
+    max-height: 320px;
+    border-radius: 8px;
+    background: #000;
+    object-fit: cover;
+    border: 1px solid #334155;
+  }
 
-        .topbar { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--border-glass); z-index: 10; flex-wrap: wrap; }
-        .logo-visor { font-weight: 800; font-size: 1.1rem; color: var(--text-main); margin-right: auto; display: flex; align-items: center; gap: 8px; }
-        .logo-visor i { color: var(--brand-orange); }
-        
-        .btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-glass); font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-main); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
-        .btn-volver { background: transparent; color: var(--text-muted); border: none; }
-        .btn-volver:hover { color: var(--brand-orange); }
-        .btn-accion { background: var(--glass-bg); border-color: rgba(56, 189, 248, 0.3); color: var(--neon-blue); }
-        .btn-accion:hover { background: rgba(56, 189, 248, 0.1); }
-        .btn-vip { background: linear-gradient(135deg, var(--brand-orange), #d95d0b); border: none; color: white; box-shadow: 0 4px 12px rgba(255, 115, 21, 0.3); }
-        .btn-camaleon { background: transparent; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.75rem; }
+  /* Tabla de Pre-Confirmación (Staging) */
+  .staging-container {
+    margin-top: 20px;
+    background: #0f172a;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid #f59e0b;
+  }
+  .staging-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .staging-badge {
+    background: #f59e0b;
+    color: #000;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+  }
+  .staging-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .staging-item {
+    display: grid;
+    grid-template-columns: 70px 1fr 200px 110px 130px;
+    gap: 12px;
+    align-items: center;
+    background: #1e293b;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .staging-thumb {
+    width: 65px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #64748b;
+    cursor: zoom-in;
+  }
+  .staging-input, .staging-select {
+    background: #0f172a;
+    color: #f8fafc;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  @media (max-width: 768px) {
+    .staging-item {
+      grid-template-columns: 1fr;
+      text-align: left;
+    }
+  }
+</style>
 
-        #pantalla-progreso { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; color: white; }
-        .progreso-card { background: var(--bg-panel); border: 1px solid var(--neon-blue); padding: 30px; border-radius: 16px; text-align: center; width: 90%; max-width: 400px; }
-        .barra-fondo { width: 100%; height: 10px; background: #1e293b; border-radius: 5px; margin: 20px 0; overflow: hidden; }
-        .barra-llena { width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--brand-orange)); transition: width 0.3s ease; }
+<div class="scan-module-card" id="moduloEscanerHibrido">
+  <h3 style="margin-top:0;">Centro de Digitalización y Auto-Foliado</h3>
+  <p style="color:#94a3b8; font-size:0.9rem;">
+    Captura desde celular o escáner de escritorio. El sistema detecta expediente y foja automáticamente, pero <strong>nada se guarda en firme hasta que revises y des clic en Confirmar</strong>.
+  </p>
 
-        .workspace { display: flex; flex: 1; overflow: hidden; flex-direction: row; }
-        @media(max-width: 900px) { .workspace { flex-direction: column; } }
-        
-        .visor-container { flex: 2.5; position: relative; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px; }
-        .visor-empty { position: absolute; top: 40%; text-align: center; color: var(--text-muted); padding: 0 20px; }
-        .visor-empty i { font-size: 3.5rem; margin-bottom: 15px; display: block; opacity: 0.5; }
-        #canvas-visor-central { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-radius: 4px; max-width: 100%; height: auto !important; }
-        
-        .zoom-controls { position: fixed; bottom: 230px; left: 20px; background: var(--glass-bg); backdrop-filter: blur(10px); padding: 8px; border-radius: 12px; border: 1px solid var(--border-glass); display: none; flex-direction: column; gap: 6px; z-index: 5; }
-        .btn-zoom { background: transparent; border: none; color: var(--text-main); font-size: 1rem; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; }
-        .btn-zoom:hover { background: rgba(125,125,125,0.2); color: var(--brand-orange); }
+  <div class="scan-sources-grid">
+    <!-- OPCIÓN 1: CÁMARA DEL CELULAR -->
+    <div class="scan-source-box">
+      <h4>📱 Cámara del Celular</h4>
+      <p style="font-size:0.85rem; color:#94a3b8;">Captura continua en vivo con filtro de documento o cámara nativa en ráfaga.</p>
+      <button type="button" class="scan-btn" onclick="ScanManager.iniciarCamaraWeb()">Abrir Cámara en Vivo</button>
+      <label class="scan-btn secondary" style="display:inline-block;">
+        Cámara Nativa (Ráfaga)
+        <input type="file" accept="image/*" capture="environment" multiple style="display:none;" onchange="ScanManager.procesarArchivosEntrada(this.files, 'Celular'); this.value='';">
+      </label>
 
-        .radar-panel { flex: 1.2; background: rgba(10, 15, 29, 0.7); border-left: 1px solid var(--border-glass); padding: 20px; overflow-y: auto; min-width: 320px; }
-        .radar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px; margin-bottom: 15px; }
-        .radar-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        
-        .demo-lock-card { background: rgba(255, 115, 21, 0.05); border: 1px dashed var(--brand-orange); padding: 20px; border-radius: 12px; text-align: center; margin-top: 15px; }
-        .demo-lock-card h4 { color: var(--text-main); margin: 8px 0; font-size: 1rem; }
-        .demo-lock-card p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; }
-        
-        .alerta-item { background: var(--glass-bg); border: 1px solid var(--border-glass); padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--brand-orange); cursor: pointer; }
-        .motivo-alerta { font-size: 0.75rem; color: var(--brand-orange); margin-top: 6px; background: rgba(0,0,0,0.1); padding: 6px; border-radius: 4px; font-weight: 600; }
-
-        /* MÓDULOS CONECTADOS */
-        .modulos-conectados { background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; }
-        .modulos-conectados h4 { color: var(--neon-blue); margin-bottom: 10px; font-size: 0.85rem; text-transform: uppercase; }
-        .btn-vinculo { width: 100%; justify-content: center; margin-bottom: 8px; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--neon-blue); color: var(--text-main); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-decoration: none; }
-        .btn-vinculo:hover { background: var(--neon-blue); color: white; }
-
-        /* CARRUSEL CON BOTONES DE ROTAR Y ELIMINAR */
-        .carrusel { height: 190px; background: #03050a; padding: 12px 20px; overflow-x: auto; display: flex; gap: 15px; align-items: center; }
-        .foja-card { background: #0f172a; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center; min-width: 110px; cursor: pointer; border: 2px solid transparent; position: relative; }
-        .foja-card.activa { border-color: var(--neon-blue); }
-        .foja-canvas-container { overflow: hidden; border-radius: 4px; margin-bottom: 6px; height: 95px; background: #fff; display: flex; justify-content: center; align-items: center; }
-        .foja-card canvas { height: 100%; width: auto; display: block; }
-        .foja-etiqueta { font-weight: 600; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; }
-        .foja-controles-mini { display: flex; justify-content: space-around; gap: 5px; }
-        .btn-mini { background: rgba(255,255,255,0.1); border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; transition: background 0.2s; }
-        .btn-mini:hover { background: var(--brand-orange); }
-
-        #modalVIP { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-card { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; text-align: center; max-width: 380px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .input-vip { background: rgba(0,0,0,0.1); border: 1px solid #cbd5e1; color: var(--text-main); padding: 12px; width: 100%; border-radius: 8px; text-align: center; font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; outline: none; }
-        .status-badge { background: rgba(250, 204, 21, 0.2); padding: 3px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
-        .status-pro { background: rgba(16, 185, 129, 0.2); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
-    </style>
-</head>
-<body>
-
-    <div class="topbar">
-        <a href="index.html" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Portal</a>
-        <div class="logo-visor">
-            <i class="fa-solid fa-microchip"></i> IurisVisor Pro
-            <span class="status-badge" id="status-badge">VERSIÓN DEMO</span>
+      <div id="cameraPreviewContainer">
+        <video id="cameraVideo" autoplay playsinline muted></video>
+        <div style="margin-top:8px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; align-items:center;">
+          <select id="cameraFilterMode" class="staging-select" style="width:auto; min-width:190px;">
+            <option value="documento_bn">Filtro Legal (Alto Contraste B/N)</option>
+            <option value="gris">Escala de Grises (Sellos/Firmas)</option>
+            <option value="color">Color Original</option>
+          </select>
+          <button type="button" class="scan-btn success" style="padding:10px 16px; font-size:0.9rem;" onclick="ScanManager.capturarFotoCamara()">📸 Capturar Foja</button>
+          <button type="button" class="scan-btn secondary" onclick="ScanManager.detenerCamaraWeb()">Cerrar Cámara</button>
         </div>
-        
-        <input type="file" id="pdf-upload" accept="application/pdf" style="display:none;" onchange="cargarPDF(event)">
-        <button class="btn btn-accion" onclick="document.getElementById('pdf-upload').click()"><i class="fa-solid fa-file-pdf"></i> 1. Cargar Expediente</button>
-        <button id="btn-analizar" class="btn btn-accion" style="display:none;" onclick="escanearAlertas()"><i class="fa-solid fa-radar"></i> 2. Iniciar Radar OCR</button>
-        <button id="btn-exportar" class="btn btn-vip" onclick="verificarVIP()"><i class="fa-solid fa-lock"></i> 3. Desbloquear Pro</button>
-        
-        <button onclick="toggleTheme()" class="btn-camaleon" id="btnTheme">
-            <i class="fa-solid fa-circle-half-stroke"></i> <span id="text-theme">Modo Claro</span>
-        </button>
+      </div>
     </div>
 
-    <div class="workspace">
-        <div class="visor-container" id="contenedor-visor-central">
-            <div class="visor-empty" id="mensaje-vacio">
-                <i class="fa-solid fa-file-shield"></i>
-                <h2>Dashboard Inactivo</h2>
-                <p>Carga un expediente PDF para iniciar el análisis.</p>
-            </div>
-            
-            <div class="zoom-controls" id="caja-zoom">
-                <button class="btn-zoom" onclick="cambiarZoom(0.2)"><i class="fa-solid fa-plus"></i></button>
-                <button class="btn-zoom" onclick="cambiarZoom(-0.2)"><i class="fa-solid fa-minus"></i></button>
-                <button class="btn-zoom" onclick="resetZoom()"><i class="fa-solid fa-expand"></i></button>
-            </div>
-            <canvas id="canvas-visor-central" style="display:none;"></canvas>
-        </div>
+    <!-- OPCIÓN 2: ESCÁNER DE ESCRITORIO / ADF -->
+    <div class="scan-source-box">
+      <h4>🖨️ Escáner Normal (Escritorio / ADF)</h4>
+      <p style="font-size:0.85rem; color:#94a3b8;">Conexión directa con escáner de PC o importación de lotes (JPG/PNG/PDF multipágina).</p>
+      <button type="button" class="scan-btn" onclick="ScanManager.escanearDirectoPC()">
+        🖨️ Escanear Directo desde PC
+      </button>
+      <label class="scan-btn secondary" style="display:inline-block;" id="labelImportarEscaner">
+        📂 Importar Lote / PDF del Escáner
+        <input id="inputArchivosEscanerPC" type="file" accept="image/*,.pdf" multiple style="display:none;" onchange="ScanManager.procesarArchivosEntrada(this.files, 'Escáner Físico'); this.value='';">
+      </label>
+      <div id="ocrStatusText" style="margin-top:12px; font-size:0.85rem; color:#38bdf8; min-height:20px;"></div>
+    </div>
+  </div>
 
-        <div class="radar-panel" id="panel-alertas">
-            <div class="radar-header">
-                <h3><i class="fa-solid fa-satellite-dish" style="color:var(--neon-blue);"></i> Radar de Plazos</h3>
-            </div>
-            <div id="lista-alertas">
-                <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-top: 20px;">Esperando documento...</p>
-            </div>
-        </div>
+  <!-- MESA DE PRE-CONFIRMACIÓN (STAGING AREA) -->
+  <div class="staging-container" id="mesaPreConfirmacion" style="display:none;">
+    <div class="staging-header">
+      <div>
+        <span class="staging-badge">PENDIENTE DE CONFIRMACIÓN</span>
+        <strong style="margin-left:8px;">Revisión Manual de Fojas antes de Guardar</strong>
+      </div>
+      <span id="contadorFojasStaging" style="color:#94a3b8; font-size:0.9rem;">0 fojas en cola</span>
     </div>
 
-    <div class="carrusel" id="grid-fojas"></div>
+    <div class="staging-list" id="listaStagingFojas"></div>
 
-    <div id="pantalla-progreso">
-        <div class="progreso-card">
-            <i class="fa-solid fa-microchip fa-fade" style="font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
-            <h3 style="color: white; margin-bottom: 8px; font-size: 1.1rem;">Motor OCR IurisVisor</h3>
-            <p id="texto-progreso" style="color: #cbd5e1; font-size: 0.85rem;">Preparando escaneo...</p>
-            <div class="barra-fondo">
-                <div class="barra-llena" id="barra-llena"></div>
-            </div>
-            <p id="porcentaje-progreso" style="font-weight: bold; color: var(--brand-orange); font-size: 0.9rem;">0%</p>
-        </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:10px;">
+      <button type="button" class="scan-btn secondary" onclick="ScanManager.limpiarStaging()">Descartar Lote</button>
+      <button type="button" class="scan-btn success" onclick="ScanManager.confirmarYGuardarLote()">
+        ✅ CONFIRMO: Guardar y Foliar en Expedientes
+      </button>
     </div>
+  </div>
+</div>
 
-    <div id="modalVIP">
-        <div class="modal-card">
-            <h2><i class="fa-solid fa-unlock-keyhole" style="color: var(--brand-orange);"></i> Activar Pro</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Ingresa tu token institucional (45YMAS) para liberar todas las funciones y pestañas conectadas.</p>
-            <input type="text" id="tokenInput" class="input-vip" placeholder="TOKEN 45YMAS" autocomplete="off">
-            <button class="btn btn-vip" style="width: 100%; justify-content: center; padding: 12px; font-size: 0.9rem;" onclick="validarTokenVIP()">VALIDAR ACCESO</button>
-            <button style="background:none; border:none; color: var(--text-muted); margin-top: 12px; cursor:pointer; font-size: 0.8rem;" onclick="cerrarModalVIP()">Cancelar</button>
+<script>
+/**
+ * GESTOR DE ESCANEO HÍBRIDO, AUTO-CLASIFICACIÓN Y PRE-CONFIRMACIÓN
+ * Compatible con LocalForage (con respaldo en LocalStorage), Tesseract.js y PDF.js
+ */
+const ScanManager = {
+  stagingFojas: [],
+  streamCamara: null,
+  carpetasDisponibles: [],
+  localScannerEndpoint: 'http://127.0.0.1:8181/api/scan',
+
+  async inicializar() {
+    await this.cargarCarpetasExistentes();
+  },
+
+  // Helper seguro para leer/escribir en LocalForage o LocalStorage como respaldo
+  async leerBoveda() {
+    if (window.localforage) {
+      return (await localforage.getItem('expedientes_boveda')) || [];
+    }
+    return JSON.parse(localStorage.getItem('expedientes_boveda') || '[]');
+  },
+
+  async guardarBoveda(datos) {
+    if (window.localforage) {
+      await localforage.setItem('expedientes_boveda', datos);
+    } else {
+      localStorage.setItem('expedientes_boveda', JSON.stringify(datos));
+    }
+  },
+
+  // 1. Obtener carpetas/expedientes reales desde la Bóveda
+  async cargarCarpetasExistentes() {
+    try {
+      const guardados = await this.leerBoveda();
+      if (guardados.length > 0) {
+        this.carpetasDisponibles = guardados.map(e => ({
+          id: e.id || e.numero,
+          nombre: e.numero ? `${e.numero} - ${e.partes || e.materia || 'Expediente'}` : (e.nombre || e.id),
+          ultimaFoja: Array.isArray(e.fojas) ? e.fojas.length : 0
+        }));
+      } else {
+        this.carpetasDisponibles = [
+          { id: 'EXP-001', nombre: 'EXP-001/2026 - Mercantil / MASC', ultimaFoja: 0 },
+          { id: 'EXP-002', nombre: 'EXP-002/2026 - Familiar / Convenio', ultimaFoja: 0 },
+          { id: 'SIN-CLASIFICAR', nombre: 'Bandeja General (Sin Expediente)', ultimaFoja: 0 }
+        ];
+      }
+    } catch (err) {
+      console.warn('Usando carpetas en memoria:', err);
+    }
+  },
+
+  // 2. Cámara en vivo del celular (trasera)
+  async iniciarCamaraWeb() {
+    try {
+      await this.cargarCarpetasExistentes();
+      this.detenerCamaraWeb();
+      this.streamCamara = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+      });
+      const video = document.getElementById('cameraVideo');
+      video.srcObject = this.streamCamara;
+      document.getElementById('cameraPreviewContainer').style.display = 'block';
+    } catch (e) {
+      alert('No se pudo abrir la cámara en vivo. Verifica permisos o usa el botón "Cámara Nativa (Ráfaga)".');
+    }
+  },
+
+  detenerCamaraWeb() {
+    if (this.streamCamara) {
+      this.streamCamara.getTracks().forEach(t => t.stop());
+      this.streamCamara = null;
+    }
+    const preview = document.getElementById('cameraPreviewContainer');
+    if (preview) preview.style.display = 'none';
+  },
+
+  async capturarFotoCamara() {
+    const video = document.getElementById('cameraVideo');
+    if (!video || !this.streamCamara) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const modoFiltro = document.getElementById('cameraFilterMode')?.value || 'documento_bn';
+    if (modoFiltro !== 'color') {
+      this.aplicarFiltroDocumento(ctx, canvas.width, canvas.height, modoFiltro);
+    }
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    await this.analizarYEncolarFoja(dataUrl, `Camara_${Date.now()}.jpg`, 'Celular');
+  },
+
+  aplicarFiltroDocumento(ctx, width, height, modo) {
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      const val = modo === 'documento_bn' ? (lum > 145 ? 255 : Math.max(0, lum - 40)) : lum;
+      d[i] = val;
+      d[i + 1] = val;
+      d[i + 2] = val;
+    }
+    ctx.putImageData(imgData, 0, 0);
+  },
+
+  // 2.B Escaneo directo con Hardware de PC (Puente TWAIN/WIA o Fallback a Bandeja)
+  async escanearDirectoPC() {
+    await this.cargarCarpetasExistentes();
+    const statusEl = document.getElementById('ocrStatusText');
+    statusEl.textContent = 'Buscando escáner físico conectado a la PC...';
+
+    try {
+      const response = await fetch(this.localScannerEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dpi: 300, colorMode: 'Grayscale', format: 'jpeg' })
+      });
+
+      if (!response.ok) throw new Error('Servicio local no activo');
+      const data = await response.json();
+      const paginas = data.pages || [];
+
+      for (let i = 0; i < paginas.length; i++) {
+        const base64 = paginas[i].startsWith('data:') ? paginas[i] : `data:image/jpeg;base64,${paginas[i]}`;
+        await this.analizarYEncolarFoja(base64, `EscanerPC_${Date.now()}_${i + 1}.jpg`, 'Escáner PC Directo');
+      }
+      statusEl.textContent = `Escaneo directo finalizado (${paginas.length} fojas). Revisa la mesa de confirmación.`;
+    } catch (err) {
+      statusEl.textContent = 'Selecciona las hojas o el PDF recién digitalizado por tu escáner de escritorio...';
+      document.getElementById('inputArchivosEscanerPC')?.click();
+    }
+  },
+
+  // 3. Procesar archivos desde Escáner Normal (Imágenes o PDF multipágina) o Cámara Nativa
+  async procesarArchivosEntrada(fileList, origen) {
+    if (!fileList || fileList.length === 0) return;
+    await this.cargarCarpetasExistentes();
+    const statusEl = document.getElementById('ocrStatusText');
+
+    for (let i = 0; i < fileList.length; i++) {
+      const archivo = fileList[i];
+      statusEl.textContent = `Procesando archivo ${i + 1} de ${fileList.length}: ${archivo.name}...`;
+
+      if (archivo.type === 'application/pdf' && window.pdfjsLib) {
+        await this.desglosarPdfEnFojas(archivo, origen);
+      } else if (archivo.type.startsWith('image/')) {
+        const dataUrl = await this.leerArchivoComoDataURL(archivo);
+        await this.analizarYEncolarFoja(dataUrl, archivo.name, origen);
+      } else if (archivo.type === 'application/pdf' && !window.pdfjsLib) {
+        alert('Para desglosar PDFs multipágina automáticamente, asegúrate de tener cargado PDF.js en la página, o sube las fojas como imagen.');
+      }
+    }
+    statusEl.textContent = 'Lectura automática terminada. Revisa la mesa de confirmación abajo.';
+  },
+
+  leerArchivoComoDataURL(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
+  },
+
+  async desglosarPdfEnFojas(file, origen) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    for (let numPag = 1; numPag <= pdf.numPages; numPag++) {
+      const page = await pdf.getPage(numPag);
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const imgData = canvas.toDataURL('image/jpeg', 0.85);
+      await this.analizarYEncolarFoja(imgData, `${file.name}_Pag_${numPag}.jpg`, origen);
+    }
+  },
+
+  // 4. OCR + Detección automática de Carpeta (Expediente) y Número de Foja
+  async analizarYEncolarFoja(dataUrl, nombreArchivo, origen) {
+    let textoOCR = '';
+    const statusEl = document.getElementById('ocrStatusText');
+
+    if (window.Tesseract) {
+      try {
+        statusEl.textContent = `Analizando texto (OCR) en ${nombreArchivo}...`;
+        const res = await Tesseract.recognize(dataUrl, 'spa');
+        textoOCR = res.data.text || '';
+      } catch (e) {
+        console.warn('OCR omitido en esta captura:', e);
+      }
+    }
+
+    let carpetaAsignada = this.carpetasDisponibles[0]?.id || 'SIN-CLASIFICAR';
+    for (const carp of this.carpetasDisponibles) {
+      const claveLimpia = String(carp.id).replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const textoLimpio = (textoOCR + ' ' + nombreArchivo).replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      if (claveLimpia && textoLimpio.includes(claveLimpia)) {
+        carpetaAsignada = carp.id;
+        break;
+      }
+    }
+
+    const matchFoja = textoOCR.match(/(?:foja|folio|f\.|pág\.?)\s*[:#.-]?\s*(\d{1,5})/i);
+    let numeroFojaSugerido;
+
+    if (matchFoja && matchFoja[1]) {
+      numeroFojaSugerido = parseInt(matchFoja[1], 10);
+    } else {
+      const yaEnStaging = this.stagingFojas.filter(f => f.carpetaId === carpetaAsignada).length;
+      const infoCarpeta = this.carpetasDisponibles.find(c => c.id === carpetaAsignada);
+      const baseExistente = infoCarpeta ? infoCarpeta.ultimaFoja : 0;
+      numeroFojaSugerido = baseExistente + yaEnStaging + 1;
+    }
+
+    this.stagingFojas.push({
+      tempId: 'foja_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      imagen: dataUrl,
+      nombreArchivo,
+      origen,
+      carpetaId: carpetaAsignada,
+      numeroFoja: numeroFojaSugerido,
+      notaRapida: '',
+      textoExtraido: textoOCR.slice(0, 500)
+    });
+
+    this.ordenarStagingAutomaticamente();
+    this.renderizarStaging();
+  },
+
+  ordenarStagingAutomaticamente() {
+    this.stagingFojas.sort((a, b) => {
+      if (a.carpetaId !== b.carpetaId) return String(a.carpetaId).localeCompare(String(b.carpetaId));
+      return Number(a.numeroFoja) - Number(b.numeroFoja);
+    });
+  },
+
+  // Visor seguro de imagen en tamaño completo (evita bloqueo de Chrome a URLs base64)
+  ampliarFoja(tempId) {
+    const item = this.stagingFojas.find(f => f.tempId === tempId);
+    if (!item) return;
+    const win = window.open('', '_blank');
+    if (win) {
+      win.document.write(`
+        <html><head><title>${item.nombreArchivo} - Foja ${item.numeroFoja}</title></head>
+        <body style="margin:0; background:#0f172a; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+          <img src="${item.imagen}" style="max-width:98%; max-height:98vh; box-shadow:0 10px 30px rgba(0,0,0,0.6);" />
+        </body></html>
+      `);
+      win.document.close();
+    }
+  },
+
+  // 5. Renderizar la Mesa de Pre-Confirmación para edición manual
+  renderizarStaging() {
+    const contenedor = document.getElementById('mesaPreConfirmacion');
+    const lista = document.getElementById('listaStagingFojas');
+    const contador = document.getElementById('contadorFojasStaging');
+
+    if (this.stagingFojas.length === 0) {
+      contenedor.style.display = 'none';
+      return;
+    }
+
+    contenedor.style.display = 'block';
+    contador.textContent = `${this.stagingFojas.length} foja(s) listas para revisión`;
+    lista.innerHTML = '';
+
+    this.stagingFojas.forEach((item, index) => {
+      const opcionesCarpetas = this.carpetasDisponibles.map(c =>
+        `<option value="${c.id}" ${c.id === item.carpetaId ? 'selected' : ''}>${c.nombre}</option>`
+      ).join('');
+
+      const fila = document.createElement('div');
+      fila.className = 'staging-item';
+      fila.innerHTML = `
+        <img src="${item.imagen}" class="staging-thumb" title="Clic para ver tamaño completo" onclick="ScanManager.ampliarFoja('${item.tempId}')">
+        <div>
+          <div style="font-weight:600; font-size:0.9rem;">${item.nombreArchivo}</div>
+          <div style="font-size:0.78rem; color:#94a3b8;">Origen: ${item.origen}</div>
+          <input type="text" class="staging-input" style="margin-top:6px; font-size:0.8rem;"
+                 placeholder="Nota o alerta en esta foja (opcional)..."
+                 value="${item.notaRapida.replace(/"/g, '&quot;')}"
+                 onchange="ScanManager.actualizarCampo('${item.tempId}', 'notaRapida', this.value)">
         </div>
-    </div>
+        <div>
+          <label style="font-size:0.75rem; color:#94a3b8;">Carpeta / Expediente:</label>
+          <select class="staging-select" onchange="ScanManager.actualizarCampo('${item.tempId}', 'carpetaId', this.value)">
+            ${opcionesCarpetas}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:#94a3b8;">Núm. de Foja:</label>
+          <input type="number" min="1" class="staging-input" value="${item.numeroFoja}"
+                 onchange="ScanManager.actualizarCampo('${item.tempId}', 'numeroFoja', parseInt(this.value, 10) || 1)">
+        </div>
+        <div style="display:flex; gap:6px; justify-content:flex-end;">
+          <button type="button" class="scan-btn secondary" title="Subir posición" onclick="ScanManager.moverFoja(${index}, -1)">↑</button>
+          <button type="button" class="scan-btn secondary" title="Bajar posición" onclick="ScanManager.moverFoja(${index}, 1)">↓</button>
+          <button type="button" class="scan-btn danger" title="Quitar esta foja" onclick="ScanManager.eliminarDeStaging('${item.tempId}')">✕</button>
+        </div>
+      `;
+      lista.appendChild(fila);
+    });
+  },
 
-    <script>
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('text-theme').innerText = isLight ? "Modo Oscuro" : "Modo Claro";
-            document.querySelector('#btnTheme i').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
-            localStorage.setItem('tema', isLight ? 'light' : 'dark');
+  actualizarCampo(tempId, campo, valor) {
+    const foja = this.stagingFojas.find(f => f.tempId === tempId);
+    if (foja) {
+      foja[campo] = valor;
+      if (campo === 'carpetaId' || campo === 'numeroFoja') {
+        this.ordenarStagingAutomaticamente();
+        this.renderizarStaging();
+      }
+    }
+  },
+
+  moverFoja(index, direccion) {
+    const nuevoIndex = index + direccion;
+    if (nuevoIndex < 0 || nuevoIndex >= this.stagingFojas.length) return;
+    const temp = this.stagingFojas[index];
+    this.stagingFojas[index] = this.stagingFojas[nuevoIndex];
+    this.stagingFojas[nuevoIndex] = temp;
+    this.stagingFojas.forEach((f, idx) => { f.numeroFoja = idx + 1; });
+    this.renderizarStaging();
+  },
+
+  eliminarDeStaging(tempId) {
+    this.stagingFojas = this.stagingFojas.filter(f => f.tempId !== tempId);
+    this.renderizarStaging();
+  },
+
+  limpiarStaging() {
+    if (!confirm('¿Seguro que deseas descartar las fojas escaneadas sin guardar?')) return;
+    this.stagingFojas = [];
+    this.renderizarStaging();
+  },
+
+  // 6. PASO FINAL: CONFIRMACIÓN Y GUARDADO EN BÓVEDA
+  async confirmarYGuardarLote() {
+    if (this.stagingFojas.length === 0) return;
+
+    try {
+      const expedientes = await this.leerBoveda();
+
+      for (const item of this.stagingFojas) {
+        let exp = expedientes.find(e => (e.id || e.numero) === item.carpetaId);
+        if (!exp) {
+          exp = {
+            id: item.carpetaId,
+            numero: item.carpetaId,
+            fechaActualizacion: new Date().toISOString(),
+            fojas: []
+          };
+          expedientes.push(exp);
         }
-        window.onload = () => { if(localStorage.getItem('tema') === 'light') toggleTheme(); };
+        if (!Array.isArray(exp.fojas)) exp.fojas = [];
 
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        let bytesOriginales = null, pdfDocumento = null; 
-        let nivelZoomActual = 1.3, paginaCargadaActual = null;
-        
-        // Verifica el token global en localStorage
-        let esProActivado = localStorage.getItem('pro_activo') === 'true';
+        exp.fojas.push({
+          idFoja: 'F-' + Date.now() + '-' + item.numeroFoja,
+          folio: Number(item.numeroFoja),
+          imagenBase64: item.imagen,
+          origen: item.origen,
+          nota: item.notaRapida,
+          textoOCR: item.textoExtraido,
+          fechaCaptura: new Date().toLocaleString()
+        });
 
-        if(esProActivado) {
-            document.getElementById('status-badge').className = 'status-badge status-pro';
-            document.getElementById('status-badge').innerText = 'PRO ACTIVA';
-            document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Guardar PDF';
-        }
+        exp.fojas.sort((a, b) => a.folio - b.folio);
+      }
 
-        function verificarVIP() { document.getElementById('modalVIP').style.display = 'flex'; }
-        function cerrarModalVIP() { document.getElementById('modalVIP').style.display = 'none'; }
-        
-        function validarTokenVIP() {
-            if(document.getElementById('tokenInput').value.trim().toUpperCase() === "45YMAS") {
-                esProActivado = true; 
-                localStorage.setItem('pro_activo', 'true');
-                cerrarModalVIP();
-                
-                const badge = document.getElementById('status-badge');
-                badge.className = 'status-badge status-pro'; badge.innerText = 'PRO ACTIVA';
-                document.getElementById('btn-exportar').innerHTML = '<i class="fa-solid fa-download"></i> Guardar PDF';
-                
-                if(window.ultimasAlertasGlobales) mostrarPanelPro(window.ultimasAlertasGlobales);
-                alert("¡Token Validado! Las pestañas de Cronología y Árbol han sido desbloqueadas.");
-            } else { alert("Acceso Denegado. Token inválido."); }
-        }
+      await this.guardarBoveda(expedientes);
+      alert(`¡Confirmado! Se integraron ${this.stagingFojas.length} foja(s) correctamente en sus carpetas.`);
 
-        async function cargarPDF(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            document.getElementById('pantalla-progreso').style.display = 'flex';
-            document.getElementById('texto-progreso').innerText = "Cargando estructura del PDF...";
-            
-            bytesOriginales = new Uint8Array(await file.arrayBuffer());
-            pdfDocumento = await pdfjsLib.getDocument(bytesOriginales).promise;
-            
-            const carrusel = document.getElementById('grid-fojas');
-            carrusel.innerHTML = '';
-            document.getElementById('lista-alertas').innerHTML = '<p style="color: var(--text-muted); text-align: center; margin-top: 20px;">Expediente Listo. Ejecuta el Radar.</p>';
-            document.getElementById('canvas-visor-central').style.display = 'none';
-            document.getElementById('mensaje-vacio').style.display = 'block';
+      this.stagingFojas = [];
+      this.renderizarStaging();
+      this.detenerCamaraWeb();
+      await this.cargarCarpetasExistentes();
 
-            for (let i = 1; i <= pdfDocumento.numPages; i++) {
-                renderizarFojaMiniatura(i);
-            }
-            document.getElementById('btn-analizar').style.display = 'inline-flex';
-            document.getElementById('pantalla-progreso').style.display = 'none';
-        }
+      if (typeof renderizarBoveda === 'function') renderizarBoveda();
+    } catch (error) {
+      console.error('Error al guardar en la bóveda:', error);
+      alert('Ocurrió un error al guardar el lote en la bóveda local.');
+    }
+  }
+};
 
-        async function renderizarFojaMiniatura(i) {
-            const page = await pdfDocumento.getPage(i);
-            const viewportMiniatura = page.getViewport({ scale: 0.3 }); 
-            const carrusel = document.getElementById('grid-fojas');
-
-            const card = document.createElement('div');
-            card.className = 'foja-card'; card.id = `tarjeta-foja-${i}`;
-            card.dataset.numPaginaPdf = i; card.dataset.rotacion = 0; 
-            card.onclick = () => { const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[i] : []; cargarEnVisorCentral(i, alertas); };
-            
-            const canvasContainer = document.createElement('div'); canvasContainer.className = 'foja-canvas-container';
-            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-            canvas.width = viewportMiniatura.width; canvas.height = viewportMiniatura.height;
-            await page.render({ canvasContext: ctx, viewport: viewportMiniatura }).promise;
-            canvasContainer.appendChild(canvas);
-
-            const etiqueta = document.createElement('div'); etiqueta.className = 'foja-etiqueta'; etiqueta.innerText = `FOJA ${i}`;
-            
-            // Botones interactivos por miniatura
-            const controlesMini = document.createElement('div'); controlesMini.className = 'foja-controles-mini';
-            controlesMini.innerHTML = `
-                <button class="btn-mini" title="Rotar" onclick="event.stopPropagation(); rotarFoja(${i})"><i class="fa-solid fa-rotate-right"></i></button>
-                <button class="btn-mini" title="Eliminar" onclick="event.stopPropagation(); eliminarFoja(${i})"><i class="fa-solid fa-trash"></i></button>
-            `;
-
-            card.append(etiqueta, canvasContainer, controlesMini);
-            carrusel.appendChild(card);
-        }
-
-        function rotarFoja(num) {
-            const card = document.getElementById(`tarjeta-foja-${num}`);
-            let rot = parseInt(card.dataset.rotacion || 0) + 90;
-            card.dataset.rotacion = rot;
-            card.querySelector('canvas').style.transform = `rotate(${rot}deg)`;
-        }
-
-        function eliminarFoja(num) {
-            const card = document.getElementById(`tarjeta-foja-${num}`);
-            if(card) card.remove();
-        }
-
-        async function escanearAlertas() {
-            const cards = document.querySelectorAll('.foja-card');
-            const totalFojas = cards.length;
-            document.getElementById('pantalla-progreso').style.display = 'flex';
-            
-            const categorias = [
-                { nombre: "Sentencia", palabras: ['sentencia', 'resuelve'], colorF: 'rgba(239, 68, 68, 0.4)', colorB: '#ef4444' },
-                { nombre: "Prevención", palabras: ['prevéngase', 'aclarar'], colorF: 'rgba(245, 158, 11, 0.4)', colorB: '#f59e0b' },
-                { nombre: "Vencimiento", palabras: ['admite', 'término', 'días'], colorF: 'rgba(56, 189, 248, 0.4)', colorB: '#38bdf8' }
-            ];
-
-            let totalAlertas = 0; window.mapaAlertasPorFoja = {}; let todasLasAlertasArray = [];
-
-            for (let i = 0; i < totalFojas; i++) {
-                let percent = Math.round(((i + 1) / totalFojas) * 100);
-                document.getElementById('texto-progreso').innerText = `Analizando Foja ${i + 1} de ${totalFojas}...`;
-                document.getElementById('barra-llena').style.width = `${percent}%`;
-                document.getElementById('porcentaje-progreso').innerText = `${percent}%`;
-
-                const numPaginaPdf = cards[i].dataset.numPaginaPdf;
-                const page = await pdfDocumento.getPage(parseInt(numPaginaPdf));
-                const canvasOCR = document.createElement('canvas'); const ctxOCR = canvasOCR.getContext('2d');
-                const viewportOCR = page.getViewport({ scale: 1.0 });
-                canvasOCR.width = viewportOCR.width; canvasOCR.height = viewportOCR.height;
-                await page.render({ canvasContext: ctxOCR, viewport: viewportOCR }).promise;
-
-                const { data } = await Tesseract.recognize(canvasOCR, 'spa');
-                let alertasEnFoja = [];
-                data.words.forEach(palabra => {
-                    let textoLimpio = palabra.text.toLowerCase().replace(/[^a-záéíóúñ]/g, '');
-                    if (textoLimpio.length < 3) return;
-                    for (let cat of categorias) {
-                        if (cat.palabras.includes(textoLimpio)) {
-                            alertasEnFoja.push({ categoria: cat.nombre, textoExacto: palabra.text, bbox: palabra.bbox, colorFondo: cat.colorF, colorBorde: cat.colorB, numFoja: numPaginaPdf });
-                        }
-                    }
-                });
-                if (alertasEnFoja.length > 0) {
-                    window.mapaAlertasPorFoja[numPaginaPdf] = alertasEnFoja;
-                    totalAlertas += alertasEnFoja.length; todasLasAlertasArray.push(...alertasEnFoja);
-                }
-            }
-
-            window.ultimasAlertasGlobales = todasLasAlertasArray;
-            document.getElementById('pantalla-progreso').style.display = 'none';
-
-            simularExportacionIA(); // Mandar datos reales a localStorage
-
-            if (esProActivado) mostrarPanelPro(todasLasAlertasArray);
-            else mostrarPanelDemo(totalAlertas);
-        }
-
-        // ==============================================================
-        // EXPORTACIÓN DINÁMICA DE DATOS REALES A CRONOLOGÍA Y ÁRBOL
-        // ==============================================================
-        function simularExportacionIA() {
-            let timelineIA = [];
-            
-            if(window.ultimasAlertasGlobales && window.ultimasAlertasGlobales.length > 0) {
-                window.ultimasAlertasGlobales.forEach(alerta => {
-                    let tipo = 'tipo-notificacion';
-                    let titulo = 'Alerta Detectada';
-                    let desc = `Se encontró el término "${alerta.textoExacto}" en el documento.`;
-
-                    if(alerta.categoria === 'Sentencia') { tipo = 'tipo-audiencia'; titulo = 'Resolución / Sentencia'; }
-                    if(alerta.categoria === 'Prevención') { tipo = 'tipo-prevencion'; titulo = 'Prevención del Juzgado'; }
-                    if(alerta.categoria === 'Vencimiento') { tipo = 'tipo-vencimiento'; titulo = 'Alerta de Vencimiento'; desc = `Peligro detectado por la palabra "${alerta.textoExacto}".`; }
-
-                    timelineIA.push({
-                        fecha: `ALERTA EN FOJA ${alerta.numFoja}`,
-                        titulo: titulo,
-                        desc: desc,
-                        tipo: tipo,
-                        foja: alerta.numFoja
-                    });
-                });
-            } else {
-                timelineIA = [ { fecha: "Dato General", titulo: "Expediente Sin Alertas Críticas", desc: "No se encontraron vencimientos graves.", tipo: "tipo-notificacion", foja: "1" } ];
-            }
-
-            const treeIA = { id: 1, nombre: "Expediente Analizado", rol: "De Cujus / Raíz", fecha: "Extraído del Escaneo", icon: "fa-folder-open", spouses: [], children: [] };
-
-            localStorage.setItem('datos_timeline_45ymas', JSON.stringify(timelineIA));
-            localStorage.setItem('datos_arbol_45ymas', JSON.stringify(treeIA));
-        }
-
-        function abrirEnNuevaPestaña(url) {
-            window.open(url, '_blank');
-        }
-
-        function mostrarPanelDemo(total) {
-            document.getElementById('lista-alertas').innerHTML = `
-                <div style="background: rgba(56, 189, 248, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid var(--neon-blue); margin-bottom: 15px;">
-                    <strong style="color: var(--text-main); font-size: 1rem;">Se detectaron <span style="color: var(--brand-orange);">${total}</span> alertas.</strong>
-                </div>
-                
-                <div class="modulos-conectados">
-                    <h4><i class="fa-solid fa-link"></i> Módulos del Caso (Demo)</h4>
-                    <button onclick="abrirEnNuevaPestaña('linea-tiempo-alertas.html')" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Abrir Cronología / Calendario</button>
-                    <button onclick="abrirEnNuevaPestaña('arbol-genealogico.html')" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Abrir Árbol Sucesorio/Familiar</button>
-                </div>
-
-                <div class="demo-lock-card">
-                    <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--brand-orange);"></i>
-                    <h4>Protege tu Procedimiento</h4>
-                    <p>¡Activa Pro para desbloquear exportaciones y ver ubicación en fojas!</p>
-                    <button class="btn btn-vip" style="width: 100%; justify-content: center;" onclick="verificarVIP()">DESBLOQUEAR AHORA</button>
-                </div>
-            `;
-        }
-
-        function mostrarPanelPro(alertas) {
-            const panel = document.getElementById('lista-alertas');
-            panel.innerHTML = `
-                <div class="modulos-conectados" style="margin-bottom: 15px;">
-                    <h4><i class="fa-solid fa-link"></i> Módulos Pro Conectados</h4>
-                    <button onclick="abrirEnNuevaPestaña('linea-tiempo-alertas.html')" class="btn-vinculo"><i class="fa-solid fa-timeline"></i> Abrir Cronología / Calendario (Pro)</button>
-                    <button onclick="abrirEnNuevaPestaña('arbol-genealogico.html')" class="btn-vinculo"><i class="fa-solid fa-network-wired"></i> Abrir Árbol Sucesorio/Familiar (Pro)</button>
-                </div>
-                <div style="color: #10b981; font-size: 0.85rem; font-weight: bold; margin-bottom: 12px;"><i class="fa-solid fa-circle-check"></i> Mostrando ${alertas.length} alertas detalladas</div>
-            `;
-            alertas.forEach(a => {
-                const div = document.createElement('div'); div.className = 'alerta-item'; div.style.borderLeftColor = a.colorBorde;
-                div.innerHTML = `<strong style="color:var(--text-main); font-size: 0.85rem;"><i class="fa-regular fa-file-lines"></i> FOJA ${a.numFoja}</strong><br><span style="color:var(--text-muted); font-size: 0.75rem;">${a.categoria}</span><div class="motivo-alerta">Palabra: "${a.textoExacto}"</div>`;
-                div.onclick = () => cargarEnVisorCentral(a.numFoja, window.mapaAlertasPorFoja[a.numFoja]);
-                panel.appendChild(div);
-            });
-        }
-
-        async function cargarEnVisorCentral(numPagina, alertas = []) {
-            paginaCargadaActual = numPagina; nivelZoomActual = 1.3;
-            document.querySelectorAll('.foja-card').forEach(c => c.classList.remove('activa'));
-            const card = document.getElementById(`tarjeta-foja-${numPagina}`);
-            if(card) card.classList.add('activa');
-            document.getElementById('mensaje-vacio').style.display = 'none';
-            document.getElementById('caja-zoom').style.display = 'flex';
-            document.getElementById('canvas-visor-central').style.display = 'block';
-            renderizarCanvasCentral(alertas);
-        }
-
-        async function renderizarCanvasCentral(alertas) {
-            if(!paginaCargadaActual) return;
-            const page = await pdfDocumento.getPage(parseInt(paginaCargadaActual));
-            const viewport = page.getViewport({ scale: nivelZoomActual });
-            const canvas = document.getElementById('canvas-visor-central'); const ctx = canvas.getContext('2d');
-            canvas.width = viewport.width; canvas.height = viewport.height;
-            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-            if (alertas && alertas.length > 0) {
-                alertas.forEach(a => {
-                    const b = a.bbox; ctx.fillStyle = a.colorFondo; ctx.fillRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
-                    ctx.strokeStyle = a.colorBorde; ctx.lineWidth = 2; ctx.strokeRect(b.x0 * nivelZoomActual, b.y0 * nivelZoomActual, (b.x1 - b.x0) * nivelZoomActual, (b.y1 - b.y0) * nivelZoomActual);
-                });
-            }
-        }
-
-        function cambiarZoom(delta) { nivelZoomActual = Math.min(Math.max(0.5, nivelZoomActual + delta), 3.0); const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []; renderizarCanvasCentral(alertas); }
-        function resetZoom() { nivelZoomActual = 1.3; const alertas = esProActivado && window.mapaAlertasPorFoja ? window.mapaAlertasPorFoja[paginaCargadaActual] : []; renderizarCanvasCentral(alertas); }
-    </script>
-</body>
-</html>
+document.addEventListener('DOMContentLoaded', () => ScanManager.inicializar());
+</script>
