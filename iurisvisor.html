@@ -3395,7 +3395,1022 @@ let usuarioActivo = 'admin';
     }
   </script>
 <!-- === FIN DE LA PARTE 2 - PEGA LA PARTE 3 JUSTO DEBAJO DE ESTA LÍNEA === -->
- Remove-Item scanner-masc.js -ErrorAction SilentlyContinue
-git add iurisvisor.html
-git commit -m "security(scanner): remueve clave API expuesta e integra escaner hibrido CamScanner"
-git push origin main
+ <!-- ============================================================================
+       MÓDULO INTEGRADO VERIFICADO: ESCÁNER HÍBRIDO CON TECNOLOGÍA CAMSCANNER
+       Conectado a bdMasc, bdJuzgados, Check-List Oficial IJA y Google Drive 5TB
+       ============================================================================ -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <style>
+    #modal-escaner-hibrido-boveda .scan-source-box {
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px dashed rgba(245, 158, 11, 0.45);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    #modal-escaner-hibrido-boveda .scan-source-box:hover {
+      border-color: #f59e0b;
+    }
+    #modal-escaner-hibrido-boveda .staging-item-row {
+      display: grid;
+      grid-template-columns: 76px 1.15fr 1fr 1fr 140px 85px 105px;
+      gap: 10px;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.95);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+    }
+    @media (max-width: 1150px) {
+      #modal-escaner-hibrido-boveda .staging-item-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div id="modal-escaner-hibrido-boveda" class="fixed inset-0 z-[90] hidden bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="glass-panel rounded-3xl max-w-6xl w-full max-h-[94vh] flex flex-col border border-amber-500/40 shadow-2xl overflow-hidden">
+      <!-- Encabezado del Escáner -->
+      <div class="shrink-0 p-4 sm:p-5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">
+              Motor Nitidez CamScanner • Auto-Foliado • PDF Multipágina
+            </span>
+            <span id="scan-modal-exp-badge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-mono-code font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"></span>
+          </div>
+          <h2 class="text-base sm:text-xl font-black gold-text mt-1 flex items-center gap-2">
+            <i class="fa-solid fa-camera-rotate text-amber-400"></i>
+            CENTRO DE DIGITALIZACIÓN HÍBRIDO (CELULAR Y ESCÁNER PC)
+          </h2>
+          <p class="text-[11px] text-slate-400">
+            Elimina sombras automáticamente, resalta firmas/sellos y une las fojas en PDF original. <strong>Nada se guarda hasta que confirmes abajo.</strong>
+          </p>
+        </div>
+        <button type="button" onclick="ScanManager.cerrarModalEscaner()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-bold">
+          <i class="fa-solid fa-xmark mr-1"></i> Cerrar
+        </button>
+      </div>
+
+      <!-- Cuerpo del Escáner -->
+      <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5">
+        <!-- Barra Global de Filtro de Nitidez -->
+        <div class="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-base"></i>
+            <div>
+              <span class="font-black text-white">Filtro Inteligente de Escaneo (Anti-Sombras):</span>
+              <span class="text-slate-400 block sm:inline sm:ml-1">Limpia el fondo gris del papel y perfila las letras como escáner láser.</span>
+            </div>
+          </div>
+          <select id="cameraFilterMode" onchange="ScanManager.cambiarFiltroGlobal(this.value)" class="bg-slate-950 border border-amber-500/50 rounded-xl px-3 py-2 text-xs font-bold text-amber-300">
+            <option value="camscanner_magico" selected>✨ CamScanner Mágico (Blanquea Papel + Conserva Firmas/Sellos)</option>
+            <option value="documento_bn">📄 B/N Láser Nítido (Texto Negro Puro Sin Sombras)</option>
+            <option value="gris">🔘 Escala de Grises Limpia (Suave sin Sombras)</option>
+            <option value="color">🎨 Fotografía en Color Original (Sin Filtro)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- OPCIÓN 1: CÁMARA DEL CELULAR -->
+          <div class="scan-source-box space-y-3">
+            <div class="flex items-center justify-center gap-2 text-amber-300 font-black text-sm">
+              <i class="fa-solid fa-mobile-screen-button text-lg"></i>
+              <span>1. Cámara del Celular (En Vivo o Ráfaga)</span>
+            </div>
+            <p class="text-xs text-slate-400">
+              Captura hojas individuales o en ráfaga. El motor elimina automáticamente la sombra del celular o de la mano.
+            </p>
+            <div class="flex flex-wrap justify-center gap-2">
+              <button type="button" onclick="ScanManager.iniciarCamaraWeb()" class="brand-gradient text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-lg">
+                <i class="fa-solid fa-video"></i> Abrir Cámara en Vivo
+              </button>
+              <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/40 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt"></i> Cámara Nativa (Ráfaga HD)
+                <input type="file" accept="image/*" capture="environment" multiple class="hidden" onchange="ScanManager.procesarArchivosEntrada(this.files, 'Cámara Celular'); this.value='';" />
+              </label>
+            </div>
+
+            <div id="cameraPreviewContainer" class="hidden pt-2 space-y-2.5">
+              <video id="cameraVideo" autoplay playsinline muted class="w-full max-h-72 rounded-xl bg-black object-cover border border-amber-500/40"></video>
+              <div class="flex flex-wrap items-center justify-center gap-2">
+                <button type="button" onclick="ScanManager.capturarFotoCamara()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-lg">
+                  <i class="fa-solid fa-camera"></i> Capturar Foja Nítida
+                </button>
+                <button type="button" onclick="ScanManager.detenerCamaraWeb()" class="bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/30 px-3.5 py-2.5 rounded-xl text-xs font-bold">
+                  Cerrar Lente
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- OPCIÓN 2: ESCÁNER DE COMPUTADORA -->
+          <div class="scan-source-box space-y-3 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-center justify-center gap-2 text-sky-300 font-black text-sm">
+                <i class="fa-solid fa-print text-lg"></i>
+                <span>2. Escáner de Computadora (Escritorio / ADF)</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Conecta directo con el escáner físico de tu PC o importa lotes (PDF multipágina, JPG o PNG) recién salidos de la bandeja.
+              </p>
+              <div class="grid grid-cols-2 gap-2 max-w-md mx-auto pt-1 text-left text-[11px]">
+                <div>
+                  <label class="text-slate-400 block mb-1">Resolución Escáner PC:</label>
+                  <select id="pcScannerDpi" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    <option value="200">200 DPI (Rápido)</option>
+                    <option value="300" selected>300 DPI (Oficial IJA)</option>
+                    <option value="600">600 DPI (Alta Precisión)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-slate-400 block mb-1">Modo de Color PC:</label>
+                  <select id="pcScannerColor" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    <option value="Grayscale">Escala de Grises</option>
+                    <option value="BW">Blanco y Negro</option>
+                    <option value="Color">Color</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2 pt-2">
+              <div class="flex flex-wrap justify-center gap-2">
+                <button type="button" onclick="ScanManager.escanearDirectoPC()" class="neon-blue-gradient text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-lg">
+                  <i class="fa-solid fa-print"></i> Escanear Directo desde PC
+                </button>
+                <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-import"></i> Importar Lote / PDF del Escáner
+                  <input id="inputArchivosEscanerPC" type="file" accept="image/*,.pdf" multiple class="hidden" onchange="ScanManager.procesarArchivosEntrada(this.files, 'Escáner Físico PC'); this.value='';" />
+                </label>
+              </div>
+              <div id="ocrStatusText" class="text-xs font-mono-code text-sky-300 min-h-[18px]"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MESA DE PRE-CONFIRMACIÓN (STAGING AREA) -->
+        <div id="mesaPreConfirmacion" class="hidden rounded-2xl bg-slate-900/95 border-2 border-amber-500/50 p-4 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-400 text-slate-950">
+                PENDIENTE DE CONFIRMACIÓN
+              </span>
+              <span class="text-xs sm:text-sm font-black text-white">
+                Revisión de Nitidez, Expediente, Casilla del Check-List y Orden de Foja
+              </span>
+            </div>
+            <span id="contadorFojasStaging" class="text-xs font-mono-code text-emerald-300 font-bold">0 fojas en cola</span>
+          </div>
+
+          <div class="bg-slate-950/90 p-3 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex flex-wrap items-center gap-2 flex-1">
+              <span class="font-bold text-amber-300"><i class="fa-solid fa-layer-group mr-1"></i>Asignar todo el lote a:</span>
+              <select id="staging-bulk-exp" onchange="ScanManager.aplicarExpedienteATodoElLote(this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white max-w-xs"></select>
+              <select id="staging-bulk-slot" onchange="ScanManager.aplicarCasillaATodoElLote(this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-sky-300 max-w-xs"></select>
+            </div>
+            <span class="text-[11px] text-slate-400">Haz clic en cualquier miniatura para verificar su nitidez en tamaño completo.</span>
+          </div>
+
+          <div id="listaStagingFojas" class="space-y-2.5 max-h-96 overflow-y-auto pr-1"></div>
+
+          <div class="flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-slate-800">
+            <button type="button" onclick="ScanManager.limpiarStaging()" class="bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40 px-4 py-2.5 rounded-xl text-xs font-bold">
+              <i class="fa-solid fa-trash-can mr-1"></i> Descartar Lote
+            </button>
+            <button type="button" id="btn-confirmar-guardar-lote" onclick="ScanManager.confirmarYGuardarLote()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-6 py-3 rounded-xl text-xs sm:text-sm shadow-xl flex items-center gap-2">
+              <i class="fa-solid fa-circle-check"></i> CONFIRMO: Guardar PDF Nítido, Foliar y Subir a Drive 5TB
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ScanManager = {
+      stagingFojas: [],
+      streamCamara: null,
+      carpetasDisponibles: [],
+      expedientePreseleccionadoId: null,
+      localScannerEndpoint: 'http://127.0.0.1:8181/api/scan',
+
+      inicializar() {
+        this.inyectarBotonesEnPortal();
+        this.sincronizarCarpetasConPortal();
+      },
+
+      obtenerListasPortal() {
+        const listaMasc = (typeof bdMasc !== 'undefined' && Array.isArray(bdMasc)) ? bdMasc : [];
+        const listaJuz = (typeof bdJuzgados !== 'undefined' && Array.isArray(bdJuzgados)) ? bdJuzgados : [];
+        return { listaMasc, listaJuz, todos: [...listaMasc, ...listaJuz] };
+      },
+
+      inyectarBotonesEnPortal() {
+        const btnCrear = document.querySelector('button[onclick="abrirModalCrearExpediente()"]');
+        if (btnCrear && !document.getElementById('btn-top-abrir-escaner')) {
+          const btnScanTop = document.createElement('button');
+          btnScanTop.id = 'btn-top-abrir-escaner';
+          btnScanTop.type = 'button';
+          btnScanTop.className = 'neon-blue-gradient text-slate-950 font-black px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-lg';
+          btnScanTop.innerHTML = '<i class="fa-solid fa-camera"></i> Escáner Celular / PC';
+          btnScanTop.onclick = () => this.abrirModalEscaner(null);
+          btnCrear.parentNode.insertBefore(btnScanTop, btnCrear.nextSibling);
+        }
+
+        const btnDuplicadosSide = document.querySelector('button[onclick="abrirModalDuplicados()"]');
+        if (btnDuplicadosSide && !document.getElementById('btn-side-abrir-escaner')) {
+          const btnScanSide = document.createElement('button');
+          btnScanSide.id = 'btn-side-abrir-escaner';
+          btnScanSide.type = 'button';
+          btnScanSide.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-black transition bg-sky-950/80 hover:bg-sky-900 text-sky-200 border border-sky-500/40 shadow';
+          btnScanSide.innerHTML = '<span class="flex items-center gap-2"><i class="fa-solid fa-camera-rotate text-amber-400"></i> Escáner Celular / PC</span><span class="text-[9px] bg-sky-500/30 px-1.5 py-0.5 rounded text-sky-200">CamScanner</span>';
+          btnScanSide.onclick = () => this.abrirModalEscaner(null);
+          btnDuplicadosSide.parentNode.insertBefore(btnScanSide, btnDuplicadosSide.nextSibling);
+        }
+
+        const contChecklist = document.querySelector('#content-exp-checklist > div');
+        if (contChecklist && !document.getElementById('btn-chk-abrir-escaner')) {
+          const btnScanChk = document.createElement('button');
+          btnScanChk.id = 'btn-chk-abrir-escaner';
+          btnScanChk.type = 'button';
+          btnScanChk.className = 'brand-gradient text-slate-950 text-xs font-black px-4 py-2 rounded-xl flex items-center gap-2 shadow';
+          btnScanChk.innerHTML = '<i class="fa-solid fa-camera"></i> Escanear con Celular / PC aquí';
+          btnScanChk.onclick = () => {
+            const idActivo = (typeof expedienteActivoId !== 'undefined') ? expedienteActivoId : null;
+            this.abrirModalEscaner(idActivo);
+          };
+          contChecklist.appendChild(btnScanChk);
+        }
+      },
+
+      obtenerCasillasCatalogo() {
+        return [
+          { id: 'convenio_final', nombre: 'Convenio final firmado por las partes', fojaOrden: 4 },
+          { id: 'identificaciones', nombre: 'Copias escaneadas Identificaciones (INE / ID)', fojaOrden: 6 },
+          { id: 'solicitud', nombre: 'Solicitud de servicio', fojaOrden: 1 },
+          { id: 'dictamen', nombre: 'Dictamen de viabilidad', fojaOrden: 2 },
+          { id: 'acuerdo', nombre: 'Acuerdo de inicio', fojaOrden: 3 },
+          { id: 'convenio_digital', nombre: 'Constancia envío convenio digital', fojaOrden: 5 },
+          { id: 'contrato_arrendamiento', nombre: 'Copia escaneada Contrato de arrendamiento', fojaOrden: 7 },
+          { id: 'contrato_administracion', nombre: 'Copia escaneada Contrato de administración', fojaOrden: 8 },
+          { id: 'escritura_publica', nombre: 'Copia escaneada Escritura pública', fojaOrden: 9 },
+          { id: 'predial', nombre: 'Copia escaneada Comprobante / Recibo Predial', fojaOrden: 10 },
+          { id: 'actas_nac_padres', nombre: 'Actas de nacimiento Padres / Cónyuges', fojaOrden: 7 },
+          { id: 'acta_matrimonio', nombre: 'Acta de matrimonio', fojaOrden: 8 },
+          { id: 'comprobantes_dom_ing', nombre: 'Comprobantes de domicilio e ingreso', fojaOrden: 9 },
+          { id: 'actas_nac_hijos', nombre: 'Actas de nacimiento de los hijos', fojaOrden: 10 },
+          { id: 'prevencion', nombre: 'Prevención IJA', fojaOrden: 20 },
+          { id: 'contestacion_prevencion', nombre: 'Contestación a la Prevención', fojaOrden: 21 },
+          { id: 'validacion', nombre: 'Constancia de Validación y Sanción Definitiva', fojaOrden: 23 },
+          { id: 'escrito_inicial', nombre: 'Escrito Inicial / Actuación Judicial', fojaOrden: 1 }
+        ];
+      },
+
+      sincronizarCarpetasConPortal() {
+        const { todos } = this.obtenerListasPortal();
+        this.carpetasDisponibles = todos.map(e => {
+          const foliado = (typeof calcularFoliadoJudicial === 'function') ? calcularFoliadoJudicial(e) : { totalFojas: 0 };
+          return {
+            id: e.id,
+            numExpediente: e.numExpediente,
+            nombre: `EXP. ${e.numExpediente} (${e.centro}) — ${(e.solicitante || '').substring(0, 36)}`,
+            ultimaFoja: foliado.totalFojas || 0
+          };
+        });
+
+        this.carpetasDisponibles.push({
+          id: 'NUEVO_EXP_AUTO',
+          numExpediente: 'NUEVO',
+          nombre: '➕ CREAR NUEVO EXPEDIENTE CON ESTAS FOJAS',
+          ultimaFoja: 0
+        });
+      },
+
+      abrirModalEscaner(expIdPreseleccionado = null) {
+        this.sincronizarCarpetasConPortal();
+        const idGlobalActivo = (typeof expedienteActivoId !== 'undefined') ? expedienteActivoId : null;
+        this.expedientePreseleccionadoId = expIdPreseleccionado || idGlobalActivo || (this.carpetasDisponibles[0]?.id || 'NUEVO_EXP_AUTO');
+
+        const badge = document.getElementById('scan-modal-exp-badge');
+        if (badge) {
+          const expObj = (typeof obtenerExpedientePorId === 'function') ? obtenerExpedientePorId(this.expedientePreseleccionadoId) : null;
+          if (expObj) {
+            badge.textContent = `Preseleccionado: EXP. ${expObj.numExpediente} (${expObj.centro})`;
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+        }
+
+        document.getElementById('modal-escaner-hibrido-boveda').classList.remove('hidden');
+        this.renderizarSelectoresMasivos();
+      },
+
+      cerrarModalEscaner() {
+        this.detenerCamaraWeb();
+        document.getElementById('modal-escaner-hibrido-boveda').classList.add('hidden');
+      },
+
+      renderizarSelectoresMasivos() {
+        const selExp = document.getElementById('staging-bulk-exp');
+        const selSlot = document.getElementById('staging-bulk-slot');
+        if (selExp) {
+          selExp.innerHTML = this.carpetasDisponibles.map(c =>
+            `<option value="${c.id}" ${c.id === this.expedientePreseleccionadoId ? 'selected' : ''}>${c.nombre}</option>`
+          ).join('');
+        }
+        if (selSlot) {
+          selSlot.innerHTML = this.obtenerCasillasCatalogo().map(s =>
+            `<option value="${s.id}" ${s.id === 'identificaciones' ? 'selected' : ''}>Casilla: ${s.nombre}</option>`
+          ).join('');
+        }
+      },
+
+      async iniciarCamaraWeb() {
+        try {
+          this.sincronizarCarpetasConPortal();
+          this.detenerCamaraWeb();
+          this.streamCamara = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+          });
+          const video = document.getElementById('cameraVideo');
+          video.srcObject = this.streamCamara;
+          document.getElementById('cameraPreviewContainer').classList.remove('hidden');
+        } catch (e) {
+          alert('No se pudo abrir la cámara en vivo. Verifica permisos o usa el botón "Cámara Nativa (Ráfaga HD)".');
+        }
+      },
+
+      detenerCamaraWeb() {
+        if (this.streamCamara) {
+          this.streamCamara.getTracks().forEach(t => t.stop());
+          this.streamCamara = null;
+        }
+        const cont = document.getElementById('cameraPreviewContainer');
+        if (cont) cont.classList.add('hidden');
+      },
+
+      calcularDimensionesOptimas(wOrig, hOrig, maxDim = 1800) {
+        let w = wOrig || 1280;
+        let h = hOrig || 1700;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        return { width: w, height: h };
+      },
+
+      async capturarFotoCamara() {
+        const video = document.getElementById('cameraVideo');
+        if (!video || !this.streamCamara) return;
+
+        const { width, height } = this.calcularDimensionesOptimas(video.videoWidth, video.videoHeight);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, width, height);
+
+        const dataUrlOriginal = canvas.toDataURL('image/jpeg', 0.92);
+        const modoFiltro = document.getElementById('cameraFilterMode')?.value || 'camscanner_magico';
+
+        if (modoFiltro !== 'color') {
+          this.aplicarFiltroDocumento(ctx, width, height, modoFiltro);
+        }
+
+        const dataUrlProcesada = canvas.toDataURL('image/jpeg', 0.88);
+        await this.analizarYEncolarFoja(
+          dataUrlProcesada,
+          `Foja_Camara_${this.stagingFojas.length + 1}.jpg`,
+          'Cámara Celular',
+          width,
+          height,
+          dataUrlOriginal,
+          modoFiltro
+        );
+      },
+
+      // ==========================================================================
+      // MOTOR DE NITIDEZ CAMSCANNER (IMAGEN INTEGRAL + ELIMINACIÓN DE SOMBRAS)
+      // ==========================================================================
+      aplicarFiltroDocumento(ctx, width, height, modo) {
+        if (modo === 'color') return;
+
+        const imgData = ctx.getImageData(0, 0, width, height);
+        const data = imgData.data;
+        const w = width;
+        const h = height;
+
+        const gray = new Float32Array(w * h);
+        for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+          gray[p] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+        }
+
+        const radio = Math.max(14, Math.floor(Math.min(w, h) / 28));
+        const integral = new Float64Array(w * h);
+
+        for (let y = 0; y < h; y++) {
+          let rowSum = 0;
+          const yOffset = y * w;
+          const prevYOffset = (y - 1) * w;
+          for (let x = 0; x < w; x++) {
+            rowSum += gray[yOffset + x];
+            integral[yOffset + x] = y === 0 ? rowSum : integral[prevYOffset + x] + rowSum;
+          }
+        }
+
+        for (let y = 0; y < h; y++) {
+          const y1 = Math.max(0, y - radio);
+          const y2 = Math.min(h - 1, y + radio);
+          const yOffset = y * w;
+
+          for (let x = 0; x < w; x++) {
+            const x1 = Math.max(0, x - radio);
+            const x2 = Math.min(w - 1, x + radio);
+            const count = (x2 - x1 + 1) * (y2 - y1 + 1);
+
+            const sum = integral[y2 * w + x2]
+                      - (y1 > 0 ? integral[(y1 - 1) * w + x2] : 0)
+                      - (x1 > 0 ? integral[y2 * w + (x1 - 1)] : 0)
+                      + (y1 > 0 && x1 > 0 ? integral[(y1 - 1) * w + (x1 - 1)] : 0);
+
+            const mediaLocal = (sum / count) + 1.5;
+            const p = yOffset + x;
+            const idx = p * 4;
+            const lum = gray[p];
+            const ratio = lum / mediaLocal;
+
+            if (modo === 'camscanner_magico') {
+              if (ratio >= 0.87) {
+                data[idx] = 255;
+                data[idx + 1] = 255;
+                data[idx + 2] = 255;
+              } else {
+                const factor = Math.max(0, (ratio - 0.18) / 0.69);
+                const curva = factor * factor * (3 - 2 * factor);
+                const escala = (255 / mediaLocal) * (0.45 + 0.55 * curva);
+                data[idx] = Math.min(255, Math.max(0, Math.round(data[idx] * escala)));
+                data[idx + 1] = Math.min(255, Math.max(0, Math.round(data[idx + 1] * escala)));
+                data[idx + 2] = Math.min(255, Math.max(0, Math.round(data[idx + 2] * escala)));
+              }
+            } else if (modo === 'documento_bn') {
+              let val;
+              if (ratio >= 0.86) {
+                val = 255;
+              } else if (ratio <= 0.72) {
+                val = 0;
+              } else {
+                val = Math.round(((ratio - 0.72) / 0.14) * 255);
+              }
+              data[idx] = val;
+              data[idx + 1] = val;
+              data[idx + 2] = val;
+            } else if (modo === 'gris') {
+              let val = ratio >= 0.90 ? 255 : Math.min(255, Math.max(0, Math.round((ratio - 0.15) * 300)));
+              data[idx] = val;
+              data[idx + 1] = val;
+              data[idx + 2] = val;
+            }
+          }
+        }
+
+        ctx.putImageData(imgData, 0, 0);
+      },
+
+      async reprocesarDataUrlConFiltro(dataUrlOriginal, width, height, modoFiltro) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            if (modoFiltro !== 'color') {
+              this.aplicarFiltroDocumento(ctx, width, height, modoFiltro);
+            }
+            resolve(canvas.toDataURL('image/jpeg', 0.88));
+          };
+          img.src = dataUrlOriginal;
+        });
+      },
+
+      async cambiarFiltroGlobal(nuevoModo) {
+        if (this.stagingFojas.length === 0) return;
+        const statusEl = document.getElementById('ocrStatusText');
+        if (statusEl) statusEl.textContent = 'Aplicando nuevo filtro de nitidez a las fojas en cola...';
+
+        for (const item of this.stagingFojas) {
+          item.filtro = nuevoModo;
+          item.imagen = await this.reprocesarDataUrlConFiltro(item.imagenOriginal, item.width, item.height, nuevoModo);
+        }
+        this.renderizarStaging();
+        if (statusEl) statusEl.textContent = '✅ Filtro actualizado en todas las fojas.';
+      },
+
+      async cambiarFiltroIndividual(tempId, nuevoModo) {
+        const item = this.stagingFojas.find(f => f.tempId === tempId);
+        if (!item) return;
+        item.filtro = nuevoModo;
+        item.imagen = await this.reprocesarDataUrlConFiltro(item.imagenOriginal, item.width, item.height, nuevoModo);
+        this.renderizarStaging();
+      },
+
+      async escanearDirectoPC() {
+        this.sincronizarCarpetasConPortal();
+        const statusEl = document.getElementById('ocrStatusText');
+        const dpi = Number(document.getElementById('pcScannerDpi')?.value || 300);
+        const colorMode = document.getElementById('pcScannerColor')?.value || 'Grayscale';
+
+        statusEl.textContent = `Comunicando con escáner físico en PC (${dpi} DPI)...`;
+        try {
+          const response = await fetch(this.localScannerEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dpi, colorMode, format: 'jpeg' })
+          });
+          if (!response.ok) throw new Error('Puente TWAIN local no detectado');
+          const data = await response.json();
+          const paginas = data.pages || [];
+          for (let i = 0; i < paginas.length; i++) {
+            const b64 = paginas[i].startsWith('data:') ? paginas[i] : `data:image/jpeg;base64,${paginas[i]}`;
+            await this.analizarYEncolarFoja(b64, `EscanerPC_Foja_${i + 1}.jpg`, 'Escáner PC Directo', 1240, 1754, b64, 'color');
+          }
+          statusEl.textContent = `✅ Escaneo directo completado (${paginas.length} fojas). Revisa la mesa de confirmación abajo.`;
+        } catch (e) {
+          statusEl.textContent = 'Selecciona las hojas o el PDF recién digitalizado por tu escáner en la ventana que se abrió...';
+          document.getElementById('inputArchivosEscanerPC')?.click();
+        }
+      },
+
+      async procesarArchivosEntrada(fileList, origen) {
+        if (!fileList || fileList.length === 0) return;
+        this.sincronizarCarpetasConPortal();
+        const statusEl = document.getElementById('ocrStatusText');
+        const modoFiltro = document.getElementById('cameraFilterMode')?.value || 'camscanner_magico';
+
+        for (let i = 0; i < fileList.length; i++) {
+          const archivo = fileList[i];
+          statusEl.textContent = `Mejorando nitidez ${i + 1}/${fileList.length}: ${archivo.name}...`;
+
+          if (archivo.type === 'application/pdf' && window.pdfjsLib) {
+            await this.desglosarPdfEnFojas(archivo, origen, modoFiltro);
+          } else if (archivo.type.startsWith('image/')) {
+            const { dataUrlProcesada, dataUrlOriginal, width, height } = await this.normalizarImagenConFiltro(archivo, modoFiltro);
+            await this.analizarYEncolarFoja(dataUrlProcesada, archivo.name, origen, width, height, dataUrlOriginal, modoFiltro);
+          }
+        }
+        statusEl.textContent = '✅ Nitidez CamScanner aplicada. Revisa y confirma las fojas en la mesa inferior.';
+      },
+
+      normalizarImagenConFiltro(file, modoFiltro) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              const { width, height } = this.calcularDimensionesOptimas(img.width, img.height);
+              const canvas = document.createElement('canvas');
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, width, height);
+              ctx.drawImage(img, 0, 0, width, height);
+
+              const dataUrlOriginal = canvas.toDataURL('image/jpeg', 0.92);
+              if (modoFiltro !== 'color') {
+                this.aplicarFiltroDocumento(ctx, width, height, modoFiltro);
+              }
+
+              resolve({
+                dataUrlProcesada: canvas.toDataURL('image/jpeg', 0.88),
+                dataUrlOriginal,
+                width,
+                height
+              });
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      },
+
+      async desglosarPdfEnFojas(file, origen, modoFiltro) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        for (let numPag = 1; numPag <= pdf.numPages; numPag++) {
+          const page = await pdf.getPage(numPag);
+          const viewport = page.getViewport({ scale: 1.6 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          const dataUrlOriginal = canvas.toDataURL('image/jpeg', 0.90);
+          const imgData = canvas.toDataURL('image/jpeg', 0.88);
+          await this.analizarYEncolarFoja(
+            imgData,
+            `${file.name.replace(/\.pdf$/i, '')}_Foja_${numPag}.jpg`,
+            origen,
+            canvas.width,
+            canvas.height,
+            dataUrlOriginal,
+            'color'
+          );
+        }
+      },
+
+      async analizarYEncolarFoja(dataUrl, nombreArchivo, origen, width = 1200, height = 1600, dataUrlOriginal = null, filtroAplicado = 'camscanner_magico') {
+        let textoOCR = '';
+        const statusEl = document.getElementById('ocrStatusText');
+
+        if (window.Tesseract && !this.expedientePreseleccionadoId) {
+          try {
+            statusEl.textContent = `Analizando texto (OCR) en ${nombreArchivo}...`;
+            const res = await Tesseract.recognize(dataUrl, 'spa');
+            textoOCR = res.data.text || '';
+          } catch (e) {}
+        }
+
+        let carpetaAsignada = this.expedientePreseleccionadoId || this.carpetasDisponibles[0]?.id || 'NUEVO_EXP_AUTO';
+        if (!this.expedientePreseleccionadoId) {
+          for (const carp of this.carpetasDisponibles) {
+            if (carp.id === 'NUEVO_EXP_AUTO') continue;
+            const numLimpio = String(carp.numExpediente).split('/')[0];
+            if (numLimpio && (nombreArchivo.includes(numLimpio) || textoOCR.includes(numLimpio))) {
+              carpetaAsignada = carp.id;
+              break;
+            }
+          }
+        }
+
+        let slotSugerido = document.getElementById('staging-bulk-slot')?.value || 'identificaciones';
+        if (typeof detectarCasillaExclusivaPorNombreArchivo === 'function') {
+          const det = detectarCasillaExclusivaPorNombreArchivo(nombreArchivo + ' ' + textoOCR);
+          if (det && det.slotId && (nombreArchivo.length > 12 || textoOCR.length > 20)) {
+            slotSugerido = det.slotId;
+          }
+        }
+
+        const yaEnStaging = this.stagingFojas.filter(f => f.carpetaId === carpetaAsignada).length;
+        const infoCarpeta = this.carpetasDisponibles.find(c => c.id === carpetaAsignada);
+        const baseExistente = infoCarpeta ? infoCarpeta.ultimaFoja : 0;
+        const numeroFojaSugerido = baseExistente + yaEnStaging + 1;
+
+        this.stagingFojas.push({
+          tempId: 'foja_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          imagen: dataUrl,
+          imagenOriginal: dataUrlOriginal || dataUrl,
+          filtro: filtroAplicado,
+          width,
+          height,
+          nombreArchivo,
+          origen,
+          carpetaId: carpetaAsignada,
+          slotId: slotSugerido,
+          numeroFoja: numeroFojaSugerido,
+          notaRapida: ''
+        });
+
+        this.renderizarStaging();
+      },
+
+      aplicarExpedienteATodoElLote(expId) {
+        this.expedientePreseleccionadoId = expId;
+        this.stagingFojas.forEach(f => { f.carpetaId = expId; });
+        this.renderizarStaging();
+      },
+
+      aplicarCasillaATodoElLote(slotId) {
+        this.stagingFojas.forEach(f => { f.slotId = slotId; });
+        this.renderizarStaging();
+      },
+
+      ampliarFoja(tempId) {
+        const item = this.stagingFojas.find(f => f.tempId === tempId);
+        if (!item) return;
+        const win = window.open('', '_blank');
+        if (win) {
+          win.document.write(`
+            <html><head><title>${item.nombreArchivo} — Foja #${item.numeroFoja}</title></head>
+            <body style="margin:0;background:#050914;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+              <img src="${item.imagen}" style="max-width:96%;max-height:96vh;border-radius:8px;box-shadow:0 15px 40px rgba(0,0,0,0.8);" />
+            </body></html>
+          `);
+          win.document.close();
+        }
+      },
+
+      renderizarStaging() {
+        const contenedor = document.getElementById('mesaPreConfirmacion');
+        const lista = document.getElementById('listaStagingFojas');
+        const contador = document.getElementById('contadorFojasStaging');
+
+        if (this.stagingFojas.length === 0) {
+          contenedor.classList.add('hidden');
+          return;
+        }
+
+        contenedor.classList.remove('hidden');
+        contador.textContent = `${this.stagingFojas.length} foja(s) listas para confirmar`;
+        lista.innerHTML = '';
+
+        const casillas = this.obtenerCasillasCatalogo();
+
+        this.stagingFojas.forEach((item, index) => {
+          const opcionesCarpetas = this.carpetasDisponibles.map(c =>
+            `<option value="${c.id}" ${c.id === item.carpetaId ? 'selected' : ''}>${c.nombre}</option>`
+          ).join('');
+
+          const opcionesCasillas = casillas.map(s =>
+            `<option value="${s.id}" ${s.id === item.slotId ? 'selected' : ''}>${s.nombre}</option>`
+          ).join('');
+
+          const fila = document.createElement('div');
+          fila.className = 'staging-item-row text-xs';
+          fila.innerHTML = `
+            <img src="${item.imagen}" onclick="ScanManager.ampliarFoja('${item.tempId}')" title="Clic para inspeccionar nitidez en grande" class="w-16 h-20 object-cover rounded-lg border border-amber-500/40 cursor-zoom-in mx-auto bg-white" />
+            <div>
+              <div class="font-bold text-white truncate">${item.nombreArchivo}</div>
+              <div class="text-[11px] text-slate-400">Origen: <span class="text-amber-300">${item.origen}</span></div>
+              <input type="text" placeholder="Nota o Predial (ej. 8070194)..." value="${item.notaRapida.replace(/"/g, '&quot;')}"
+                     onchange="ScanManager.actualizarCampo('${item.tempId}', 'notaRapida', this.value)"
+                     class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white" />
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 block mb-0.5">Expediente Destino:</label>
+              <select onchange="ScanManager.actualizarCampo('${item.tempId}', 'carpetaId', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-[11px]">
+                ${opcionesCarpetas}
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-sky-300 block mb-0.5">Casilla Check-List:</label>
+              <select onchange="ScanManager.actualizarCampo('${item.tempId}', 'slotId', this.value)" class="w-full bg-slate-900 border border-sky-500/40 rounded-lg px-2 py-1.5 text-sky-200 text-[11px]">
+                ${opcionesCasillas}
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-amber-300 block mb-0.5">Filtro Nitidez:</label>
+              <select onchange="ScanManager.cambiarFiltroIndividual('${item.tempId}', this.value)" class="w-full bg-slate-900 border border-amber-500/40 rounded-lg px-2 py-1.5 text-amber-200 text-[11px]">
+                <option value="camscanner_magico" ${item.filtro === 'camscanner_magico' ? 'selected' : ''}>✨ Mágico</option>
+                <option value="documento_bn" ${item.filtro === 'documento_bn' ? 'selected' : ''}>📄 B/N Láser</option>
+                <option value="gris" ${item.filtro === 'gris' ? 'selected' : ''}>🔘 Grises</option>
+                <option value="color" ${item.filtro === 'color' ? 'selected' : ''}>🎨 Original</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-emerald-300 block mb-0.5">N° Foja:</label>
+              <input type="number" min="1" value="${item.numeroFoja}"
+                     onchange="ScanManager.actualizarCampo('${item.tempId}', 'numeroFoja', parseInt(this.value, 10) || 1)"
+                     class="w-full bg-slate-900 border border-emerald-500/40 rounded-lg px-2 py-1.5 text-emerald-300 font-mono-code font-bold text-center" />
+            </div>
+            <div class="flex items-center justify-end gap-1">
+              <button type="button" onclick="ScanManager.moverFoja(${index}, -1)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg font-bold" title="Subir">↑</button>
+              <button type="button" onclick="ScanManager.moverFoja(${index}, 1)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg font-bold" title="Bajar">↓</button>
+              <button type="button" onclick="ScanManager.eliminarDeStaging('${item.tempId}')" class="bg-rose-950 hover:bg-rose-900 text-rose-300 px-2.5 py-1.5 rounded-lg font-bold" title="Quitar">✕</button>
+            </div>
+          `;
+          lista.appendChild(fila);
+        });
+      },
+
+      actualizarCampo(tempId, campo, valor) {
+        const foja = this.stagingFojas.find(f => f.tempId === tempId);
+        if (foja) {
+          foja[campo] = valor;
+          this.renderizarStaging();
+        }
+      },
+
+      moverFoja(index, direccion) {
+        const nuevoIndex = index + direccion;
+        if (nuevoIndex < 0 || nuevoIndex >= this.stagingFojas.length) return;
+        const temp = this.stagingFojas[index];
+        this.stagingFojas[index] = this.stagingFojas[nuevoIndex];
+        this.stagingFojas[nuevoIndex] = temp;
+        this.stagingFojas.forEach((f, idx) => { f.numeroFoja = idx + 1; });
+        this.renderizarStaging();
+      },
+
+      eliminarDeStaging(tempId) {
+        this.stagingFojas = this.stagingFojas.filter(f => f.tempId !== tempId);
+        this.renderizarStaging();
+      },
+
+      limpiarStaging() {
+        if (!confirm('¿Descartar las fojas capturadas sin guardar?')) return;
+        this.stagingFojas = [];
+        this.renderizarStaging();
+      },
+
+      generarPdfMultipaginaBuffer(fojasGrupo) {
+        const encoder = new TextEncoder();
+        const chunks = [];
+        let offset = 0;
+        const offsets = [];
+
+        const pushStr = (str) => {
+          const bytes = encoder.encode(str);
+          chunks.push(bytes);
+          offset += bytes.length;
+        };
+        const pushBytes = (bytes) => {
+          chunks.push(bytes);
+          offset += bytes.length;
+        };
+
+        pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
+
+        const numPages = fojasGrupo.length;
+        const pageObjIds = [];
+        let nextObjId = 3;
+
+        for (let i = 0; i < numPages; i++) {
+          pageObjIds.push(nextObjId);
+          nextObjId += 3;
+        }
+
+        offsets[1] = offset;
+        pushStr('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+
+        offsets[2] = offset;
+        pushStr(`2 0 obj\n<< /Type /Pages /Kids [${pageObjIds.map(id => `${id} 0 R`).join(' ')}] /Count ${numPages} >>\nendobj\n`);
+
+        for (let i = 0; i < numPages; i++) {
+          const item = fojasGrupo[i];
+          const pageId = pageObjIds[i];
+          const contentId = pageId + 1;
+          const imgId = pageId + 2;
+
+          const b64Clean = item.imagen.split(',')[1] || '';
+          const binStr = atob(b64Clean);
+          const jpegBytes = new Uint8Array(binStr.length);
+          for (let j = 0; j < binStr.length; j++) jpegBytes[j] = binStr.charCodeAt(j);
+
+          const w = item.width || 1200;
+          const h = item.height || 1600;
+
+          offsets[pageId] = offset;
+          pushStr(`${pageId} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /XObject << /Im0 ${imgId} 0 R >> >> /Contents ${contentId} 0 R >>\nendobj\n`);
+
+          const streamCmd = 'q\n612 0 0 792 0 0 cm\n/Im0 Do\nQ\n';
+          offsets[contentId] = offset;
+          pushStr(`${contentId} 0 obj\n<< /Length ${streamCmd.length} >>\nstream\n${streamCmd}endstream\nendobj\n`);
+
+          offsets[imgId] = offset;
+          pushStr(`${imgId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegBytes.length} >>\nstream\n`);
+          pushBytes(jpegBytes);
+          pushStr('\nendstream\nendobj\n');
+        }
+
+        const totalObjs = nextObjId;
+        const xrefOffset = offset;
+        pushStr(`xref\n0 ${totalObjs}\n0000000000 65535 f \n`);
+        for (let i = 1; i < totalObjs; i++) {
+          pushStr(`${String(offsets[i]).padStart(10, '0')} 00000 n \n`);
+        }
+        pushStr(`trailer\n<< /Size ${totalObjs} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+        const pdfFinal = new Uint8Array(offset);
+        let pos = 0;
+        for (const chunk of chunks) {
+          pdfFinal.set(chunk, pos);
+          pos += chunk.length;
+        }
+        return pdfFinal.buffer;
+      },
+
+      async confirmarYGuardarLote() {
+        if (this.stagingFojas.length === 0) return;
+
+        const btn = document.getElementById('btn-confirmar-guardar-lote');
+        const textoOriginalBtn = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF Nítido, Foliando y Subiendo a Drive 5TB...';
+
+        try {
+          const casillasCatalogo = this.obtenerCasillasCatalogo();
+          const grupos = new Map();
+
+          for (const foja of this.stagingFojas) {
+            const key = `${foja.carpetaId}__${foja.slotId}`;
+            if (!grupos.has(key)) grupos.set(key, []);
+            grupos.get(key).push(foja);
+          }
+
+          let totalDocumentosGuardados = 0;
+          let ultimoExpActualizado = null;
+
+          for (const [_, fojasDelDocumento] of grupos.entries()) {
+            fojasDelDocumento.sort((a, b) => Number(a.numeroFoja) - Number(b.numeroFoja));
+            const primera = fojasDelDocumento[0];
+            let exp = (typeof obtenerExpedientePorId === 'function') ? obtenerExpedientePorId(primera.carpetaId) : null;
+
+            if (!exp || primera.carpetaId === 'NUEVO_EXP_AUTO') {
+              const numNuevo = prompt('Número para el Nuevo Expediente (ej. 425/2026):', '425/2026') || '425/2026';
+              const partesNuevas = prompt('Nombre del Solicitante / Partes:', 'EXPEDIENTE ESCANEADO') || 'EXPEDIENTE ESCANEADO';
+              const anioNuevo = (numNuevo.match(/(202[0-9])/) || [null, '2026'])[1];
+              const numNormalizado = (typeof normalizarNumeroExp === 'function') ? normalizarNumeroExp(numNuevo, anioNuevo) : numNuevo;
+              const esJuzgado = (typeof vistaActiva !== 'undefined' && vistaActiva === 'juzgados');
+
+              exp = {
+                id: `exp-scan-${Date.now()}`,
+                tipoRegistro: esJuzgado ? 'juzgado' : 'masc',
+                centro: (typeof filtrosActivos !== 'undefined' && filtrosActivos.centro !== 'TODOS') ? filtrosActivos.centro : 'Centro 065',
+                anio: anioNuevo,
+                numExpediente: numNormalizado,
+                categoria: (typeof filtrosActivos !== 'undefined' && filtrosActivos.categoria !== 'TODOS') ? filtrosActivos.categoria : 'Preventivo Arrendamiento',
+                solicitante: partesNuevas.toUpperCase(),
+                fechaFirma: new Date().toISOString().split('T')[0],
+                fechaVencimiento: '',
+                predial: primera.notaRapida || '',
+                estatusIja: 'Digitalizado',
+                cloudPath: `OneDrive://45yMas/Centro 065/${anioNuevo}/EXP-${numNormalizado.replace('/', '-')}`,
+                docs: {}
+              };
+              if (esJuzgado && typeof bdJuzgados !== 'undefined') bdJuzgados.unshift(exp);
+              else if (typeof bdMasc !== 'undefined') bdMasc.unshift(exp);
+            }
+
+            const infoSlot = casillasCatalogo.find(s => s.id === primera.slotId) || { id: primera.slotId, fojaOrden: 10 };
+            const pdfBuffer = this.generarPdfMultipaginaBuffer(fojasDelDocumento);
+            const nombrePdf = `Escaneo_${primera.slotId}_EXP_${exp.numExpediente.replace(/\W/g, '_')}.pdf`;
+            const storeKey = `bin_${exp.centro.replace(/\W/g, '_')}_${exp.numExpediente.replace(/\W/g, '_')}_${primera.slotId}`;
+
+            if (window.localforage) {
+              await localforage.setItem(storeKey, pdfBuffer);
+            }
+
+            let driveFileId = null;
+            if (typeof subirBinarioIndividualADrive === 'function') {
+              driveFileId = await subirBinarioIndividualADrive(
+                new Blob([pdfBuffer], { type: 'application/pdf' }),
+                `EXP_${exp.numExpediente.replace(/\W/g, '_')}_${primera.slotId}_${nombrePdf}`
+              );
+            }
+
+            if (!exp.docs) exp.docs = {};
+            exp.docs[primera.slotId] = {
+              fileName: nombrePdf,
+              mimeType: 'application/pdf',
+              pages: fojasDelDocumento.length,
+              date: new Date().toISOString().split('T')[0],
+              fojaOrden: infoSlot.fojaOrden,
+              storeKey,
+              driveFileId,
+              realUploaded: true,
+              htmlContent: ''
+            };
+
+            const notasUnidas = fojasDelDocumento.map(f => f.notaRapida).filter(Boolean).join(' | ');
+            if (notasUnidas && !exp.predial) exp.predial = notasUnidas;
+
+            ultimoExpActualizado = exp;
+            totalDocumentosGuardados++;
+          }
+
+          if (typeof guardarEnBDMasc === 'function') guardarEnBDMasc();
+          if (typeof guardarEnBDJuzgados === 'function') guardarEnBDJuzgados();
+          if (typeof renderizarSidebarCarpetas === 'function') renderizarSidebarCarpetas();
+          if (typeof ejecutarFiltroBusqueda === 'function') ejecutarFiltroBusqueda();
+
+          const idGlobalActivo = (typeof expedienteActivoId !== 'undefined') ? expedienteActivoId : null;
+          if (ultimoExpActualizado && idGlobalActivo === ultimoExpActualizado.id) {
+            if (typeof renderizarSeccionesChecklistModal === 'function') renderizarSeccionesChecklistModal(ultimoExpActualizado);
+            if (typeof renderizarTablaFojasModal === 'function') renderizarTablaFojasModal(ultimoExpActualizado);
+          }
+
+          alert(`✅ ¡Confirmado! Se integraron ${this.stagingFojas.length} foja(s) con nitidez CamScanner en ${totalDocumentosGuardados} documento(s) PDF dentro de la Bóveda.`);
+
+          this.stagingFojas = [];
+          this.renderizarStaging();
+          this.cerrarModalEscaner();
+        } catch (err) {
+          console.error('Error al guardar lote escaneado:', err);
+          alert('Ocurrió un error al integrar las fojas en el expediente.');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = textoOriginalBtn;
+        }
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => ScanManager.inicializar(), 350);
+    });
+  </script>
+</body>
+</html>
