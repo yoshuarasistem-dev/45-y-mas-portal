@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>45YMÁS Bóveda Inteligente | Visor de Expedientes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -19,14 +19,16 @@
       --accent-orange: #ea580c;
       --accent-amber: #f59e0b;
       --accent-blue: #38bdf8;
+      --accent-emerald: #10b981;
       --border-line: rgba(148, 163, 184, 0.18);
       --text-light: #f8fafc;
-      --text-dim: #94a3b8;
+      --text-muted: #94a3b8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
+      padding: 0;
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-light);
@@ -38,1435 +40,1403 @@
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #050811; }
-    ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.45); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.4); border-radius: 999px; }
 
-    #pantalla-progreso {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(7, 11, 20, 0.92);
-      backdrop-filter: blur(10px);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .progreso-box {
-      background: var(--bg-sidebar);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      border-radius: 20px;
-      padding: 28px;
-      max-width: 460px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
-    }
-
-    .barra-fondo {
-      width: 100%;
-      height: 10px;
-      background: #050811;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 14px;
-    }
-
-    #barra-llena {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #ea580c, #f59e0b, #38bdf8);
-      transition: width 0.2s ease;
-    }
-
-    .topbar {
+    /* BARRA SUPERIOR */
+    .visor-header {
       height: 58px;
-      background: #090e1a;
+      background: var(--bg-sidebar);
       border-bottom: 1px solid var(--border-line);
-      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      shrink: 0;
+      padding: 0 16px;
+      flex-shrink: 0;
+      gap: 12px;
+      z-index: 40;
     }
-
-    .brand-block { display: flex; flex-direction: column; }
-
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-light);
+    }
     .brand-title {
-      font-size: 0.95rem;
       font-weight: 900;
-      letter-spacing: 0.4px;
+      font-size: 14px;
       color: var(--accent-amber);
+      letter-spacing: 0.4px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
-
     .brand-sub {
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 1.4px;
-      color: var(--text-dim);
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
       text-transform: uppercase;
+      display: block;
     }
 
-    .topbar-right {
+    .header-actions {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
-
-    .btn-top {
+    .hdr-btn {
       background: #131c31;
-      color: #e2e8f0;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 0.75rem;
+      color: var(--text-light);
+      border: 1px solid var(--border-line);
+      padding: 7px 13px;
+      border-radius: 10px;
+      font-size: 12px;
       font-weight: 700;
-      text-decoration: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.18s;
-      white-space: nowrap;
+      text-decoration: none;
+      transition: all 0.18s ease;
     }
-
-    .btn-top:hover {
+    .hdr-btn:hover {
       border-color: var(--accent-amber);
-      color: #ffffff;
+      background: #1a2642;
     }
-
-    .pill-exp {
-      background: rgba(30, 58, 138, 0.45);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      color: #7dd3fc;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.75rem;
+    .hdr-select-exp {
+      background: #0f1b33;
+      color: #60a5fa;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 12px;
       font-weight: 800;
-      max-width: 360px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-family: 'JetBrains Mono', monospace;
+      max-width: 310px;
+      cursor: pointer;
+      outline: none;
     }
-
-    .btn-ia-orange {
-      background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%);
+    .hdr-btn-ia {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
       color: #ffffff;
       border: none;
-      font-weight: 800;
+      padding: 7px 15px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+      transition: transform 0.15s ease;
     }
+    .hdr-btn-ia:hover { transform: translateY(-1px); }
 
-    .workspace {
+    /* LAYOUT PRINCIPAL DE 3 COLUMNAS */
+    .visor-workspace {
       flex: 1;
       display: grid;
-      grid-template-columns: 235px 1fr 330px;
-      min-height: 0;
+      grid-template-columns: 225px 1fr 330px;
       overflow: hidden;
+      min-height: 0;
+    }
+    @media (max-width: 1100px) {
+      .visor-workspace { grid-template-columns: 185px 1fr 290px; }
+    }
+    @media (max-width: 820px) {
+      .visor-workspace { grid-template-columns: 1fr; }
+      .sidebar-left { display: none; }
     }
 
-    .sidebar-fojas {
+    /* COLUMNA IZQUIERDA: FOJAS Y MINIATURAS */
+    .sidebar-left {
       background: var(--bg-sidebar);
       border-right: 1px solid var(--border-line);
       display: flex;
       flex-direction: column;
       padding: 12px;
       gap: 10px;
-      min-height: 0;
       overflow: hidden;
     }
-
-    .btn-dashed-orange {
+    .side-btn-dashed {
       width: 100%;
-      background: rgba(234, 88, 12, 0.08);
-      border: 1px dashed rgba(245, 158, 11, 0.6);
-      color: #fb923c;
       padding: 9px 10px;
       border-radius: 10px;
-      font-size: 0.76rem;
+      border: 1px dashed rgba(245, 158, 11, 0.45);
+      background: rgba(245, 158, 11, 0.08);
+      color: var(--accent-amber);
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.18s;
+      transition: all 0.2s;
     }
-
-    .btn-dashed-orange:hover { background: rgba(234, 88, 12, 0.18); }
-
-    .btn-dashed-blue {
+    .side-btn-dashed:hover { background: rgba(245, 158, 11, 0.18); }
+    .side-btn-order {
       width: 100%;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px dashed rgba(56, 189, 248, 0.55);
-      color: #38bdf8;
       padding: 8px 10px;
       border-radius: 10px;
-      font-size: 0.75rem;
-      font-weight: 800;
+      border: 1px dashed rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.7);
+      color: var(--accent-blue);
+      font-size: 11.5px;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
     }
-
-    #lista-fojas-container {
+    .fojas-thumbs-list {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       padding-right: 4px;
     }
-
-    .foja-item {
-      background: #0d1424;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 12px;
+    .foja-thumb-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: 10px;
       padding: 8px;
       cursor: pointer;
-      transition: all 0.18s;
+      transition: all 0.15s ease;
+    }
+    .foja-thumb-card.activa {
+      border-color: var(--accent-amber);
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+      background: #17233d;
+    }
+    .foja-thumb-header {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-    }
-
-    .foja-item:hover { border-color: var(--accent-amber); }
-
-    .foja-item.activa {
-      border: 2px solid #38bdf8;
-      background: rgba(14, 30, 56, 0.92);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-    }
-
-    .foja-item-title {
-      font-size: 0.72rem;
+      font-size: 10.5px;
       font-weight: 800;
-      color: #ffffff;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: var(--accent-amber);
+      margin-bottom: 6px;
+      font-family: 'JetBrains Mono', monospace;
     }
-
-    .foja-thumb-box {
+    .foja-thumb-preview {
       width: 100%;
-      height: 118px;
+      height: 115px;
       background: #ffffff;
       border-radius: 6px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
+      color: #1e293b;
+      font-size: 10px;
+      padding: 6px;
+      text-align: center;
     }
-
-    .foja-thumb-box canvas {
+    .foja-thumb-preview img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
 
-    .foja-thumb-word-preview {
-      width: 100%;
-      height: 100%;
-      padding: 6px;
-      font-size: 5.5px;
-      line-height: 1.3;
-      color: #0f172a;
-      overflow: hidden;
-      text-align: left;
-      font-family: Arial, sans-serif;
-      background: #ffffff;
-    }
-
-    .foja-controls-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      padding-top: 2px;
-    }
-
-    .foja-ctrl-btn {
-      background: #17223b;
-      color: #cbd5e1;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 6px;
-      width: 26px;
-      height: 24px;
-      font-size: 0.68rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .foja-ctrl-btn:hover { background: #253559; color: #ffffff; }
-
-    .visor-central {
-      background: #050811;
+    /* COLUMNA CENTRAL: LIENZO DEL DOCUMENTO */
+    .center-stage {
+      background: #04070e;
       position: relative;
-      overflow: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      overflow: auto;
+      padding: 24px 20px 90px 20px;
     }
-
-    .foja-canvas-container {
+    .sheet-container {
       background: #ffffff;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
-      border-radius: 6px;
-      transition: transform 0.18s ease;
-      transform-origin: top center;
-      position: relative;
-    }
-
-    #canvas-principal {
-      display: block;
-      max-width: 100%;
-      height: auto;
-    }
-
-    #canvas-dibujo {
-      position: absolute;
-      top: 0;
-      left: 0;
+      color: #0f172a;
       width: 100%;
-      height: 100%;
-      z-index: 15;
-      pointer-events: none;
-    }
-
-    #canvas-dibujo.activo {
-      pointer-events: auto;
-      cursor: crosshair;
-    }
-
-    #drive-iframe-visor {
-      width: 860px;
-      max-width: 94vw;
-      height: 84vh;
-      border: none;
+      max-width: 820px;
+      min-height: 980px;
       border-radius: 6px;
-      background: #ffffff;
-      display: none;
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.8);
+      position: relative;
+      transform-origin: top center;
+      transition: transform 0.15s ease;
+      overflow: hidden;
     }
-
-    #html-visor {
-      width: 840px;
-      max-width: 94vw;
-      min-height: 1060px;
-      background: #ffffff;
-      color: #000000;
-      padding: 52px 64px;
+    .sheet-html-content {
+      padding: 44px 52px;
       font-family: Arial, Helvetica, sans-serif;
       font-size: 11.5pt;
-      line-height: 1.65;
+      line-height: 1.6;
+      color: #000000;
+    }
+    .sheet-html-content * { color: #000000; }
+    .sheet-html-content table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .sheet-html-content td, .sheet-html-content th { border: 1px solid #000; padding: 6px 8px; }
+    .sheet-image-render {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    #annotation-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 15;
+    }
+    .empty-doc-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 760px;
+      padding: 40px;
+      color: #1e293b;
     }
 
-    #html-visor * { color: #000000; }
-    #html-visor p { margin-bottom: 12px; text-align: justify; }
-    #html-visor table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-    #html-visor td, #html-visor th { border: 1px solid #000000; padding: 6px 10px; }
-
-    mark.resaltado-ia {
+    /* Resaltado de palabra encontrada por IA */
+    mark.ia-highlight {
       background-color: #fde047 !important;
       color: #000000 !important;
       padding: 1px 4px;
-      border-radius: 3px;
-      font-weight: 700;
+      border-radius: 4px;
+      font-weight: 800;
+      box-shadow: 0 0 0 2px #f59e0b;
     }
 
-    #controles-zoom {
+    /* BARRA FLOTANTE INFERIOR DE CONTROLES */
+    .floating-controls {
       position: fixed;
-      bottom: 22px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      border-radius: 12px;
-      padding: 6px 10px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 14px;
+      padding: 6px 12px;
       display: flex;
       align-items: center;
       gap: 6px;
-      z-index: 45;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75);
+      z-index: 50;
     }
-
-    .zoom-btn {
+    .ctrl-btn {
       background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      min-width: 34px;
-      height: 34px;
-      padding: 0 8px;
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      width: 32px;
+      height: 32px;
       border-radius: 8px;
-      cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      cursor: pointer;
+      font-size: 12px;
       font-weight: 700;
+      transition: all 0.15s;
+    }
+    .ctrl-btn:hover { background: #334155; color: #fff; }
+    .ctrl-btn.activo {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+    .ctrl-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-amber);
+      padding: 0 8px;
     }
 
-    .zoom-btn:hover { background: #334155; border-color: var(--accent-amber); }
-    .zoom-btn.activo { background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fde68a; }
-
-    .sidebar-herramientas {
+    /* COLUMNA DERECHA: ALERTAS IA Y APUNTES */
+    .sidebar-right {
       background: var(--bg-sidebar);
       border-left: 1px solid var(--border-line);
       display: flex;
       flex-direction: column;
-      min-height: 0;
       overflow: hidden;
     }
-
-    .tabs-right {
+    .right-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
       border-bottom: 1px solid var(--border-line);
+      background: #080d19;
     }
-
-    .tab-right-btn {
-      background: transparent;
-      color: var(--text-dim);
+    .right-tab-btn {
+      padding: 13px 10px;
+      background: none;
       border: none;
       border-bottom: 2px solid transparent;
-      padding: 13px 10px;
-      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
-
-    .tab-right-btn.activa {
-      color: #38bdf8;
-      border-bottom-color: #38bdf8;
+    .right-tab-btn.activo {
+      color: var(--accent-blue);
+      border-bottom-color: var(--accent-blue);
+      background: rgba(56, 189, 248, 0.05);
     }
-
-    .panel-content {
+    .right-panel-body {
       flex: 1;
-      overflow-y: auto;
-      padding: 14px;
       display: flex;
       flex-direction: column;
+      padding: 12px;
       gap: 10px;
+      overflow: hidden;
     }
-
-    .keyword-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-line);
-      border-radius: 10px;
-      padding: 10px 12px;
-      cursor: pointer;
-      transition: all 0.18s;
-    }
-
-    .keyword-card:hover { border-color: var(--accent-amber); }
-
-    .keyword-word {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: #fbbf24;
-      text-transform: uppercase;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .keyword-snippet {
-      font-size: 0.74rem;
-      color: #cbd5e1;
-      line-height: 1.45;
-    }
-
-    .nota-area {
+    .ia-search-input {
       width: 100%;
-      min-height: 100px;
-      background: #060a14;
+      background: #060a12;
       border: 1px solid var(--border-line);
       border-radius: 10px;
-      padding: 10px;
-      color: #ffffff;
-      font-size: 0.76rem;
-      resize: vertical;
+      padding: 9px 12px;
+      color: var(--text-light);
+      font-size: 12px;
       outline: none;
     }
-
-    .nota-guardada {
-      background: var(--bg-card);
-      border-left: 3px solid var(--accent-amber);
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 0.74rem;
+    .ia-search-input:focus { border-color: var(--accent-blue); }
+    .ia-results-list {
+      flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 8px;
+      padding-right: 3px;
     }
-
-    @media print {
-      .topbar, .sidebar-fojas, .sidebar-herramientas, #controles-zoom { display: none !important; }
-      body, .workspace, .visor-central { height: auto !important; overflow: visible !important; background: #ffffff !important; display: block !important; padding: 0 !important; }
-      .foja-canvas-container, #html-visor { box-shadow: none !important; width: 100% !important; max-width: none !important; margin: 0 !important; }
+    .ia-card-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
-
-    @media (max-width: 1024px) {
-      .workspace { grid-template-columns: 185px 1fr; }
-      .sidebar-herramientas { display: none; }
-      #html-visor { padding: 24px 18px; }
+    .ia-card-item:hover {
+      border-color: var(--accent-amber);
+      transform: translateX(2px);
     }
   </style>
 </head>
 <body>
 
-  <div id="pantalla-progreso">
-    <div class="progreso-box">
-      <i class="fa-solid fa-scale-balanced fa-bounce" style="font-size:2.2rem; color:#f59e0b; margin-bottom:12px;"></i>
-      <div id="texto-progreso" style="font-size:0.9rem; font-weight:800;">Abriendo documentos originales del expediente...</div>
-      <div class="barra-fondo">
-        <div id="barra-llena"></div>
+  <!-- BARRA SUPERIOR DEL VISOR -->
+  <header class="visor-header">
+    <a href="portal-pro.html" class="brand-box">
+      <i class="fa-solid fa-scale-balanced" style="color:#f59e0b; font-size:20px;"></i>
+      <div>
+        <span class="brand-title">45YMÁS</span>
+        <span class="brand-sub">Bóveda Inteligente</span>
       </div>
-    </div>
-  </div>
+    </a>
 
-  <header class="topbar">
-    <div class="brand-block">
-      <div class="brand-title"><i class="fa-solid fa-scale-balanced"></i> 45YMÁS</div>
-      <div class="brand-sub">BÓVEDA INTELIGENTE</div>
-    </div>
+    <div class="header-actions">
+      <a href="index.html" class="hdr-btn"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="portal-pro.html" class="hdr-btn"><i class="fa-solid fa-folder-tree"></i> Bóveda</a>
 
-    <div class="topbar-right">
-      <a href="index.html" class="btn-top"><i class="fa-solid fa-house"></i> Inicio</a>
-      <a href="portal-pro.html" class="btn-top"><i class="fa-solid fa-folder-tree"></i> Bóveda</a>
-      <div id="titulo-exp" class="pill-exp">Cargando expediente...</div>
-      <label class="btn-top" style="cursor:pointer;">
-        <i class="fa-solid fa-file-arrow-up text-sky-400"></i> Cargar
-        <input type="file" id="pdf-upload" multiple accept=".pdf,.doc,.docx" style="display:none;" onchange="cargarDocumentoManual(this.files)" />
+      <!-- Selector directo de expediente (Carga tanto Juzgados como Convenios MASC) -->
+      <select id="visor-exp-selector" onchange="VisorApp.cambiarExpedienteDesdeSelector(this.value)" class="hdr-select-exp" title="Cambiar de expediente">
+        <option value="">Cargando expediente...</option>
+      </select>
+
+      <label class="hdr-btn" style="cursor:pointer;">
+        <i class="fa-solid fa-file-arrow-up" style="color:#38bdf8;"></i> Cargar
+        <input type="file" id="visor-input-cargar" multiple accept=".pdf,.doc,.docx,image/*" style="display:none;" onchange="VisorApp.subirArchivosAlExpediente(this.files); this.value='';" />
       </label>
-      <button onclick="descargarArchivoOriginalFojaActiva()" class="btn-top" title="Descargar el archivo original de esta foja">
-        <i class="fa-solid fa-download text-emerald-400"></i> Original
+
+      <button type="button" onclick="VisorApp.descargarArchivoOriginalActual()" class="hdr-btn">
+        <i class="fa-solid fa-download" style="color:#10b981;"></i> Original
       </button>
-      <button id="btn-analizar" onclick="escanearAlertasInfalible()" class="btn-top btn-ia-orange">
+
+      <button type="button" onclick="VisorApp.ejecutarReconocimientoIA(true)" class="hdr-btn-ia" title="Analizar cláusulas, actuaciones de juzgado, montos, términos y partes">
         <i class="fa-solid fa-brain"></i> IA
       </button>
     </div>
   </header>
 
-  <div class="workspace">
-    <aside class="sidebar-fojas">
-      <label class="btn-dashed-orange">
+  <!-- ÁREA DE TRABAJO DE 3 COLUMNAS -->
+  <div class="visor-workspace">
+    <!-- IZQUIERDA: LISTA DE FOJAS -->
+    <aside class="sidebar-left">
+      <label class="side-btn-dashed">
         <i class="fa-solid fa-plus"></i> Insertar Foja
-        <input type="file" multiple accept=".pdf,.doc,.docx" style="display:none;" onchange="cargarDocumentoManual(this.files)" />
+        <input type="file" multiple accept=".pdf,.doc,.docx,image/*" style="display:none;" onchange="VisorApp.subirArchivosAlExpediente(this.files); this.value='';" />
       </label>
-      <button onclick="ordenarFojasPorPrelacion()" class="btn-dashed-blue">
-        <i class="fa-solid fa-arrow-down-1-9"></i> Ordenar
+      <button type="button" onclick="VisorApp.invertirOrdenFojas()" class="side-btn-order">
+        <i class="fa-solid fa-arrow-down-up-across-line"></i> Ordenar Fojas
       </button>
-      <div id="lista-fojas-container"></div>
+      <div id="fojas-sidebar-list" class="fojas-thumbs-list"></div>
     </aside>
 
-    <main id="visor-central-scroll" class="visor-central">
-      <div id="contenedor-foja-unica" class="foja-canvas-container">
-        <canvas id="canvas-principal" style="display:none;"></canvas>
-        <canvas id="canvas-dibujo"></canvas>
-        <iframe id="drive-iframe-visor" allow="autoplay"></iframe>
-        <div id="html-visor" style="display:none;"></div>
+    <!-- CENTRO: HOJA DEL EXPEDIENTE -->
+    <main class="center-stage" id="center-stage-scroll">
+      <div id="sheet-container" class="sheet-container">
+        <canvas id="annotation-canvas"></canvas>
+        <div id="sheet-render-area"></div>
       </div>
 
-      <div id="controles-zoom">
-        <button onclick="navegarFojaDelta(-1)" class="zoom-btn" title="Foja Anterior"><i class="fa-solid fa-chevron-left"></i></button>
-        <span id="label-foja-floating" style="font-size:0.75rem; font-weight:800; padding:0 6px; font-family:'JetBrains Mono',monospace; color:#fde68a;">1/1</span>
-        <button onclick="navegarFojaDelta(1)" class="zoom-btn" title="Siguiente Foja"><i class="fa-solid fa-chevron-right"></i></button>
-        <button onclick="cambiarZoom(0.15)" class="zoom-btn" title="Acercar"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-        <button onclick="cambiarZoom(-0.15)" class="zoom-btn" title="Alejar"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
-        <button onclick="cambiarZoom(0, true)" class="zoom-btn" title="100%">1:1</button>
-        <button id="btn-draw-hl" onclick="toggleHerramientaTrazo('hl')" class="zoom-btn" title="Marca-textos amarillo"><i class="fa-solid fa-highlighter" style="color:#facc15;"></i></button>
-        <button id="btn-draw-pen" onclick="toggleHerramientaTrazo('pen')" class="zoom-btn" title="Pluma roja"><i class="fa-solid fa-pen" style="color:#f43f5e;"></i></button>
-        <button onclick="limpiarTrazoActual()" class="zoom-btn" title="Borrar trazos"><i class="fa-solid fa-eraser"></i></button>
-        <button onclick="window.print()" class="zoom-btn" title="Imprimir"><i class="fa-solid fa-print"></i></button>
+      <!-- CONTROLES FLOTANTES INFERIORES -->
+      <div class="floating-controls">
+        <button type="button" class="ctrl-btn" onclick="VisorApp.irAFoja(VisorApp.fojaIndiceActual - 1)" title="Foja anterior">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span id="visor-page-counter" class="ctrl-counter">0/0</span>
+        <button type="button" class="ctrl-btn" onclick="VisorApp.irAFoja(VisorApp.fojaIndiceActual + 1)" title="Foja siguiente">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button type="button" class="ctrl-btn" onclick="VisorApp.cambiarZoom(0.12)" title="Acercar">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+        </button>
+        <button type="button" class="ctrl-btn" onclick="VisorApp.cambiarZoom(-0.12)" title="Alejar">
+          <i class="fa-solid fa-magnifying-glass-minus"></i>
+        </button>
+        <button type="button" class="ctrl-btn" onclick="VisorApp.resetZoom()" title="Tamaño 1:1">1:1</button>
+        <button type="button" id="btn-tool-highlight" class="ctrl-btn" onclick="VisorApp.activarHerramientaDibujo('highlight')" title="Marcatextos amarillo">
+          <i class="fa-solid fa-highlighter" style="color:#facc15;"></i>
+        </button>
+        <button type="button" id="btn-tool-pen" class="ctrl-btn" onclick="VisorApp.activarHerramientaDibujo('pen')" title="Pluma roja">
+          <i class="fa-solid fa-pen" style="color:#f87171;"></i>
+        </button>
+        <button type="button" class="ctrl-btn" onclick="VisorApp.limpiarAnotacionesFoja()" title="Borrar trazos de esta foja">
+          <i class="fa-solid fa-eraser"></i>
+        </button>
+        <button type="button" class="ctrl-btn" onclick="window.print()" title="Imprimir foja">
+          <i class="fa-solid fa-print"></i>
+        </button>
       </div>
     </main>
 
-    <aside class="sidebar-herramientas">
-      <div class="tabs-right">
-        <button id="tab-palabras" onclick="cambiarTabDerecha('palabras')" class="tab-right-btn activa">Alertas IA</button>
-        <button id="tab-notas" onclick="cambiarTabDerecha('notas')" class="tab-right-btn"><i class="fa-regular fa-pen-to-square"></i> Apuntes</button>
-      </div>
-
-      <div id="panel-palabras" class="panel-content">
-        <div style="display:flex; gap:6px;">
-          <input type="text" id="input-buscar-texto" oninput="filtrarTextoEnFoja(this.value)" placeholder="Buscar palabra en el documento..." style="width:100%; background:#060a14; border:1px solid var(--border-line); color:#fff; border-radius:8px; padding:7px 10px; font-size:0.74rem; outline:none;" />
-        </div>
-        <p style="font-size:0.72rem; color:#94a3b8; line-height:1.45;">
-          La IA analiza las cláusulas, partes, montos y vigencia sobre los documentos originales subidos.
-        </p>
-        <div id="contenedor-alertas-resultados" style="display:flex; flex-direction:column; gap:8px;"></div>
-      </div>
-
-      <div id="panel-notas" class="panel-content" style="display:none;">
-        <textarea id="texto-notas" class="nota-area" placeholder="Escribe un apunte jurídico para la foja actual..."></textarea>
-        <button onclick="guardarNotas()" class="btn-top btn-ia-orange" style="justify-content:center; width:100%;">
-          <i class="fa-solid fa-floppy-disk"></i> Guardar Apunte en Foja
+    <!-- DERECHA: ALERTAS IA Y APUNTES -->
+    <aside class="sidebar-right">
+      <div class="right-tabs">
+        <button type="button" id="tab-btn-alertas" class="right-tab-btn activo" onclick="VisorApp.cambiarTabDerecha('alertas')">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Alertas IA
         </button>
-        <div id="indice-notas-container" style="display:flex; flex-direction:column; gap:8px; margin-top:6px;"></div>
+        <button type="button" id="tab-btn-apuntes" class="right-tab-btn" onclick="VisorApp.cambiarTabDerecha('apuntes')">
+          <i class="fa-solid fa-pen-to-square"></i> Apuntes
+        </button>
+      </div>
+
+      <!-- Panel Alertas IA -->
+      <div id="panel-derecha-alertas" class="right-panel-body">
+        <input
+          type="text"
+          id="ia-search-input"
+          class="ia-search-input"
+          placeholder="Buscar palabra en el documento..."
+          oninput="VisorApp.filtrarPalabrasIA(this.value)"
+        />
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:#94a3b8;">
+          <span id="ia-status-subtitle">Reconocimiento de Juzgados y MASC</span>
+          <button type="button" onclick="VisorApp.ejecutarOCRCompletoEnFojas()" style="background:none; border:none; color:#38bdf8; font-size:11px; font-weight:700; cursor:pointer;" title="Leer imágenes escaneadas con OCR">
+            <i class="fa-solid fa-eye"></i> Leer Escaneo (OCR)
+          </button>
+        </div>
+        <div id="ia-results-container" class="ia-results-list"></div>
+      </div>
+
+      <!-- Panel Apuntes del Expediente -->
+      <div id="panel-derecha-apuntes" class="right-panel-body" style="display:none;">
+        <p style="margin:0; font-size:11px; color:#94a3b8;">
+          Bitácora y observaciones jurídicas de este expediente (se guardan automáticamente):
+        </p>
+        <textarea
+          id="visor-apuntes-textarea"
+          oninput="VisorApp.guardarApuntesExpediente(this.value)"
+          placeholder="Escribe aquí acuerdos, prevenciones, fechas de audiencia o notas del expediente..."
+          style="flex:1; width:100%; background:#060a12; border:1px solid var(--border-line); border-radius:10px; padding:12px; color:#f8fafc; font-size:12.5px; line-height:1.5; resize:none; outline:none;"
+        ></textarea>
       </div>
     </aside>
   </div>
-
-  <script>
+<!-- === FIN DE LA PARTE 1 DE 3 (SECCIÓN 2: VISOR) - PEGA LA PARTE 2 JUSTO DEBAJO DE ESTA LÍNEA === -->
+ <script>
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
-    const DRIVE_CLOUD_FOLDER_NAME = 'BOVEDA_45YMAS_CLOUD';
+    const VisorApp = {
+      expedienteActual: null,
+      todosLosExpedientes: [],
+      fojasRenderizadas: [], // [{ numFoja, tituloSlot, fileName, tipo: 'imagen'|'html', dataUrl, html, texto, rawBuffer, mimeType }]
+      fojaIndiceActual: 0,
+      zoomActual: 1,
+      herramientaActiva: null, // 'highlight' | 'pen' | null
+      dibujando: false,
+      trazosPorFoja: {},
+      hallazgosIACache: [],
 
-    let expedienteActual = null;
-    let fojasEnMemoria = [];
-    let indiceFojaActiva = 0;
-    let nivelZoom = 1.0;
-    let notasDelExpediente = [];
-    let modoTrazo = null;
-    let trazando = false;
-    let mapaTrazos = {};
-    let palabraResaltada = '';
+      // Diccionario Completo: Palabras Clave de Juzgados (Mercantil, Civil, Familiar, Amparo) + Convenios MASC / IJA
+      DICCIONARIO_JURIDICO: [
+        {
+          categoria: '⚖️ Juzgado, Vía y Radicación',
+          color: '#38bdf8',
+          patron: /(?:JUZGADO\s+[0-9A-ZÁÉÍÓÚÑ°º\s]{2,45}|EXPEDIENTE\s*(?:N[ÚU]MERO|JUDICIAL)?\s*[:#.]?\s*\d{1,4}\/\d{4}|V[ÍI]A\s+(?:EJECUTIVA\s+MERCANTIL|ORDINARIA\s+CIVIL|CIVIL\s+SUMARIA|FAMILIAR)|AUTO\s+DE\s+(?:RADICACI[ÓO]N|EXEQUENDO|INICIO|ADMISI[ÓO]N))/gi
+        },
+        {
+          categoria: '📄 Demanda, Partes y Prestaciones',
+          color: '#f59e0b',
+          patron: /(?:ESCRITO\s+INICIAL\s+DE\s+DEMANDA|COMPAREZCO\s+A\s+DEMANDAR|PARTE\s+ACTORA|PARTE\s+DEMANDADA|DEMANDAD[OA]|ACTOR[A]?|PRESTACIONES|CAP[ÍI]TULO\s+DE\s+HECHOS|DERECHO)/gi
+        },
+        {
+          categoria: '💰 Pagaré, Montos y Suerte Principal',
+          color: '#10b981',
+          patron: /(?:SUERTE\s+PRINCIPAL|PAGAR[ÉE]|T[ÍI]TULO\s+DE\s+CR[ÉE]DITO|ENDOSO\s+EN\s+PROCURACI[ÓO]N|INTERESES\s+(?:MORATORIOS|ORDINARIOS)|RENTA\s+MENSUAL|DEP[ÓO]SITO\s+EN\s+GARANT[ÍI]A|\$[\s]*[0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?|CANTIDAD\s+DE\s+\$?[0-9,.]+)/gi
+        },
+        {
+          categoria: '🔔 Emplazamiento, Pruebas y Diligencias',
+          color: '#a855f7',
+          patron: /(?:DILIGENCIA\s+DE\s+EMPLAZAMIENTO|REQUERIMIENTO\s+DE\s+PAGO|EMBARGO\s+DE\s+BIENES|ACTUARIO\s+NOTIFICADOR|C[ÉE]DULA\s+DE\s+NOTIFICACI[ÓO]N|CONTESTACI[ÓO]N\s+DE\s+DEMANDA|EXCEPCIONES\s+Y\s+DEFENSAS|PRUEBAS|CONFESIONAL|TESTIMONIAL|DOCUMENTAL\s+P[ÚU]BLICA|DOCUMENTAL\s+PRIVADA)/gi
+        },
+        {
+          categoria: '⏳ Plazos, Términos y Prevenciones',
+          color: '#ef4444',
+          patron: /(?:T[ÉE]RMINO\s+(?:DE|IMPRORROGABLE\s+DE)?\s*\d+\s+D[ÍI]AS|PREVENCI[ÓO]N|APERCIBIMIENTO|APERCIBID[OA]|REBELD[ÍI]A|CADUCIDAD\s+DE\s+LA\s+INSTANCIA|AUDIENCIA\s+(?:DE\s+LEY|PRELIMINAR|DE\s+JUICIO|CONCILIATORIA)|VENCIMIENTO|VIGENCIA)/gi
+        },
+        {
+          categoria: '🏛️ Sentencia, Resoluciones y Amparo',
+          color: '#eab308',
+          patron: /(?:VISTOS\s+PARA\s+RESOLVER|RESULTANDO|CONSIDERANDO|PROPOSICIONES|PUNTOS\s+RESOLUTIVOS|SENTENCIA\s+(?:DEFINITIVA|INTERLOCUTORIA)|CAUSA\s+EJECUTORIA|COSA\s+JUZGADA|RECURSO\s+DE\s+(?:APELACI[ÓO]N|REVOCACI[ÓO]N)|JUICIO\s+DE\s+AMPARO|SUSPENSI[ÓO]N\s+PROVISIONAL)/gi
+        },
+        {
+          categoria: '🤝 Cláusulas y Convenios MASC / IJA',
+          color: '#14b8a6',
+          patron: /(?:CL[ÁA]USULA\s+(?:PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA|SEXTA|S[ÉE]PTIMA|OCTAVA|NOVENA|D[ÉE]CIMA|\d+)|PREVENTIVO\s+DE\s+ARRENDAMIENTO|PENSI[ÓO]N\s+ALIMENTICIA|GUARDA\s+Y\s+CUSTODIA|DIVORCIO\s+(?:POR\s+MUTUO|ADMINISTRATIVO)|PREDIAL\s*(?:N[ÚU]MERO|CUENTA)?\s*[:#]?\s*[0-9\-]{5,15}|ESCRITURA\s+P[ÚU]BLICA|ACREDITACI[ÓO]N\s*(?:0?65|353)|DIRECTOR\s+GENERAL)/gi
+        }
+      ],
 
-    function mostrarProgreso(texto, pct = 20) {
-      document.getElementById('pantalla-progreso').style.display = 'flex';
-      document.getElementById('texto-progreso').textContent = texto;
-      document.getElementById('barra-llena').style.width = `${pct}%`;
-    }
+      async inicializar() {
+        this.inicializarEventosDibujo();
+        await this.cargarCatalogoYExpedienteActivo();
+      },
 
-    function actualizarBarra(pct, texto = '') {
-      document.getElementById('barra-llena').style.width = `${pct}%`;
-      if (texto) document.getElementById('texto-progreso').textContent = texto;
-    }
+      // 1. CARGADOR UNIVERSAL: Busca en Juzgados y en Convenios MASC sin perder los archivos
+      async cargarCatalogoYExpedienteActivo() {
+        const params = new URLSearchParams(window.location.search);
+        const expIdUrl = params.get('id');
+        const expNumUrl = params.get('exp');
 
-    function ocultarProgreso() {
-      setTimeout(() => {
-        document.getElementById('pantalla-progreso').style.display = 'none';
-      }, 180);
-    }
+        let listaMasc = [];
+        let listaJuz = [];
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      configurarEventosDibujo();
-      await inicializarVisorConExpedienteReal();
-    });
+        if (window.localforage) {
+          listaMasc = (await localforage.getItem('boveda_pro_despacho45_lf_bd_masc')) ||
+                      (await localforage.getItem('boveda_pro_aldo_indep_lf_bd_masc')) || [];
+          listaJuz = (await localforage.getItem('boveda_pro_despacho45_lf_bd_juzgados')) ||
+                     (await localforage.getItem('boveda_pro_aldo_indep_lf_bd_juzgados')) || [];
+        }
 
-    function extraerTextoLimpioDeDocWord97(arrayBuffer, fileName) {
-      try {
-        const bytes = new Uint8Array(arrayBuffer);
-        let bloquesUnicode = [];
-        let actualU = '';
-        for (let i = 0; i < bytes.length - 1; i += 2) {
-          const low = bytes[i];
-          const high = bytes[i + 1];
-          if (high === 0 && ((low >= 32 && low <= 126) || (low >= 160 && low <= 255) || low === 10 || low === 13 || low === 9)) {
-            actualU += (low === 13 || low === 10) ? '\n' : String.fromCharCode(low);
-          } else {
-            if (actualU.trim().length >= 20) bloquesUnicode.push(actualU.trim());
-            actualU = '';
+        if (listaMasc.length === 0) {
+          try { listaMasc = JSON.parse(localStorage.getItem('boveda_pro_despacho45_bd_masc') || '[]'); } catch (e) {}
+        }
+        if (listaJuz.length === 0) {
+          try { listaJuz = JSON.parse(localStorage.getItem('boveda_pro_despacho45_bd_juzgados') || '[]'); } catch (e) {}
+        }
+
+        this.todosLosExpedientes = [...listaJuz, ...listaMasc];
+
+        // Buscar el expediente solicitado
+        let encontrado = null;
+        if (window.localforage) {
+          const paquete = await localforage.getItem('paquete_visor_activo');
+          if (paquete && (!expIdUrl || paquete.expId === expIdUrl || paquete.numExpediente === expNumUrl)) {
+            encontrado = {
+              id: paquete.expId,
+              tipoRegistro: paquete.tipoRegistro || 'juzgado',
+              numExpediente: paquete.numExpediente,
+              solicitante: paquete.solicitante,
+              centro: paquete.centro,
+              categoria: paquete.categoria,
+              predial: paquete.predial || '',
+              docs: paquete.docs || {},
+              piezasPreCargadas: paquete.piezas || []
+            };
           }
         }
-        if (actualU.trim().length >= 20) bloquesUnicode.push(actualU.trim());
 
-        let bloquesAnsi = [];
-        let actualA = '';
-        for (let i = 0; i < bytes.length; i++) {
-          const b = bytes[i];
-          if ((b >= 32 && b <= 126) || (b >= 160 && b <= 255) || b === 10 || b === 13 || b === 9) {
-            actualA += (b === 13 || b === 10) ? '\n' : String.fromCharCode(b);
-          } else {
-            const limpio = actualA.trim();
-            if (
-              limpio.length >= 28 &&
-              /[AEIOUÁÉÍÓÚaeiouáéíóú]{3,}/.test(limpio) &&
-              !/^(Root Entry|WordDocument|CompObj|SummaryInformation|DocumentSummaryInformation|Microsoft Word|Normal\.dot|Times New Roman|Arial|Calibri|MSWordDoc|Word\.Document)/i.test(limpio)
-            ) {
-              bloquesAnsi.push(limpio);
+        if (!encontrado || Object.keys(encontrado.docs || {}).length === 0) {
+          const deLista = this.todosLosExpedientes.find(e => e.id === expIdUrl || e.numExpediente === expNumUrl);
+          if (deLista) encontrado = deLista;
+        }
+
+        if (!encontrado) {
+          try {
+            const lsExp = JSON.parse(localStorage.getItem('visor_active_expediente') || 'null');
+            if (lsExp) encontrado = lsExp;
+          } catch (e) {}
+        }
+
+        if (!encontrado && this.todosLosExpedientes.length > 0) {
+          encontrado = this.todosLosExpedientes[0];
+        }
+
+        this.expedienteActual = encontrado;
+        this.poblarSelectorSuperior();
+        await this.procesarYDesglosarExpedienteActivo();
+      },
+
+      poblarSelectorSuperior() {
+        const sel = document.getElementById('visor-exp-selector');
+        if (!sel) return;
+
+        if (this.todosLosExpedientes.length === 0 && this.expedienteActual) {
+          this.todosLosExpedientes = [this.expedienteActual];
+        }
+
+        if (this.todosLosExpedientes.length === 0) {
+          sel.innerHTML = `<option value="">Sin expedientes registrados</option>`;
+          return;
+        }
+
+        sel.innerHTML = this.todosLosExpedientes.map(e => {
+          const etiquetaTipo = (e.tipoRegistro === 'juzgado' || (e.centro && e.centro.includes('Juzgado'))) ? '⚖️' : '🤝';
+          const selected = (this.expedienteActual && e.id === this.expedienteActual.id) ? 'selected' : '';
+          return `<option value="${e.id}" ${selected}>${etiquetaTipo} ${e.numExpediente} - ${(e.solicitante || e.centro || 'Expediente').substring(0, 32)}</option>`;
+        }).join('');
+      },
+
+      async cambiarExpedienteDesdeSelector(nuevoId) {
+        const dest = this.todosLosExpedientes.find(e => e.id === nuevoId);
+        if (!dest) return;
+        this.expedienteActual = dest;
+        this.fojaIndiceActual = 0;
+        await this.procesarYDesglosarExpedienteActivo();
+      },
+
+      // Recupera el binario ArrayBuffer desde LocalForage o Google Drive
+      async recuperarBinarioDePieza(docInfo, exp) {
+        if (docInfo.arrayBuffer && docInfo.arrayBuffer.byteLength > 0) {
+          return docInfo.arrayBuffer;
+        }
+        if (window.localforage) {
+          if (docInfo.storeKey) {
+            const item = await localforage.getItem(docInfo.storeKey);
+            if (item) {
+              if (item instanceof ArrayBuffer) return item;
+              if (ArrayBuffer.isView(item)) return item.buffer;
+              if (item instanceof Blob) return await item.arrayBuffer();
             }
-            actualA = '';
           }
-        }
-        if (actualA.trim().length >= 28) bloquesAnsi.push(actualA.trim());
-
-        const unido = (bloquesUnicode.join('\n\n').length > bloquesAnsi.join('\n\n').length)
-          ? bloquesUnicode.join('\n\n')
-          : bloquesAnsi.join('\n\n');
-
-        const lineasLimpias = unido
-          .split(/\n+/)
-          .map(l => l.trim())
-          .filter(l => {
-            if (l.length < 4) return false;
-            if (/^(PAGE|MERGEFORMAT|HYPERLINK|TOC|PAGEREF|Normal|Default Paragraph Font|bjbj|Heading|Header|Footer|Char|Table Grid)/i.test(l)) return false;
-            const letras = (l.match(/[A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g) || []).length;
-            return (letras / l.length) > 0.65;
-          });
-
-        const textoFinal = lineasLimpias.join('\n\n');
-        if (textoFinal.length > 30) {
-          const html = lineasLimpias.map(p => `<p>${p.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('');
-          return { html, texto: textoFinal };
-        }
-      } catch (e) {}
-      return { html: `<p>Documento: <strong>${fileName}</strong></p>`, texto: fileName };
-    }
-
-    async function inicializarVisorConExpedienteReal() {
-      mostrarProgreso('Recuperando archivos originales del expediente...', 25);
-
-      const params = new URLSearchParams(window.location.search);
-      const paramId = params.get('id');
-      const paramExp = params.get('exp');
-
-      let expEncontrado = null;
-
-      if (window.localforage) {
-        const paqueteActivo = await localforage.getItem('paquete_visor_activo');
-        if (paqueteActivo && (!paramId || String(paqueteActivo.expId) === String(paramId) || (paramExp && paqueteActivo.numExpediente === paramExp))) {
-          expEncontrado = {
-            id: paqueteActivo.expId,
-            numExpediente: paqueteActivo.numExpediente,
-            solicitante: paqueteActivo.solicitante,
-            centro: paqueteActivo.centro,
-            categoria: paqueteActivo.categoria,
-            docs: paqueteActivo.docs || {},
-            piezasEmpaquetadas: paqueteActivo.piezas || []
-          };
-        }
-
-        if (!expEncontrado) {
-          for (const ent of ['despacho45', 'aldo_indep']) {
-            for (const t of ['lf_bd_masc', 'lf_bd_juzgados']) {
-              const lista = await localforage.getItem(`boveda_pro_${ent}_${t}`);
-              if (!Array.isArray(lista)) continue;
-              const hallado = lista.find(e => (paramId && String(e.id) === String(paramId)) || (paramExp && (e.numExpediente || '').trim().toUpperCase() === paramExp.trim().toUpperCase()));
-              if (hallado) { expEncontrado = hallado; break; }
-            }
-            if (expEncontrado) break;
-          }
-        }
-      }
-
-      if (!expEncontrado) {
-        for (const ent of ['despacho45', 'aldo_indep']) {
-          for (const tabla of ['bd_masc', 'bd_juzgados']) {
-            const raw = localStorage.getItem(`boveda_pro_${ent}_${tabla}`);
-            if (!raw) continue;
-            try {
-              const lista = JSON.parse(raw);
-              const hallado = lista.find(e => (paramId && String(e.id) === String(paramId)) || (paramExp && (e.numExpediente || '').trim().toUpperCase() === paramExp.trim().toUpperCase()));
-              if (hallado) { expEncontrado = hallado; break; }
-            } catch (e) {}
-          }
-          if (expEncontrado) break;
-        }
-      }
-
-      if (!expEncontrado) {
-        const rawActive = localStorage.getItem('visor_active_expediente');
-        if (rawActive) {
-          try { expEncontrado = JSON.parse(rawActive); } catch (e) {}
-        }
-      }
-
-      if (!expEncontrado) {
-        ocultarProgreso();
-        document.getElementById('titulo-exp').textContent = 'Sin expediente';
-        mostrarMensajeSubirArchivos();
-        return;
-      }
-
-      expedienteActual = expEncontrado;
-      document.getElementById('titulo-exp').textContent = `${expedienteActual.numExpediente} - ${expedienteActual.solicitante}`;
-
-      cargarNotasGuardadas();
-      await construirFojasDesdeArchivosReales(expedienteActual);
-      escanearAlertasInfalible();
-      ocultarProgreso();
-    }
-
-    function mostrarMensajeSubirArchivos() {
-      document.getElementById('canvas-principal').style.display = 'none';
-      document.getElementById('drive-iframe-visor').style.display = 'none';
-      const htmlVisor = document.getElementById('html-visor');
-      htmlVisor.style.display = 'block';
-      document.getElementById('label-foja-floating').textContent = '0/0';
-      htmlVisor.innerHTML = `
-        <div style="text-align:center; padding:80px 20px;">
-          <i class="fa-solid fa-file-circle-plus" style="font-size:3.2rem; color:#f59e0b; margin-bottom:16px;"></i>
-          <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:10px;">Este expediente aún no tiene documentos subidos</h2>
-          <p style="font-size:0.95rem; color:#475569; max-width:480px; margin:0 auto 24px auto; text-align:center;">
-            Usa el botón <strong>"+ Insertar Foja"</strong> a la izquierda o <strong>"Cargar"</strong> arriba a la derecha para subir el Convenio o los PDFs escaneados y verlos aquí tal cual fueron subidos.
-          </p>
-        </div>
-      `;
-    }
-
-    function obtenerTokenDrive() {
-      const t = localStorage.getItem('drive_token');
-      if (!t || t.startsWith('oauth_session_') || t.startsWith('token_activo_')) return null;
-      return t;
-    }
-
-    async function subirDocADriveParaVistaNativa(ab, fileName, numExp, slotKey) {
-      const token = obtenerTokenDrive();
-      if (!token || !ab) return null;
-      try {
-        const folderId = localStorage.getItem('boveda_drive_folder_id');
-        const customName = `EXP_${(numExp || '000').replace(/\W/g, '_')}_${slotKey || 'doc'}_${fileName}`;
-
-        const q = encodeURIComponent(`name = '${customName.replace(/'/g, '')}' and trashed = false`);
-        const resS = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)&pageSize=2`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (resS.ok) {
-          const dS = await resS.json();
-          if (dS.files && dS.files.length > 0) return dS.files[0].id;
-        }
-
-        const metadata = { name: customName };
-        if (folderId) metadata.parents = [folderId];
-
-        const form = new FormData();
-        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-        form.append('file', new Blob([ab], { type: 'application/msword' }));
-
-        const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: form
-        });
-        if (res.ok) {
-          const data = await res.json();
-          return data.id || null;
-        }
-      } catch (e) {}
-      return null;
-    }
-
-    async function recuperarArrayBufferDePieza(pieza, exp) {
-      if (pieza.arrayBuffer && pieza.arrayBuffer.byteLength > 0) return pieza.arrayBuffer;
-      if (pieza.blob && pieza.blob.size > 0) return await pieza.blob.arrayBuffer();
-
-      if (window.localforage) {
-        if (pieza.storeKey) {
-          const guardado = await localforage.getItem(pieza.storeKey);
-          if (guardado) {
-            if (guardado instanceof ArrayBuffer) return guardado;
-            if (ArrayBuffer.isView(guardado)) return guardado.buffer;
-            if (guardado instanceof Blob) return await guardado.arrayBuffer();
-          }
-        }
-
-        const numLimpio = (exp.numExpediente || '').replace(/\W/g, '_');
-        const todasLasLlaves = await localforage.keys();
-        const llaveCoincidente = todasLasLlaves.find(k =>
-          (pieza.storeKey && k.startsWith(pieza.storeKey)) ||
-          (numLimpio && k.includes(numLimpio) && (!pieza.slotKey || k.includes(pieza.slotKey)))
-        );
-
-        if (llaveCoincidente) {
-          const item = await localforage.getItem(llaveCoincidente);
-          if (item) {
+          // Búsqueda por coincidencia de número de expediente en las llaves de LocalForage
+          const numLimpio = String(exp?.numExpediente || '').replace(/\W/g, '_');
+          const llaves = await localforage.keys();
+          const llaveMatch = llaves.find(k =>
+            k.startsWith('bin_') &&
+            ((docInfo.storeKey && k.includes(docInfo.storeKey)) || (numLimpio && k.includes(numLimpio)))
+          );
+          if (llaveMatch) {
+            const item = await localforage.getItem(llaveMatch);
             if (item instanceof ArrayBuffer) return item;
             if (ArrayBuffer.isView(item)) return item.buffer;
             if (item instanceof Blob) return await item.arrayBuffer();
           }
         }
-      }
 
-      const token = obtenerTokenDrive();
-      if (token) {
-        try {
-          let targetDriveId = pieza.driveFileId;
-          if (!targetDriveId && pieza.fileName) {
-            const q = encodeURIComponent(`name contains '${pieza.fileName.replace(/'/g, '')}' and trashed = false`);
-            const resSearch = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=3`, {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            if (resSearch.ok) {
-              const dataS = await resSearch.json();
-              if (dataS.files && dataS.files.length > 0) {
-                targetDriveId = dataS.files[0].id;
-                pieza.driveFileId = targetDriveId;
-              }
-            }
-          }
-
-          if (targetDriveId) {
-            const res = await fetch(`https://www.googleapis.com/drive/v3/files/${targetDriveId}?alt=media`, {
+        // Respaldo desde Google Drive si cuenta con token activo
+        const token = localStorage.getItem('drive_token');
+        if (token && docInfo.driveFileId && !token.startsWith('oauth_session_')) {
+          try {
+            const res = await fetch(`https://www.googleapis.com/drive/v3/files/${docInfo.driveFileId}?alt=media`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
               const ab = await res.arrayBuffer();
-              if (window.localforage && pieza.storeKey) await localforage.setItem(pieza.storeKey, ab);
+              if (window.localforage && docInfo.storeKey) await localforage.setItem(docInfo.storeKey, ab);
               return ab;
             }
-          }
-        } catch (e) {}
-      }
-
-      return null;
-    }
-
-    async function construirFojasDesdeArchivosReales(exp) {
-      fojasEnMemoria = [];
-
-      const mapaPiezas = new Map();
-      if (Array.isArray(exp.piezasEmpaquetadas)) {
-        exp.piezasEmpaquetadas.forEach(p => {
-          if (p && p.fileName) mapaPiezas.set(p.slotKey || p.fileName, p);
-        });
-      }
-      if (exp.docs) {
-        Object.entries(exp.docs).forEach(([slotKey, item]) => {
-          if (item && item.fileName) {
-            const prev = mapaPiezas.get(slotKey) || {};
-            mapaPiezas.set(slotKey, { ...prev, ...item, slotKey, fojaOrden: Number(item.fojaOrden) || 50 });
-          }
-        });
-      }
-
-      const listaPiezas = Array.from(mapaPiezas.values()).sort((a, b) => (Number(a.fojaOrden) || 50) - (Number(b.fojaOrden) || 50));
-      let numFojaActual = 1;
-
-      for (let i = 0; i < listaPiezas.length; i++) {
-        const pieza = listaPiezas[i];
-        actualizarBarra(30 + Math.round(((i + 1) / Math.max(1, listaPiezas.length)) * 60), `Abriendo archivo original: ${pieza.fileName}`);
-
-        const ab = await recuperarArrayBufferDePieza(pieza, exp);
-        const ext = (pieza.fileName.split('.').pop() || '').toLowerCase();
-
-        // 1. PDF Original
-        if (ab && ext === 'pdf' && window.pdfjsLib) {
-          try {
-            const pdfDoc = await pdfjsLib.getDocument({ data: ab.slice(0) }).promise;
-            for (let p = 1; p <= pdfDoc.numPages; p++) {
-              const page = await pdfDoc.getPage(p);
-              const tc = await page.getTextContent();
-              const texto = tc.items.map(it => it.str).join(' ');
-              fojasEnMemoria.push({
-                id: `foja_${exp.id}_${pieza.slotKey || i}_p${p}`,
-                numeroFoja: numFojaActual++,
-                fojaOrden: pieza.fojaOrden || 10,
-                fileName: pieza.fileName,
-                tipo: 'pdf',
-                pdfDoc,
-                pageNum: p,
-                driveFileId: pieza.driveFileId || null,
-                arrayBufferOriginal: ab,
-                textoPlano: texto
-              });
-            }
-            continue;
           } catch (e) {}
         }
+        return null;
+      },
 
-        // 2. DOCX Moderno Original
-        if (ab && ext === 'docx' && window.mammoth) {
-          try {
-            const [resHtml, resTxt] = await Promise.all([
-              mammoth.convertToHtml({ arrayBuffer: ab.slice(0) }),
-              mammoth.extractRawText({ arrayBuffer: ab.slice(0) })
-            ]);
-            if (resHtml && resHtml.value && resHtml.value.trim().length > 0) {
-              fojasEnMemoria.push({
-                id: `foja_${exp.id}_${pieza.slotKey || i}_docx`,
-                numeroFoja: numFojaActual++,
-                fojaOrden: pieza.fojaOrden || 4,
-                fileName: pieza.fileName,
+      decodificarDocWord97(arrayBuffer, fileName) {
+        try {
+          const bytes = new Uint8Array(arrayBuffer);
+          let bloques = [];
+          let actual = '';
+          for (let i = 0; i < bytes.length; i++) {
+            const b = bytes[i];
+            if ((b >= 32 && b <= 126) || (b >= 160 && b <= 255) || b === 10 || b === 13 || b === 9) {
+              actual += (b === 13 || b === 10) ? '\n' : String.fromCharCode(b);
+            } else {
+              const limpio = actual.trim();
+              if (limpio.length >= 24 && /[AEIOUÁÉÍÓÚaeiouáéíóú]{2,}/.test(limpio) && !/^(Root Entry|WordDocument|CompObj|Microsoft Word|Normal\.dot|MSWordDoc)/i.test(limpio)) {
+                bloques.push(limpio);
+              }
+              actual = '';
+            }
+          }
+          if (actual.trim().length >= 24) bloques.push(actual.trim());
+          const texto = bloques.join('\n\n');
+          const html = bloques.map(p => `<p>${p.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('');
+          return { texto: texto || fileName, html: html || `<p>${fileName}</p>` };
+        } catch (e) {
+          return { texto: fileName, html: `<p>${fileName}</p>` };
+        }
+      },
+
+      // 2. DESGLOSA TODOS LOS ARCHIVOS DEL EXPEDIENTE EN FOJAS INDIVIDUALES
+      async procesarYDesglosarExpedienteActivo() {
+        this.fojasRenderizadas = [];
+        this.fojaIndiceActual = 0;
+
+        const areaRender = document.getElementById('sheet-render-area');
+        if (areaRender) {
+          areaRender.innerHTML = `<div class="empty-doc-state"><i class="fa-solid fa-spinner fa-spin" style="font-size:36px; color:#f59e0b; margin-bottom:12px;"></i><h3>Cargando fojas del expediente...</h3></div>`;
+        }
+
+        if (!this.expedienteActual) {
+          this.renderizarEstadoVacio();
+          return;
+        }
+
+        // Cargar apuntes guardados de este expediente
+        const notasGuardadas = localStorage.getItem(`apuntes_exp_${this.expedienteActual.id}`) || this.expedienteActual.predial || '';
+        const txtApuntes = document.getElementById('visor-apuntes-textarea');
+        if (txtApuntes) txtApuntes.value = notasGuardadas;
+
+        // Reunir piezas documentales ordenadas por fojaOrden
+        let listaPiezas = [];
+        if (Array.isArray(this.expedienteActual.piezasPreCargadas) && this.expedienteActual.piezasPreCargadas.length > 0) {
+          listaPiezas = [...this.expedienteActual.piezasPreCargadas];
+        } else if (this.expedienteActual.docs) {
+          listaPiezas = Object.entries(this.expedienteActual.docs)
+            .filter(([_, d]) => d && d.fileName)
+            .map(([slotKey, d]) => ({ slotKey, ...d }));
+        }
+
+        listaPiezas.sort((a, b) => (Number(a.fojaOrden) || 10) - (Number(b.fojaOrden) || 10));
+
+        let contadorFojaGlobal = 1;
+
+        for (const pieza of listaPiezas) {
+          const fileName = pieza.fileName || 'Documento.pdf';
+          const ext = (fileName.split('.').pop() || '').toLowerCase();
+          const tituloSlot = (pieza.slotKey || 'documento').replace(/_/g, ' ').toUpperCase();
+          const ab = await this.recuperarBinarioDePieza(pieza, this.expedienteActual);
+
+          if (ab && ext === 'pdf' && window.pdfjsLib) {
+            try {
+              const pdf = await pdfjsLib.getDocument({ data: ab.slice(0) }).promise;
+              for (let numPag = 1; numPag <= pdf.numPages; numPag++) {
+                const page = await pdf.getPage(numPag);
+                const viewport = page.getViewport({ scale: 1.65 });
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+
+                const content = await page.getTextContent();
+                let textoPag = content.items.map(it => it.str).join(' ').trim();
+                if (!textoPag && pieza.extractedText && numPag === 1) {
+                  textoPag = pieza.extractedText;
+                }
+
+                this.fojasRenderizadas.push({
+                  numFoja: contadorFojaGlobal++,
+                  tituloSlot: `${tituloSlot} (Pág. ${numPag}/${pdf.numPages})`,
+                  fileName,
+                  tipo: 'imagen',
+                  dataUrl: canvas.toDataURL('image/jpeg', 0.88),
+                  html: '',
+                  texto: textoPag,
+                  rawBuffer: ab,
+                  mimeType: 'application/pdf'
+                });
+              }
+              continue;
+            } catch (errPdf) {
+              console.warn('Error al desglosar PDF:', errPdf);
+            }
+          }
+
+          if (ab && ext === 'docx' && window.mammoth) {
+            try {
+              const [resHtml, resTxt] = await Promise.all([
+                mammoth.convertToHtml({ arrayBuffer: ab.slice(0) }),
+                mammoth.extractRawText({ arrayBuffer: ab.slice(0) })
+              ]);
+              this.fojasRenderizadas.push({
+                numFoja: contadorFojaGlobal++,
+                tituloSlot,
+                fileName,
                 tipo: 'html',
-                htmlOriginal: resHtml.value,
-                driveFileId: pieza.driveFileId || null,
-                arrayBufferOriginal: ab,
-                textoPlano: resTxt.value || ''
+                dataUrl: '',
+                html: resHtml.value || `<p>${resTxt.value || fileName}</p>`,
+                texto: resTxt.value || pieza.extractedText || '',
+                rawBuffer: ab,
+                mimeType: pieza.mimeType || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
               });
               continue;
+            } catch (errDocx) {}
+          }
+
+          if (ab && ext === 'doc') {
+            const dec = this.decodificarDocWord97(ab, fileName);
+            this.fojasRenderizadas.push({
+              numFoja: contadorFojaGlobal++,
+              tituloSlot,
+              fileName,
+              tipo: 'html',
+              dataUrl: '',
+              html: dec.html,
+              texto: dec.texto || pieza.extractedText || '',
+              rawBuffer: ab,
+              mimeType: 'application/msword'
+            });
+            continue;
+          }
+
+          if (ab && ['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+            const blob = new Blob([ab], { type: pieza.mimeType || 'image/jpeg' });
+            const dataUrl = await new Promise(r => {
+              const reader = new FileReader();
+              reader.onload = () => r(reader.result);
+              reader.readAsDataURL(blob);
+            });
+            this.fojasRenderizadas.push({
+              numFoja: contadorFojaGlobal++,
+              tituloSlot,
+              fileName,
+              tipo: 'imagen',
+              dataUrl,
+              html: '',
+              texto: pieza.extractedText || '',
+              rawBuffer: ab,
+              mimeType: pieza.mimeType || 'image/jpeg'
+            });
+            continue;
+          }
+
+          // Si solo se cuenta con el HTML o texto extraído en caché
+          if (pieza.htmlContent || pieza.extractedText) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = pieza.htmlContent || `<p>${pieza.extractedText}</p>`;
+            this.fojasRenderizadas.push({
+              numFoja: contadorFojaGlobal++,
+              tituloSlot,
+              fileName,
+              tipo: 'html',
+              dataUrl: '',
+              html: pieza.htmlContent || `<div style="white-space:pre-wrap;">${pieza.extractedText}</div>`,
+              texto: pieza.extractedText || tmp.innerText || '',
+              rawBuffer: null,
+              mimeType: 'text/html'
+            });
+          }
+        }
+
+        this.renderizarListaMiniaturasIzquierda();
+
+        if (this.fojasRenderizadas.length > 0) {
+          this.irAFoja(0);
+          await this.ejecutarReconocimientoIA(false);
+        } else {
+          this.renderizarEstadoVacio();
+        }
+      },
+
+      renderizarEstadoVacio() {
+        document.getElementById('visor-page-counter').textContent = '0/0';
+        document.getElementById('fojas-sidebar-list').innerHTML = '';
+        const area = document.getElementById('sheet-render-area');
+        if (area) {
+          area.innerHTML = `
+            <div class="empty-doc-state">
+              <i class="fa-solid fa-file-circle-plus" style="font-size:48px; color:#d97706; margin-bottom:14px;"></i>
+              <h2 style="margin:0 0 8px 0; font-size:20px; color:#0f172a;">Este expediente aún no tiene documentos subidos</h2>
+              <p style="max-width:460px; color:#475569; font-size:13.5px; line-height:1.5;">
+                Usa el botón <strong>"+ Insertar Foja"</strong> a la izquierda o <strong>"Cargar"</strong> arriba a la derecha para subir la Demanda, Auto Judicial, Convenio o PDF escaneado y analizarlo con <strong>IA</strong>.
+              </p>
+            </div>
+          `;
+        }
+        const contIA = document.getElementById('ia-results-container');
+        if (contIA) {
+          contIA.innerHTML = `
+            <div style="padding:16px; text-align:center; color:#64748b; font-size:12px; line-height:1.5;">
+              Sube un documento con el botón <strong>"Cargar"</strong> y pulsa <strong>"🟠 IA"</strong> para listar actuaciones de juzgado, montos, términos y cláusulas.
+            </div>
+          `;
+        }
+      },
+
+      renderizarListaMiniaturasIzquierda() {
+        const cont = document.getElementById('fojas-sidebar-list');
+        if (!cont) return;
+
+        cont.innerHTML = this.fojasRenderizadas.map((foja, idx) => `
+          <div onclick="VisorApp.irAFoja(${idx})" class="foja-thumb-card ${idx === this.fojaIndiceActual ? 'activa' : ''}">
+            <div class="foja-thumb-header">
+              <span>FOJA ${String(foja.numFoja).padStart(3, '0')}</span>
+              <span style="color:#94a3b8; font-size:9.5px;">${foja.tipo === 'imagen' ? 'PDF/IMG' : 'DOC'}</span>
+            </div>
+            <div class="foja-thumb-preview">
+              ${foja.tipo === 'imagen'
+                ? `<img src="${foja.dataUrl}" alt="Foja ${foja.numFoja}" />`
+                : `<div style="overflow:hidden; max-height:100px; font-size:8px; text-align:left; color:#334155;">
+                     <strong style="display:block; color:#0f172a; margin-bottom:3px;">${foja.fileName}</strong>${(foja.texto || '').substring(0, 180)}...
+                   </div>`
+              }
+            </div>
+            <div style="margin-top:5px; font-size:10px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              ${foja.tituloSlot}
+            </div>
+          </div>
+        `).join('');
+      },
+
+      irAFoja(indice, palabraAResaltar = '') {
+        if (this.fojasRenderizadas.length === 0) return;
+        if (indice < 0 || indice >= this.fojasRenderizadas.length) return;
+
+        this.fojaIndiceActual = indice;
+        const foja = this.fojasRenderizadas[indice];
+        document.getElementById('visor-page-counter').textContent = `${indice + 1}/${this.fojasRenderizadas.length}`;
+
+        const area = document.getElementById('sheet-render-area');
+        if (foja.tipo === 'imagen') {
+          area.innerHTML = `<img src="${foja.dataUrl}" class="sheet-image-render" alt="Foja ${foja.numFoja}" />`;
+        } else {
+          let htmlMostrar = foja.html || `<div style="white-space:pre-wrap;">${foja.texto}</div>`;
+          if (palabraAResaltar && palabraAResaltar.trim().length >= 2) {
+            const rx = new RegExp(`(${palabraAResaltar.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            htmlMostrar = htmlMostrar.replace(rx, '<mark class="ia-highlight">$1</mark>');
+          }
+          area.innerHTML = `<div class="sheet-html-content">${htmlMostrar}</div>`;
+        }
+
+        this.renderizarListaMiniaturasIzquierda();
+        setTimeout(() => {
+          this.ajustarLienzoDibujo();
+          const markEl = area.querySelector('mark.ia-highlight');
+          if (markEl) markEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 80);
+      },
+
+      invertirOrdenFojas() {
+        if (this.fojasRenderizadas.length < 2) return;
+        this.fojasRenderizadas.reverse();
+        this.fojasRenderizadas.forEach((f, idx) => { f.numFoja = idx + 1; });
+        this.irAFoja(0);
+      },
+
+      cambiarZoom(delta) {
+        this.zoomActual = Math.min(2.2, Math.max(0.55, +(this.zoomActual + delta).toFixed(2)));
+        document.getElementById('sheet-container').style.transform = `scale(${this.zoomActual})`;
+      },
+
+      resetZoom() {
+        this.zoomActual = 1;
+        document.getElementById('sheet-container').style.transform = 'scale(1)';
+      },
+
+      // 3. HERRAMIENTAS DE MARCATEXTOS Y PLUMA SOBRE LA FOJA
+      inicializarEventosDibujo() {
+        const canvas = document.getElementById('annotation-canvas');
+        if (!canvas) return;
+
+        const obtenerCoords = (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          return {
+            x: (clientX - rect.left) / this.zoomActual,
+            y: (clientY - rect.top) / this.zoomActual
+          };
+        };
+
+        const iniciar = (e) => {
+          if (!this.herramientaActiva) return;
+          this.dibujando = true;
+          const ctx = canvas.getContext('2d');
+          const { x, y } = obtenerCoords(e);
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+        };
+
+        const mover = (e) => {
+          if (!this.dibujando || !this.herramientaActiva) return;
+          e.preventDefault();
+          const ctx = canvas.getContext('2d');
+          const { x, y } = obtenerCoords(e);
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          if (this.herramientaActiva === 'highlight') {
+            ctx.strokeStyle = 'rgba(250, 204, 21, 0.38)';
+            ctx.lineWidth = 18;
+          } else {
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.92)';
+            ctx.lineWidth = 2.5;
+          }
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        };
+
+        const terminar = () => {
+          if (!this.dibujando) return;
+          this.dibujando = false;
+          this.trazosPorFoja[this.fojaIndiceActual] = canvas.toDataURL();
+        };
+
+        canvas.addEventListener('mousedown', iniciar);
+        canvas.addEventListener('mousemove', mover);
+        window.addEventListener('mouseup', terminar);
+        canvas.addEventListener('touchstart', iniciar, { passive: false });
+        canvas.addEventListener('touchmove', mover, { passive: false });
+        window.addEventListener('touchend', terminar);
+      },
+
+      ajustarLienzoDibujo() {
+        const sheet = document.getElementById('sheet-container');
+        const canvas = document.getElementById('annotation-canvas');
+        if (!sheet || !canvas) return;
+        canvas.width = sheet.offsetWidth || 820;
+        canvas.height = sheet.offsetHeight || 980;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const guardado = this.trazosPorFoja[this.fojaIndiceActual];
+        if (guardado) {
+          const img = new Image();
+          img.onload = () => ctx.drawImage(img, 0, 0);
+          img.src = guardado;
+        }
+      },
+
+      activarHerramientaDibujo(tipo) {
+        this.herramientaActiva = (this.herramientaActiva === tipo) ? null : tipo;
+        const canvas = document.getElementById('annotation-canvas');
+        if (canvas) canvas.style.pointerEvents = this.herramientaActiva ? 'auto' : 'none';
+        document.getElementById('btn-tool-highlight').classList.toggle('activo', this.herramientaActiva === 'highlight');
+        document.getElementById('btn-tool-pen').classList.toggle('activo', this.herramientaActiva === 'pen');
+      },
+
+      limpiarAnotacionesFoja() {
+        const canvas = document.getElementById('annotation-canvas');
+        if (!canvas) return;
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        delete this.trazosPorFoja[this.fojaIndiceActual];
+      },
+// === FIN DE LA PARTE 2 DE 3 (SECCIÓN 2: VISOR) - PEGA LA PARTE 3 JUSTO DEBAJO DE ESTA LÍNEA ===
+cambiarTabDerecha(tab) {
+        const esAlertas = tab === 'alertas';
+        document.getElementById('panel-derecha-alertas').style.display = esAlertas ? 'flex' : 'none';
+        document.getElementById('panel-derecha-apuntes').style.display = esAlertas ? 'none' : 'flex';
+        document.getElementById('tab-btn-alertas').classList.toggle('activo', esAlertas);
+        document.getElementById('tab-btn-apuntes').classList.toggle('activo', !esAlertas);
+      },
+
+      guardarApuntesExpediente(texto) {
+        if (!this.expedienteActual) return;
+        localStorage.setItem(`apuntes_exp_${this.expedienteActual.id}`, texto);
+      },
+
+      // 4. SUBIR ARCHIVOS DIRECTAMENTE DESDE EL VISOR ("+ Insertar Foja" o "Cargar")
+      async subirArchivosAlExpediente(fileList) {
+        if (!fileList || fileList.length === 0) return;
+
+        if (!this.expedienteActual) {
+          this.expedienteActual = {
+            id: `exp-visor-${Date.now()}`,
+            tipoRegistro: 'juzgado',
+            numExpediente: '001/2026',
+            solicitante: 'EXPEDIENTE CARGADO EN VISOR',
+            centro: 'Juzgado 1° de lo Mercantil',
+            categoria: 'Mercantil',
+            docs: {}
+          };
+        }
+
+        const subtituloIA = document.getElementById('ia-status-subtitle');
+        if (subtituloIA) subtituloIA.textContent = 'Subiendo e integrando fojas...';
+
+        for (let i = 0; i < fileList.length; i++) {
+          const file = fileList[i];
+          const rawBuffer = await file.arrayBuffer();
+          const slotId = this.expedienteActual.tipoRegistro === 'juzgado'
+            ? (i === 0 && !this.expedienteActual.docs?.escrito_inicial ? 'escrito_inicial' : `pieza_judicial_${Date.now()}_${i}`)
+            : (i === 0 && !this.expedienteActual.docs?.convenio_final ? 'convenio_final' : `anexo_masc_${Date.now()}_${i}`);
+
+          const storeKey = `bin_${(this.expedienteActual.centro || 'Juzgado').replace(/\W/g, '_')}_${(this.expedienteActual.numExpediente || '001').replace(/\W/g, '_')}_${slotId}`;
+
+          if (window.localforage) {
+            await localforage.setItem(storeKey, rawBuffer);
+          }
+
+          if (!this.expedienteActual.docs) this.expedienteActual.docs = {};
+          this.expedienteActual.docs[slotId] = {
+            fileName: file.name,
+            mimeType: file.type || 'application/pdf',
+            pages: 1,
+            date: new Date().toISOString().split('T')[0],
+            fojaOrden: Object.keys(this.expedienteActual.docs).length + 1,
+            storeKey,
+            realUploaded: true
+          };
+        }
+
+        // Sincronizar también en las bases principales de la Bóveda (Juzgados y MASC)
+        if (window.localforage) {
+          await localforage.setItem('paquete_visor_activo', {
+            expId: this.expedienteActual.id,
+            tipoRegistro: this.expedienteActual.tipoRegistro,
+            numExpediente: this.expedienteActual.numExpediente,
+            solicitante: this.expedienteActual.solicitante,
+            centro: this.expedienteActual.centro,
+            categoria: this.expedienteActual.categoria,
+            docs: this.expedienteActual.docs,
+            piezas: []
+          });
+
+          const claveBD = (this.expedienteActual.tipoRegistro === 'juzgado' || (this.expedienteActual.centro || '').includes('Juzgado'))
+            ? 'boveda_pro_despacho45_lf_bd_juzgados'
+            : 'boveda_pro_despacho45_lf_bd_masc';
+
+          const listaBD = (await localforage.getItem(claveBD)) || [];
+          const idxExistente = listaBD.findIndex(e => e.id === this.expedienteActual.id || e.numExpediente === this.expedienteActual.numExpediente);
+          if (idxExistente !== -1) {
+            listaBD[idxExistente].docs = { ...(listaBD[idxExistente].docs || {}), ...this.expedienteActual.docs };
+          } else {
+            listaBD.unshift(this.expedienteActual);
+          }
+          await localforage.setItem(claveBD, listaBD);
+        }
+
+        this.expedienteActual.piezasPreCargadas = [];
+        await this.procesarYDesglosarExpedienteActivo();
+      },
+
+      descargarArchivoOriginalActual() {
+        if (this.fojasRenderizadas.length === 0) {
+          alert('No hay ningún documento cargado en este expediente para descargar.');
+          return;
+        }
+        const foja = this.fojasRenderizadas[this.fojaIndiceActual] || this.fojasRenderizadas[0];
+        if (foja.rawBuffer) {
+          const blob = new Blob([foja.rawBuffer], { type: foja.mimeType || 'application/octet-stream' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = foja.fileName || `Expediente_${this.expedienteActual?.numExpediente || 'Original'}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        } else if (foja.dataUrl) {
+          const a = document.createElement('a');
+          a.href = foja.dataUrl;
+          a.download = `Foja_${foja.numFoja}_${foja.fileName || 'imagen.jpg'}`;
+          a.click();
+        }
+      },
+
+      // 5. LECTURA OCR PARA DOCUMENTOS ESCANEADOS (CAMSCANNER / ESCÁNER FÍSICO)
+      async ejecutarOCRCompletoEnFojas() {
+        if (this.fojasRenderizadas.length === 0) {
+          alert('Primero sube o abre un documento en el visor.');
+          return;
+        }
+        if (!window.Tesseract) {
+          alert('El motor OCR no está disponible en este momento.');
+          return;
+        }
+
+        const contIA = document.getElementById('ia-results-container');
+        const subtitulo = document.getElementById('ia-status-subtitle');
+
+        // Leer hasta las primeras 6 fojas que sean imagen para respuesta rápida
+        const fojasImagen = this.fojasRenderizadas.filter(f => f.tipo === 'imagen' && (!f.texto || f.texto.trim().length < 30)).slice(0, 6);
+
+        if (fojasImagen.length === 0) {
+          await this.ejecutarReconocimientoIA(false);
+          return;
+        }
+
+        for (let i = 0; i < fojasImagen.length; i++) {
+          const foja = fojasImagen[i];
+          if (subtitulo) subtitulo.textContent = `Leyendo OCR Foja ${foja.numFoja} (${i + 1}/${fojasImagen.length})...`;
+          if (contIA) {
+            contIA.innerHTML = `
+              <div style="padding:16px; background:#111a2e; border:1px solid #f59e0b; border-radius:10px; text-align:center; font-size:12px; color:#fde68a;">
+                <i class="fa-solid fa-eye fa-bounce" style="font-size:20px; display:block; margin-bottom:8px;"></i>
+                Reconociendo texto con IA (OCR) en Foja #${foja.numFoja}... (${i + 1} de ${fojasImagen.length})
+              </div>
+            `;
+          }
+          try {
+            const res = await Tesseract.recognize(foja.dataUrl, 'spa');
+            if (res && res.data && res.data.text) {
+              foja.texto = (foja.texto || '') + '\n' + res.data.text;
             }
           } catch (e) {}
         }
 
-        // 3. DOC Antiguo (Word 97-2003): Prioriza el Visor Oficial Nativo de Google Drive para que jamás se descomponga el formato
-        if (ext === 'doc') {
-          let dId = pieza.driveFileId || null;
-          if (!dId && ab && obtenerTokenDrive()) {
-            dId = await subirDocADriveParaVistaNativa(ab, pieza.fileName, exp.numExpediente, pieza.slotKey);
-            if (dId) pieza.driveFileId = dId;
-          }
+        if (subtitulo) subtitulo.textContent = 'Lectura OCR completada';
+        await this.ejecutarReconocimientoIA(false);
+      },
 
-          const { html, texto } = ab ? extraerTextoLimpioDeDocWord97(ab, pieza.fileName) : { html: pieza.htmlContent || `<p>${pieza.fileName}</p>`, texto: '' };
-          fojasEnMemoria.push({
-            id: `foja_${exp.id}_${pieza.slotKey || i}_doc`,
-            numeroFoja: numFojaActual++,
-            fojaOrden: pieza.fojaOrden || 4,
-            fileName: pieza.fileName,
-            tipo: dId ? 'drive_native' : 'html',
-            driveFileId: dId,
-            htmlOriginal: html,
-            arrayBufferOriginal: ab || null,
-            textoPlano: texto
-          });
-          continue;
+      // 6. MOTOR PRINCIPAL DEL BOTÓN NARANJA "IA" (JUZGADOS Y MASC)
+      async ejecutarReconocimientoIA(forzarOCRSiVacio = false) {
+        this.cambiarTabDerecha('alertas');
+        const contIA = document.getElementById('ia-results-container');
+        const subtitulo = document.getElementById('ia-status-subtitle');
+        if (!contIA) return;
+
+        if (this.fojasRenderizadas.length === 0) {
+          this.renderizarEstadoVacio();
+          return;
         }
 
-        // 4. Si está en otra computadora sin binario local pero con driveFileId
-        if (pieza.driveFileId) {
-          fojasEnMemoria.push({
-            id: `foja_${exp.id}_${pieza.slotKey || i}_drive`,
-            numeroFoja: numFojaActual++,
-            fojaOrden: pieza.fojaOrden || 10,
-            fileName: pieza.fileName,
-            tipo: 'drive_native',
-            driveFileId: pieza.driveFileId,
-            htmlOriginal: pieza.htmlContent || `<p>${pieza.fileName}</p>`,
-            textoPlano: ''
-          });
-          continue;
+        const textoTotal = this.fojasRenderizadas.map(f => f.texto || '').join(' ').trim();
+
+        // Si el documento vino de un escáner/CamScanner como pura imagen sin texto y el usuario pulsó el botón "IA", lanza OCR automático
+        if (textoTotal.length < 30 && forzarOCRSiVacio && window.Tesseract) {
+          await this.ejecutarOCRCompletoEnFojas();
+          return;
         }
 
-        if (pieza.htmlContent && pieza.htmlContent.trim().length > 10) {
-          const tmp = document.createElement('div');
-          tmp.innerHTML = pieza.htmlContent;
-          fojasEnMemoria.push({
-            id: `foja_${exp.id}_${pieza.slotKey || i}_html`,
-            numeroFoja: numFojaActual++,
-            fojaOrden: pieza.fojaOrden || 10,
-            fileName: pieza.fileName,
-            tipo: 'html',
-            htmlOriginal: pieza.htmlContent,
-            textoPlano: tmp.innerText || tmp.textContent || ''
+        const hallazgos = [];
+        const vistos = new Set();
+
+        // Añadir tarjeta resumen de encabezado del expediente
+        if (this.expedienteActual) {
+          hallazgos.push({
+            fojaIndex: 0,
+            numFoja: 1,
+            categoria: (this.expedienteActual.tipoRegistro === 'juzgado' || (this.expedienteActual.centro || '').includes('Juzgado'))
+              ? '⚖️ Ficha Judicial en Bóveda'
+              : '🤝 Ficha Convenio MASC',
+            color: '#38bdf8',
+            termino: `EXP. ${this.expedienteActual.numExpediente}`,
+            fragmento: `${this.expedienteActual.centro} • ${this.expedienteActual.categoria} • Partes: ${this.expedienteActual.solicitante}${this.expedienteActual.predial ? ' • ' + this.expedienteActual.predial : ''}`
           });
         }
-      }
 
-      if (fojasEnMemoria.length === 0) {
-        document.getElementById('lista-fojas-container').innerHTML = '';
-        mostrarMensajeSubirArchivos();
-        return;
-      }
+        // Recorrer cada foja buscando todas las palabras clave de Juzgados y MASC
+        this.fojasRenderizadas.forEach((foja, fIdx) => {
+          const txtFoja = foja.texto || '';
+          if (txtFoja.length < 5) return;
 
-      indiceFojaActiva = 0;
-      await renderizarMiniaturasFojas();
-      await renderizarVisorCentral();
-    }
+          for (const regla of this.DICCIONARIO_JURIDICO) {
+            let match;
+            regla.patron.lastIndex = 0;
+            while ((match = regla.patron.exec(txtFoja)) !== null) {
+              const termino = match[0].trim();
+              const pos = match.index;
+              const claveUnica = `${fIdx}_${regla.categoria}_${termino.toUpperCase()}_${Math.floor(pos / 90)}`;
 
-    async function renderizarMiniaturasFojas() {
-      const cont = document.getElementById('lista-fojas-container');
-      cont.innerHTML = '';
-      fojasEnMemoria.forEach((f, idx) => { f.numeroFoja = idx + 1; });
+              if (!vistos.has(claveUnica)) {
+                vistos.add(claveUnica);
+                const inicio = Math.max(0, pos - 40);
+                const fin = Math.min(txtFoja.length, pos + termino.length + 80);
+                const fragmento = txtFoja.substring(inicio, fin).replace(/\s+/g, ' ').trim();
 
-      for (let i = 0; i < fojasEnMemoria.length; i++) {
-        const f = fojasEnMemoria[i];
-        const card = document.createElement('div');
-        card.className = `foja-item ${i === indiceFojaActiva ? 'activa' : ''}`;
-        card.onclick = () => seleccionarFoja(i);
-
-        card.innerHTML = `
-          <div class="foja-item-title">FOJA ${f.numeroFoja}</div>
-          <div class="foja-thumb-box" id="thumb-box-${i}"></div>
-          <div style="font-size:0.65rem; color:#94a3b8; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${f.fileName}">${f.fileName}</div>
-          <div class="foja-controls-row" onclick="event.stopPropagation();">
-            <button onclick="moverFoja(${i}, -1)" class="foja-ctrl-btn" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
-            <button onclick="moverFoja(${i}, 1)" class="foja-ctrl-btn" title="Bajar"><i class="fa-solid fa-arrow-down"></i></button>
-            <button onclick="eliminarFojaEnMemoria(${i})" class="foja-ctrl-btn" style="color:#fda4af;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        `;
-        cont.appendChild(card);
-
-        const thumbBox = document.getElementById(`thumb-box-${i}`);
-        if (f.tipo === 'pdf' && f.pdfDoc) {
-          const canvasThumb = document.createElement('canvas');
-          thumbBox.appendChild(canvasThumb);
-          try {
-            const page = await f.pdfDoc.getPage(f.pageNum);
-            const vp = page.getViewport({ scale: 0.28 });
-            canvasThumb.width = vp.width;
-            canvasThumb.height = vp.height;
-            await page.render({ canvasContext: canvasThumb.getContext('2d'), viewport: vp }).promise;
-          } catch (e) {}
-        } else {
-          const previewDiv = document.createElement('div');
-          previewDiv.className = 'foja-thumb-word-preview';
-          previewDiv.innerHTML = f.htmlOriginal || `<div style="padding:18px; text-align:center; font-size:9px; font-weight:bold;">${f.fileName}</div>`;
-          thumbBox.appendChild(previewDiv);
-        }
-      }
-    }
-
-    async function seleccionarFoja(idx) {
-      if (idx < 0 || idx >= fojasEnMemoria.length) return;
-      guardarTrazoFojaActual();
-      indiceFojaActiva = idx;
-      document.querySelectorAll('.foja-item').forEach((el, i) => {
-        el.classList.toggle('activa', i === indiceFojaActiva);
-      });
-      await renderizarVisorCentral();
-      document.getElementById('visor-central-scroll').scrollTop = 0;
-    }
-
-    function navegarFojaDelta(delta) {
-      seleccionarFoja(indiceFojaActiva + delta);
-    }
-
-    async function renderizarVisorCentral() {
-      const f = fojasEnMemoria[indiceFojaActiva];
-      if (!f) {
-        mostrarMensajeSubirArchivos();
-        return;
-      }
-
-      document.getElementById('label-foja-floating').textContent = `${f.numeroFoja}/${fojasEnMemoria.length}`;
-
-      const canvas = document.getElementById('canvas-principal');
-      const canvasDib = document.getElementById('canvas-dibujo');
-      const iframeDrive = document.getElementById('drive-iframe-visor');
-      const htmlVisor = document.getElementById('html-visor');
-      const contUnico = document.getElementById('contenedor-foja-unica');
-      contUnico.style.transform = `scale(${nivelZoom})`;
-
-      if (f.tipo === 'drive_native' && f.driveFileId) {
-        canvas.style.display = 'none';
-        htmlVisor.style.display = 'none';
-        iframeDrive.style.display = 'block';
-        const targetSrc = `https://drive.google.com/file/d/${f.driveFileId}/preview`;
-        if (iframeDrive.src !== targetSrc) iframeDrive.src = targetSrc;
-        return;
-      }
-
-      iframeDrive.style.display = 'none';
-
-      if (f.tipo === 'pdf' && f.pdfDoc) {
-        htmlVisor.style.display = 'none';
-        canvas.style.display = 'block';
-        const page = await f.pdfDoc.getPage(f.pageNum);
-        const vp = page.getViewport({ scale: 1.45 });
-        canvas.width = vp.width;
-        canvas.height = vp.height;
-        canvasDib.width = vp.width;
-        canvasDib.height = vp.height;
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-        restaurarTrazoFojaActual();
-      } else {
-        canvas.style.display = 'none';
-        htmlVisor.style.display = 'block';
-        let contenido = f.htmlOriginal || '';
-        if (palabraResaltada && palabraResaltada.length >= 2) {
-          const rx = new RegExp(`(${palabraResaltada.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-          contenido = contenido.replace(rx, '<mark class="resaltado-ia">$1</mark>');
-        }
-        htmlVisor.innerHTML = contenido;
-        setTimeout(() => {
-          canvasDib.width = htmlVisor.offsetWidth || 840;
-          canvasDib.height = htmlVisor.offsetHeight || 1060;
-          restaurarTrazoFojaActual();
-        }, 40);
-      }
-    }
-
-    function configurarEventosDibujo() {
-      const canvas = document.getElementById('canvas-dibujo');
-      const ctx = canvas.getContext('2d');
-
-      const pos = (e) => {
-        const r = canvas.getBoundingClientRect();
-        const cx = e.touches ? e.touches[0].clientX : e.clientX;
-        const cy = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: (cx - r.left) * (canvas.width / r.width), y: (cy - r.top) * (canvas.height / r.height) };
-      };
-
-      const start = (e) => {
-        if (!modoTrazo) return;
-        trazando = true;
-        const p = pos(e);
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-      };
-
-      const move = (e) => {
-        if (!trazando || !modoTrazo) return;
-        e.preventDefault();
-        const p = pos(e);
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        if (modoTrazo === 'hl') {
-          ctx.strokeStyle = 'rgba(250, 204, 21, 0.35)';
-          ctx.lineWidth = 20;
-        } else {
-          ctx.strokeStyle = 'rgba(244, 63, 94, 0.9)';
-          ctx.lineWidth = 3;
-        }
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      };
-
-      const end = () => {
-        if (!trazando) return;
-        trazando = false;
-        ctx.closePath();
-        guardarTrazoFojaActual();
-      };
-
-      canvas.addEventListener('mousedown', start);
-      canvas.addEventListener('mousemove', move);
-      window.addEventListener('mouseup', end);
-      canvas.addEventListener('touchstart', start, { passive: false });
-      canvas.addEventListener('touchmove', move, { passive: false });
-      window.addEventListener('touchend', end);
-    }
-
-    function toggleHerramientaTrazo(tipo) {
-      modoTrazo = (modoTrazo === tipo) ? null : tipo;
-      document.getElementById('btn-draw-hl').classList.toggle('activo', modoTrazo === 'hl');
-      document.getElementById('btn-draw-pen').classList.toggle('activo', modoTrazo === 'pen');
-      document.getElementById('canvas-dibujo').classList.toggle('activo', !!modoTrazo);
-    }
-
-    function guardarTrazoFojaActual() {
-      const f = fojasEnMemoria[indiceFojaActiva];
-      if (!f) return;
-      const c = document.getElementById('canvas-dibujo');
-      if (c.width > 0 && c.height > 0) mapaTrazos[f.id] = c.toDataURL('image/png');
-    }
-
-    function restaurarTrazoFojaActual() {
-      const f = fojasEnMemoria[indiceFojaActiva];
-      const c = document.getElementById('canvas-dibujo');
-      const ctx = c.getContext('2d');
-      ctx.clearRect(0, 0, c.width, c.height);
-      if (f && mapaTrazos[f.id]) {
-        const img = new Image();
-        img.onload = () => ctx.drawImage(img, 0, 0);
-        img.src = mapaTrazos[f.id];
-      }
-    }
-
-    function limpiarTrazoActual() {
-      const f = fojasEnMemoria[indiceFojaActiva];
-      const c = document.getElementById('canvas-dibujo');
-      c.getContext('2d').clearRect(0, 0, c.width, c.height);
-      if (f) delete mapaTrazos[f.id];
-    }
-
-    function descargarArchivoOriginalFojaActiva() {
-      const f = fojasEnMemoria[indiceFojaActiva];
-      if (!f) return;
-      if (f.arrayBufferOriginal) {
-        const blob = new Blob([f.arrayBufferOriginal]);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = f.fileName || 'Documento_Original';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      } else if (f.driveFileId) {
-        window.open(`https://drive.google.com/uc?export=download&id=${f.driveFileId}`, '_blank');
-      } else {
-        window.print();
-      }
-    }
-
-    function cambiarZoom(delta, reset = false) {
-      if (reset) nivelZoom = 1.0;
-      else nivelZoom = Math.min(2.2, Math.max(0.55, Number((nivelZoom + delta).toFixed(2))));
-      document.getElementById('contenedor-foja-unica').style.transform = `scale(${nivelZoom})`;
-    }
-
-    async function moverFoja(idx, delta) {
-      const dest = idx + delta;
-      if (dest < 0 || dest >= fojasEnMemoria.length) return;
-      const tmp = fojasEnMemoria[idx];
-      fojasEnMemoria[idx] = fojasEnMemoria[dest];
-      fojasEnMemoria[dest] = tmp;
-      indiceFojaActiva = dest;
-      await renderizarMiniaturasFojas();
-      await renderizarVisorCentral();
-    }
-
-    async function ordenarFojasPorPrelacion() {
-      fojasEnMemoria.sort((a, b) => (a.fojaOrden || 10) - (b.fojaOrden || 10));
-      indiceFojaActiva = 0;
-      await renderizarMiniaturasFojas();
-      await renderizarVisorCentral();
-    }
-
-    async function eliminarFojaEnMemoria(idx) {
-      if (!confirm(`¿Quitar Foja ${idx + 1} del visor?`)) return;
-      fojasEnMemoria.splice(idx, 1);
-      if (indiceFojaActiva >= fojasEnMemoria.length) indiceFojaActiva = Math.max(0, fojasEnMemoria.length - 1);
-      await renderizarMiniaturasFojas();
-      await renderizarVisorCentral();
-    }
-
-    async function cargarDocumentoManual(fileList) {
-      if (!fileList || fileList.length === 0) return;
-      mostrarProgreso('Guardando e integrando archivo original...', 35);
-
-      if (!expedienteActual) {
-        expedienteActual = {
-          id: 'exp-' + Date.now(),
-          numExpediente: 'S/N',
-          solicitante: 'EXPEDIENTE ACTIVO',
-          centro: 'Centro 065',
-          categoria: 'Preventivo Arrendamiento',
-          docs: {}
-        };
-      }
-
-      for (const file of Array.from(fileList)) {
-        const ab = await file.arrayBuffer();
-        const ext = (file.name.split('.').pop() || '').toLowerCase();
-        const fnUpper = file.name.toUpperCase();
-        let slotId = 'convenio_final';
-        let fojaOrden = 4;
-
-        if (fnUpper.includes('SOLICITUD')) { slotId = 'solicitud'; fojaOrden = 1; }
-        else if (fnUpper.includes('DICTAMEN')) { slotId = 'dictamen'; fojaOrden = 2; }
-        else if (fnUpper.includes('ACUERDO')) { slotId = 'acuerdo'; fojaOrden = 3; }
-        else if (fnUpper.includes('DIGITAL')) { slotId = 'convenio_digital'; fojaOrden = 5; }
-        else if (fnUpper.includes('CONVENIO')) { slotId = 'convenio_final'; fojaOrden = 4; }
-        else if (fnUpper.includes('INE') || fnUpper.includes('IDENTIFICACION')) { slotId = 'identificaciones'; fojaOrden = 6; }
-        else if (fnUpper.includes('CONTRATO')) { slotId = 'contrato_arrendamiento'; fojaOrden = 7; }
-        else if (fnUpper.includes('ESCRITURA')) { slotId = 'escritura_publica'; fojaOrden = 9; }
-        else if (fnUpper.includes('PREDIAL')) { slotId = 'predial'; fojaOrden = 10; }
-        else { slotId = 'anexo_' + Date.now(); fojaOrden = 12; }
-
-        let htmlExtraido = '';
-        if (ext === 'docx' && window.mammoth) {
-          try {
-            const resH = await mammoth.convertToHtml({ arrayBuffer: ab.slice(0) });
-            htmlExtraido = resH.value || '';
-          } catch (e) {}
-        } else if (ext === 'doc') {
-          htmlExtraido = extraerTextoLimpioDeDocWord97(ab, file.name).html;
-        }
-
-        const storeKey = `bin_${(expedienteActual.centro || 'C065').replace(/\W/g, '_')}_${expedienteActual.numExpediente.replace(/\W/g, '_')}_${slotId}`;
-        if (window.localforage) {
-          await localforage.setItem(storeKey, ab);
-        }
-
-        let driveFileId = null;
-        if (obtenerTokenDrive()) {
-          driveFileId = await subirDocADriveParaVistaNativa(ab, file.name, expedienteActual.numExpediente, slotId);
-        }
-
-        if (!expedienteActual.docs) expedienteActual.docs = {};
-        expedienteActual.docs[slotId] = {
-          fileName: file.name,
-          pages: 1,
-          date: new Date().toISOString().split('T')[0],
-          fojaOrden,
-          storeKey,
-          driveFileId,
-          realUploaded: true,
-          htmlContent: htmlExtraido
-        };
-      }
-
-      localStorage.setItem('visor_active_expediente', JSON.stringify(expedienteActual));
-      if (window.localforage) await localforage.setItem('visor_active_expediente_full', expedienteActual);
-
-      delete expedienteActual.piezasEmpaquetadas;
-      await construirFojasDesdeArchivosReales(expedienteActual);
-      escanearAlertasInfalible();
-      ocultarProgreso();
-    }
-
-    function filtrarTextoEnFoja(q) {
-      palabraResaltada = (q || '').trim();
-      renderizarVisorCentral();
-    }
-
-    function escanearAlertasInfalible() {
-      const cont = document.getElementById('contenedor-alertas-resultados');
-      const hallazgos = [];
-      const patrones = [
-        { titulo: 'Partes / Comparecientes', regex: /(?:celebraron las partes|comparecen|arrendador|arrendatario|cónyuges)[\s:.,]+([A-ZÁÉÍÓÚÑ\s,Y]{10,120})/gi },
-        { titulo: 'Vigencia / Plazo', regex: /(?:vigencia|vencimiento|forzoso|plazo|fecha)[^.;\n]{4,90}/gi },
-        { titulo: 'Monto / Renta / Pensión', regex: /(?:\$\s*[0-9,]+(?:\.[0-9]{2})?|renta\s+mensual|pensión)[^.;\n]{0,70}/gi },
-        { titulo: 'Predial / Escritura / Inmueble', regex: /(?:predial|escritura|inmueble|finca)[^.;\n]{4,90}/gi },
-        { titulo: 'Cláusula / Obligación LJA', regex: /(?:cláusula\s+[a-záéíóú]+|cosa\s+juzgada|sentencia\s+ejecutoriada|justicia\s+alternativa)[^.;\n]{4,90}/gi }
-      ];
-
-      fojasEnMemoria.forEach((f, idx) => {
-        const txt = f.textoPlano || '';
-        patrones.forEach(p => {
-          for (const m of txt.matchAll(p.regex)) {
-            if (hallazgos.length < 35) {
-              hallazgos.push({ titulo: p.titulo, foja: f.numeroFoja, idx, extracto: m[0].trim() });
+                hallazgos.push({
+                  fojaIndex: fIdx,
+                  numFoja: foja.numFoja,
+                  categoria: regla.categoria,
+                  color: regla.color,
+                  termino,
+                  fragmento
+                });
+              }
+              if (hallazgos.length >= 80) break;
             }
           }
         });
-      });
 
-      if (hallazgos.length === 0) {
-        cont.innerHTML = `<div style="font-size:0.74rem; color:#64748b; text-align:center; padding:16px;">Sube un documento y pulsa "IA" para listar cláusulas y alertas.</div>`;
-        return;
-      }
+        this.hallazgosIACache = hallazgos;
+        if (subtitulo) {
+          subtitulo.textContent = `${hallazgos.length} elementos clave reconocidos`;
+        }
+        this.renderizarTarjetasIA(hallazgos);
+      },
 
-      cont.innerHTML = hallazgos.map(h => `
-        <div onclick="seleccionarFoja(${h.idx})" class="keyword-card">
-          <div class="keyword-word"><span>${h.titulo}</span><span>FOJA ${h.foja}</span></div>
-          <div class="keyword-snippet">"${h.extracto}"</div>
-        </div>
-      `).join('');
-    }
+      // Buscador en vivo "Buscar palabra en el documento..."
+      filtrarPalabrasIA(query) {
+        const q = (query || '').trim();
+        if (q.length < 2) {
+          this.renderizarTarjetasIA(this.hallazgosIACache);
+          return;
+        }
 
-    function cambiarTabDerecha(tab) {
-      const esPalabras = tab === 'palabras';
-      document.getElementById('tab-palabras').classList.toggle('activa', esPalabras);
-      document.getElementById('tab-notas').classList.toggle('activa', !esPalabras);
-      document.getElementById('panel-palabras').style.display = esPalabras ? 'flex' : 'none';
-      document.getElementById('panel-notas').style.display = esPalabras ? 'none' : 'flex';
-    }
+        const resultadosBusqueda = [];
+        const rx = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
 
-    function cargarNotasGuardadas() {
-      const clave = `notas_visor_${expedienteActual ? expedienteActual.id : 'default'}`;
-      const raw = localStorage.getItem(clave);
-      notasDelExpediente = raw ? JSON.parse(raw) : [];
-      renderizarIndiceNotas();
-    }
+        this.fojasRenderizadas.forEach((foja, fIdx) => {
+          const txtFoja = foja.texto || '';
+          let m;
+          while ((m = rx.exec(txtFoja)) !== null) {
+            const pos = m.index;
+            const fragmento = txtFoja.substring(Math.max(0, pos - 40), Math.min(txtFoja.length, pos + q.length + 80)).replace(/\s+/g, ' ').trim();
+            resultadosBusqueda.push({
+              fojaIndex: fIdx,
+              numFoja: foja.numFoja,
+              categoria: '🔍 Coincidencia en Documento',
+              color: '#38bdf8',
+              termino: m[0],
+              fragmento
+            });
+            if (resultadosBusqueda.length >= 50) break;
+          }
+        });
 
-    function guardarNotas() {
-      const txt = (document.getElementById('texto-notas').value || '').trim();
-      if (!txt) return;
-      const fojaNum = fojasEnMemoria[indiceFojaActiva] ? fojasEnMemoria[indiceFojaActiva].numeroFoja : 1;
-      notasDelExpediente.unshift({ id: Date.now(), foja: fojaNum, idx: indiceFojaActiva, texto: txt });
-      const clave = `notas_visor_${expedienteActual ? expedienteActual.id : 'default'}`;
-      localStorage.setItem(clave, JSON.stringify(notasDelExpediente));
-      document.getElementById('texto-notas').value = '';
-      renderizarIndiceNotas();
-    }
+        this.renderizarTarjetasIA(resultadosBusqueda, q);
+      },
 
-    function eliminarNota(id) {
-      notasDelExpediente = notasDelExpediente.filter(n => n.id !== id);
-      const clave = `notas_visor_${expedienteActual ? expedienteActual.id : 'default'}`;
-      localStorage.setItem(clave, JSON.stringify(notasDelExpediente));
-      renderizarIndiceNotas();
-    }
+      renderizarTarjetasIA(listaHallazgos, queryBusqueda = '') {
+        const contIA = document.getElementById('ia-results-container');
+        if (!contIA) return;
 
-    function renderizarIndiceNotas() {
-      const cont = document.getElementById('indice-notas-container');
-      cont.innerHTML = notasDelExpediente.map(n => `
-        <div class="nota-guardada">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong onclick="seleccionarFoja(${n.idx})" style="color:#fbbf24; cursor:pointer;">Foja ${n.foja}</strong>
-            <button onclick="eliminarNota(${n.id})" style="background:none; border:none; color:#fda4af; cursor:pointer; font-size:0.7rem;"><i class="fa-solid fa-trash"></i></button>
+        if (!listaHallazgos || listaHallazgos.length === 0) {
+          contIA.innerHTML = `
+            <div style="padding:16px; background:#111a2e; border:1px solid rgba(148,163,184,0.2); border-radius:10px; text-align:center; color:#94a3b8; font-size:12px; line-height:1.5;">
+              ${queryBusqueda
+                ? `No se encontró la palabra <strong>"${queryBusqueda}"</strong> en el texto extraído.`
+                : `Este documento es una imagen escaneada sin texto digital. Pulsa el botón azul <strong>"👁️ Leer Escaneo (OCR)"</strong> arriba a la derecha o el botón naranja <strong>"🟠 IA"</strong> para leerlo con reconocimiento óptico.`}
+            </div>
+          `;
+          return;
+        }
+
+        contIA.innerHTML = listaHallazgos.map(h => `
+          <div
+            onclick="VisorApp.irAFoja(${h.fojaIndex}, '${h.termino.replace(/'/g, "\\'")}')"
+            class="ia-card-item"
+            style="border-left: 3.5px solid ${h.color};"
+            title="Clic para ir a la Foja ${h.numFoja} y localizar el texto"
+          >
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
+              <span style="font-size:10px; font-weight:800; color:${h.color}; text-transform:uppercase;">${h.categoria}</span>
+              <span style="font-size:9.5px; font-family:'JetBrains Mono',monospace; background:rgba(255,255,255,0.08); color:#fde68a; padding:2px 6px; border-radius:4px; font-weight:700;">
+                Foja ${h.numFoja}
+              </span>
+            </div>
+            <div style="font-size:11.5px; font-weight:800; color:#ffffff; margin-bottom:3px;">
+              ${h.termino}
+            </div>
+            <div style="font-size:11px; color:#cbd5e1; line-height:1.4;">
+              "...${h.fragmento}..."
+            </div>
           </div>
-          <span>${n.texto}</span>
-        </div>
-      `).join('');
-    }
+        `).join('');
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      VisorApp.inicializar();
+    });
   </script>
 </body>
 </html>
