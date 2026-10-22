@@ -138,19 +138,19 @@
     .visor-workspace {
       flex: 1;
       display: grid;
-      grid-template-columns: 225px 1fr 330px;
+      grid-template-columns: 245px 1fr 355px;
       overflow: hidden;
       min-height: 0;
     }
     @media (max-width: 1100px) {
-      .visor-workspace { grid-template-columns: 185px 1fr 290px; }
+      .visor-workspace { grid-template-columns: 200px 1fr 310px; }
     }
     @media (max-width: 820px) {
       .visor-workspace { grid-template-columns: 1fr; }
       .sidebar-left { display: none; }
     }
 
-    /* COLUMNA IZQUIERDA: FOJAS Y MINIATURAS */
+    /* COLUMNA IZQUIERDA: FOJAS, CONTEO DE PALABRAS Y MINIATURAS */
     .sidebar-left {
       background: var(--bg-sidebar);
       border-right: 1px solid var(--border-line);
@@ -192,6 +192,16 @@
       justify-content: center;
       gap: 6px;
     }
+    .left-summary-box {
+      background: #0f172a;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
     .fojas-thumbs-list {
       flex: 1;
       overflow-y: auto;
@@ -220,12 +230,30 @@
       font-size: 10.5px;
       font-weight: 800;
       color: var(--accent-amber);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       font-family: 'JetBrains Mono', monospace;
+    }
+    .foja-word-badge {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+    .foja-alert-badge {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 9.5px;
+      font-weight: 800;
     }
     .foja-thumb-preview {
       width: 100%;
-      height: 115px;
+      height: 112px;
       background: #ffffff;
       border-radius: 6px;
       overflow: hidden;
@@ -243,7 +271,7 @@
       object-fit: contain;
     }
 
-    /* COLUMNA CENTRAL: LIENZO DEL DOCUMENTO */
+    /* COLUMNA CENTRAL: LIENZO DEL DOCUMENTO Y SUBRAYADO IA */
     .center-stage {
       background: #04070e;
       position: relative;
@@ -251,7 +279,22 @@
       flex-direction: column;
       align-items: center;
       overflow: auto;
-      padding: 24px 20px 90px 20px;
+      padding: 16px 20px 95px 20px;
+    }
+    .foja-top-telemetry {
+      width: 100%;
+      max-width: 820px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid var(--border-line);
+      border-radius: 10px;
+      padding: 8px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11.5px;
     }
     .sheet-container {
       background: #ffffff;
@@ -276,11 +319,59 @@
     .sheet-html-content * { color: #000000; }
     .sheet-html-content table { width: 100%; border-collapse: collapse; margin: 12px 0; }
     .sheet-html-content td, .sheet-html-content th { border: 1px solid #000; padding: 6px 8px; }
+    .sheet-image-wrapper {
+      position: relative;
+      width: 100%;
+      display: block;
+    }
     .sheet-image-render {
       width: 100%;
       height: auto;
       display: block;
     }
+    /* Capa de subrayado y resaltado sobre imágenes/PDFs */
+    .ia-overlay-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .ia-bbox-mark {
+      position: absolute;
+      background: rgba(250, 204, 21, 0.34);
+      border-bottom: 3px solid #ea580c;
+      border-radius: 2px;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ia-bbox-mark:hover,
+    .ia-bbox-mark.activo {
+      background: rgba(250, 204, 21, 0.65);
+      border-bottom: 4px solid #dc2626;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.9);
+      z-index: 12;
+    }
+
+    /* Subrayado y resaltado en documentos HTML/Word */
+    mark.ia-highlight-auto {
+      background-color: rgba(254, 240, 138, 0.75) !important;
+      color: #000000 !important;
+      border-bottom: 2.5px solid #ea580c !important;
+      padding: 0 2px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    mark.ia-highlight-active {
+      background-color: #fde047 !important;
+      color: #000000 !important;
+      border-bottom: 3.5px solid #dc2626 !important;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-weight: 900;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.6);
+    }
+
     #annotation-canvas {
       position: absolute;
       inset: 0;
@@ -296,16 +387,6 @@
       min-height: 760px;
       padding: 40px;
       color: #1e293b;
-    }
-
-    /* Resaltado de palabra encontrada por IA */
-    mark.ia-highlight {
-      background-color: #fde047 !important;
-      color: #000000 !important;
-      padding: 1px 4px;
-      border-radius: 4px;
-      font-weight: 800;
-      box-shadow: 0 0 0 2px #f59e0b;
     }
 
     /* BARRA FLOTANTE INFERIOR DE CONTROLES */
@@ -354,7 +435,7 @@
       padding: 0 8px;
     }
 
-    /* COLUMNA DERECHA: ALERTAS IA Y APUNTES */
+    /* COLUMNA DERECHA: ALERTAS IA, CONTEO DE PALABRAS Y APUNTES */
     .sidebar-right {
       background: var(--bg-sidebar);
       border-left: 1px solid var(--border-line);
@@ -406,6 +487,16 @@
       outline: none;
     }
     .ia-search-input:focus { border-color: var(--accent-blue); }
+    .ocr-progress-box {
+      background: #0f172a;
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 11px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
     .ia-results-list {
       flex: 1;
       overflow-y: auto;
@@ -444,7 +535,6 @@
       <a href="index.html" class="hdr-btn"><i class="fa-solid fa-house"></i> Inicio</a>
       <a href="portal-pro.html" class="hdr-btn"><i class="fa-solid fa-folder-tree"></i> Bóveda</a>
 
-      <!-- Selector directo de expediente (Carga tanto Juzgados como Convenios MASC) -->
       <select id="visor-exp-selector" onchange="VisorApp.cambiarExpedienteDesdeSelector(this.value)" class="hdr-select-exp" title="Cambiar de expediente">
         <option value="">Cargando expediente...</option>
       </select>
@@ -458,7 +548,7 @@
         <i class="fa-solid fa-download" style="color:#10b981;"></i> Original
       </button>
 
-      <button type="button" onclick="VisorApp.ejecutarReconocimientoIA(true)" class="hdr-btn-ia" title="Analizar cláusulas, actuaciones de juzgado, montos, términos y partes">
+      <button type="button" onclick="VisorApp.ejecutarReconocimientoIA(true)" class="hdr-btn-ia" title="Escanear todas las fojas, subrayar palabras clave y mostrar alertas">
         <i class="fa-solid fa-brain"></i> IA
       </button>
     </div>
@@ -466,7 +556,7 @@
 
   <!-- ÁREA DE TRABAJO DE 3 COLUMNAS -->
   <div class="visor-workspace">
-    <!-- IZQUIERDA: LISTA DE FOJAS -->
+    <!-- IZQUIERDA: LISTA DE FOJAS Y CONTEO DE PALABRAS POR FOJA -->
     <aside class="sidebar-left">
       <label class="side-btn-dashed">
         <i class="fa-solid fa-plus"></i> Insertar Foja
@@ -475,11 +565,43 @@
       <button type="button" onclick="VisorApp.invertirOrdenFojas()" class="side-btn-order">
         <i class="fa-solid fa-arrow-down-up-across-line"></i> Ordenar Fojas
       </button>
+
+      <!-- Resumen Global de Palabras y Fojas -->
+      <div class="left-summary-box">
+        <div style="display:flex; justify-content:space-between; color:#e2e8f0; font-weight:700;">
+          <span>Total Fojas:</span>
+          <span id="left-total-fojas" style="color:#f59e0b; font-family:'JetBrains Mono',monospace;">0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; color:#e2e8f0; font-weight:700;">
+          <span>Palabras Totales:</span>
+          <span id="left-total-palabras" style="color:#34d399; font-family:'JetBrains Mono',monospace;">0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; color:#e2e8f0; font-weight:700;">
+          <span>Alertas / Subrayados:</span>
+          <span id="left-total-alertas" style="color:#38bdf8; font-family:'JetBrains Mono',monospace;">0</span>
+        </div>
+      </div>
+
       <div id="fojas-sidebar-list" class="fojas-thumbs-list"></div>
     </aside>
 
-    <!-- CENTRO: HOJA DEL EXPEDIENTE -->
+    <!-- CENTRO: HOJA DEL EXPEDIENTE CON TELEMETRÍA POR FOJA -->
     <main class="center-stage" id="center-stage-scroll">
+      <div class="foja-top-telemetry">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="top-foja-badge" style="background:#f59e0b; color:#0f172a; font-weight:900; padding:2px 8px; border-radius:6px; font-family:'JetBrains Mono',monospace;">FOJA 0/0</span>
+          <span id="top-foja-slot" style="color:#cbd5e1; font-weight:600;">Sin documento</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span id="top-foja-words" style="color:#34d399; font-weight:800; font-family:'JetBrains Mono',monospace;">
+            <i class="fa-solid fa-spell-check"></i> 0 palabras en esta foja
+          </span>
+          <span id="top-foja-alerts" style="color:#fbbf24; font-weight:800; font-family:'JetBrains Mono',monospace;">
+            <i class="fa-solid fa-highlighter"></i> 0 subrayados
+          </span>
+        </div>
+      </div>
+
       <div id="sheet-container" class="sheet-container">
         <canvas id="annotation-canvas"></canvas>
         <div id="sheet-render-area"></div>
@@ -501,13 +623,13 @@
           <i class="fa-solid fa-magnifying-glass-minus"></i>
         </button>
         <button type="button" class="ctrl-btn" onclick="VisorApp.resetZoom()" title="Tamaño 1:1">1:1</button>
-        <button type="button" id="btn-tool-highlight" class="ctrl-btn" onclick="VisorApp.activarHerramientaDibujo('highlight')" title="Marcatextos amarillo">
+        <button type="button" id="btn-tool-highlight" class="ctrl-btn" onclick="VisorApp.activarHerramientaDibujo('highlight')" title="Marcatextos manual">
           <i class="fa-solid fa-highlighter" style="color:#facc15;"></i>
         </button>
         <button type="button" id="btn-tool-pen" class="ctrl-btn" onclick="VisorApp.activarHerramientaDibujo('pen')" title="Pluma roja">
           <i class="fa-solid fa-pen" style="color:#f87171;"></i>
         </button>
-        <button type="button" class="ctrl-btn" onclick="VisorApp.limpiarAnotacionesFoja()" title="Borrar trazos de esta foja">
+        <button type="button" class="ctrl-btn" onclick="VisorApp.limpiarAnotacionesFoja()" title="Borrar trazos manuales">
           <i class="fa-solid fa-eraser"></i>
         </button>
         <button type="button" class="ctrl-btn" onclick="window.print()" title="Imprimir foja">
@@ -516,11 +638,11 @@
       </div>
     </main>
 
-    <!-- DERECHA: ALERTAS IA Y APUNTES -->
+    <!-- DERECHA: ALERTAS IA, DESGLOSE DE PALABRAS POR FOJA Y APUNTES -->
     <aside class="sidebar-right">
       <div class="right-tabs">
         <button type="button" id="tab-btn-alertas" class="right-tab-btn activo" onclick="VisorApp.cambiarTabDerecha('alertas')">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> Alertas IA
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Alertas IA y Palabras
         </button>
         <button type="button" id="tab-btn-apuntes" class="right-tab-btn" onclick="VisorApp.cambiarTabDerecha('apuntes')">
           <i class="fa-solid fa-pen-to-square"></i> Apuntes
@@ -533,15 +655,28 @@
           type="text"
           id="ia-search-input"
           class="ia-search-input"
-          placeholder="Buscar palabra en el documento..."
+          placeholder="Buscar y subrayar palabra en todas las fojas..."
           oninput="VisorApp.filtrarPalabrasIA(this.value)"
         />
+
+        <!-- Barra de progreso OCR para escanear TODAS las fojas necesarias -->
+        <div id="ocr-progress-box" class="ocr-progress-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="ocr-progress-text" style="color:#fde68a; font-weight:700;">Escaneando fojas con IA...</span>
+            <button type="button" onclick="VisorApp.detenerOCR = true;" style="background:#7f1d1d; color:#fecaca; border:none; border-radius:4px; padding:2px 6px; font-size:10px; cursor:pointer;">Detener</button>
+          </div>
+          <div style="width:100%; height:6px; background:#1e293b; border-radius:999px; overflow:hidden;">
+            <div id="ocr-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #f59e0b, #10b981); transition:width 0.2s;"></div>
+          </div>
+        </div>
+
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:#94a3b8;">
-          <span id="ia-status-subtitle">Reconocimiento de Juzgados y MASC</span>
-          <button type="button" onclick="VisorApp.ejecutarOCRCompletoEnFojas()" style="background:none; border:none; color:#38bdf8; font-size:11px; font-weight:700; cursor:pointer;" title="Leer imágenes escaneadas con OCR">
-            <i class="fa-solid fa-eye"></i> Leer Escaneo (OCR)
+          <span id="ia-status-subtitle">Alertas, Cláusulas y Conteo por Foja</span>
+          <button type="button" onclick="VisorApp.ejecutarOCRCompletoEnFojas()" style="background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; border-radius:6px; padding:3px 8px; font-size:10.5px; font-weight:800; cursor:pointer;" title="Escanear absolutamente todas las fojas con OCR">
+            <i class="fa-solid fa-magnifying-glass-chart"></i> Escanear Todas las Fojas
           </button>
         </div>
+
         <div id="ia-results-container" class="ia-results-list"></div>
       </div>
 
@@ -559,7 +694,7 @@
       </div>
     </aside>
   </div>
-<!-- === FIN DE LA PARTE 1 DE 3 (SECCIÓN 2: VISOR) - PEGA LA PARTE 2 JUSTO DEBAJO DE ESTA LÍNEA === -->
+<!-- === FIN DE LA PARTE 1 DE 3 - PEGA LA PARTE 2 JUSTO DEBAJO DE ESTA LÍNEA === -->
  <script>
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -568,50 +703,52 @@
     const VisorApp = {
       expedienteActual: null,
       todosLosExpedientes: [],
-      fojasRenderizadas: [], // [{ numFoja, tituloSlot, fileName, tipo: 'imagen'|'html', dataUrl, html, texto, rawBuffer, mimeType }]
+      fojasRenderizadas: [],
       fojaIndiceActual: 0,
       zoomActual: 1,
-      herramientaActiva: null, // 'highlight' | 'pen' | null
+      herramientaActiva: null,
       dibujando: false,
       trazosPorFoja: {},
       hallazgosIACache: [],
+      detenerOCR: false,
+      ocrEnCurso: false,
 
-      // Diccionario Completo: Palabras Clave de Juzgados (Mercantil, Civil, Familiar, Amparo) + Convenios MASC / IJA
+      // DICCIONARIO COMPLETO: ALERTAS CLÁSICAS MASC + RECONOCIMIENTO DE JUZGADOS
       DICCIONARIO_JURIDICO: [
         {
-          categoria: '⚖️ Juzgado, Vía y Radicación',
-          color: '#38bdf8',
-          patron: /(?:JUZGADO\s+[0-9A-ZÁÉÍÓÚÑ°º\s]{2,45}|EXPEDIENTE\s*(?:N[ÚU]MERO|JUDICIAL)?\s*[:#.]?\s*\d{1,4}\/\d{4}|V[ÍI]A\s+(?:EJECUTIVA\s+MERCANTIL|ORDINARIA\s+CIVIL|CIVIL\s+SUMARIA|FAMILIAR)|AUTO\s+DE\s+(?:RADICACI[ÓO]N|EXEQUENDO|INICIO|ADMISI[ÓO]N))/gi
-        },
-        {
-          categoria: '📄 Demanda, Partes y Prestaciones',
-          color: '#f59e0b',
-          patron: /(?:ESCRITO\s+INICIAL\s+DE\s+DEMANDA|COMPAREZCO\s+A\s+DEMANDAR|PARTE\s+ACTORA|PARTE\s+DEMANDADA|DEMANDAD[OA]|ACTOR[A]?|PRESTACIONES|CAP[ÍI]TULO\s+DE\s+HECHOS|DERECHO)/gi
-        },
-        {
-          categoria: '💰 Pagaré, Montos y Suerte Principal',
-          color: '#10b981',
-          patron: /(?:SUERTE\s+PRINCIPAL|PAGAR[ÉE]|T[ÍI]TULO\s+DE\s+CR[ÉE]DITO|ENDOSO\s+EN\s+PROCURACI[ÓO]N|INTERESES\s+(?:MORATORIOS|ORDINARIOS)|RENTA\s+MENSUAL|DEP[ÓO]SITO\s+EN\s+GARANT[ÍI]A|\$[\s]*[0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?|CANTIDAD\s+DE\s+\$?[0-9,.]+)/gi
-        },
-        {
-          categoria: '🔔 Emplazamiento, Pruebas y Diligencias',
-          color: '#a855f7',
-          patron: /(?:DILIGENCIA\s+DE\s+EMPLAZAMIENTO|REQUERIMIENTO\s+DE\s+PAGO|EMBARGO\s+DE\s+BIENES|ACTUARIO\s+NOTIFICADOR|C[ÉE]DULA\s+DE\s+NOTIFICACI[ÓO]N|CONTESTACI[ÓO]N\s+DE\s+DEMANDA|EXCEPCIONES\s+Y\s+DEFENSAS|PRUEBAS|CONFESIONAL|TESTIMONIAL|DOCUMENTAL\s+P[ÚU]BLICA|DOCUMENTAL\s+PRIVADA)/gi
-        },
-        {
-          categoria: '⏳ Plazos, Términos y Prevenciones',
+          categoria: '🚨 Alerta de Vigencia, Plazos y Términos',
           color: '#ef4444',
-          patron: /(?:T[ÉE]RMINO\s+(?:DE|IMPRORROGABLE\s+DE)?\s*\d+\s+D[ÍI]AS|PREVENCI[ÓO]N|APERCIBIMIENTO|APERCIBID[OA]|REBELD[ÍI]A|CADUCIDAD\s+DE\s+LA\s+INSTANCIA|AUDIENCIA\s+(?:DE\s+LEY|PRELIMINAR|DE\s+JUICIO|CONCILIATORIA)|VENCIMIENTO|VIGENCIA)/gi
+          patron: /(?:VIGENCIA|VENCIMIENTO|T[ÉE]RMINO\s+(?:DE|IMPRORROGABLE\s+DE)?\s*\d+\s+D[ÍI]AS|FORZOSO\s+PARA|DESOCUPACI[ÓO]N\s+Y\s+ENTREGA|PREVENCI[ÓO]N|APERCIBIMIENTO|APERCIBID[OA]|REBELD[ÍI]A|CADUCIDAD|AUDIENCIA\s+(?:DE\s+LEY|PRELIMINAR|CONCILIATORIA)|\b\d{1,2}\s+DE\s+(?:ENERO|FEBRERO|MARZO|ABRIL|MAYO|JUNIO|JULIO|AGOSTO|SEPTIEMBRE|OCTUBRE|NOVIEMBRE|DICIEMBRE)\s+DE(?:L\s+A[ÑN]O)?\s+20[123]\d)/gi
         },
         {
-          categoria: '🏛️ Sentencia, Resoluciones y Amparo',
-          color: '#eab308',
-          patron: /(?:VISTOS\s+PARA\s+RESOLVER|RESULTANDO|CONSIDERANDO|PROPOSICIONES|PUNTOS\s+RESOLUTIVOS|SENTENCIA\s+(?:DEFINITIVA|INTERLOCUTORIA)|CAUSA\s+EJECUTORIA|COSA\s+JUZGADA|RECURSO\s+DE\s+(?:APELACI[ÓO]N|REVOCACI[ÓO]N)|JUICIO\s+DE\s+AMPARO|SUSPENSI[ÓO]N\s+PROVISIONAL)/gi
+          categoria: '💰 Alerta de Montos, Renta, Pagaré y Suerte Principal',
+          color: '#10b981',
+          patron: /(?:RENTA\s+MENSUAL|DEP[ÓO]SITO\s+EN\s+GARANT[ÍI]A|PENSI[ÓO]N\s+ALIMENTICIA|SUERTE\s+PRINCIPAL|PAGAR[ÉE]|T[ÍI]TULO\s+DE\s+CR[ÉE]DITO|INTERESES\s+(?:MORATORIOS|ORDINARIOS)|PENA\s+CONVENCIONAL|\$[\s]*[0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?|CANTIDAD\s+DE\s+\$?[0-9,.]+)/gi
         },
         {
-          categoria: '🤝 Cláusulas y Convenios MASC / IJA',
+          categoria: '📌 Cláusulas del Convenio y Prestaciones',
+          color: '#f59e0b',
+          patron: /(?:CL[ÁA]USULA\s+(?:PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA|SEXTA|S[ÉE]PTIMA|OCTAVA|NOVENA|D[ÉE]CIMA|UND[ÉE]CIMA|DUOD[ÉE]CIMA|\d+)|PRESTACIONES|ANTECEDENTES|DECLARACIONES|CAP[ÍI]TULO\s+DE\s+HECHOS)/gi
+        },
+        {
+          categoria: '⚖️ Juzgado, Vía Judicial y Radicación',
+          color: '#38bdf8',
+          patron: /(?:JUZGADO\s+[0-9A-ZÁÉÍÓÚÑ°º\s]{2,45}|EXPEDIENTE\s*(?:N[ÚU]MERO|JUDICIAL)?\s*[:#.]?\s*\d{1,4}\/\d{4}|ESCRITO\s+INICIAL\s+DE\s+DEMANDA|V[ÍI]A\s+(?:EJECUTIVA\s+MERCANTIL|ORDINARIA\s+CIVIL|CIVIL\s+SUMARIA|FAMILIAR)|AUTO\s+DE\s+(?:RADICACI[ÓO]N|EXEQUENDO|INICIO|ADMISI[ÓO]N))/gi
+        },
+        {
+          categoria: '👥 Partes, Intervinientes y Firmas',
+          color: '#a855f7',
+          patron: /(?:ARRENDADOR(?:A|ES)?|ARRENDATARI(?:O|A|OS|AS)|FIADOR(?:A)?|OBLIGADO\s+SOLIDARIO|PARTE\s+ACTORA|PARTE\s+DEMANDADA|DEUDOR\s+ALIMENTARIO|ACREEDOR\s+ALIMENTARIO|GUARDA\s+Y\s+CUSTODIA|DIRECTOR\s+GENERAL|ACREDITACI[ÓO]N\s*(?:0?65|353))/gi
+        },
+        {
+          categoria: '🏠 Inmueble, Cuenta Predial y Escritura',
           color: '#14b8a6',
-          patron: /(?:CL[ÁA]USULA\s+(?:PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA|SEXTA|S[ÉE]PTIMA|OCTAVA|NOVENA|D[ÉE]CIMA|\d+)|PREVENTIVO\s+DE\s+ARRENDAMIENTO|PENSI[ÓO]N\s+ALIMENTICIA|GUARDA\s+Y\s+CUSTODIA|DIVORCIO\s+(?:POR\s+MUTUO|ADMINISTRATIVO)|PREDIAL\s*(?:N[ÚU]MERO|CUENTA)?\s*[:#]?\s*[0-9\-]{5,15}|ESCRITURA\s+P[ÚU]BLICA|ACREDITACI[ÓO]N\s*(?:0?65|353)|DIRECTOR\s+GENERAL)/gi
+          patron: /(?:PREDIAL\s*(?:N[ÚU]MERO|CUENTA)?\s*[:#]?\s*[0-9\-]{4,15}|ESCRITURA\s+P[ÚU]BLICA\s*(?:N[ÚU]MERO)?\s*[0-9,.\s]{1,12}|FINCA\s+MARCADA|INMUEBLE\s+UBICADO|NOTARIO\s+P[ÚU]BLICO)/gi
+        },
+        {
+          categoria: '🏛️ Emplazamiento, Pruebas y Sentencia',
+          color: '#eab308',
+          patron: /(?:DILIGENCIA\s+DE\s+EMPLAZAMIENTO|REQUERIMIENTO\s+DE\s+PAGO|EMBARGO\s+DE\s+BIENES|ACTUARIO\s+NOTIFICADOR|CONTESTACI[ÓO]N\s+DE\s+DEMANDA|EXCEPCIONES\s+Y\s+DEFENSAS|VISTOS\s+PARA\s+RESOLVER|RESULTANDO|CONSIDERANDO|PROPOSICIONES|PUNTOS\s+RESOLUTIVOS|SENTENCIA\s+(?:DEFINITIVA|INTERLOCUTORIA)|CAUSA\s+EJECUTORIA|JUICIO\s+DE\s+AMPARO)/gi
         }
       ],
 
@@ -620,7 +757,13 @@
         await this.cargarCatalogoYExpedienteActivo();
       },
 
-      // 1. CARGADOR UNIVERSAL: Busca en Juzgados y en Convenios MASC sin perder los archivos
+      // Cuenta cuántas palabras reales hay en el texto de una foja
+      contarPalabras(texto) {
+        const limpio = String(texto || '').trim();
+        if (!limpio) return 0;
+        return limpio.split(/\s+/).filter(w => w.length > 0).length;
+      },
+
       async cargarCatalogoYExpedienteActivo() {
         const params = new URLSearchParams(window.location.search);
         const expIdUrl = params.get('id');
@@ -645,7 +788,6 @@
 
         this.todosLosExpedientes = [...listaJuz, ...listaMasc];
 
-        // Buscar el expediente solicitado
         let encontrado = null;
         if (window.localforage) {
           const paquete = await localforage.getItem('paquete_visor_activo');
@@ -713,7 +855,6 @@
         await this.procesarYDesglosarExpedienteActivo();
       },
 
-      // Recupera el binario ArrayBuffer desde LocalForage o Google Drive
       async recuperarBinarioDePieza(docInfo, exp) {
         if (docInfo.arrayBuffer && docInfo.arrayBuffer.byteLength > 0) {
           return docInfo.arrayBuffer;
@@ -727,7 +868,6 @@
               if (item instanceof Blob) return await item.arrayBuffer();
             }
           }
-          // Búsqueda por coincidencia de número de expediente en las llaves de LocalForage
           const numLimpio = String(exp?.numExpediente || '').replace(/\W/g, '_');
           const llaves = await localforage.keys();
           const llaveMatch = llaves.find(k =>
@@ -742,7 +882,6 @@
           }
         }
 
-        // Respaldo desde Google Drive si cuenta con token activo
         const token = localStorage.getItem('drive_token');
         if (token && docInfo.driveFileId && !token.startsWith('oauth_session_')) {
           try {
@@ -785,14 +924,14 @@
         }
       },
 
-      // 2. DESGLOSA TODOS LOS ARCHIVOS DEL EXPEDIENTE EN FOJAS INDIVIDUALES
+      // DESGLOSA TODAS LAS PÁGINAS DEL EXPEDIENTE Y EXTRAE COORDENADAS PARA SUBRAYADO
       async procesarYDesglosarExpedienteActivo() {
         this.fojasRenderizadas = [];
         this.fojaIndiceActual = 0;
 
         const areaRender = document.getElementById('sheet-render-area');
         if (areaRender) {
-          areaRender.innerHTML = `<div class="empty-doc-state"><i class="fa-solid fa-spinner fa-spin" style="font-size:36px; color:#f59e0b; margin-bottom:12px;"></i><h3>Cargando fojas del expediente...</h3></div>`;
+          areaRender.innerHTML = `<div class="empty-doc-state"><i class="fa-solid fa-spinner fa-spin" style="font-size:36px; color:#f59e0b; margin-bottom:12px;"></i><h3>Desglosando todas las fojas del expediente...</h3></div>`;
         }
 
         if (!this.expedienteActual) {
@@ -800,12 +939,10 @@
           return;
         }
 
-        // Cargar apuntes guardados de este expediente
         const notasGuardadas = localStorage.getItem(`apuntes_exp_${this.expedienteActual.id}`) || this.expedienteActual.predial || '';
         const txtApuntes = document.getElementById('visor-apuntes-textarea');
         if (txtApuntes) txtApuntes.value = notasGuardadas;
 
-        // Reunir piezas documentales ordenadas por fojaOrden
         let listaPiezas = [];
         if (Array.isArray(this.expedienteActual.piezasPreCargadas) && this.expedienteActual.piezasPreCargadas.length > 0) {
           listaPiezas = [...this.expedienteActual.piezasPreCargadas];
@@ -837,11 +974,30 @@
                 await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
 
                 const content = await page.getTextContent();
-                let textoPag = content.items.map(it => it.str).join(' ').trim();
-                if (!textoPag && pieza.extractedText && numPag === 1) {
-                  textoPag = pieza.extractedText;
-                }
+                const cajasPalabras = [];
+                const fragmentosTexto = [];
 
+                content.items.forEach(it => {
+                  const str = (it.str || '').trim();
+                  if (!str) return;
+                  fragmentosTexto.push(str);
+
+                  // Calcular coordenadas porcentuales en la hoja para subrayar sobre el PDF
+                  if (it.transform && viewport.width && viewport.height) {
+                    const [vx, vy] = viewport.convertToViewportPoint(it.transform[4], it.transform[5]);
+                    const wPx = (it.width || str.length * 6) * viewport.scale;
+                    const hPx = Math.max(14, (it.height || 12) * viewport.scale);
+                    cajasPalabras.push({
+                      text: str,
+                      xPct: Math.max(0, Math.min(98, (vx / viewport.width) * 100)),
+                      yPct: Math.max(0, Math.min(98, ((vy - hPx * 0.85) / viewport.height) * 100)),
+                      wPct: Math.min(100, (wPx / viewport.width) * 100),
+                      hPct: Math.min(20, (hPx / viewport.height) * 100)
+                    });
+                  }
+                });
+
+                const textoPag = fragmentosTexto.join(' ').trim();
                 this.fojasRenderizadas.push({
                   numFoja: contadorFojaGlobal++,
                   tituloSlot: `${tituloSlot} (Pág. ${numPag}/${pdf.numPages})`,
@@ -850,6 +1006,9 @@
                   dataUrl: canvas.toDataURL('image/jpeg', 0.88),
                   html: '',
                   texto: textoPag,
+                  totalPalabras: this.contarPalabras(textoPag),
+                  cajasPalabras,
+                  alertasEnFoja: [],
                   rawBuffer: ab,
                   mimeType: 'application/pdf'
                 });
@@ -866,14 +1025,18 @@
                 mammoth.convertToHtml({ arrayBuffer: ab.slice(0) }),
                 mammoth.extractRawText({ arrayBuffer: ab.slice(0) })
               ]);
+              const txt = resTxt.value || pieza.extractedText || '';
               this.fojasRenderizadas.push({
                 numFoja: contadorFojaGlobal++,
                 tituloSlot,
                 fileName,
                 tipo: 'html',
                 dataUrl: '',
-                html: resHtml.value || `<p>${resTxt.value || fileName}</p>`,
-                texto: resTxt.value || pieza.extractedText || '',
+                html: resHtml.value || `<p>${txt || fileName}</p>`,
+                texto: txt,
+                totalPalabras: this.contarPalabras(txt),
+                cajasPalabras: [],
+                alertasEnFoja: [],
                 rawBuffer: ab,
                 mimeType: pieza.mimeType || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
               });
@@ -883,6 +1046,7 @@
 
           if (ab && ext === 'doc') {
             const dec = this.decodificarDocWord97(ab, fileName);
+            const txt = dec.texto || pieza.extractedText || '';
             this.fojasRenderizadas.push({
               numFoja: contadorFojaGlobal++,
               tituloSlot,
@@ -890,7 +1054,10 @@
               tipo: 'html',
               dataUrl: '',
               html: dec.html,
-              texto: dec.texto || pieza.extractedText || '',
+              texto: txt,
+              totalPalabras: this.contarPalabras(txt),
+              cajasPalabras: [],
+              alertasEnFoja: [],
               rawBuffer: ab,
               mimeType: 'application/msword'
             });
@@ -904,6 +1071,7 @@
               reader.onload = () => r(reader.result);
               reader.readAsDataURL(blob);
             });
+            const txt = pieza.extractedText || '';
             this.fojasRenderizadas.push({
               numFoja: contadorFojaGlobal++,
               tituloSlot,
@@ -911,17 +1079,20 @@
               tipo: 'imagen',
               dataUrl,
               html: '',
-              texto: pieza.extractedText || '',
+              texto: txt,
+              totalPalabras: this.contarPalabras(txt),
+              cajasPalabras: [],
+              alertasEnFoja: [],
               rawBuffer: ab,
               mimeType: pieza.mimeType || 'image/jpeg'
             });
             continue;
           }
 
-          // Si solo se cuenta con el HTML o texto extraído en caché
           if (pieza.htmlContent || pieza.extractedText) {
             const tmp = document.createElement('div');
             tmp.innerHTML = pieza.htmlContent || `<p>${pieza.extractedText}</p>`;
+            const txt = pieza.extractedText || tmp.innerText || '';
             this.fojasRenderizadas.push({
               numFoja: contadorFojaGlobal++,
               tituloSlot,
@@ -929,26 +1100,49 @@
               tipo: 'html',
               dataUrl: '',
               html: pieza.htmlContent || `<div style="white-space:pre-wrap;">${pieza.extractedText}</div>`,
-              texto: pieza.extractedText || tmp.innerText || '',
+              texto: txt,
+              totalPalabras: this.contarPalabras(txt),
+              cajasPalabras: [],
+              alertasEnFoja: [],
               rawBuffer: null,
               mimeType: 'text/html'
             });
           }
         }
 
-        this.renderizarListaMiniaturasIzquierda();
-
         if (this.fojasRenderizadas.length > 0) {
-          this.irAFoja(0);
           await this.ejecutarReconocimientoIA(false);
+          this.irAFoja(0);
         } else {
           this.renderizarEstadoVacio();
+        }
+      },
+
+      actualizarResumenIzquierdoYSuperior() {
+        const totalFojas = this.fojasRenderizadas.length;
+        const totalPalabrasGlobal = this.fojasRenderizadas.reduce((acc, f) => acc + (f.totalPalabras || 0), 0);
+        const totalAlertasGlobal = this.hallazgosIACache.length;
+
+        const elFojas = document.getElementById('left-total-fojas');
+        const elPals = document.getElementById('left-total-palabras');
+        const elAlts = document.getElementById('left-total-alertas');
+        if (elFojas) elFojas.textContent = totalFojas;
+        if (elPals) elPals.textContent = totalPalabrasGlobal.toLocaleString('es-MX');
+        if (elAlts) elAlts.textContent = totalAlertasGlobal;
+
+        const fojaAct = this.fojasRenderizadas[this.fojaIndiceActual];
+        if (fojaAct) {
+          document.getElementById('top-foja-badge').textContent = `FOJA ${fojaAct.numFoja}/${totalFojas}`;
+          document.getElementById('top-foja-slot').textContent = fojaAct.tituloSlot;
+          document.getElementById('top-foja-words').innerHTML = `<i class="fa-solid fa-spell-check"></i> ${(fojaAct.totalPalabras || 0).toLocaleString('es-MX')} palabras en esta foja`;
+          document.getElementById('top-foja-alerts').innerHTML = `<i class="fa-solid fa-highlighter"></i> ${(fojaAct.alertasEnFoja || []).length} subrayados IA`;
         }
       },
 
       renderizarEstadoVacio() {
         document.getElementById('visor-page-counter').textContent = '0/0';
         document.getElementById('fojas-sidebar-list').innerHTML = '';
+        this.actualizarResumenIzquierdoYSuperior();
         const area = document.getElementById('sheet-render-area');
         if (area) {
           area.innerHTML = `
@@ -965,7 +1159,7 @@
         if (contIA) {
           contIA.innerHTML = `
             <div style="padding:16px; text-align:center; color:#64748b; font-size:12px; line-height:1.5;">
-              Sube un documento con el botón <strong>"Cargar"</strong> y pulsa <strong>"🟠 IA"</strong> para listar actuaciones de juzgado, montos, términos y cláusulas.
+              Sube un documento con el botón <strong>"Cargar"</strong> y pulsa <strong>"🟠 IA"</strong> para escanear todas las fojas, contar las palabras y subrayar las alertas.
             </div>
           `;
         }
@@ -975,27 +1169,34 @@
         const cont = document.getElementById('fojas-sidebar-list');
         if (!cont) return;
 
-        cont.innerHTML = this.fojasRenderizadas.map((foja, idx) => `
-          <div onclick="VisorApp.irAFoja(${idx})" class="foja-thumb-card ${idx === this.fojaIndiceActual ? 'activa' : ''}">
-            <div class="foja-thumb-header">
-              <span>FOJA ${String(foja.numFoja).padStart(3, '0')}</span>
-              <span style="color:#94a3b8; font-size:9.5px;">${foja.tipo === 'imagen' ? 'PDF/IMG' : 'DOC'}</span>
+        cont.innerHTML = this.fojasRenderizadas.map((foja, idx) => {
+          const numPals = foja.totalPalabras || 0;
+          const numAlts = (foja.alertasEnFoja || []).length;
+          return `
+            <div onclick="VisorApp.irAFoja(${idx})" class="foja-thumb-card ${idx === this.fojaIndiceActual ? 'activa' : ''}">
+              <div class="foja-thumb-header">
+                <span>FOJA ${String(foja.numFoja).padStart(3, '0')}</span>
+                <span class="foja-word-badge">${numPals} palabras</span>
+              </div>
+              <div class="foja-thumb-preview">
+                ${foja.tipo === 'imagen'
+                  ? `<img src="${foja.dataUrl}" alt="Foja ${foja.numFoja}" />`
+                  : `<div style="overflow:hidden; max-height:100px; font-size:8px; text-align:left; color:#334155;">
+                       <strong style="display:block; color:#0f172a; margin-bottom:3px;">${foja.fileName}</strong>
+                       ${(foja.texto || '').substring(0, 180)}...
+                     </div>`
+                }
+              </div>
+              <div style="margin-top:6px; display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                <span style="font-size:9.5px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${foja.tituloSlot}</span>
+                ${numAlts > 0 ? `<span class="foja-alert-badge">⚡ ${numAlts}</span>` : ''}
+              </div>
             </div>
-            <div class="foja-thumb-preview">
-              ${foja.tipo === 'imagen'
-                ? `<img src="${foja.dataUrl}" alt="Foja ${foja.numFoja}" />`
-                : `<div style="overflow:hidden; max-height:100px; font-size:8px; text-align:left; color:#334155;">
-                     <strong style="display:block; color:#0f172a; margin-bottom:3px;">${foja.fileName}</strong>${(foja.texto || '').substring(0, 180)}...
-                   </div>`
-              }
-            </div>
-            <div style="margin-top:5px; font-size:10px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-              ${foja.tituloSlot}
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       },
 
+      // RENDERIZA LA FOJA CENTRAL Y SUBRAYA AUTOMÁTICAMENTE TODAS LAS PALABRAS CLAVE Y ALERTAS
       irAFoja(indice, palabraAResaltar = '') {
         if (this.fojasRenderizadas.length === 0) return;
         if (indice < 0 || indice >= this.fojasRenderizadas.length) return;
@@ -1003,24 +1204,71 @@
         this.fojaIndiceActual = indice;
         const foja = this.fojasRenderizadas[indice];
         document.getElementById('visor-page-counter').textContent = `${indice + 1}/${this.fojasRenderizadas.length}`;
+        this.actualizarResumenIzquierdoYSuperior();
 
         const area = document.getElementById('sheet-render-area');
+        const terminosEnFoja = Array.from(new Set((foja.alertasEnFoja || []).map(a => a.termino)));
+
         if (foja.tipo === 'imagen') {
-          area.innerHTML = `<img src="${foja.dataUrl}" class="sheet-image-render" alt="Foja ${foja.numFoja}" />`;
+          // Construir subrayados visuales (bounding boxes) encima de la imagen de la foja
+          let overlayMarksHTML = '';
+          const cajas = foja.cajasPalabras || [];
+          const queryUpper = (palabraAResaltar || '').trim().toUpperCase();
+
+          cajas.forEach(c => {
+            const cTextUpper = (c.text || '').toUpperCase();
+            if (cTextUpper.length < 3) return;
+
+            const esActiva = queryUpper.length >= 2 && (cTextUpper.includes(queryUpper) || queryUpper.includes(cTextUpper));
+            const esAlerta = terminosEnFoja.some(t => {
+              const tUp = t.toUpperCase();
+              return tUp.includes(cTextUpper) || cTextUpper.includes(tUp);
+            });
+
+            if (esActiva || esAlerta) {
+              overlayMarksHTML += `
+                <div
+                  class="ia-bbox-mark ${esActiva ? 'activo' : ''}"
+                  style="left:${c.xPct}%; top:${c.yPct}%; width:${c.wPct}%; height:${c.hPct}%;"
+                  title="Detectado por IA: ${c.text.replace(/"/g, '&quot;')}"
+                ></div>
+              `;
+            }
+          });
+
+          area.innerHTML = `
+            <div class="sheet-image-wrapper">
+              <img src="${foja.dataUrl}" class="sheet-image-render" alt="Foja ${foja.numFoja}" />
+              <div class="ia-overlay-layer">${overlayMarksHTML}</div>
+            </div>
+          `;
         } else {
           let htmlMostrar = foja.html || `<div style="white-space:pre-wrap;">${foja.texto}</div>`;
+
+          // 1. Subrayar todas las alertas detectadas en esta foja
+          terminosEnFoja
+            .filter(t => t && t.length >= 3)
+            .sort((a, b) => b.length - a.length)
+            .slice(0, 35)
+            .forEach(term => {
+              const rx = new RegExp(`(?![^<]*>)(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+              htmlMostrar = htmlMostrar.replace(rx, '<mark class="ia-highlight-auto">$1</mark>');
+            });
+
+          // 2. Resaltar en fuerte la palabra específica a la que se le dio clic
           if (palabraAResaltar && palabraAResaltar.trim().length >= 2) {
-            const rx = new RegExp(`(${palabraAResaltar.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            htmlMostrar = htmlMostrar.replace(rx, '<mark class="ia-highlight">$1</mark>');
+            const rxAct = new RegExp(`(?![^<]*>)(${palabraAResaltar.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            htmlMostrar = htmlMostrar.replace(rxAct, '<mark class="ia-highlight-active">$1</mark>');
           }
+
           area.innerHTML = `<div class="sheet-html-content">${htmlMostrar}</div>`;
         }
 
         this.renderizarListaMiniaturasIzquierda();
         setTimeout(() => {
           this.ajustarLienzoDibujo();
-          const markEl = area.querySelector('mark.ia-highlight');
-          if (markEl) markEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const targetEl = area.querySelector('.ia-bbox-mark.activo') || area.querySelector('mark.ia-highlight-active');
+          if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 80);
       },
 
@@ -1028,6 +1276,7 @@
         if (this.fojasRenderizadas.length < 2) return;
         this.fojasRenderizadas.reverse();
         this.fojasRenderizadas.forEach((f, idx) => { f.numFoja = idx + 1; });
+        this.ejecutarReconocimientoIA(false);
         this.irAFoja(0);
       },
 
@@ -1041,7 +1290,6 @@
         document.getElementById('sheet-container').style.transform = 'scale(1)';
       },
 
-      // 3. HERRAMIENTAS DE MARCATEXTOS Y PLUMA SOBRE LA FOJA
       inicializarEventosDibujo() {
         const canvas = document.getElementById('annotation-canvas');
         if (!canvas) return;
@@ -1128,7 +1376,7 @@
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         delete this.trazosPorFoja[this.fojaIndiceActual];
       },
-// === FIN DE LA PARTE 2 DE 3 (SECCIÓN 2: VISOR) - PEGA LA PARTE 3 JUSTO DEBAJO DE ESTA LÍNEA ===
+// === FIN DE LA PARTE 2 DE 3 - PEGA LA PARTE 3 JUSTO DEBAJO DE ESTA LÍNEA ===
 cambiarTabDerecha(tab) {
         const esAlertas = tab === 'alertas';
         document.getElementById('panel-derecha-alertas').style.display = esAlertas ? 'flex' : 'none';
@@ -1142,7 +1390,7 @@ cambiarTabDerecha(tab) {
         localStorage.setItem(`apuntes_exp_${this.expedienteActual.id}`, texto);
       },
 
-      // 4. SUBIR ARCHIVOS DIRECTAMENTE DESDE EL VISOR ("+ Insertar Foja" o "Cargar")
+      // SUBIR ARCHIVOS DIRECTAMENTE DESDE EL VISOR ("+ Insertar Foja" o "Cargar")
       async subirArchivosAlExpediente(fileList) {
         if (!fileList || fileList.length === 0) return;
 
@@ -1159,7 +1407,7 @@ cambiarTabDerecha(tab) {
         }
 
         const subtituloIA = document.getElementById('ia-status-subtitle');
-        if (subtituloIA) subtituloIA.textContent = 'Subiendo e integrando fojas...';
+        if (subtituloIA) subtituloIA.textContent = 'Subiendo e integrando todas las fojas...';
 
         for (let i = 0; i < fileList.length; i++) {
           const file = fileList[i];
@@ -1186,7 +1434,6 @@ cambiarTabDerecha(tab) {
           };
         }
 
-        // Sincronizar también en las bases principales de la Bóveda (Juzgados y MASC)
         if (window.localforage) {
           await localforage.setItem('paquete_visor_activo', {
             expId: this.expedienteActual.id,
@@ -1241,7 +1488,16 @@ cambiarTabDerecha(tab) {
         }
       },
 
-      // 5. LECTURA OCR PARA DOCUMENTOS ESCANEADOS (CAMSCANNER / ESCÁNER FÍSICO)
+      obtenerDimensionesDataUrl(dataUrl) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve({ width: img.naturalWidth || 1200, height: img.naturalHeight || 1600 });
+          img.onerror = () => resolve({ width: 1200, height: 1600 });
+          img.src = dataUrl;
+        });
+      },
+
+      // ESCANEA ABSOLUTAMENTE TODAS LAS FOJAS NECESARIAS CON OCR (SIN LÍMITE DE 6 FOJAS)
       async ejecutarOCRCompletoEnFojas() {
         if (this.fojasRenderizadas.length === 0) {
           alert('Primero sube o abre un documento en el visor.');
@@ -1251,43 +1507,77 @@ cambiarTabDerecha(tab) {
           alert('El motor OCR no está disponible en este momento.');
           return;
         }
+        if (this.ocrEnCurso) return;
 
-        const contIA = document.getElementById('ia-results-container');
-        const subtitulo = document.getElementById('ia-status-subtitle');
+        // Toma TODAS las fojas de imagen que aún no tengan texto completo (sin límite de 6)
+        const fojasPorEscanear = this.fojasRenderizadas.filter(
+          f => f.tipo === 'imagen' && (!f.texto || f.totalPalabras < 10)
+        );
 
-        // Leer hasta las primeras 6 fojas que sean imagen para respuesta rápida
-        const fojasImagen = this.fojasRenderizadas.filter(f => f.tipo === 'imagen' && (!f.texto || f.texto.trim().length < 30)).slice(0, 6);
+        const listaObjetivo = fojasPorEscanear.length > 0
+          ? fojasPorEscanear
+          : this.fojasRenderizadas.filter(f => f.tipo === 'imagen');
 
-        if (fojasImagen.length === 0) {
+        if (listaObjetivo.length === 0) {
           await this.ejecutarReconocimientoIA(false);
           return;
         }
 
-        for (let i = 0; i < fojasImagen.length; i++) {
-          const foja = fojasImagen[i];
-          if (subtitulo) subtitulo.textContent = `Leyendo OCR Foja ${foja.numFoja} (${i + 1}/${fojasImagen.length})...`;
-          if (contIA) {
-            contIA.innerHTML = `
-              <div style="padding:16px; background:#111a2e; border:1px solid #f59e0b; border-radius:10px; text-align:center; font-size:12px; color:#fde68a;">
-                <i class="fa-solid fa-eye fa-bounce" style="font-size:20px; display:block; margin-bottom:8px;"></i>
-                Reconociendo texto con IA (OCR) en Foja #${foja.numFoja}... (${i + 1} de ${fojasImagen.length})
-              </div>
-            `;
-          }
+        this.ocrEnCurso = true;
+        this.detenerOCR = false;
+
+        const boxProg = document.getElementById('ocr-progress-box');
+        const txtProg = document.getElementById('ocr-progress-text');
+        const barProg = document.getElementById('ocr-progress-bar');
+        if (boxProg) boxProg.style.display = 'flex';
+
+        for (let i = 0; i < listaObjetivo.length; i++) {
+          if (this.detenerOCR) break;
+          const foja = listaObjetivo[i];
+          const pct = Math.round(((i + 1) / listaObjetivo.length) * 100);
+
+          if (txtProg) txtProg.textContent = `Escaneando Foja #${foja.numFoja} (${i + 1} de ${listaObjetivo.length})...`;
+          if (barProg) barProg.style.width = `${pct}%`;
+
           try {
+            const dims = await this.obtenerDimensionesDataUrl(foja.dataUrl);
             const res = await Tesseract.recognize(foja.dataUrl, 'spa');
-            if (res && res.data && res.data.text) {
-              foja.texto = (foja.texto || '') + '\n' + res.data.text;
+            if (res && res.data) {
+              const textoExtraido = (res.data.text || '').trim();
+              if (textoExtraido) {
+                foja.texto = textoExtraido;
+                foja.totalPalabras = this.contarPalabras(textoExtraido);
+              }
+
+              // Guardar coordenadas exactas de cada palabra escaneada para poder subrayarla en la imagen
+              if (Array.isArray(res.data.words) && res.data.words.length > 0) {
+                foja.cajasPalabras = res.data.words
+                  .filter(w => w.text && w.text.trim().length >= 2 && w.bbox)
+                  .map(w => ({
+                    text: w.text.trim(),
+                    xPct: Math.max(0, Math.min(98, (w.bbox.x0 / dims.width) * 100)),
+                    yPct: Math.max(0, Math.min(98, (w.bbox.y0 / dims.height) * 100)),
+                    wPct: Math.min(100, ((w.bbox.x1 - w.bbox.x0) / dims.width) * 100),
+                    hPct: Math.min(15, ((w.bbox.y1 - w.bbox.y0) / dims.height) * 100)
+                  }));
+              }
             }
-          } catch (e) {}
+          } catch (e) {
+            console.warn('Error OCR en foja', foja.numFoja, e);
+          }
+
+          // Actualizar conteo de palabras y alertas en vivo cada vez que termina una foja
+          await this.ejecutarReconocimientoIA(false);
         }
 
-        if (subtitulo) subtitulo.textContent = 'Lectura OCR completada';
+        this.ocrEnCurso = false;
+        if (boxProg) boxProg.style.display = 'none';
         await this.ejecutarReconocimientoIA(false);
+        this.irAFoja(this.fojaIndiceActual);
       },
 
-      // 6. MOTOR PRINCIPAL DEL BOTÓN NARANJA "IA" (JUZGADOS Y MASC)
-      async ejecutarReconocimientoIA(forzarOCRSiVacio = false) {
+      // MOTOR PRINCIPAL DE RECONOCIMIENTO IA, CONTEO DE PALABRAS Y SUBRAYADO EN HOJA
+      async ejecutarReconocimientoIA(forzarOCRSiFaltanFojas = false) {
         this.cambiarTabDerecha('alertas');
         const contIA = document.getElementById('ia-results-container');
         const subtitulo = document.getElementById('ia-status-subtitle');
@@ -1298,35 +1588,23 @@ cambiarTabDerecha(tab) {
           return;
         }
 
-        const textoTotal = this.fojasRenderizadas.map(f => f.texto || '').join(' ').trim();
-
-        // Si el documento vino de un escáner/CamScanner como pura imagen sin texto y el usuario pulsó el botón "IA", lanza OCR automático
-        if (textoTotal.length < 30 && forzarOCRSiVacio && window.Tesseract) {
+        // Si el usuario pulsó el botón naranja "IA" y hay fojas escaneadas sin texto, escanea TODAS las fojas
+        const fojasSinTexto = this.fojasRenderizadas.filter(f => f.tipo === 'imagen' && (!f.texto || f.totalPalabras < 10));
+        if (forzarOCRSiFaltanFojas && fojasSinTexto.length > 0 && !this.ocrEnCurso) {
           await this.ejecutarOCRCompletoEnFojas();
           return;
         }
 
-        const hallazgos = [];
-        const vistos = new Set();
+        const hallazgosGlobales = [];
+        const vistosGlobal = new Set();
 
-        // Añadir tarjeta resumen de encabezado del expediente
-        if (this.expedienteActual) {
-          hallazgos.push({
-            fojaIndex: 0,
-            numFoja: 1,
-            categoria: (this.expedienteActual.tipoRegistro === 'juzgado' || (this.expedienteActual.centro || '').includes('Juzgado'))
-              ? '⚖️ Ficha Judicial en Bóveda'
-              : '🤝 Ficha Convenio MASC',
-            color: '#38bdf8',
-            termino: `EXP. ${this.expedienteActual.numExpediente}`,
-            fragmento: `${this.expedienteActual.centro} • ${this.expedienteActual.categoria} • Partes: ${this.expedienteActual.solicitante}${this.expedienteActual.predial ? ' • ' + this.expedienteActual.predial : ''}`
-          });
-        }
-
-        // Recorrer cada foja buscando todas las palabras clave de Juzgados y MASC
+        // Analizar foja por foja y guardar sus alertas individuales para subrayarlas
         this.fojasRenderizadas.forEach((foja, fIdx) => {
+          foja.totalPalabras = this.contarPalabras(foja.texto);
+          foja.alertasEnFoja = [];
+
           const txtFoja = foja.texto || '';
-          if (txtFoja.length < 5) return;
+          if (txtFoja.length < 4) return;
 
           for (const regla of this.DICCIONARIO_JURIDICO) {
             let match;
@@ -1334,40 +1612,52 @@ cambiarTabDerecha(tab) {
             while ((match = regla.patron.exec(txtFoja)) !== null) {
               const termino = match[0].trim();
               const pos = match.index;
-              const claveUnica = `${fIdx}_${regla.categoria}_${termino.toUpperCase()}_${Math.floor(pos / 90)}`;
+              const claveUnica = `${fIdx}_${regla.categoria}_${termino.toUpperCase()}_${Math.floor(pos / 80)}`;
 
-              if (!vistos.has(claveUnica)) {
-                vistos.add(claveUnica);
-                const inicio = Math.max(0, pos - 40);
-                const fin = Math.min(txtFoja.length, pos + termino.length + 80);
+              if (!vistosGlobal.has(claveUnica)) {
+                vistosGlobal.add(claveUnica);
+                const inicio = Math.max(0, pos - 45);
+                const fin = Math.min(txtFoja.length, pos + termino.length + 85);
                 const fragmento = txtFoja.substring(inicio, fin).replace(/\s+/g, ' ').trim();
 
-                hallazgos.push({
+                const itemAlerta = {
                   fojaIndex: fIdx,
                   numFoja: foja.numFoja,
                   categoria: regla.categoria,
                   color: regla.color,
                   termino,
                   fragmento
-                });
+                };
+
+                foja.alertasEnFoja.push(itemAlerta);
+                hallazgosGlobales.push(itemAlerta);
               }
-              if (hallazgos.length >= 80) break;
             }
           }
         });
 
-        this.hallazgosIACache = hallazgos;
+        this.hallazgosIACache = hallazgosGlobales;
+        const totalPalabrasGlobal = this.fojasRenderizadas.reduce((acc, f) => acc + (f.totalPalabras || 0), 0);
+
         if (subtitulo) {
-          subtitulo.textContent = `${hallazgos.length} elementos clave reconocidos`;
+          subtitulo.textContent = `${hallazgosGlobales.length} alertas • ${totalPalabrasGlobal.toLocaleString('es-MX')} palabras`;
         }
-        this.renderizarTarjetasIA(hallazgos);
+
+        this.actualizarResumenIzquierdoYSuperior();
+        this.renderizarListaMiniaturasIzquierda();
+        this.renderizarTarjetasIA(hallazgosGlobales);
+
+        // Refrescar la foja visible para que aparezcan los subrayados automáticos
+        if (forzarOCRSiFaltanFojas) {
+          this.irAFoja(this.fojaIndiceActual);
+        }
       },
 
-      // Buscador en vivo "Buscar palabra en el documento..."
       filtrarPalabrasIA(query) {
         const q = (query || '').trim();
         if (q.length < 2) {
           this.renderizarTarjetasIA(this.hallazgosIACache);
+          this.irAFoja(this.fojaIndiceActual, '');
           return;
         }
 
@@ -1383,54 +1673,85 @@ cambiarTabDerecha(tab) {
             resultadosBusqueda.push({
               fojaIndex: fIdx,
               numFoja: foja.numFoja,
-              categoria: '🔍 Coincidencia en Documento',
+              categoria: '🔍 Palabra Buscada y Subrayada',
               color: '#38bdf8',
               termino: m[0],
               fragmento
             });
-            if (resultadosBusqueda.length >= 50) break;
+            if (resultadosBusqueda.length >= 100) break;
           }
         });
 
         this.renderizarTarjetasIA(resultadosBusqueda, q);
+        if (resultadosBusqueda.length > 0) {
+          this.irAFoja(resultadosBusqueda[0].fojaIndex, q);
+        }
       },
 
       renderizarTarjetasIA(listaHallazgos, queryBusqueda = '') {
         const contIA = document.getElementById('ia-results-container');
         if (!contIA) return;
 
+        const totalPalabrasGlobal = this.fojasRenderizadas.reduce((acc, f) => acc + (f.totalPalabras || 0), 0);
+
+        // Bloque superior fijo con el desglose de palabras exactas en cada foja
+        const tablaPalabrasPorFojaHTML = `
+          <div style="background:#0f172a; border:1px solid rgba(56,189,248,0.3); border-radius:10px; padding:10px; margin-bottom:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:11px; font-weight:800; color:#38bdf8;">
+              <span>📊 CONTEO DE PALABRAS POR FOJA (${this.fojasRenderizadas.length} fojas)</span>
+              <span style="color:#34d399; font-family:'JetBrains Mono',monospace;">Total: ${totalPalabrasGlobal.toLocaleString('es-MX')}</span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:5px; max-height:95px; overflow-y:auto;">
+              ${this.fojasRenderizadas.map((f, idx) => `
+                <button
+                  type="button"
+                  onclick="VisorApp.irAFoja(${idx})"
+                  style="background:${idx === this.fojaIndiceActual ? '#f59e0b' : '#1e293b'}; color:${idx === this.fojaIndiceActual ? '#0f172a' : '#e2e8f0'}; border:1px solid rgba(148,163,184,0.25); border-radius:6px; padding:3px 7px; font-size:10px; font-weight:800; cursor:pointer; font-family:'JetBrains Mono',monospace;"
+                  title="Ir a Foja ${f.numFoja}"
+                >
+                  F.${f.numFoja}: ${f.totalPalabras || 0} pal. (${(f.alertasEnFoja || []).length}⚡)
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
         if (!listaHallazgos || listaHallazgos.length === 0) {
           contIA.innerHTML = `
-            <div style="padding:16px; background:#111a2e; border:1px solid rgba(148,163,184,0.2); border-radius:10px; text-align:center; color:#94a3b8; font-size:12px; line-height:1.5;">
+            ${tablaPalabrasPorFojaHTML}
+            <div style="padding:16px; background:#111a2e; border:1px solid rgba(245,158,11,0.35); border-radius:10px; text-align:center; color:#cbd5e1; font-size:12px; line-height:1.5;">
               ${queryBusqueda
-                ? `No se encontró la palabra <strong>"${queryBusqueda}"</strong> en el texto extraído.`
-                : `Este documento es una imagen escaneada sin texto digital. Pulsa el botón azul <strong>"👁️ Leer Escaneo (OCR)"</strong> arriba a la derecha o el botón naranja <strong>"🟠 IA"</strong> para leerlo con reconocimiento óptico.`}
+                ? `No se encontró la palabra <strong>"${queryBusqueda}"</strong> en ninguna de las ${this.fojasRenderizadas.length} fojas.`
+                : `Este expediente tiene fojas escaneadas como imagen. Pulsa el botón naranja <strong>"🟠 IA"</strong> arriba a la derecha o <strong>"🔍 Escanear Todas las Fojas"</strong> para leer todas las páginas con OCR, contar sus palabras y subrayar las alertas.`}
             </div>
           `;
           return;
         }
 
-        contIA.innerHTML = listaHallazgos.map(h => `
-          <div
-            onclick="VisorApp.irAFoja(${h.fojaIndex}, '${h.termino.replace(/'/g, "\\'")}')"
-            class="ia-card-item"
-            style="border-left: 3.5px solid ${h.color};"
-            title="Clic para ir a la Foja ${h.numFoja} y localizar el texto"
-          >
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
-              <span style="font-size:10px; font-weight:800; color:${h.color}; text-transform:uppercase;">${h.categoria}</span>
-              <span style="font-size:9.5px; font-family:'JetBrains Mono',monospace; background:rgba(255,255,255,0.08); color:#fde68a; padding:2px 6px; border-radius:4px; font-weight:700;">
-                Foja ${h.numFoja}
-              </span>
+        contIA.innerHTML = `
+          ${tablaPalabrasPorFojaHTML}
+          ${listaHallazgos.map(h => `
+            <div
+              onclick="VisorApp.irAFoja(${h.fojaIndex}, '${h.termino.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')"
+              class="ia-card-item"
+              style="border-left: 4px solid ${h.color};"
+              title="Clic para ir a la Foja ${h.numFoja} y subrayar en el documento"
+            >
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
+                <span style="font-size:10px; font-weight:800; color:${h.color}; text-transform:uppercase;">${h.categoria}</span>
+                <span style="font-size:9.5px; font-family:'JetBrains Mono',monospace; background:rgba(245,158,11,0.18); color:#fde68a; padding:2px 6px; border-radius:4px; font-weight:800;">
+                  Foja ${h.numFoja} • ${this.fojasRenderizadas[h.fojaIndex]?.totalPalabras || 0} pal.
+                </span>
+              </div>
+              <div style="font-size:11.5px; font-weight:900; color:#ffffff; margin-bottom:3px; text-decoration:underline; text-decoration-color:${h.color};">
+                ${h.termino}
+              </div>
+              <div style="font-size:11px; color:#cbd5e1; line-height:1.4;">
+                "...${h.fragmento}..."
+              </div>
             </div>
-            <div style="font-size:11.5px; font-weight:800; color:#ffffff; margin-bottom:3px;">
-              ${h.termino}
-            </div>
-            <div style="font-size:11px; color:#cbd5e1; line-height:1.4;">
-              "...${h.fragmento}..."
-            </div>
-          </div>
-        `).join('');
+          `).join('')}
+        `;
       }
     };
 
